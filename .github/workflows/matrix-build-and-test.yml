@@ -15,8 +15,20 @@ env:
   DOTNET_VERSION: "8.0.x"
 
 jobs:
+  set-env:
+    runs-on: ubuntu-22.04
+    name: Set Environment
+    outputs:
+      dotnet_version: ${{ steps.var.outputs.dotnet_version }}
+    steps:
+      - id: var
+        run: |
+          DOTNET_VERSION=${{ env.DOTNET_VERSION }}
+          echo "dotnet_version=${DOTNET_VERSION}" >> $GITHUB_OUTPUT
+
   build-and-test-projects:
     name: Build & Test
+    needs: [ set-env ]
     strategy:
       fail-fast: false
       matrix:
@@ -38,4 +50,4 @@ jobs:
     uses: ./.github/workflows/build-and-test-project.yml
     with:
       working_directory: ${{ matrix.working_directory }}
-      dotnet_version: ${{ matrix.dotnet_version }}
+      dotnet_version: ${{ needs.set-env.outputs.dotnet_version }}
