@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-and-test-projects:
-    name: ""
+    name: Build & Test
     strategy:
       fail-fast: false
       matrix:
