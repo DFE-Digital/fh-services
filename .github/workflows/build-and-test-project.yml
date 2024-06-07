@@ -6,9 +6,9 @@ on:
       working_directory:
         required: true
         type: string
-      dotnet_version:
-        required: true
-        type: string
+
+env:
+  DOTNET_VERSION: "8.0.x"
 
 jobs:
   build-test-project:
@@ -24,10 +24,10 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Setup .NET ${{ inputs.dotnet_version }}
+      - name: Setup .NET ${{ env.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ inputs.dotnet_version }}
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install Package Dependencies
         shell: bash
