@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-and-test-projects:
-    name: Build & Test
+    name: ${{ matrix.working_directory }}
     strategy:
       fail-fast: false
       matrix:
