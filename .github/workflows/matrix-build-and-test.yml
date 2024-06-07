@@ -35,7 +35,7 @@ jobs:
       runner: ubuntu-22.04
 
   build-and-test-service-directory-api:
-    name: Build & Test (src/service/service-directory-api/)
+    name: src/service/service-directory-api/
     uses: ./.github/workflows/build-and-test-project.yml
     with:
       working_directory: src/service/service-directory-api/
