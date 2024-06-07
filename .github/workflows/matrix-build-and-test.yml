@@ -1,20 +1,16 @@
 name: Matrix Build & Test All .NET Projects
 
 concurrency:
-  group: "${{ github.workflow }}"
+  group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: true
 
 on:
     push:
-      branches-ignore:
-        - 'main'
+      branches: ["main", "release*"]
     pull_request:
-      branches:
-        - '*'
 
 jobs:
   build-and-test-projects:
-    name: Build & Test
     strategy:
       fail-fast: false
       matrix:
