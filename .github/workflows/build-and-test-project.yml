@@ -6,14 +6,16 @@ on:
       working_directory:
         required: true
         type: string
+      runner:
+        required: true
+        type: string
 
 env:
   DOTNET_VERSION: "8.0.x"
 
 jobs:
   build-test-project:
-    name: Build & Test ${{ inputs.working_directory }}
-    runs-on: ubuntu-24.04
+    runs-on: ${{ inputs.runner }}
     defaults:
       run:
         working-directory: ${{ inputs.working_directory }}

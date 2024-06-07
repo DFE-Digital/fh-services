@@ -1,5 +1,9 @@
 name: Matrix Build & Test All .NET Projects
 
+concurrency:
+  group: "${{ github.workflow }}"
+  cancel-in-progress: true
+
 on:
     push:
       branches-ignore:
@@ -18,7 +22,7 @@ jobs:
                              src/service/idam-api/,
                              src/service/referral-api/,
                              src/service/report-api/,
-                             src/service/service-directory-api/,
+                             # src/service/service-directory-api/,
                              src/ui/connect-dashboard-ui/,
                              src/ui/connect-ui/,
                              src/ui/find-ui/,
@@ -31,3 +35,11 @@ jobs:
     uses: ./.github/workflows/build-and-test-project.yml
     with:
       working_directory: ${{ matrix.working_directory }}
+      runner: ubuntu-22.04
+
+  build-and-test-service-directory-api:
+    name: Build & Test (src/service/service-directory-api/)
+    uses: ./.github/workflows/build-and-test-project.yml
+    with:
+      working_directory: src/service/service-directory-api/
+      runner: windows-2022
