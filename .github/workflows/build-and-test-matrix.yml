@@ -1,0 +1,48 @@
+name: Build & Test .NET Projects
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: ["main", "release*"]
+  pull_request:
+
+jobs:
+  build-and-test-projects-linux:
+    name: ${{ matrix.working_directory }} (linux)
+    strategy:
+      fail-fast: false
+      matrix:
+        working_directory:
+          [
+            src/service/notification-api,
+            src/service/idam-api,
+            src/service/referral-api,
+            src/service/report-api,
+            src/ui/connect-dashboard-ui,
+            src/ui/connect-ui,
+            src/ui/find-ui,
+            src/ui/idam-maintenance-ui,
+            src/ui/manage-ui,
+            src/shared/referral-shared,
+            src/shared/service-directory-shared,
+            src/shared/shared-kernel,
+            src/shared/web-components,
+          ]
+    uses: ./.github/workflows/build-and-test-project.yml
+    with:
+      working_directory: ${{ matrix.working_directory }}
+      runner: ubuntu-22.04
+
+  build-and-test-projects-win:
+    name: ${{ matrix.working_directory }} (windows)
+    strategy:
+      fail-fast: false
+      matrix:
+        working_directory: [src/service/service-directory-api]
+    uses: ./.github/workflows/build-and-test-project.yml
+    with:
+      working_directory: ${{ matrix.working_directory }}
+      runner: windows-2022

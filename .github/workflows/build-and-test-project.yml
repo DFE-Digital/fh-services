@@ -1,4 +1,4 @@
-name: Build & Test a .NET Project
+name: Build & Test .NET Project
 
 on:
   workflow_call:
@@ -32,14 +32,14 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Install Package Dependencies
+      - name: Restore
         shell: bash
         run: dotnet restore
 
-      - name: Build .NET Application
+      - name: Build
         shell: bash
         run: dotnet build --no-restore
 
-      - name: Test .NET Application
+      - name: Test
         shell: bash
         run: dotnet test --no-build --no-restore --verbosity normal
