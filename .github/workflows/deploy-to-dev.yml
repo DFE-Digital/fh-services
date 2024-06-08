@@ -4,10 +4,10 @@ concurrency: deploy-dev
 
 env:
   # Config
-  DOTNET_VERSION: '8.0.x'
-  ENTITY_FRAMEWORK_VERSION: '7.*'
+  DOTNET_VERSION: "8.0.x"
+  ENTITY_FRAMEWORK_VERSION: "7.*"
   AZURE_WEBAPP_NAME_IDAM_API: s181d01-as-fh-idam-api
-  AZURE_WEBAPP_PACKAGE_PATH: '.'
+  AZURE_WEBAPP_PACKAGE_PATH: "."
   # Other
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
   RESOURCE_GROUP: s181d01-familyhubs
@@ -53,11 +53,11 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore
-      # - name: Test
-      #   run: dotnet test --no-build --no-restore --verbosity normal
+      - name: Test
+        run: dotnet test --no-build --no-restore --verbosity normal
       - name: Publish
         run: dotnet publish ${{ format('{0}/*.csproj', env.STARTUP_PROJECT_PATH) }} -c Release -o release
-      
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
@@ -75,8 +75,8 @@ jobs:
       WORKING_DIRECTORY: src/service/idam-api/
       STARTUP_PROJECT_PATH: src/FamilyHubs.Idam.Api
       DATA_PROJECT_PATH: src/FamilyHubs.Idam.Data
-      APP_SETTINGS_PATTERN: '**/{release,{0}}/**/appsettings.json'
-    
+      APP_SETTINGS_PATTERN: "**/{release,{0}}/**/appsettings.json"
+
     steps:
       - uses: actions/checkout@v4
 
@@ -108,14 +108,14 @@ jobs:
             EventGridUrl=${{ vars.IDAM_API_EVENTGRIDURL }}
             GovUkOidcConfiguration.BearerTokenSigningKey=${{ secrets.IDAM_API_GOVUKOIDCCONFIGURATION_BEARERTOKENSIGNINGKEY }}
             ServiceDirectoryApiBaseUrl=${{ vars.IDAM_API_SERVICEDIRECTORYAPIBASEURL }}
-      
-      - name: 'Az CLI login'
+
+      - name: "Az CLI login"
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.AZURE_CLIENT_ID }}
-            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEVELOPMENT }}
-      
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEVELOPMENT }}
+
       - name: Whitelist GitHub runner IP
         uses: azure/CLI@v1
         with:
@@ -140,7 +140,7 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME_IDAM_API }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_IDAM_API }}
           package: ./release
-      
+
       - name: Remove GitHub runner IP from whitelist
         if: always()
         uses: azure/CLI@v1
@@ -149,4 +149,3 @@ jobs:
             set -eu
             agentIP=$(curl -s https://api.ipify.org/)
             az sql server firewall-rule delete -g ${{ env.RESOURCE_GROUP }} -s ${{ env.SQL_SERVER_RESOURCE_NAME }} -n ${{ env.SQL_SERVER_TEMP_FW_RULE_NAME }} --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID_DEVELOPMENT }}
-  
