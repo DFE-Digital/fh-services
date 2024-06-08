@@ -75,7 +75,7 @@ jobs:
       WORKING_DIRECTORY: src/service/idam-api/
       STARTUP_PROJECT_PATH: src/FamilyHubs.Idam.Api
       DATA_PROJECT_PATH: src/FamilyHubs.Idam.Data
-      APP_SETTINGS_PATTERN: "**/{release,{0}}/**/appsettings.json"
+      APP_SETTINGS_PATTERN: "**/{release,src/service/idam-api}/**/appsettings.json"
 
     steps:
       - uses: actions/checkout@v4
@@ -91,7 +91,7 @@ jobs:
         with:
           # We need to replace release/appsettings, and the appsettings in the src/ folder too, as the src folder
           # appsettings is used for the below dotnet ef database update step
-          files: ${{ format(env.APP_SETTINGS_PATTERN, env.STARTUP_PROJECT_PATH) }}
+          files: "${{ env.APP_SETTINGS_PATTERN }}"
           key-value-pairs: |
             APPINSIGHTS_CONNECTION_STRING=${{ secrets.IDAM_API_APPINSIGHTS_CONNECTION_STRING }}
             APPINSIGHTS_INSTRUMENTATIONKEY=${{ vars.IDAM_API_APPINSIGHTS_INSTRUMENTATIONKEY }}
@@ -109,29 +109,29 @@ jobs:
             GovUkOidcConfiguration.BearerTokenSigningKey=${{ secrets.IDAM_API_GOVUKOIDCCONFIGURATION_BEARERTOKENSIGNINGKEY }}
             ServiceDirectoryApiBaseUrl=${{ vars.IDAM_API_SERVICEDIRECTORYAPIBASEURL }}
 
-      - name: "Az CLI login"
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEVELOPMENT }}
+      # - name: "Az CLI login"
+      #   uses: azure/login@v1
+      #   with:
+      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEVELOPMENT }}
 
-      - name: Whitelist GitHub runner IP
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-            set -eu
-            agentIP=$(curl -s https://api.ipify.org/)
-            az sql server firewall-rule create -g ${{ env.RESOURCE_GROUP }} -s ${{ env.SQL_SERVER_RESOURCE_NAME }} -n ${{ env.SQL_SERVER_TEMP_FW_RULE_NAME }} --start-ip-address $agentIP --end-ip-address $agentIP
-            sleep 300
+      # - name: Whitelist GitHub runner IP
+      #   uses: azure/CLI@v1
+      #   with:
+      #     inlineScript: |
+      #       set -eu
+      #       agentIP=$(curl -s https://api.ipify.org/)
+      #       az sql server firewall-rule create -g ${{ env.RESOURCE_GROUP }} -s ${{ env.SQL_SERVER_RESOURCE_NAME }} -n ${{ env.SQL_SERVER_TEMP_FW_RULE_NAME }} --start-ip-address $agentIP --end-ip-address $agentIP
+      #       sleep 300
 
-      - name: Install Entity Framework
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: dotnet tool install --global dotnet-ef --version ${{ env.ENTITY_FRAMEWORK_VERSION }}
+      # - name: Install Entity Framework
+      #   working-directory: ${{ env.WORKING_DIRECTORY }}
+      #   run: dotnet tool install --global dotnet-ef --version ${{ env.ENTITY_FRAMEWORK_VERSION }}
 
-      - name: Apply EF Core database migrations
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: dotnet ef database update -c ApplicationDbContext --project ${{ env.DATA_PROJECT_PATH }} --startup-project ${{ env.STARTUP_PROJECT_PATH }}
+      # - name: Apply EF Core database migrations
+      #   working-directory: ${{ env.WORKING_DIRECTORY }}
+      #   run: dotnet ef database update -c ApplicationDbContext --project ${{ env.DATA_PROJECT_PATH }} --startup-project ${{ env.STARTUP_PROJECT_PATH }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -141,11 +141,11 @@ jobs:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_IDAM_API }}
           package: ./release
 
-      - name: Remove GitHub runner IP from whitelist
-        if: always()
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-            set -eu
-            agentIP=$(curl -s https://api.ipify.org/)
-            az sql server firewall-rule delete -g ${{ env.RESOURCE_GROUP }} -s ${{ env.SQL_SERVER_RESOURCE_NAME }} -n ${{ env.SQL_SERVER_TEMP_FW_RULE_NAME }} --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID_DEVELOPMENT }}
+      # - name: Remove GitHub runner IP from whitelist
+      #   if: always()
+      #   uses: azure/CLI@v1
+      #   with:
+      #     inlineScript: |
+      #       set -eu
+      #       agentIP=$(curl -s https://api.ipify.org/)
+      #       az sql server firewall-rule delete -g ${{ env.RESOURCE_GROUP }} -s ${{ env.SQL_SERVER_RESOURCE_NAME }} -n ${{ env.SQL_SERVER_TEMP_FW_RULE_NAME }} --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID_DEVELOPMENT }}
