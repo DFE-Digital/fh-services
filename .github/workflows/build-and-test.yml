@@ -16,6 +16,7 @@ on:
 
 jobs:
   notification-api:
+    name: Notification API
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -53,6 +54,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   idam-api:
+    name: IDAM API
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -90,6 +92,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   service-directory-api:
+    name: Service Directory API
     runs-on: windows-2022
     defaults:
       run:
@@ -127,6 +130,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   referral-api:
+    name: Referral API
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -164,6 +168,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   report-api:
+    name: Report API
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -201,6 +206,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   connect-dashboard-ui:
+    name: Connect Dashboard UI
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -238,6 +244,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   connect-ui:
+    name: Connect UI
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -275,6 +282,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   find-ui:
+    name: Find UI
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -312,6 +320,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   idam-maintenance-ui:
+    name: IDAM Maintenance UI
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -349,6 +358,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   manage-ui:
+    name: Manage UI
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -386,6 +396,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   referral-shared:
+    name: Referral Shared
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -423,6 +434,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   service-directory-shared:
+    name: Service Directory Shared
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -460,6 +472,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   shared-kernel:
+    name: Kernel Shared
     runs-on: ubuntu-22.04
     defaults:
       run:
@@ -497,6 +510,7 @@ jobs:
         run: dotnet test --no-build --no-restore --verbosity minimal
 
   web-components:
+    name: Web Components Shared
     runs-on: ubuntu-22.04
     defaults:
       run:
