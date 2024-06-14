@@ -1,11 +1,16 @@
 name: Setup .NET
 description: Setup .NET
 
+inputs:
+  dotnet_version:
+    required: true
+    type: string
+
 runs:
   using: composite
 
   steps:
-    - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+    - name: Setup .NET ${{ inputs.dotnet_version }}
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ vars.DOTNET_VERSION }}
+        dotnet-version: ${{ inputs.dotnet_version }}

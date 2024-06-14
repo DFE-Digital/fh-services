@@ -28,6 +28,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   idam-api:
@@ -43,6 +46,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   service-directory-api:
@@ -58,6 +64,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   referral-api:
@@ -73,6 +82,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   report-api:
@@ -88,6 +100,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   connect-dashboard-ui:
@@ -103,6 +118,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   connect-ui:
@@ -118,6 +136,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   find-ui:
@@ -133,6 +154,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   idam-maintenance-ui:
@@ -148,6 +172,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   manage-ui:
@@ -163,6 +190,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   referral-shared:
@@ -178,6 +208,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   service-directory-shared:
@@ -193,6 +226,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   shared-kernel:
@@ -208,6 +244,9 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
 
   web-components:
@@ -223,4 +262,7 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: ./.github/actions/setup-dotnet
+        with:
+          dotnet_version: ${{ vars.DOTNET_VERSION }}
+
       - uses: ./.github/actions/build-and-test-project
