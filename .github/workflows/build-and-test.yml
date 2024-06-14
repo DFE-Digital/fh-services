@@ -17,6 +17,9 @@ on:
 jobs:
   notification-api:
     runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/service/notification-api
 
     steps:
       - name: Checkout Repository
@@ -24,13 +27,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
         with:
-          working_directory: src/service/notification-api
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   idam-api:
     runs-on: ubuntu-22.04
@@ -44,11 +64,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   service-directory-api:
     runs-on: windows-2022
@@ -62,11 +101,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   referral-api:
     runs-on: ubuntu-22.04
@@ -80,11 +138,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   report-api:
     runs-on: ubuntu-22.04
@@ -98,11 +175,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   connect-dashboard-ui:
     runs-on: ubuntu-22.04
@@ -116,11 +212,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   connect-ui:
     runs-on: ubuntu-22.04
@@ -134,11 +249,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   find-ui:
     runs-on: ubuntu-22.04
@@ -152,11 +286,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   idam-maintenance-ui:
     runs-on: ubuntu-22.04
@@ -170,11 +323,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   manage-ui:
     runs-on: ubuntu-22.04
@@ -188,11 +360,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   referral-shared:
     runs-on: ubuntu-22.04
@@ -206,11 +397,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   service-directory-shared:
     runs-on: ubuntu-22.04
@@ -224,11 +434,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   shared-kernel:
     runs-on: ubuntu-22.04
@@ -242,11 +471,30 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
 
   web-components:
     runs-on: ubuntu-22.04
@@ -260,8 +508,27 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: ./.github/actions/setup-dotnet
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - uses: ./.github/actions/build-and-test-project
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
