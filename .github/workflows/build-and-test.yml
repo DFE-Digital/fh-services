@@ -17,9 +17,6 @@ on:
 jobs:
   notification-api:
     runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: src/service/notification-api
 
     steps:
       - name: Checkout Repository
@@ -32,6 +29,8 @@ jobs:
           dotnet_version: ${{ vars.DOTNET_VERSION }}
 
       - uses: ./.github/actions/build-and-test-project
+        with:
+          working_directory: src/service/notification-api
 
   idam-api:
     runs-on: ubuntu-22.04

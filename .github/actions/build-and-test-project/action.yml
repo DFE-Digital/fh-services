@@ -1,10 +1,18 @@
 name: Build & Test .NET Project
 description: Build & Test a .NET Project
 
+inputs:
+  working_directory:
+    required: true
+    type: string
+
 runs:
     using: composite
 
     steps:
+      - name: Navigate to Working Directory
+        shell: bash
+        run: cd ${{ inputs.working_directory }}
 
       - name: Package Cache
         uses: actions/cache@v4
