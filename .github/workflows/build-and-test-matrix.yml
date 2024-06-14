@@ -6,12 +6,16 @@ concurrency:
 
 on:
   push:
-    branches: ["main", "release*"]
+    branches: ["main", "release-*"]
   pull_request:
+    paths:
+      - '.github/workflows/build-and-test-matrix.yml'
+      - '.github/workflows/build-and-test-project.yml'
+      - 'src/**'
 
 jobs:
   build-and-test-projects-linux:
-    name: ${{ matrix.working_directory }} (linux)
+    name: ${{ matrix.working_directory }}
     strategy:
       fail-fast: false
       matrix:
@@ -19,6 +23,7 @@ jobs:
           [
             src/service/notification-api,
             src/service/idam-api,
+            src/service/service-directory-api
             src/service/referral-api,
             src/service/report-api,
             src/ui/connect-dashboard-ui,
@@ -35,14 +40,3 @@ jobs:
     with:
       working_directory: ${{ matrix.working_directory }}
       runner: ubuntu-22.04
-
-  build-and-test-projects-win:
-    name: ${{ matrix.working_directory }} (windows)
-    strategy:
-      fail-fast: false
-      matrix:
-        working_directory: [src/service/service-directory-api]
-    uses: ./.github/workflows/build-and-test-project.yml
-    with:
-      working_directory: ${{ matrix.working_directory }}
-      runner: windows-2022

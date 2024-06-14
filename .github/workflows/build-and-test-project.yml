@@ -10,9 +10,6 @@ on:
         required: true
         type: string
 
-env:
-  DOTNET_VERSION: "8.0.x"
-
 jobs:
   build-test-project:
     name: Build & Test
@@ -22,24 +19,30 @@ jobs:
         working-directory: ${{ inputs.working_directory }}
 
     steps:
+      - name: Install Dependencies
+        if: ${{ inputs.runner == 'ubuntu-22.04' }}
+        shell: bash
+        run: > 
+          sudo apt install libsqlite3-mod-spatialite
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
 
-      - name: Setup .NET ${{ env.DOTNET_VERSION }}
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
 
-      - name: Restore
+      - name: Restore Project
         shell: bash
         run: dotnet restore
 
-      - name: Build
+      - name: Build Project
         shell: bash
         run: dotnet build --no-restore
 
-      - name: Test
+      - name: Test Project
         shell: bash
         run: dotnet test --no-build --no-restore --verbosity minimal
