@@ -1,0 +1,225 @@
+name: Build & Test Each .NET Project
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: ["main", "release-*"]
+  pull_request:
+    paths:
+      - '.github/workflows/build-and-test-matrix.yml'
+      - '.github/workflows/build-and-test-project.yml'
+      - 'src/**'
+
+jobs:
+  notification-api:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/service/notification-api
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  idam-api:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/service/idam-api
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  service-directory-api:
+    runs-on: windows-2022
+    defaults:
+      run:
+        working-directory: src/service/service-directory-api
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  referral-api:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/service/referral-api
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  report-api:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/service/report-api
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  connect-dashboard-ui:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/ui/connect-dashboard-ui
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  connect-ui:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/ui/connect-ui
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  find-ui:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/ui/find-ui
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  idam-maintenance-ui:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/ui/idam-maintenance-ui
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  manage-ui:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/ui/manage-ui
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  referral-shared:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/shared/referral-shared
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  service-directory-shared:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/shared/service-directory-shared
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  shared-kernel:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/shared/shared-kernel
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project
+
+  web-components:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: src/shared/web-components
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: ./.github/actions/setup-dotnet
+      - uses: ./.github/actions/build-and-test-project

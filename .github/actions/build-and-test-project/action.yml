@@ -1,0 +1,27 @@
+name: Build & Test .NET Project
+description: Build & Test a .NET Project
+
+runs:
+    using: composite
+
+    steps:
+
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Project
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Project
+        shell: bash
+        run: dotnet build --no-restore
+
+      - name: Test Project
+        shell: bash
+        run: dotnet test --no-build --no-restore --verbosity minimal
