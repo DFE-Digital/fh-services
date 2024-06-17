@@ -10,8 +10,6 @@ on:
   pull_request:
     paths:
       - '.github/workflows/build-and-test.yml'
-      - '.github/actions/build-and-test-project/**'
-      - '.github/actions/setup-dotnet/**'
       - 'src/**'
 
 jobs:
