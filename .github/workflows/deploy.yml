@@ -43,7 +43,7 @@ jobs:
       project: ${{ matrix.project }}
     secrets: inherit
 
-  deploy-idam:
+  deploy-idam-api:
     name: Deploy Idam API
     runs-on: ubuntu-22.04
     needs: [ build-projects-upload-artifacts ]
@@ -125,4 +125,76 @@ jobs:
         with:
           app-name: ${{ env.APP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_IDAM_API }}
+          package: ./out
+
+  deploy-manage-ui:
+    name: Deploy Manage UI
+    runs-on: ubuntu-22.04
+    needs: [ build-projects-upload-artifacts ]
+    env:
+      ARTIFACT_NAME: manage-ui
+      PROJECT_NAME: FamilyHubs.ServiceDirectory.Admin.Web
+      PROJECT_TYPE: ui
+      APP_NAME: s181d01-as-fh-sd-admin-ui
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
+
+      - name: Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ./out
+
+      - name: App Settings Variable Substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: "${{ github.workspace }}/src/${{ env.PROJECT_TYPE }}/${{ env.ARTIFACT_NAME }}/src/${{ env.PROJECT_NAME }}/appsettings.json, ./out/appsettings.json"
+        env:
+          APPINSIGHTS_CONNECTION_STRING: ${{ secrets.MANAGE_UI_APPINSIGHTS_CONNECTION_STRING }}
+          APPINSIGHTS_INSTRUMENTATIONKEY: ${{ vars.MANAGE_UI_APPINSIGHTS_INSTRUMENTATIONKEY }}
+          CacheConnection: ${{ secrets.MANAGE_UI_CACHECONNECTION }}
+          FamilyHubsUi.Urls.ConnectWeb: ${{ vars.MANAGE_UI_FAMILYHUBSUI_URLS_CONNECTWEB }}
+          FamilyHubsUi.Urls.FindWeb: ${{ vars.MANAGE_UI_FAMILYHUBSUI_URLS_FINDWEB }}
+          FamilyHubsUi.Urls.ManageWeb: ${{ vars.MANAGE_UI_FAMILYHUBSUI_URLS_MANAGEWEB }}
+          GovUkLoginAccountPage: ${{ vars.MANAGE_UI_GOVUKLOGINACCOUNTPAGE }}
+          GovUkOidcConfiguration.AppHost: ${{ vars.MANAGE_UI_GOVUKOIDCCONFIGURATION_APPHOST }}
+          GovUkOidcConfiguration.BearerTokenSigningKey: ${{ secrets.MANAGE_UI_GOVUKOIDCCONFIGURATION_BEARERTOKENSIGNINGKEY }}
+          GovUkOidcConfiguration.IdamsApiBaseUrl: ${{ vars.MANAGE_UI_GOVUKOIDCCONFIGURATION_IDAMSAPIBASEURL }}
+          GovUkOidcConfiguration.Oidc.BaseUrl: ${{ vars.MANAGE_UI_GOVUKOIDCCONFIGURATION_OIDC_BASEURL }}
+          GovUkOidcConfiguration.Oidc.ClientId: ${{ vars.MANAGE_UI_GOVUKOIDCCONFIGURATION_OIDC_CLIENTID }}
+          GovUkOidcConfiguration.Oidc.KeyVaultIdentifier: ${{ vars.MANAGE_UI_GOVUKOIDCCONFIGURATION_OIDC_KEYVAULTIDENTIFIER }}
+          GovUkOidcConfiguration.Oidc.TwoFactorEnabled: ${{ vars.MANAGE_UI_GOVUKOIDCCONFIGURATION_OIDC_TWOFACTORENABLED }}
+          GovUkOidcConfiguration.StubAuthentication.UseStubAuthentication: ${{ vars.MANAGE_UI_GOVUKOIDCCONFIGURATION_STUBAUTHENTICATION_USESTUBAUTHENTICATION }}
+          GovUkOidcConfiguration.StubAuthentication.UseStubClaims: ${{ vars.MANAGE_UI_GOVUKOIDCCONFIGURATION_STUBAUTHENTICATION_USESTUBCLAIMS }}
+          GovUkOidcConfiguration.Urls.NoClaimsRedirect: ${{ vars.MANAGE_UI_GOVUKOIDCCONFIGURATION_URLS_NOCLAIMSREDIRECT }}
+          GovUkOidcConfiguration.Urls.SignedOutRedirect: ${{ vars.MANAGE_UI_GOVUKOIDCCONFIGURATION_URLS_SIGNEDOUTREDIRECT }}
+          GovUkOidcConfiguration.Urls.TermsAndConditionsRedirect: ${{ vars.MANAGE_UI_GOVUKOIDCCONFIGURATION_URLS_TERMSANDCONDITIONSREDIRECT }}
+          IdamApi: ${{ vars.MANAGE_UI_IDAMAPI }}
+          Notification.Endpoint: ${{ vars.MANAGE_UI_NOTIFICATION_ENDPOINT }}
+          ReferralApiBaseUrl: ${{ vars.MANAGE_UI_REFERRALAPIBASEURL }}
+          ReportingApiBaseUrl: ${{ vars.MANAGE_UI_REPORTINGAPIBASEURL }}
+          ServiceDirectoryApiBaseUrl: ${{ vars.MANAGE_UI_SERVICEDIRECTORYAPIBASEURL }}
+
+      - name: Deploy Artifact to Azure
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.APP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_MANAGE_UI }}
           package: ./out
