@@ -19,11 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FamilyHubs.Notification.Uni
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FamilyHubs.Notification.IntegrationTests", "tests\FamilyHubs.Notification.IntegrationTests\FamilyHubs.Notification.IntegrationTests.csproj", "{55435619-9A3D-49E0-839D-1A0B6326129B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{BF6B934E-518C-4BDD-A3E3-A4151A4F5ACA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{BF6B934E-518C-4BDD-A3E3-A4151A4F5ACA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FamilyHubs.Notification.Api.Contracts", "Shared\FamilyHubs.Notification.Api.Contracts\FamilyHubs.Notification.Api.Contracts.csproj", "{B5CA4454-2DEC-41DC-9A3A-C5261F6AF301}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FamilyHubs.Notification.Api.Contracts", "shared\FamilyHubs.Notification.Api.Contracts\FamilyHubs.Notification.Api.Contracts.csproj", "{B5CA4454-2DEC-41DC-9A3A-C5261F6AF301}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FamilyHubs.Notification.Api.Contracts.Tests", "tests\FamilyHubs.Notification.Api.Contracts.Tests.csproj\FamilyHubs.Notification.Api.Contracts.Tests.csproj", "{50B52E35-F2EE-49A1-829B-B5A0C4DE17EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FamilyHubs.Notification.Api.Contracts.Tests", "tests\FamilyHubs.Notification.Api.Contracts.Tests\FamilyHubs.Notification.Api.Contracts.Tests.csproj", "{50B52E35-F2EE-49A1-829B-B5A0C4DE17EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyHubs.Notification.Api.Client", "src\FamilyHubs.Notification.Api.Client\FamilyHubs.Notification.Api.Client.csproj", "{F7B2BA5E-411C-4BBC-A510-74BE953AB73A}"
 EndProject
