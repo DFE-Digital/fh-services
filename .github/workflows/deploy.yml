@@ -81,7 +81,7 @@ jobs:
 
   api-notification-deploy:
     name: Deploy - Notification API
-    needs: [ build-projects-upload-artifacts ]
+    needs: [ api-idam-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -96,7 +96,7 @@ jobs:
 
   api-referral-deploy:
     name: Deploy - Referral API
-    needs: [ build-projects-upload-artifacts ]
+    needs: [ api-notification-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -111,7 +111,7 @@ jobs:
 
   api-report-deploy:
     name: Deploy - Report API
-    needs: [ build-projects-upload-artifacts ]
+    needs: [ api-referral-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -126,7 +126,7 @@ jobs:
 
   api-service-directory-deploy:
     name: Deploy - Service Directory API
-    needs: [ build-projects-upload-artifacts ]
+    needs: [ api-report-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -141,12 +141,7 @@ jobs:
 
   ui-connect-dashboard-deploy:
     name: Deploy - Connect Dashboard UI
-    needs: [ build-projects-upload-artifacts,
-             api-idam-deploy,
-             api-notification-deploy,
-             api-referral-deploy,
-             api-report-deploy,
-             api-service-directory-deploy ]
+    needs: [ api-service-directory-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -159,12 +154,7 @@ jobs:
 
   ui-connect-deploy:
     name: Deploy - Connect UI
-    needs: [ build-projects-upload-artifacts,
-             api-idam-deploy,
-             api-notification-deploy,
-             api-referral-deploy,
-             api-report-deploy,
-             api-service-directory-deploy ]
+    needs: [ ui-connect-dashboard-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -177,12 +167,7 @@ jobs:
 
   ui-find-deploy:
     name: Deploy - Find UI
-    needs: [ build-projects-upload-artifacts,
-             api-idam-deploy,
-             api-notification-deploy,
-             api-referral-deploy,
-             api-report-deploy,
-             api-service-directory-deploy ]
+    needs: [ ui-connect-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -195,12 +180,7 @@ jobs:
 
   ui-idam-maintenance-deploy:
     name: Deploy - IDAM Maintenance UI
-    needs: [ build-projects-upload-artifacts,
-             api-idam-deploy,
-             api-notification-deploy,
-             api-referral-deploy,
-             api-report-deploy,
-             api-service-directory-deploy ]
+    needs: [ ui-find-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -213,12 +193,7 @@ jobs:
 
   ui-manage-deploy:
     name: Deploy - Manage UI
-    needs: [ build-projects-upload-artifacts,
-             api-idam-deploy,
-             api-notification-deploy,
-             api-referral-deploy,
-             api-report-deploy,
-             api-service-directory-deploy ]
+    needs: [ ui-idam-maintenance-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
