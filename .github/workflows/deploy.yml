@@ -65,7 +65,6 @@ jobs:
     uses: ./.github/workflows/build-upload-artifact.yml
     with:
       project: ${{ matrix.project }}
-    secrets: inherit
 
   api-idam-deploy:
     name: Deploy - IDAM API
