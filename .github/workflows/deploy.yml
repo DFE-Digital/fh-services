@@ -40,7 +40,7 @@ jobs:
                    src/ui/find-ui/,
                    src/ui/idam-maintenance-ui/,
                    src/ui/manage-ui/
-        ]
+                 ]
         include:
           - project: src/service/idam-api/
             job_name: "Build - IDAM API"
