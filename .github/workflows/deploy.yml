@@ -76,7 +76,7 @@ jobs:
       data_project_name: FamilyHubs.Idam.Data
       database_context: ApplicationDbContext
       project_type: service
-      azure_app_name: s181d01-as-fh-idam-api
+      azure_app_name: as-fh-idam-api
     secrets: inherit
 
   api-notification-deploy:
@@ -91,7 +91,7 @@ jobs:
       data_project_name: FamilyHubs.Notification.Data
       database_context: ApplicationDbContext
       project_type: service
-      azure_app_name: s181d01-as-fh-notification-api
+      azure_app_name: as-fh-notification-api
     secrets: inherit
 
   api-referral-deploy:
@@ -106,7 +106,7 @@ jobs:
       data_project_name: FamilyHubs.Referral.Data
       database_context: ApplicationDbContext
       project_type: service
-      azure_app_name: s181d01-as-fh-referral-api
+      azure_app_name: as-fh-referral-api
     secrets: inherit
 
   api-report-deploy:
@@ -121,7 +121,7 @@ jobs:
       data_project_name: FamilyHubs.Report.Data
       database_context: ReportDbContext
       project_type: service
-      azure_app_name: s181d01-as-fh-report-api
+      azure_app_name: as-fh-report-api
     secrets: inherit
 
   api-service-directory-deploy:
@@ -136,7 +136,7 @@ jobs:
       data_project_name: FamilyHubs.ServiceDirectory.Data
       database_context: ApplicationDbContext
       project_type: service
-      azure_app_name: s181d01-as-fh-sd-api
+      azure_app_name: as-fh-sd-api
     secrets: inherit
 
   ui-connect-dashboard-deploy:
@@ -154,7 +154,7 @@ jobs:
       keyvault_prefix: CONNECT-DASHBOARD-UI
       project_name: FamilyHubs.RequestForSupport.Web
       project_type: ui
-      azure_app_name: s181d01-as-fh-ref-dash-ui
+      azure_app_name: as-fh-ref-dash-ui
     secrets: inherit
 
   ui-connect-deploy:
@@ -172,7 +172,7 @@ jobs:
       keyvault_prefix: CONNECT-UI
       project_name: FamilyHubs.Referral.Web
       project_type: ui
-      azure_app_name: s181d01-as-fh-referral-ui
+      azure_app_name: as-fh-referral-ui
     secrets: inherit
 
   ui-find-deploy:
@@ -190,7 +190,7 @@ jobs:
       keyvault_prefix: FIND-UI
       project_name: FamilyHubs.ServiceDirectory.Web
       project_type: ui
-      azure_app_name: s181d01-as-fh-sd-ui
+      azure_app_name: as-fh-sd-ui
     secrets: inherit
 
   ui-idam-maintenance-deploy:
@@ -208,7 +208,7 @@ jobs:
       keyvault_prefix: IDAM-MAINTENANCE-UI
       project_name: FamilyHubs.Idams.Maintenance.UI
       project_type: ui
-      azure_app_name: s181d01-as-fh-idam-maintenance-ui
+      azure_app_name: as-fh-idam-maintenance-ui
     secrets: inherit
 
   ui-manage-deploy:
@@ -226,5 +226,5 @@ jobs:
       keyvault_prefix: MANAGE-UI
       project_name: FamilyHubs.ServiceDirectory.Admin.Web
       project_type: ui
-      azure_app_name: s181d01-as-fh-sd-admin-ui
+      azure_app_name: as-fh-sd-admin-ui
     secrets: inherit
