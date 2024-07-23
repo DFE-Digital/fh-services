@@ -64,19 +64,9 @@ jobs:
       project: ${{ matrix.project }}
     secrets: inherit
 
-  # This stage is useful for when redeployments are necessary, as it will trigger all the deploy jobs below to re-run ..
-  # .. when this step is ran again from the GitHub deployments area.
-  sync-deploy:
-    name: Synchronise Build and Deploy Stages
-    needs: [ build-projects-upload-artifacts ]
-    runs-on: 'ubuntu-latest'
-    steps:
-      - id: sync
-        run: echo "Build Finished, Deploying ..."
-
   api-idam-deploy:
     name: Deploy - IDAM API
-    needs: [ sync-deploy ]
+    needs: [ build-projects-upload-artifacts ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
