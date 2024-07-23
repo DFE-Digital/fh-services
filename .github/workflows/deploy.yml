@@ -21,6 +21,9 @@ permissions:
   id-token: write
   contents: read
 
+# TODO: Review sequential running of "deploy" stages
+#   We currently run each "deploy" stage in sequential order as our App Service Plans are too weak, when we action ..
+#   .. this and upgrade we should look into parallelising the "deploy" stages again.
 jobs:
   build-projects-upload-artifacts:
     name: ${{ matrix.job_name }}
