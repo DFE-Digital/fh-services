@@ -37,7 +37,7 @@ jobs:
                    src/ui/find-ui/,
                    src/ui/idam-maintenance-ui/,
                    src/ui/manage-ui/
-                   ]
+        ]
         include:
           - project: src/service/idam-api/
             job_name: "Build - IDAM API"
@@ -141,7 +141,12 @@ jobs:
 
   ui-connect-dashboard-deploy:
     name: Deploy - Connect Dashboard UI
-    needs: [ build-projects-upload-artifacts ]
+    needs: [ build-projects-upload-artifacts,
+             api-idam-deploy,
+             api-notification-deploy,
+             api-referral-deploy,
+             api-report-deploy,
+             api-service-directory-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -154,7 +159,12 @@ jobs:
 
   ui-connect-deploy:
     name: Deploy - Connect UI
-    needs: [ build-projects-upload-artifacts ]
+    needs: [ build-projects-upload-artifacts,
+             api-idam-deploy,
+             api-notification-deploy,
+             api-referral-deploy,
+             api-report-deploy,
+             api-service-directory-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -167,7 +177,12 @@ jobs:
 
   ui-find-deploy:
     name: Deploy - Find UI
-    needs: [ build-projects-upload-artifacts ]
+    needs: [ build-projects-upload-artifacts,
+             api-idam-deploy,
+             api-notification-deploy,
+             api-referral-deploy,
+             api-report-deploy,
+             api-service-directory-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -180,7 +195,12 @@ jobs:
 
   ui-idam-maintenance-deploy:
     name: Deploy - IDAM Maintenance UI
-    needs: [ build-projects-upload-artifacts ]
+    needs: [ build-projects-upload-artifacts,
+             api-idam-deploy,
+             api-notification-deploy,
+             api-referral-deploy,
+             api-report-deploy,
+             api-service-directory-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -193,7 +213,12 @@ jobs:
 
   ui-manage-deploy:
     name: Deploy - Manage UI
-    needs: [ build-projects-upload-artifacts ]
+    needs: [ build-projects-upload-artifacts,
+             api-idam-deploy,
+             api-notification-deploy,
+             api-referral-deploy,
+             api-report-deploy,
+             api-service-directory-deploy ]
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
