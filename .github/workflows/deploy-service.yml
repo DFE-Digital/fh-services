@@ -33,6 +33,11 @@ jobs:
     name: Download Artifact & Deploy Project
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
+    env:
+      KEYVAULT: ${{ vars.AZURE_RESOURCE_PREFIX }}-kv-fh-general
+      APP_NAME: ${{ vars.AZURE_RESOURCE_PREFIX }}-${{ inputs.azure_app_name }}
+      RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
+      SQL_SERVER: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -68,14 +73,14 @@ jobs:
         id: substitution
         uses: ./.github/actions/variable-substitution
         with:
-          keyvault_name: ${{ vars.KEYVAULT_NAME }}
+          keyvault_name: ${{ env.KEYVAULT }}
           keyvault_prefix: ${{ inputs.keyvault_prefix }}
           files: "${{ github.workspace }}/src/${{ inputs.project_type }}/${{ inputs.artifact_name }}/src/${{ inputs.project_name }}/appsettings.json, ./out/appsettings.json"
 
       - name: Deploy Artifact to Azure
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ inputs.azure_app_name }}
+          app-name: ${{ env.APP_NAME }}
           publish-profile: ${{ steps.substitution.outputs.publish_profile }}
           package: ./out
 
@@ -86,12 +91,6 @@ jobs:
           db_context: ${{ inputs.database_context }}
           data_project_path: ${{ github.workspace }}/src/${{ inputs.project_type }}/${{ inputs.artifact_name }}/src/${{ inputs.data_project_name }}
           startup_project_path: ${{ github.workspace }}/src/${{ inputs.project_type }}/${{ inputs.artifact_name }}/src/${{ inputs.project_name }}
-          azure_resource_group: ${{ vars.AZURE_RESOURCE_GROUP }}
-          azure_sql_server_resource_name: ${{ vars.AZURE_SQL_SERVER_RESOURCE_NAME }}
+          azure_resource_group: ${{ env.RESOURCE_GROUP }}
+          azure_sql_server_resource_name: ${{ env.SQL_SERVER }}
           az_firewall_rule_name: ${{ inputs.artifact_name }}
-
-      - name: Clear Artifact
-        if: always()
-        uses: geekyeggo/delete-artifact@v5
-        with:
-          name: ${{ inputs.artifact_name }}
