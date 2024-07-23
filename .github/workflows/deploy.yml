@@ -70,6 +70,9 @@ jobs:
     name: Synchronise Build and Deploy Stages
     needs: [ build-projects-upload-artifacts ]
     runs-on: 'ubuntu-latest'
+    steps:
+      - id: sync
+        run: echo "Build Finished, Deploying ..."
 
   api-idam-deploy:
     name: Deploy - IDAM API
