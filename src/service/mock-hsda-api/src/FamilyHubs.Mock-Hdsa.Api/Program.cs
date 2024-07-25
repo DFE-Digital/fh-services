@@ -3,13 +3,10 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//await builder.Services.AddOpenApiSpec("https://raw.githubusercontent.com/openreferral/specification/3.0/schema/openapi.json");
-
 builder.Services.AddSingleton<MockResponseGenerator>();
 
 var openApiDoc = builder.Services.AddOpenApiSpecFromFile();
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -24,13 +21,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//app.UseSwagger();
-//app.UseSwaggerUI();
-//}
 
 app.UseSwagger(c =>
 {
@@ -56,5 +46,3 @@ app.UseEndpoints(endpoints =>
 });
 
 app.Run();
-
-
