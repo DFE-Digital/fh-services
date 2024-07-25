@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Readers;
+﻿using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Readers;
 
 namespace FamilyHubs.Mock_Hdsa.Api;
 
@@ -16,7 +17,7 @@ public static class OpenApiLoadExtensions
     }
 
 
-    public static void AddOpenApiSpecFromFile(this IServiceCollection services)
+    public static OpenApiDocument AddOpenApiSpecFromFile(this IServiceCollection services)
     {
         // Load the OpenAPI document from a local file
         var openApiPath = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\spec\schema\openapi.json");
@@ -25,5 +26,7 @@ public static class OpenApiLoadExtensions
         var openApiDoc = reader.Read(stream, out var diagnostic);
 
         services.AddSingleton(openApiDoc);
+
+        return openApiDoc;
     }
 }

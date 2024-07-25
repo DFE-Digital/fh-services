@@ -5,6 +5,32 @@ VisualStudioVersion = 17.11.35103.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FamilyHubs.Mock-Hdsa.Api", "src\FamilyHubs.Mock-Hdsa.Api\FamilyHubs.Mock-Hdsa.Api.csproj", "{231B6DD8-07A9-4F4A-8FC0-38BEB91DBB5C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Spec", "Spec", "{5A5FE104-DA65-4F3E-94D4-B2EB2BCC3A2E}"
+	ProjectSection(SolutionItems) = preProject
+		spec\schema\accessibility.json = spec\schema\accessibility.json
+		spec\schema\address.json = spec\schema\address.json
+		spec\schema\attribute.json = spec\schema\attribute.json
+		spec\schema\contact.json = spec\schema\contact.json
+		spec\schema\cost_option.json = spec\schema\cost_option.json
+		spec\schema\funding.json = spec\schema\funding.json
+		spec\schema\language.json = spec\schema\language.json
+		spec\schema\location.json = spec\schema\location.json
+		spec\schema\metadata.json = spec\schema\metadata.json
+		spec\schema\meta_table_description.json = spec\schema\meta_table_description.json
+		spec\schema\openapi.json = spec\schema\openapi.json
+		spec\schema\organization.json = spec\schema\organization.json
+		spec\schema\organization_identifier.json = spec\schema\organization_identifier.json
+		spec\schema\phone.json = spec\schema\phone.json
+		spec\schema\program.json = spec\schema\program.json
+		spec\schema\required_document.json = spec\schema\required_document.json
+		spec\schema\schedule.json = spec\schema\schedule.json
+		spec\schema\service.json = spec\schema\service.json
+		spec\schema\service_area.json = spec\schema\service_area.json
+		spec\schema\service_at_location.json = spec\schema\service_at_location.json
+		spec\schema\taxonomy.json = spec\schema\taxonomy.json
+		spec\schema\taxonomy_term.json = spec\schema\taxonomy_term.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
