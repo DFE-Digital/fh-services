@@ -3,7 +3,8 @@ using FamilyHubs.Mock_Hdsa.Api;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-await builder.Services.AddOpenApiSpec("https://raw.githubusercontent.com/openreferral/specification/3.0/schema/openapi.json");
+//await builder.Services.AddOpenApiSpec("https://raw.githubusercontent.com/openreferral/specification/3.0/schema/openapi.json");
+builder.Services.AddOpenApiSpecFromFile();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
