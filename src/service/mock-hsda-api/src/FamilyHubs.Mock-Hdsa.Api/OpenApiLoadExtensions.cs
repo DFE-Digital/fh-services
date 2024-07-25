@@ -5,18 +5,6 @@ namespace FamilyHubs.Mock_Hdsa.Api;
 
 public static class OpenApiLoadExtensions
 {
-    public static async Task AddOpenApiSpecFromUri(this IServiceCollection services, string requestUri)
-    {
-        // Load the OpenAPI document
-        using var httpClient = new HttpClient();
-        var openApiJson = await httpClient.GetStringAsync(requestUri);
-        var reader = new OpenApiStringReader();
-        var openApiDoc = reader.Read(openApiJson, out var diagnostic);
-
-        services.AddSingleton(openApiDoc);
-    }
-
-
     public static OpenApiDocument AddOpenApiSpecFromFile(this IServiceCollection services)
     {
         // Load the OpenAPI document from a local file
