@@ -18,6 +18,7 @@ public static class RequestHandler
         // for lists, do we use the header scenario name to retrieve an array of json and hand code the paging (using the incoming paging params)
         // for embedding options, do we combine the scenario name with the embedding param?
         // do we have ordered params for sub responses according to the scenario, or have custom tables for different operations/responses?
+        // or one table with nullable columns or key-value params etc. and use the params applicable for the operation - could then make it generic
 
         var pathItem = openApiDoc.Paths.FirstOrDefault(p => p.Key == path).Value;
         var operation = pathItem?.Operations.FirstOrDefault(o => o.Key.ToString().Equals(method, StringComparison.OrdinalIgnoreCase)).Value;
