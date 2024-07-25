@@ -14,7 +14,7 @@ public class MockResponse
     public int Id { get; set; }
     public string OperationName { get; set; }
     public string? ScenarioName { get; set; }
-    //todo: why is this needed?
+    //todo: think operationname is enough, don't need this as well
     public string PathTemplate { get; set; }
     public string? PathParams { get; set; }
     public string? QueryParams { get; set; }

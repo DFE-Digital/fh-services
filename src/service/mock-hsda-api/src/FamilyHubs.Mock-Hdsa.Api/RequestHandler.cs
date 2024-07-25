@@ -37,4 +37,39 @@ public static class RequestHandler
         context.Response.ContentType = "application/json";
         await context.Response.WriteAsync(responseBody);
     }
+
+    private static (string? PathTemplate, Dictionary<string, string>? Parameters) FindMatchingPathTemplate(
+        OpenApiDocument openApiDoc, string actualPath)
+    {
+        foreach (var path in openApiDoc.Paths.Keys)
+        {
+            var templateParts = path.Split('/');
+            var actualParts = actualPath.Split('/');
+
+            if (templateParts.Length != actualParts.Length)
+                continue;
+
+            var parameters = new Dictionary<string, string>();
+            var isMatch = true;
+
+            for (int i = 0; i < templateParts.Length; i++)
+            {
+                if (templateParts[i].StartsWith("{") && templateParts[i].EndsWith("}"))
+                {
+                    var paramName = templateParts[i].Trim('{', '}');
+                    parameters[paramName] = actualParts[i];
+                }
+                else if (templateParts[i] != actualParts[i])
+                {
+                    isMatch = false;
+                    break;
+                }
+            }
+
+            if (isMatch)
+                return (path, parameters);
+        }
+
+        return (null, null);
+    }
 }
