@@ -19,13 +19,13 @@ public class GetConnectionRequestsSentFactFourWeekBreakdownQuery : IGetConnectio
         CancellationToken cancellationToken = default) =>
         GetWeeklyReportBreakdown(await GetWeeklyReports(request.Date!.Value, null, cancellationToken));
 
-    public async Task<ConnectionRequestsBreakdown> GetFourWeekBreakdownForLa(
-        LaConnectionRequestsBreakdownRequest request,
+    public async Task<ConnectionRequestsBreakdown> GetFourWeekBreakdownForOrg(
+        OrgConnectionRequestsBreakdownRequest request,
         CancellationToken cancellationToken = default) =>
-        GetWeeklyReportBreakdown(await GetWeeklyReports(request.Date!.Value, request.LaOrgId!.Value,
+        GetWeeklyReportBreakdown(await GetWeeklyReports(request.Date!.Value, request.OrgId!.Value,
             cancellationToken));
 
-    private async Task<ConnectionRequestsDated[]> GetWeeklyReports(DateTime currentDate, long? laOrgId,
+    private async Task<ConnectionRequestsDated[]> GetWeeklyReports(DateTime currentDate, long? orgId,
         CancellationToken cancellationToken)
     {
         ConnectionRequestsDated[] weeklyReports = new ConnectionRequestsDated[4];
@@ -34,7 +34,7 @@ public class GetConnectionRequestsSentFactFourWeekBreakdownQuery : IGetConnectio
 
         for (int i = 0; i < weeklyReports.Length; i++)
         {
-            weeklyReports[i] = await GetConnectionRequests(dateSunday, 7, laOrgId, cancellationToken);
+            weeklyReports[i] = await GetConnectionRequests(dateSunday, 7, orgId, cancellationToken);
 
             dateSunday = dateSunday.AddDays(7);
         }
@@ -42,15 +42,15 @@ public class GetConnectionRequestsSentFactFourWeekBreakdownQuery : IGetConnectio
         return weeklyReports;
     }
 
-    private async Task<ConnectionRequestsDated> GetConnectionRequests(DateTime date, int amountOfDays, long? laOrgId,
+    private async Task<ConnectionRequestsDated> GetConnectionRequests(DateTime date, int amountOfDays, long? orgId,
         CancellationToken cancellationToken)
     {
         ConnectionRequests connectionRequests =
-            laOrgId == null
+            orgId == null
                 ? await _getConnectionRequestsSentFactQuery.GetConnectionRequestsForAdmin(
                     new ConnectionRequestsRequest(date, amountOfDays), cancellationToken)
-                : await _getConnectionRequestsSentFactQuery.GetConnectionRequestsForLa(
-                    new LaConnectionRequestsRequest(laOrgId, date, amountOfDays), cancellationToken);
+                : await _getConnectionRequestsSentFactQuery.GetConnectionRequestsForOrg(
+                    new OrgConnectionRequestsRequest(orgId, date, amountOfDays), cancellationToken);
 
         return new ConnectionRequestsDated
         {

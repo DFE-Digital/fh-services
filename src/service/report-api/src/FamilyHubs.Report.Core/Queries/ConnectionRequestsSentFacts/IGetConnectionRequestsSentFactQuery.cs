@@ -10,9 +10,9 @@ public interface IGetConnectionRequestsSentFactQuery
 
     public Task<ConnectionRequests> GetTotalConnectionRequestsForAdmin(CancellationToken cancellationToken = default);
 
-    public Task<ConnectionRequests> GetConnectionRequestsForLa(LaConnectionRequestsRequest request,
+    public Task<ConnectionRequests> GetConnectionRequestsForOrg(OrgConnectionRequestsRequest request,
         CancellationToken cancellationToken = default);
 
-    public Task<ConnectionRequests> GetTotalConnectionRequestsForLa(LaConnectionRequestsTotalRequest request,
+    public Task<ConnectionRequests> GetTotalConnectionRequestsForOrg(OrgConnectionRequestsTotalRequest request,
         CancellationToken cancellationToken = default);
 }

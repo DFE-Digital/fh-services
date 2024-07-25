@@ -80,14 +80,14 @@ public class Program
         services.AddValidatorsFromAssembly(typeof(LaRequestValidator).Assembly);
 
         services.AddSingleton<MinimalAdminReportEndPoints>();
-        services.AddSingleton<MinimalLaReportEndPoints>();
+        services.AddSingleton<MinimalOrgReportEndPoints>();
     }
     
 
     private static void RegisterMinimalEndPoints(IServiceScope scope, WebApplication app)
     {
         scope.ServiceProvider.GetService<MinimalAdminReportEndPoints>()?.RegisterAdminReportEndPoints(app);
-        scope.ServiceProvider.GetService<MinimalLaReportEndPoints>()?.RegisterLaReportEndPoints(app);
+        scope.ServiceProvider.GetService<MinimalOrgReportEndPoints>()?.RegisterOrgReportEndPoints(app);
     }
 
     private static void ConfigureAppInsights(WebApplicationBuilder builder)

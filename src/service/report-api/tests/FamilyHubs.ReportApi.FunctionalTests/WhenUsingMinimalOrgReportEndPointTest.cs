@@ -7,7 +7,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace FamilyHubs.ReportApi.FunctionalTests;
 
-public class WhenUsingMinimalLaReportEndPointTest : BaseEndPointTest, IAsyncLifetime
+public class WhenUsingMinimalOrgReportEndPointTest : BaseEndPointTest, IAsyncLifetime
 {
     public async Task InitializeAsync() => await InitialiseDatabase();
 
@@ -113,17 +113,29 @@ public class WhenUsingMinimalLaReportEndPointTest : BaseEndPointTest, IAsyncLife
         Assert.Equal(expected, result);
     }
 
+    // LA  = orgId 10 or 20
+    // VCS = orgId 32 or 64
     [Theory]
     [InlineData(10, "2024-01-07", 7)]
     [InlineData(10, "2024-01-14", 7)]
+    [InlineData(32, "2024-01-07", 7)]
+    [InlineData(32, "2024-01-14", 7)]
     [InlineData(20, "2024-01-07", 0)]
     [InlineData(20, "2024-01-14", 0)]
+    [InlineData(64, "2024-01-07", 0)]
+    [InlineData(64, "2024-01-14", 0)]
     [InlineData(10, "2024-02-11", 0)]
     [InlineData(10, "2024-02-18", 0)]
+    [InlineData(32, "2024-02-11", 0)]
+    [InlineData(32, "2024-02-18", 0)]
     [InlineData(20, "2024-02-11", 7)]
-    [InlineData(20, "2024-02-18",  7)]
-    [InlineData(10, "2024-03-31",  0)]
-    [InlineData(20, "2024-03-31",  0)]
+    [InlineData(20, "2024-02-18", 7)]
+    [InlineData(64, "2024-02-11", 7)]
+    [InlineData(64, "2024-02-18", 7)]
+    [InlineData(10, "2024-03-31", 0)]
+    [InlineData(20, "2024-03-31", 0)]
+    [InlineData(32, "2024-03-31", 0)]
+    [InlineData(64, "2024-03-31", 0)]
     public async Task Then_ConnectionRequests_PastSevenDays_La_ShouldBeCorrect(long laOrgId, string dateStr, int requestsMade)
     {
         ConnectionRequests cR = new()
@@ -144,8 +156,10 @@ public class WhenUsingMinimalLaReportEndPointTest : BaseEndPointTest, IAsyncLife
         Assert.Equal(expectedJsonStr, result);
     }
 
-    [Fact]
-    public async Task Then_ConnectionRequests_FourWeekBreakdown_La_January_ShouldBeCorrect()
+    [Theory]
+    [InlineData(10)] // LA
+    [InlineData(32)] // VCS
+    public async Task Then_ConnectionRequests_FourWeekBreakdown_La_January_ShouldBeCorrect(int orgId)
     {
         ConnectionRequestsBreakdown cRb = new()
         {
@@ -181,11 +195,10 @@ public class WhenUsingMinimalLaReportEndPointTest : BaseEndPointTest, IAsyncLife
         string expectedJsonStr = JsonSerializer.Serialize(cRb, JsonOptions);
 
         const string dateStr = "2024-01-31";
-        const int laOrgId = 10;
 
         HttpResponseMessage httpResponseMessage =
             await Client.SendAsync(CreateHttpGetRequest(
-                $"report/connection-requests-4-week-breakdown/organisation/{laOrgId}?date={dateStr}",
+                $"report/connection-requests-4-week-breakdown/organisation/{orgId}?date={dateStr}",
                 RoleTypes.LaDualRole));
 
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
@@ -194,8 +207,10 @@ public class WhenUsingMinimalLaReportEndPointTest : BaseEndPointTest, IAsyncLife
         Assert.Equal(expectedJsonStr, result);
     }
 
-    [Fact]
-    public async Task Then_ConnectionRequests_FourWeekBreakdown_La_February_ShouldBeCorrect()
+    [Theory]
+    [InlineData(20)] // LA
+    [InlineData(64)] // VCS
+    public async Task Then_ConnectionRequests_FourWeekBreakdown_La_February_ShouldBeCorrect(int orgId)
     {
         ConnectionRequestsBreakdown cRb = new()
         {
@@ -231,11 +246,10 @@ public class WhenUsingMinimalLaReportEndPointTest : BaseEndPointTest, IAsyncLife
         string expectedJsonStr = JsonSerializer.Serialize(cRb, JsonOptions);
 
         const string dateStr = "2024-02-29";
-        const int laOrgId = 20;
 
         HttpResponseMessage httpResponseMessage =
             await Client.SendAsync(CreateHttpGetRequest(
-                $"report/connection-requests-4-week-breakdown/organisation/{laOrgId}?date={dateStr}",
+                $"report/connection-requests-4-week-breakdown/organisation/{orgId}?date={dateStr}",
                 RoleTypes.LaManager));
 
         Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
@@ -245,8 +259,10 @@ public class WhenUsingMinimalLaReportEndPointTest : BaseEndPointTest, IAsyncLife
     }
 
     [Theory]
-    [InlineData(10, 31)]
-    [InlineData(20, 29)]
+    [InlineData(10, 31)] // LA
+    [InlineData(32, 31)] // VCS
+    [InlineData(20, 29)] // LA
+    [InlineData(64, 29)] // VCS
     public async Task Then_ConnectionRequests_Total_La_ShouldBeCorrect(long laOrgId, int requestsMade)
     {
         ConnectionRequests cR = new()

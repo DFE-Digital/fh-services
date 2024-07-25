@@ -11,11 +11,11 @@ namespace FamilyHubs.Report.Api.Endpoints;
 
 // TODO: Convert to Mediator Pattern
 
-public class MinimalLaReportEndPoints
+public class MinimalOrgReportEndPoints
 {
     private const string AllowedRoles = $"{RoleGroups.LaManagerOrDualRole},{RoleGroups.VcsManagerOrDualRole}";
 
-    public void RegisterLaReportEndPoints(WebApplication app)
+    public void RegisterOrgReportEndPoints(WebApplication app)
     {
         app.MapGet("report/service-searches-past-7-days/organisation/{laOrgId:long}",
             [Authorize(Roles = AllowedRoles)] async (
@@ -58,43 +58,43 @@ public class MinimalLaReportEndPoints
                 return await getServiceSearchFactQuery.GetTotalSearchCountForLa(request);
             });
 
-        app.MapGet("report/connection-requests-past-7-days/organisation/{LaOrgId:long}",
+        app.MapGet("report/connection-requests-past-7-days/organisation/{orgId:long}",
             [Authorize(Roles = AllowedRoles)]
             async (
-                long? laOrgId,
+                long? orgId,
                 DateTime? date,
                 IGetConnectionRequestsSentFactQuery getConnectionRequestsSentFactQuery,
-                IValidator<LaConnectionRequestsRequest> validator) =>
+                IValidator<OrgConnectionRequestsRequest> validator) =>
             {
-                LaConnectionRequestsRequest request = new(laOrgId, date, 7);
+                OrgConnectionRequestsRequest request = new(orgId, date, 7);
                 await validator.ValidateAndThrowAsync(request);
-                return await getConnectionRequestsSentFactQuery.GetConnectionRequestsForLa(request);
+                return await getConnectionRequestsSentFactQuery.GetConnectionRequestsForOrg(request);
             });
 
-        app.MapGet("report/connection-requests-4-week-breakdown/organisation/{lAOrgId:long}",
+        app.MapGet("report/connection-requests-4-week-breakdown/organisation/{orgId:long}",
             [Authorize(Roles = AllowedRoles)]
             async (
                 DateTime? date,
-                long? laOrgId,
+                long? orgId,
                 IGetConnectionRequestsSentFactFourWeekBreakdownQuery getConnectionRequestsSentFactFourWeekBreakdownQuery,
-                IValidator<LaConnectionRequestsBreakdownRequest> validator
+                IValidator<OrgConnectionRequestsBreakdownRequest> validator
             ) =>
             {
-                LaConnectionRequestsBreakdownRequest request = new(date, laOrgId);
+                OrgConnectionRequestsBreakdownRequest request = new(date, orgId);
                 await validator.ValidateAndThrowAsync(request);
-                return await getConnectionRequestsSentFactFourWeekBreakdownQuery.GetFourWeekBreakdownForLa(request);
+                return await getConnectionRequestsSentFactFourWeekBreakdownQuery.GetFourWeekBreakdownForOrg(request);
             });
 
-        app.MapGet("report/connection-requests-total/organisation/{laOrgId:long}",
+        app.MapGet("report/connection-requests-total/organisation/{orgId:long}",
             [Authorize(Roles = AllowedRoles)]
             async (
-                long? laOrgId,
+                long? orgId,
                 IGetConnectionRequestsSentFactQuery getConnectionRequestsSentFactQuery,
-                IValidator<LaConnectionRequestsTotalRequest> validator) =>
+                IValidator<OrgConnectionRequestsTotalRequest> validator) =>
             {
-                LaConnectionRequestsTotalRequest request = new(laOrgId);
+                OrgConnectionRequestsTotalRequest request = new(orgId);
                 await validator.ValidateAndThrowAsync(request);
-                return await getConnectionRequestsSentFactQuery.GetTotalConnectionRequestsForLa(request);
+                return await getConnectionRequestsSentFactQuery.GetTotalConnectionRequestsForOrg(request);
             });
     }
 }

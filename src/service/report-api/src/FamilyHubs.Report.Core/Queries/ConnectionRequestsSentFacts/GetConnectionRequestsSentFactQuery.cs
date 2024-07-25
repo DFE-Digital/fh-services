@@ -37,7 +37,7 @@ public class GetConnectionRequestsSentFactQuery : IGetConnectionRequestsSentFact
             Made = await _reportDbContext.CountAsync(_reportDbContext.ConnectionRequestsSentFacts, cancellationToken)
         };
 
-    public async Task<ConnectionRequests> GetConnectionRequestsForLa(LaConnectionRequestsRequest request,
+    public async Task<ConnectionRequests> GetConnectionRequestsForOrg(OrgConnectionRequestsRequest request,
         CancellationToken cancellationToken = default)
     {
         DateTime startDate = request.Date!.Value.AddDays(-request.AmountOfDays!.Value);
@@ -47,7 +47,8 @@ public class GetConnectionRequestsSentFactQuery : IGetConnectionRequestsSentFact
             .Include(cRSf => cRSf.OrganisationDim)
             .Where(cRSf => cRSf.OrganisationDim != null)
             .Where(cRSf => cRSf.DateDim.Date > startDate && cRSf.DateDim.Date <= request.Date!.Value)
-            .Where(cRSf => cRSf.OrganisationDim!.OrganisationId == request.LaOrgId!.Value);
+            .Where(cRSf => cRSf.OrganisationDim!.OrganisationId == request.OrgId!.Value ||
+                           cRSf.VcsOrganisationId == request.OrgId!.Value);
 
         return new ConnectionRequests
         {
@@ -55,13 +56,14 @@ public class GetConnectionRequestsSentFactQuery : IGetConnectionRequestsSentFact
         };
     }
 
-    public async Task<ConnectionRequests> GetTotalConnectionRequestsForLa(LaConnectionRequestsTotalRequest request,
+    public async Task<ConnectionRequests> GetTotalConnectionRequestsForOrg(OrgConnectionRequestsTotalRequest request,
         CancellationToken cancellationToken = default)
     {
         IQueryable<ConnectionRequestsSentFact> query = _reportDbContext.ConnectionRequestsSentFacts
             .Include(cRSf => cRSf.OrganisationDim)
             .Where(cRSf => cRSf.OrganisationDim != null)
-            .Where(cRSf => cRSf.OrganisationDim!.OrganisationId == request.LaOrgId!.Value);
+            .Where(cRSf => cRSf.OrganisationDim!.OrganisationId == request.OrgId!.Value ||
+                           cRSf.VcsOrganisationId == request.OrgId!.Value);
 
         return new ConnectionRequests
         {

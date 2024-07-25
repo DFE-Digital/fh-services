@@ -8,6 +8,6 @@ public interface IGetConnectionRequestsSentFactFourWeekBreakdownQuery
     public Task<ConnectionRequestsBreakdown> GetFourWeekBreakdownForAdmin(ConnectionRequestsBreakdownRequest request,
         CancellationToken cancellationToken = default);
 
-    public Task<ConnectionRequestsBreakdown> GetFourWeekBreakdownForLa(LaConnectionRequestsBreakdownRequest request,
+    public Task<ConnectionRequestsBreakdown> GetFourWeekBreakdownForOrg(OrgConnectionRequestsBreakdownRequest request,
         CancellationToken cancellationToken = default);
 }

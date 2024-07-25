@@ -15,8 +15,10 @@ public class ConnectionRequestsSentFact
     public long? OrganisationKey { get; init; }
     [NotMapped] public OrganisationDim? OrganisationDim { get; init; }
 
+#if UserAccount
     public long? UserAccountKey { get; init; }
     [NotMapped] public UserAccountDim? UserAccountDim { get; init; }
+#endif
 
     public long ConnectionRequestsSentMetricsId { get; init; }
 
@@ -32,11 +34,13 @@ public class ConnectionRequestsSentFact
 
     public string? ConnectionRequestReferenceCode { get; init; }
 
+    public long VcsOrganisationId { get; init; }
+
     public DateTime Created { get; init; }
 
-    public long CreatedBy { get; init; }
+    public string CreatedBy { get; init; } = null!;
 
-    public DateTime Modified { get; init; }
+    public DateTime? Modified { get; init; }
 
-    public long ModifiedBy { get; init; }
+    public string? ModifiedBy { get; init; }
 }

@@ -169,9 +169,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             Created = DateTime.UtcNow,
             CreatedBy = "",
             Modified = DateTime.UtcNow,
-            ModifiedBy = "",
-            SysStartTime = DateTime.UtcNow,
-            SysEndTime = DateTime.UtcNow
+            ModifiedBy = ""
         };
 
         OrganisationDim organisationDimTwo = new()
@@ -184,9 +182,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             Created = DateTime.UtcNow,
             CreatedBy = "",
             Modified = DateTime.UtcNow,
-            ModifiedBy = "",
-            SysStartTime = DateTime.UtcNow,
-            SysEndTime = DateTime.UtcNow
+            ModifiedBy = ""
         };
 
         reportDbContext.AddOrganisationDim(organisationDimOne);
@@ -197,6 +193,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     private static async Task SeedServiceSearchFactTable(IReportDbContext reportDbContext)
     {
+        long serviceSearchFactId = 1;
         int dateKey = 1;
         long serviceSearchId = 1;
 
@@ -205,6 +202,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         {
             reportDbContext.AddServiceSearchFact(new ServiceSearchFact
             {
+                Id = serviceSearchFactId++,
                 DateKey = dateKey++,
                 TimeKey = 1,
                 ServiceSearchesKey = 1,
@@ -219,6 +217,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         {
             reportDbContext.AddServiceSearchFact(new ServiceSearchFact
             {
+                Id = serviceSearchFactId++,
                 DateKey = dateKey++,
                 TimeKey = 1,
                 ServiceSearchesKey = 2,
@@ -233,6 +232,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     private static async Task SeedConnectionRequestsSentFact(IReportDbContext reportDbContext)
     {
+        int connectionRequestsSentFactId = 1;
         int dateKey = 1;
 
         // January
@@ -240,16 +240,18 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         {
             reportDbContext.AddConnectionRequestsSentFact(new ConnectionRequestsSentFact
             {
+                Id = connectionRequestsSentFactId++,
                 DateKey = dateKey++,
                 TimeKey = 1,
                 OrganisationKey = 1,
                 ConnectionRequestsSentMetricsId = 0,
                 RequestTimestamp = DateTime.UtcNow,
                 RequestCorrelationId = "",
+                VcsOrganisationId = 32,
                 Created = DateTime.UtcNow,
-                CreatedBy = long.MaxValue,
+                CreatedBy = "",
                 Modified = DateTime.UtcNow,
-                ModifiedBy = long.MaxValue
+                ModifiedBy = ""
             });
         }
 
@@ -258,16 +260,18 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         {
             reportDbContext.AddConnectionRequestsSentFact(new ConnectionRequestsSentFact
             {
+                Id = connectionRequestsSentFactId++,
                 DateKey = dateKey++,
                 TimeKey = 1,
                 OrganisationKey = 2,
                 ConnectionRequestsSentMetricsId = 0,
                 RequestTimestamp = DateTime.UtcNow,
                 RequestCorrelationId = "",
+                VcsOrganisationId = 64,
                 Created = DateTime.UtcNow,
-                CreatedBy = long.MaxValue,
+                CreatedBy = "",
                 Modified = DateTime.UtcNow,
-                ModifiedBy = long.MaxValue
+                ModifiedBy = ""
             });
         }
 

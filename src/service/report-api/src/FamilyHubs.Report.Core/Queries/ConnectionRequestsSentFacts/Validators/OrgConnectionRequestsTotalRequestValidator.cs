@@ -3,11 +3,11 @@ using FluentValidation;
 
 namespace FamilyHubs.Report.Core.Queries.ConnectionRequestsSentFacts.Validators;
 
-public class LaConnectionRequestsTotalRequestValidator : AbstractValidator<LaConnectionRequestsTotalRequest>
+public class OrgConnectionRequestsTotalRequestValidator : AbstractValidator<OrgConnectionRequestsTotalRequest>
 {
-    public LaConnectionRequestsTotalRequestValidator()
+    public OrgConnectionRequestsTotalRequestValidator()
     {
-        RuleFor(v => v.LaOrgId)
+        RuleFor(v => v.OrgId)
             .NotEmpty();
     }
 }

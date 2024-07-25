@@ -54,47 +54,53 @@ public class WhenUsingGetConnectionRequestsSentQuery
                 DateKey = 0,
                 OrganisationKey = 1,
                 DateDim = dateDimList[0],
-                OrganisationDim = organisationDimList[0]
+                OrganisationDim = organisationDimList[0],
+                VcsOrganisationId = 1
             },
             new ConnectionRequestsSentFact
             {
                 DateKey = 0,
                 OrganisationKey = 1,
                 DateDim = dateDimList[0],
-                OrganisationDim = organisationDimList[0]
+                OrganisationDim = organisationDimList[0],
+                VcsOrganisationId = 1
             },
             new ConnectionRequestsSentFact
             {
                 DateKey = 0,
                 OrganisationKey = 2,
                 DateDim = dateDimList[0],
-                OrganisationDim = organisationDimList[1]
+                OrganisationDim = organisationDimList[1],
+                VcsOrganisationId = 2
             },
             new ConnectionRequestsSentFact
             {
                 DateKey = 0,
                 OrganisationKey = 2,
                 DateDim = dateDimList[0],
-                OrganisationDim = organisationDimList[1]
+                OrganisationDim = organisationDimList[1],
+                VcsOrganisationId = 2
             },
             new ConnectionRequestsSentFact
             {
                 DateKey = 1,
                 OrganisationKey = 1,
                 DateDim = dateDimList[1],
-                OrganisationDim = organisationDimList[0]
+                OrganisationDim = organisationDimList[0],
+                VcsOrganisationId = 1
             },
             new ConnectionRequestsSentFact
             {
                 DateKey = 1,
                 OrganisationKey = 2,
                 DateDim = dateDimList[1],
-                OrganisationDim = organisationDimList[1]
+                OrganisationDim = organisationDimList[1],
+                VcsOrganisationId = 3
             },
             new ConnectionRequestsSentFact
             {
                 DateKey = 2,
-                DateDim = dateDimList[2]
+                DateDim = dateDimList[2],
             }
         };
 
@@ -149,15 +155,25 @@ public class WhenUsingGetConnectionRequestsSentQuery
         Assert.Equivalent(expected, result);
     }
 
+    // orgId 10 == LA
+    // orgId 1  == VCS
     [Theory]
-    [InlineData("2024-08-08", 1, 2)]
-    [InlineData("2024-08-04", 1, 1)]
-    [InlineData("2024-06-08", 1, 0)]
-    [InlineData("2024-08-08", 7, 3)]
-    [InlineData("2024-08-04", 7, 1)]
-    [InlineData("2024-06-08", 7, 0)]
-    [InlineData("2024-12-31", 365, 3)]
-    public async Task Then_GetConnectionRequestsForLa_Should_Return_ExpectedResult(string dateStr, int days, int requestsMade)
+    [InlineData(10, "2024-08-08", 1, 2)]
+    [InlineData(10, "2024-08-04", 1, 1)]
+    [InlineData(10, "2024-06-08", 1, 0)]
+    [InlineData(10, "2024-08-08", 7, 3)]
+    [InlineData(10, "2024-08-04", 7, 1)]
+    [InlineData(10, "2024-06-08", 7, 0)]
+    [InlineData(10, "2024-12-31", 365, 3)]
+    [InlineData(1, "2024-08-08", 1, 2)]
+    [InlineData(1, "2024-08-04", 1, 1)]
+    [InlineData(1, "2024-06-08", 1, 0)]
+    [InlineData(1, "2024-08-08", 7, 3)]
+    [InlineData(1, "2024-08-04", 7, 1)]
+    [InlineData(1, "2024-06-08", 7, 0)]
+    [InlineData(1, "2024-12-31", 365, 3)]
+    [InlineData(100, "2024-12-31", 365, 0)]
+    public async Task Then_GetConnectionRequestsForOrg_Should_Return_ExpectedResult(long orgId, string dateStr, int days, int requestsMade)
     {
         ConnectionRequests expected = new()
         {
@@ -166,24 +182,30 @@ public class WhenUsingGetConnectionRequestsSentQuery
 
         DateTime dateTime = DateTime.Parse(dateStr);
 
-        LaConnectionRequestsRequest request = new(10, dateTime, days);
+        OrgConnectionRequestsRequest request = new(orgId, dateTime, days);
 
-        ConnectionRequests result = await _getConnectionRequestsSentFactQuery.GetConnectionRequestsForLa(request);
+        ConnectionRequests result = await _getConnectionRequestsSentFactQuery.GetConnectionRequestsForOrg(request);
 
         Assert.Equivalent(expected, result);
     }
 
-    [Fact]
-    public async Task Then_GetTotalConnectionRequestsForLa_Should_Return_ExpectedResult()
+    [Theory]
+    [InlineData(10, 3)]
+    [InlineData(1, 3)]
+    [InlineData(20, 3)]
+    [InlineData(2, 2)]
+    [InlineData(3, 1)]
+    [InlineData(100, 0)]
+    public async Task Then_GetTotalConnectionRequestsForOrg_Should_Return_ExpectedResult(long orgId, int requestsMade)
     {
         ConnectionRequests expected = new()
         {
-            Made = 3
+            Made = requestsMade
         };
 
-        LaConnectionRequestsTotalRequest request = new(10);
+        OrgConnectionRequestsTotalRequest request = new(orgId);
 
-        ConnectionRequests result = await _getConnectionRequestsSentFactQuery.GetTotalConnectionRequestsForLa(request);
+        ConnectionRequests result = await _getConnectionRequestsSentFactQuery.GetTotalConnectionRequestsForOrg(request);
 
         Assert.Equivalent(expected, result);
     }

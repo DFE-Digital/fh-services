@@ -19,8 +19,4 @@ public class OrganisationDim
     public DateTime Modified { get; init; }
 
     public string ModifiedBy { get; init; } = null!;
-
-    public DateTime SysStartTime { get; init; }
-
-    public DateTime SysEndTime { get; init; }
 }

@@ -60,28 +60,32 @@ public class WhenUsingGetConnectionRequestsSentFactFourWeekBreakdownQuery
                 DateKey = 1,
                 OrganisationKey = 1,
                 DateDim = dateDimList[0],
-                OrganisationDim = organisationDimList[0]
+                OrganisationDim = organisationDimList[0],
+                VcsOrganisationId = 1
             },
             new ConnectionRequestsSentFact
             {
                 DateKey = 1,
                 OrganisationKey = 1,
                 DateDim = dateDimList[0],
-                OrganisationDim = organisationDimList[0]
+                OrganisationDim = organisationDimList[0],
+                VcsOrganisationId = 1
             },
             new ConnectionRequestsSentFact
             {
                 DateKey = 1,
                 OrganisationKey = 2,
                 DateDim = dateDimList[0],
-                OrganisationDim = organisationDimList[1]
+                OrganisationDim = organisationDimList[1],
+                VcsOrganisationId = 2
             },
             new ConnectionRequestsSentFact
             {
                 DateKey = 1,
                 OrganisationKey = 2,
                 DateDim = dateDimList[0],
-                OrganisationDim = organisationDimList[1]
+                OrganisationDim = organisationDimList[1],
+                VcsOrganisationId = 2
             },
             new ConnectionRequestsSentFact
             {
@@ -103,14 +107,16 @@ public class WhenUsingGetConnectionRequestsSentFactFourWeekBreakdownQuery
                 DateKey = 3,
                 OrganisationKey = 1,
                 DateDim = dateDimList[2],
-                OrganisationDim = organisationDimList[0]
+                OrganisationDim = organisationDimList[0],
+                VcsOrganisationId = 3
             },
             new ConnectionRequestsSentFact
             {
                 DateKey = 3,
                 OrganisationKey = 2,
                 DateDim = dateDimList[2],
-                OrganisationDim = organisationDimList[1]
+                OrganisationDim = organisationDimList[1],
+                VcsOrganisationId = 4
             },
             new ConnectionRequestsSentFact
             {
@@ -221,50 +227,54 @@ public class WhenUsingGetConnectionRequestsSentFactFourWeekBreakdownQuery
         Assert.Equivalent(expected, result);
     }
 
-    [Fact]
-    public async Task Then_GetFourWeekBreakdownForLa_Should_Return_Results_IfRequestsMade()
+    [Theory]
+    [InlineData(10, 3, 2, 0, 1, 0)] // LA
+    [InlineData(1, 2, 2, 0, 0, 0)] // VCS
+    public async Task Then_GetFourWeekBreakdownForOrg_Should_Return_Results_IfRequestsMade(
+        long orgId,
+        int madeTotal, int madeWeekOne, int madeWeekTwo, int madeWeekThree, int madeWeekFour)
     {
         ConnectionRequestsBreakdown expected = new()
         {
             Totals = new ConnectionRequests
             {
-                Made = 3
+                Made = madeTotal
             },
             WeeklyReports = new ConnectionRequestsDated[]
             {
                 new()
                 {
                     Date = "1 January to 7 January",
-                    Made = 2
+                    Made = madeWeekOne
                 },
                 new()
                 {
                     Date = "8 January to 14 January",
-                    Made = 0
+                    Made = madeWeekTwo
                 },
                 new()
                 {
                     Date = "15 January to 21 January",
-                    Made = 1
+                    Made = madeWeekThree
                 },
                 new()
                 {
                     Date = "22 January to 28 January",
-                    Made = 0
+                    Made = madeWeekFour
                 },
             }
         };
 
-        LaConnectionRequestsBreakdownRequest request = new(DateTime.Parse("2024-01-31"), 10);
+        OrgConnectionRequestsBreakdownRequest request = new(DateTime.Parse("2024-01-31"), orgId);
 
         ConnectionRequestsBreakdown result =
-            await _getConnectionRequestsSentFactFourWeekBreakdownQuery.GetFourWeekBreakdownForLa(request);
+            await _getConnectionRequestsSentFactFourWeekBreakdownQuery.GetFourWeekBreakdownForOrg(request);
 
         Assert.Equivalent(expected, result);
     }
 
     [Fact]
-    public async Task Then_GetFourWeekBreakdownForLa_Should_Return_Zero_If_NoRequestsMade()
+    public async Task Then_GetFourWeekBreakdownForOrg_Should_Return_Zero_If_NoRequestsMade()
     {
         ConnectionRequestsBreakdown expected = new()
         {
@@ -297,10 +307,10 @@ public class WhenUsingGetConnectionRequestsSentFactFourWeekBreakdownQuery
             }
         };
 
-        LaConnectionRequestsBreakdownRequest request = new(DateTime.Parse("2023-12-16"), 10);
+        OrgConnectionRequestsBreakdownRequest request = new(DateTime.Parse("2023-12-16"), 10);
 
         ConnectionRequestsBreakdown result =
-            await _getConnectionRequestsSentFactFourWeekBreakdownQuery.GetFourWeekBreakdownForLa(request);
+            await _getConnectionRequestsSentFactFourWeekBreakdownQuery.GetFourWeekBreakdownForOrg(request);
 
         Assert.Equivalent(expected, result);
     }

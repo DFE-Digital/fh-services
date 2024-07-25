@@ -4,6 +4,7 @@ using FamilyHubs.Report.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyHubs.Report.Data.Migrations
 {
     [DbContext(typeof(ReportDbContext))]
-    partial class ReportDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240715112049_ConnectionRequestRelated")]
+    partial class ConnectionRequestRelated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,8 +60,7 @@ namespace FamilyHubs.Report.Data.Migrations
                         .HasColumnType("datetime2(7)");
 
                     b.Property<string>("ModifiedBy")
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("OrganisationKey")
                         .HasColumnType("bigint");
@@ -79,7 +81,7 @@ namespace FamilyHubs.Report.Data.Migrations
                     b.Property<int>("TimeKey")
                         .HasColumnType("int");
 
-                    b.Property<long>("VcsOrganisationId")
+                    b.Property<long?>("UserAccountKey")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -91,6 +93,8 @@ namespace FamilyHubs.Report.Data.Migrations
                     b.HasIndex("OrganisationKey");
 
                     b.HasIndex("TimeKey");
+
+                    b.HasIndex("UserAccountKey");
 
                     b.ToTable("ConnectionRequestsSentFacts", "dim");
                 });
@@ -468,11 +472,17 @@ namespace FamilyHubs.Report.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FamilyHubs.Report.Data.Entities.UserAccountDim", "UserAccountDim")
+                        .WithMany()
+                        .HasForeignKey("UserAccountKey");
+
                     b.Navigation("DateDim");
 
                     b.Navigation("OrganisationDim");
 
                     b.Navigation("TimeDim");
+
+                    b.Navigation("UserAccountDim");
                 });
 
             modelBuilder.Entity("FamilyHubs.Report.Data.Entities.ServiceSearchFact", b =>

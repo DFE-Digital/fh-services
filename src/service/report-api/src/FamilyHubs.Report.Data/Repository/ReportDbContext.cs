@@ -60,7 +60,7 @@ public class ReportDbContext : DbContext, IReportDbContext
         modelBuilder.Entity<ServiceSearchFact>(entity =>
         {
             entity.HasKey(e => e.Id).IsClustered();
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.DateKey).IsRequired();
             entity.Property(e => e.TimeKey).IsRequired();
             entity.Property(e => e.ServiceSearchesKey).IsRequired();
@@ -125,7 +125,7 @@ public class ReportDbContext : DbContext, IReportDbContext
         modelBuilder.Entity<ConnectionRequestsSentFact>(entity =>
         {
             entity.HasKey(e => e.Id).IsClustered();
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.DateKey).IsRequired();
             entity.Property(e => e.TimeKey).IsRequired();
             entity.Property(e => e.ConnectionRequestsSentMetricsId).IsRequired();
@@ -133,10 +133,11 @@ public class ReportDbContext : DbContext, IReportDbContext
             entity.Property(e => e.RequestCorrelationId).IsRequired().HasMaxLength(50);
             entity.Property(e => e.ResponseTimestamp).HasPrecision(7);
             entity.Property(e => e.ConnectionRequestReferenceCode).HasColumnType("nchar(6)");
+            entity.Property(e => e.VcsOrganisationId).IsRequired();
             entity.Property(e => e.Created).IsRequired().HasPrecision(7);
-            entity.Property(e => e.CreatedBy).IsRequired();
-            entity.Property(e => e.Modified).IsRequired().HasPrecision(7);
-            entity.Property(e => e.ModifiedBy).IsRequired();
+            entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(512);
+            entity.Property(e => e.Modified).HasPrecision(7);
+            entity.Property(e => e.ModifiedBy).HasMaxLength(512);
         });
 
         modelBuilder.Entity<OrganisationDim>().ToTable("OrganisationDim", schema: "idam");
@@ -152,8 +153,6 @@ public class ReportDbContext : DbContext, IReportDbContext
             entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(320);
             entity.Property(e => e.Modified).IsRequired().HasPrecision(7);
             entity.Property(e => e.ModifiedBy).IsRequired().HasMaxLength(320);
-            entity.Property(e => e.SysStartTime).IsRequired().HasPrecision(7);
-            entity.Property(e => e.SysEndTime).IsRequired().HasPrecision(7);
         });
 
         modelBuilder.Entity<UserAccountDim>().ToTable("UserAccountDim", schema: "idam");
@@ -217,11 +216,13 @@ public class ReportDbContext : DbContext, IReportDbContext
             .HasForeignKey(e => e.OrganisationKey)
             .IsRequired(false);
 
+#if UserAccount
         modelBuilder.Entity<ConnectionRequestsSentFact>()
             .HasOne(e => e.UserAccountDim)
             .WithMany()
             .HasForeignKey(e => e.UserAccountKey)
             .IsRequired(false);
+#endif
 
         base.OnModelCreating(modelBuilder);
     }

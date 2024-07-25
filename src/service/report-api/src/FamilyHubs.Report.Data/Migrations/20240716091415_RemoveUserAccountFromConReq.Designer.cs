@@ -4,6 +4,7 @@ using FamilyHubs.Report.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyHubs.Report.Data.Migrations
 {
     [DbContext(typeof(ReportDbContext))]
-    partial class ReportDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240716091415_RemoveUserAccountFromConReq")]
+    partial class RemoveUserAccountFromConReq
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,8 +60,7 @@ namespace FamilyHubs.Report.Data.Migrations
                         .HasColumnType("datetime2(7)");
 
                     b.Property<string>("ModifiedBy")
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("OrganisationKey")
                         .HasColumnType("bigint");
@@ -78,9 +80,6 @@ namespace FamilyHubs.Report.Data.Migrations
 
                     b.Property<int>("TimeKey")
                         .HasColumnType("int");
-
-                    b.Property<long>("VcsOrganisationId")
-                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
