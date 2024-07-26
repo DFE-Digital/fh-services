@@ -18,7 +18,7 @@ public class MockResponse
     public string PathTemplate { get; set; }
     public string? PathParams { get; set; }
     public string? QueryParams { get; set; }
-    //todo: either the direct json response, or for lists, and array and we handle the paging with code
+    //todo: either the direct json response, or for lists, an array and we handle the paging with code
     public int StatusCode { get; set; }
     public string? ResponseBody { get; set; }
 }

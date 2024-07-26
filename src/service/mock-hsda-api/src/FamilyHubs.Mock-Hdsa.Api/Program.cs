@@ -1,4 +1,6 @@
 using FamilyHubs.Mock_Hdsa.Api;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +21,15 @@ builder.Services.AddSwaggerGen(c =>
         return $"{method}_{path?.Replace("/", "_")}";
     });
 });
+
+// Add configuration
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .Build();
+
+builder.Services.AddDbContext<MockDbContext>(options =>
+    options.UseSqlServer(configuration.GetConnectionString("HsdsMockResponsesConnection")));
 
 var app = builder.Build();
 
