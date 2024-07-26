@@ -5,7 +5,7 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<MockResponseGenerator>();
+builder.Services.AddSingleton<DbMockResponseGenerator>();
 
 var openApiDoc = builder.Services.AddOpenApiSpecFromFile();
 builder.Services.AddEndpointsApiExplorer();

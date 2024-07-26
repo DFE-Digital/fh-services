@@ -41,7 +41,7 @@ public static class RequestHandler
     public static async Task Handle(HttpContext context)
     {
         var openApiDoc = context.RequestServices.GetRequiredService<OpenApiDocument>();
-        var mockGenerator = context.RequestServices.GetRequiredService<MockResponseGenerator>();
+        var mockGenerator = context.RequestServices.GetRequiredService<DbMockResponseGenerator>();
 
         var path = context.Request.Path.Value;
         var method = context.Request.Method;
