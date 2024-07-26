@@ -6,8 +6,8 @@ public static class Responses
 {
     public const string GetPaginatedListOfServicesDefault = """
     {
-      "total_items": 10,
-      "total_pages": 10,
+      "total_items": 1,
+      "total_pages": 1,
       "page_number": 1,
       "size": 1,
       "first_page": true,
