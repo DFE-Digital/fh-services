@@ -5,8 +5,6 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<DbMockResponseGenerator>();
-
 var openApiDoc = builder.Services.AddOpenApiSpecFromFile();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -30,6 +28,8 @@ var configuration = new ConfigurationBuilder()
 
 builder.Services.AddDbContext<MockDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("HsdsMockResponsesConnection")));
+
+builder.Services.AddScoped<DbMockResponseGenerator>();
 
 var app = builder.Build();
 
