@@ -66,14 +66,17 @@ public static class RequestHandler
 
         var operationName = operation.OperationId ?? $"{method}_{pathTemplate.Replace("/", "_")}";
         string? scenarioName = context.Request.Headers["X-Mock-Response-Id"].FirstOrDefault();
+
+        string? pathParams = pathParameters?.Any() == true
+            ? string.Join("&", pathParameters.OrderBy(pp => pp.Key)
+                .Select(pp => $"{pp.Key}={pp.Value}"))
+            : null;
+
         string? queryParams = context.Request.Query.Any()
             ? string.Join("&", context.Request.Query.OrderBy(q => q.Key).Select(q => $"{q.Key}={q.Value}"))
             : null;
 
-        //todo: path params
-
-        //var (statusCode, responseBody) = mockGenerator.GenerateResponse(operation, customHeaderValue);
-        var (statusCode, responseBody) = await mockGenerator.GetMockResponseAsync(operationName, scenarioName, pathTemplate, "todo:path params", queryParams);
+        var (statusCode, responseBody) = await mockGenerator.GetMockResponseAsync(operationName, scenarioName, pathParams, queryParams);
 
         //todo:
         //if (response == null)
@@ -90,7 +93,7 @@ public static class RequestHandler
         //    response = response.Replace($"{{{param.Key}}}", param.Value);
         //}
 
-        context.Response.StatusCode = StatusCodes.Status200OK;
+        context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
         await context.Response.WriteAsync(responseBody);
     }
