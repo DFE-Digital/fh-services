@@ -66,7 +66,9 @@ public static class RequestHandler
 
         var operationName = operation.OperationId ?? $"{method}_{pathTemplate.Replace("/", "_")}";
         string? scenarioName = context.Request.Headers["X-Mock-Response-Id"].FirstOrDefault();
-        var queryParams = string.Join("&", context.Request.Query.OrderBy(q => q.Key).Select(q => $"{q.Key}={q.Value}"));
+        string? queryParams = context.Request.Query.Any()
+            ? string.Join("&", context.Request.Query.OrderBy(q => q.Key).Select(q => $"{q.Key}={q.Value}"))
+            : null;
 
         //todo: path params
 
