@@ -26,6 +26,8 @@ runs:
       id: fetch
       shell: pwsh
       run: |-
+        Write-Output "KV Name is ${{ inputs.keyvault_name }}"
+        Write-Output "KV Prefix is ${{ inputs.keyvault_prefix }}"
         $names = az keyvault secret list --vault-name ${{ inputs.keyvault_name }} --query "[?starts_with(name, '${{ inputs.keyvault_prefix }}-')].name" --output json
         Write-Output "KeyVault Names = $names"
         $arr = $names | ConvertFrom-Json
