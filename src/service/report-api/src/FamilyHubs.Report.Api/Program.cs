@@ -41,7 +41,8 @@ public class Program
         }
         catch (Exception e)
         {
-            File.WriteAllText("out.txt", e.ToString());
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "out.txt");
+            File.WriteAllText(path, e.ToString());
             throw;
         }
     }
