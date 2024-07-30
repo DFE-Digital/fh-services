@@ -1,6 +1,4 @@
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using FamilyHubs.Report.Api.AcceptanceTests.Builders.Http;
 using FamilyHubs.Report.Api.AcceptanceTests.Configuration;
 using FluentAssertions;

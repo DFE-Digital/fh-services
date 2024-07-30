@@ -1,3 +1,5 @@
+using FamilyHubs.Report.Core.Queries.ConnectionRequestsSentFacts;
+using FamilyHubs.Report.Core.Queries.ConnectionRequestsSentFacts.Requests;
 using FamilyHubs.Report.Core.Queries.ServiceSearchFacts;
 using FamilyHubs.Report.Core.Queries.ServiceSearchFacts.Requests;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
@@ -22,9 +24,9 @@ public class MinimalAdminReportEndPoints
                 IValidator<SearchCountRequest> validator
             ) =>
             {
-                var req = new SearchCountRequest(date, serviceTypeId, 7);
-                await validator.ValidateAndThrowAsync(req);
-                return await getServiceSearchFactQuery.GetSearchCountForAdmin(req);
+                SearchCountRequest request = new(date, serviceTypeId, 7);
+                await validator.ValidateAndThrowAsync(request);
+                return await getServiceSearchFactQuery.GetSearchCountForAdmin(request);
             });
 
         app.MapGet("report/service-searches-4-week-breakdown",
@@ -36,9 +38,9 @@ public class MinimalAdminReportEndPoints
                 IValidator<SearchBreakdownRequest> validator
             ) =>
             {
-                var req = new SearchBreakdownRequest(date, serviceTypeId);
-                await validator.ValidateAndThrowAsync(req);
-                return await getFourWeekBreakdownQuery.GetFourWeekBreakdownForAdmin(req);
+                SearchBreakdownRequest request = new(date, serviceTypeId);
+                await validator.ValidateAndThrowAsync(request);
+                return await getFourWeekBreakdownQuery.GetFourWeekBreakdownForAdmin(request);
             });
 
         app.MapGet("report/service-searches-total",
@@ -49,9 +51,40 @@ public class MinimalAdminReportEndPoints
                 IValidator<TotalSearchCountRequest> validator
             ) =>
             {
-                var req = new TotalSearchCountRequest(serviceTypeId);
-                await validator.ValidateAndThrowAsync(req);
-                return await getServiceSearchFactQuery.GetTotalSearchCountForAdmin(req);
+                TotalSearchCountRequest request = new(serviceTypeId);
+                await validator.ValidateAndThrowAsync(request);
+                return await getServiceSearchFactQuery.GetTotalSearchCountForAdmin(request);
             });
+
+        app.MapGet("report/connection-requests-past-7-days",
+            [Authorize(Roles = RoleTypes.DfeAdmin)]
+            async (
+                DateTime? date,
+                IGetConnectionRequestsSentFactQuery getConnectionRequestsSentFactQuery,
+                IValidator<ConnectionRequestsRequest> validator) =>
+            {
+                ConnectionRequestsRequest request = new(date, 7);
+                await validator.ValidateAndThrowAsync(request);
+                return await getConnectionRequestsSentFactQuery.GetConnectionRequestsForAdmin(request);
+            });
+
+
+        app.MapGet("report/connection-requests-4-week-breakdown",
+            [Authorize(Roles = RoleTypes.DfeAdmin)]
+            async (DateTime? date,
+                IGetConnectionRequestsSentFactFourWeekBreakdownQuery
+                    getConnectionRequestsSentFactFourWeekBreakdownQuery,
+                IValidator<ConnectionRequestsBreakdownRequest> validator) =>
+            {
+                ConnectionRequestsBreakdownRequest request = new(date);
+                await validator.ValidateAndThrowAsync(request);
+                return await getConnectionRequestsSentFactFourWeekBreakdownQuery.GetFourWeekBreakdownForAdmin(request);
+            });
+
+
+        app.MapGet("report/connection-requests-total",
+            [Authorize(Roles = RoleTypes.DfeAdmin)]
+            async (IGetConnectionRequestsSentFactQuery getConnectionRequestsSentFactQuery) =>
+                await getConnectionRequestsSentFactQuery.GetTotalConnectionRequestsForAdmin());
     }
 }

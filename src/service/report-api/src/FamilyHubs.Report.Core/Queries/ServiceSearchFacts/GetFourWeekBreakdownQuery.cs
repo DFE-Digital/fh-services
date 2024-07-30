@@ -1,3 +1,4 @@
+using FamilyHubs.Report.Core.Queries.Common;
 using FamilyHubs.Report.Core.Queries.ServiceSearchFacts.Requests;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.SharedKernel.Reports.WeeklyBreakdown;
@@ -24,7 +25,7 @@ public class GetFourWeekBreakdownQuery : IGetFourWeekBreakdownQuery
     {
         WeeklyReport[] weeklyReports = new WeeklyReport[4];
 
-        DateTime dateSunday = GetEarliestSunday(currentDate);
+        DateTime dateSunday = WeeklyBreakdownCommon.GetEarliestSunday(currentDate);
 
         for (int i = 0; i < weeklyReports.Length; i++)
         {
@@ -32,7 +33,7 @@ public class GetFourWeekBreakdownQuery : IGetFourWeekBreakdownQuery
 
             weeklyReports[i] = new WeeklyReport
             {
-                Date = GetMondayToSundayName(dateSunday),
+                Date = WeeklyBreakdownCommon.GetMondayToSundayName(dateSunday),
                 SearchCount = searchCount
             };
 
@@ -42,8 +43,6 @@ public class GetFourWeekBreakdownQuery : IGetFourWeekBreakdownQuery
         return weeklyReports;
     }
 
-    private static DateTime GetEarliestSunday(DateTime date) => date.AddDays(-(int)date.DayOfWeek).AddDays(-21);
-
     private async Task<int> GetSearchCount(long? laOrgId, DateTime date, ServiceType serviceTypeId, int amountOfDays,
         CancellationToken cancellationToken)
         => laOrgId == null
@@ -51,15 +50,6 @@ public class GetFourWeekBreakdownQuery : IGetFourWeekBreakdownQuery
                 cancellationToken)
             : await _getServiceSearchFactQuery.GetSearchCountForLa(new LaSearchCountRequest(date, serviceTypeId, (long)laOrgId, amountOfDays),
                 cancellationToken);
-
-    private static string GetMondayToSundayName(DateTime dateSunday)
-    {
-        DateTime dateMonday = dateSunday.AddDays(-6);
-
-        // "d MMMM" will convert a date to the day number and full month name.
-        // E.g., "08/04/2024" will convert to "8 April"
-        return dateMonday.ToString("d MMMM") + " to " + dateSunday.ToString("d MMMM");
-    }
 
     private static WeeklyReportBreakdown GetWeeklyReportBreakdown(WeeklyReport[] weeklyReports)
         => new()

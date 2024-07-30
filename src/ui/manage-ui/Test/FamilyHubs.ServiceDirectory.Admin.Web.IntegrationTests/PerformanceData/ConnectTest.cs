@@ -1,9 +1,11 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp.Html.Dom;
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
+using FamilyHubs.SharedKernel.Reports.ConnectionRequests;
 using FamilyHubs.SharedKernel.Reports.WeeklyBreakdown;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -24,6 +26,44 @@ public class ConnectTest : BaseTest
         services.AddSingleton(_serviceDirectoryClient.Object);
     }
 
+    private void SetupClient(
+        WeeklyReportBreakdown breakdown, int searchCount, int recentSearchCount,
+        ConnectionRequestsBreakdown crBreakdown, ConnectionRequests crMetric, ConnectionRequests recentCrMetric
+    ) {
+        _reportingClient
+            .Setup(r => r.GetServicesSearches4WeekBreakdown(TestServiceType, It.IsAny<long?>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(breakdown);
+        _reportingClient
+            .Setup(r => r.GetServicesSearchesTotal(TestServiceType, It.IsAny<long?>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(searchCount);
+        _reportingClient
+            .Setup(r => r.GetServicesSearchesPast7Days(TestServiceType, It.IsAny<long?>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(recentSearchCount);
+
+        _reportingClient
+            .Setup(r => r.GetConnectionRequests4WeekBreakdown(TestServiceType, It.IsAny<long?>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(crBreakdown);
+        _reportingClient
+            .Setup(r => r.GetConnectionRequestsTotal(TestServiceType, It.IsAny<long?>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(crMetric);
+        _reportingClient
+            .Setup(r => r.GetConnectionRequestsPast7Days(TestServiceType, It.IsAny<long?>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(recentCrMetric);
+    }
+
+    private ConnectionRequests GenCrMetric() => GenCrDated("");
+
+    private ConnectionRequestsDated GenCrDated(string date) =>
+        new()
+        {
+            Date = date, Accepted = Random.Next(0, 1000000), Declined = Random.Next(0, 1000000), Made = Random.Next(0, 1000000)
+        };
+
+    private void AssertPageContent(IHtmlDocument page, string selector, object? expected)
+    {
+        Assert.Equal(expected?.ToString(), page.QuerySelector(selector)?.TextContent);
+    }
+
     [Fact]
     public async Task As_DfeAdmin_Then_Connect_Data_Should_Be_Correct()
     {
@@ -38,19 +78,24 @@ public class ConnectTest : BaseTest
             },
             TotalSearchCount = Random.Next(0, 1000000)
         };
-
-        _reportingClient
-            .Setup(r => r.GetServicesSearches4WeekBreakdown(TestServiceType, null, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(breakdown);
-
         var searchCount = Random.Next(0, 1000000);
-        _reportingClient
-            .Setup(r => r.GetServicesSearchesTotal(TestServiceType, null, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(searchCount);
         var recentSearchCount = Random.Next(0, 1000000);
-        _reportingClient
-            .Setup(r => r.GetServicesSearchesPast7Days(TestServiceType, null, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(recentSearchCount);
+
+        var crBreakdown = new ConnectionRequestsBreakdown
+        {
+            WeeklyReports = new[]
+            {
+                GenCrDated("Week 1"),
+                GenCrDated("Week 2"),
+                GenCrDated("Week 3"),
+                GenCrDated("Week 4")
+            },
+            Totals = GenCrMetric()
+        };
+        var crMetric = GenCrMetric();
+        var recentCrMetric = GenCrMetric();
+
+        SetupClient(breakdown, searchCount, recentSearchCount, crBreakdown, crMetric, recentCrMetric);
 
         // Login
         await Login(StubUser.DfeAdmin);
@@ -58,23 +103,26 @@ public class ConnectTest : BaseTest
         // Act
         var page = await Navigate("performance-data/Connect");
 
-        var searches = page.QuerySelector("[data-testid=\"overall-searches\"] td").TextContent;
-        Assert.Equal(searchCount.ToString(), searches);
+        AssertPageContent(page, "[data-testid=\"overall-searches\"] td", searchCount);
+        AssertPageContent(page, "[data-testid=\"overall-requests-sent\"] td", crMetric.Made);
+        AssertPageContent(page, "[data-testid=\"overall-requests-accepted\"] td", crMetric.Accepted);
 
-        var searchesLast7Days = page.QuerySelector("[data-testid=\"recent-searches\"] td").TextContent;
-        Assert.Equal(recentSearchCount.ToString(), searchesLast7Days);
+        AssertPageContent(page, "[data-testid=\"recent-searches\"] td", recentSearchCount);
+        AssertPageContent(page, "[data-testid=\"recent-requests-sent\"] td", recentCrMetric.Made);
+        AssertPageContent(page, "[data-testid=\"recent-requests-accepted\"] td", recentCrMetric.Accepted);
 
         foreach (var (report, idx) in breakdown.WeeklyReports.Reverse().Select((report, idx) => (report, idx)))
         {
-            var heading = page.QuerySelector($"[data-testid=\"breakdown-week{idx + 1}\"] th").TextContent;
-            Assert.Equal(report.Date, heading);
-
-            var text = page.QuerySelector($"[data-testid=\"breakdown-week{idx + 1}\"] td").TextContent;
-            Assert.Equal(report.SearchCount.ToString(), text);
+            var crReport = crBreakdown.WeeklyReports.FirstOrDefault(x => x.Date == report.Date);
+            AssertPageContent(page, $"[data-testid=\"breakdown-week{idx + 1}\"] th", report.Date);
+            AssertPageContent(page, $"[data-testid=\"breakdown-week{idx + 1}\"] td:nth-child(2)", report.SearchCount);
+            AssertPageContent(page, $"[data-testid=\"breakdown-week{idx + 1}\"] td:nth-child(3)", crReport?.Made);
+            AssertPageContent(page, $"[data-testid=\"breakdown-week{idx + 1}\"] td:nth-child(4)", crReport?.Accepted);
         }
 
-        var total = page.QuerySelector($"[data-testid=\"breakdown-total\"] td").TextContent;
-        Assert.Equal(breakdown.TotalSearchCount.ToString(), total);
+        AssertPageContent(page, "[data-testid=\"breakdown-total\"] td:nth-child(2)", breakdown.TotalSearchCount);
+        AssertPageContent(page, "[data-testid=\"breakdown-total\"] td:nth-child(3)", crBreakdown.Totals.Made);
+        AssertPageContent(page, "[data-testid=\"breakdown-total\"] td:nth-child(4)", crBreakdown.Totals.Accepted);
     }
 
     [Fact]
@@ -101,42 +149,51 @@ public class ConnectTest : BaseTest
             },
             TotalSearchCount = Random.Next(0, 1000000)
         };
-
-        _reportingClient
-            .Setup(r => r.GetServicesSearches4WeekBreakdown(TestServiceType, It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(breakdown);
-
         var searchCount = Random.Next(0, 1000000);
-        _reportingClient
-            .Setup(r => r.GetServicesSearchesTotal(TestServiceType, It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(searchCount);
         var recentSearchCount = Random.Next(0, 1000000);
-        _reportingClient
-            .Setup(r => r.GetServicesSearchesPast7Days(TestServiceType, It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(recentSearchCount);
+
+        var crBreakdown = new ConnectionRequestsBreakdown
+        {
+            WeeklyReports = new[]
+            {
+                GenCrDated("Week 1"),
+                GenCrDated("Week 2"),
+                GenCrDated("Week 3"),
+                GenCrDated("Week 4")
+            },
+            Totals = GenCrMetric()
+        };
+        var crMetric = GenCrMetric();
+        var recentCrMetric = GenCrMetric();
+
+        SetupClient(breakdown, searchCount, recentSearchCount, crBreakdown, crMetric, recentCrMetric);
 
         // Login
         await Login(StubUser.LaAdmin);
 
         // Act
         var page = await Navigate("performance-data/Connect");
+        
+        AssertPageContent(page, "[data-testid=\"overall-searches\"] td", searchCount);
+        AssertPageContent(page, "[data-testid=\"overall-requests-sent\"] td", crMetric.Made);
+        AssertPageContent(page, "[data-testid=\"overall-requests-accepted\"] td", crMetric.Accepted);
 
-        var searches = page.QuerySelector("[data-testid=\"overall-searches\"] td").TextContent;
-        Assert.Equal(searchCount.ToString(), searches);
-
-        var searchesLast7Days = page.QuerySelector("[data-testid=\"recent-searches\"] td").TextContent;
-        Assert.Equal(recentSearchCount.ToString(), searchesLast7Days);
+        AssertPageContent(page, "[data-testid=\"recent-searches\"] td", recentSearchCount);
+        AssertPageContent(page, "[data-testid=\"recent-requests-sent\"] td", recentCrMetric.Made);
+        AssertPageContent(page, "[data-testid=\"recent-requests-accepted\"] td", recentCrMetric.Accepted);
 
         foreach (var (report, idx) in breakdown.WeeklyReports.Reverse().Select((report, idx) => (report, idx)))
         {
-            var heading = page.QuerySelector($"[data-testid=\"breakdown-week{idx + 1}\"] th").TextContent;
-            Assert.Equal(report.Date, heading);
-
-            var text = page.QuerySelector($"[data-testid=\"breakdown-week{idx + 1}\"] td").TextContent;
-            Assert.Equal(report.SearchCount.ToString(), text);
+            var crReport = crBreakdown.WeeklyReports.FirstOrDefault(x => x.Date == report.Date);
+            AssertPageContent(page, $"[data-testid=\"breakdown-week{idx + 1}\"] th", report.Date);
+            AssertPageContent(page, $"[data-testid=\"breakdown-week{idx + 1}\"] td:nth-child(2)", report.SearchCount);
+            AssertPageContent(page, $"[data-testid=\"breakdown-week{idx + 1}\"] td:nth-child(3)", crReport?.Made);
+            AssertPageContent(page, $"[data-testid=\"breakdown-week{idx + 1}\"] td:nth-child(4)", crReport?.Accepted);
         }
 
-        var total = page.QuerySelector($"[data-testid=\"breakdown-total\"] td").TextContent;
-        Assert.Equal(breakdown.TotalSearchCount.ToString(), total);
+        
+        AssertPageContent(page, "[data-testid=\"breakdown-total\"] td:nth-child(2)", breakdown.TotalSearchCount);
+        AssertPageContent(page, "[data-testid=\"breakdown-total\"] td:nth-child(3)", crBreakdown.Totals.Made);
+        AssertPageContent(page, "[data-testid=\"breakdown-total\"] td:nth-child(4)", crBreakdown.Totals.Accepted);
     }
 }

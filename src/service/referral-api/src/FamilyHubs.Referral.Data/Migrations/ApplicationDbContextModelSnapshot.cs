@@ -18,10 +18,72 @@ namespace FamilyHubs.Referral.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("ProductVersion", "7.0.20")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("FamilyHubs.Referral.Data.Entities.Metrics.ConnectionRequestsSentMetric", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("ConnectionRequestId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ConnectionRequestReferenceCode")
+                        .HasColumnType("nchar(6)");
+
+                    b.Property<DateTime?>("Created")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)")
+                        .HasAnnotation("Microsoft.EntityFrameworkCore.DataEncryption.IsEncrypted", true)
+                        .HasAnnotation("Microsoft.EntityFrameworkCore.DataEncryption.StorageFormat", StorageFormat.Default);
+
+                    b.Property<short?>("HttpResponseCode")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)")
+                        .HasAnnotation("Microsoft.EntityFrameworkCore.DataEncryption.IsEncrypted", true)
+                        .HasAnnotation("Microsoft.EntityFrameworkCore.DataEncryption.StorageFormat", StorageFormat.Default);
+
+                    b.Property<long>("OrganisationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("RequestCorrelationId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("RequestTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ResponseTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("UserAccountId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequestCorrelationId")
+                        .IsUnique();
+
+                    b.ToTable("ConnectionRequestsSentMetric");
+                });
 
             modelBuilder.Entity("FamilyHubs.Referral.Data.Entities.Organisation", b =>
                 {

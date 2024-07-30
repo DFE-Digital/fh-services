@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using FamilyHubs.SharedKernel.Identity;
+using FamilyHubs.SharedKernel.Reports.ConnectionRequests;
 using FamilyHubs.SharedKernel.Reports.WeeklyBreakdown;
 using Xunit;
 
@@ -16,7 +17,7 @@ public class WhenUsingMinimalAdminReportEndPointTest : BaseEndPointTest, IAsyncL
     [InlineData("2024-02-11", "7")]
     [InlineData("2024-02-18", "7")]
     [InlineData("2024-03-31", "0")]
-    public async Task Then_SevenDailySearches_Admin_ShouldBeCorrect(string dateStr, string expected)
+    public async Task Then_ServiceSearches_PastSevenDays_Admin_ShouldBeCorrect(string dateStr, string expected)
     {
         HttpResponseMessage httpResponseMessage =
             await Client.SendAsync(CreateHttpGetRequest(
@@ -30,7 +31,7 @@ public class WhenUsingMinimalAdminReportEndPointTest : BaseEndPointTest, IAsyncL
     }
 
     [Fact]
-    public async Task Then_FourWeekBreakdown_Admin_January_ShouldBeCorrect()
+    public async Task Then_ServiceSearches_FourWeekBreakdown_Admin_January_ShouldBeCorrect()
     {
         WeeklyReportBreakdown wRbDto = new()
         {
@@ -60,7 +61,7 @@ public class WhenUsingMinimalAdminReportEndPointTest : BaseEndPointTest, IAsyncL
     }
 
     [Fact]
-    public async Task Then_FourWeekBreakdown_Admin_February_ShouldBeCorrect()
+    public async Task Then_ServiceSearches_FourWeekBreakdown_Admin_February_ShouldBeCorrect()
     {
         WeeklyReportBreakdown wRbDto = new()
         {
@@ -90,7 +91,7 @@ public class WhenUsingMinimalAdminReportEndPointTest : BaseEndPointTest, IAsyncL
     }
 
     [Fact]
-    public async Task Then_TotalSearchCount_Admin_ShouldBeCorrect()
+    public async Task Then_ServiceSearches_Total_Admin_ShouldBeCorrect()
     {
         HttpResponseMessage httpResponseMessage =
             await Client.SendAsync(CreateHttpGetRequest(
@@ -101,6 +102,151 @@ public class WhenUsingMinimalAdminReportEndPointTest : BaseEndPointTest, IAsyncL
 
         string result = await httpResponseMessage.Content.ReadAsStringAsync();
         Assert.Equal("60", result);
+    }
+
+    [Theory]
+    [InlineData("2024-01-07", 7)]
+    [InlineData("2024-01-14", 7)]
+    [InlineData("2024-02-11", 7)]
+    [InlineData("2024-02-18", 7)]
+    [InlineData("2024-03-31", 0)]
+    public async Task Then_ConnectionRequests_PastSevenDays_Admin_ShouldBeCorrect(string dateStr, int requestsMade)
+    {
+        ConnectionRequests cR = new()
+        {
+            Made = requestsMade
+        };
+
+        string expectedJsonStr = JsonSerializer.Serialize(cR, JsonOptions);
+
+        HttpResponseMessage httpResponseMessage =
+            await Client.SendAsync(CreateHttpGetRequest(
+                $"report/connection-requests-past-7-days?date={dateStr}",
+                RoleTypes.DfeAdmin));
+
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+
+        string result = await httpResponseMessage.Content.ReadAsStringAsync();
+        Assert.Equal(expectedJsonStr, result);
+    }
+
+    [Fact]
+    public async Task Then_ConnectionRequests_FourWeekBreakdown_Admin_January_ShouldBeCorrect()
+    {
+        ConnectionRequestsBreakdown cRb = new()
+        {
+            Totals = new ConnectionRequests
+            {
+                Made = 28
+            },
+            WeeklyReports = new[]
+            {
+                new ConnectionRequestsDated
+                {
+                    Date = "1 January to 7 January",
+                    Made = 7
+                },
+                new ConnectionRequestsDated
+                {
+                    Date = "8 January to 14 January",
+                    Made = 7
+                },
+                new ConnectionRequestsDated
+                {
+                    Date = "15 January to 21 January",
+                    Made = 7
+                },
+                new ConnectionRequestsDated
+                {
+                    Date = "22 January to 28 January",
+                    Made = 7
+                }
+            }
+        };
+
+        string expectedJsonStr = JsonSerializer.Serialize(cRb, JsonOptions);
+
+        const string dateStr = "2024-01-31";
+
+        HttpResponseMessage httpResponseMessage =
+            await Client.SendAsync(CreateHttpGetRequest(
+                $"report/connection-requests-4-week-breakdown?date={dateStr}",
+                RoleTypes.DfeAdmin));
+
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+
+        string result = await httpResponseMessage.Content.ReadAsStringAsync();
+        Assert.Equal(expectedJsonStr, result);
+    }
+
+    [Fact]
+    public async Task Then_ConnectionRequests_FourWeekBreakdown_Admin_February_ShouldBeCorrect()
+    {
+        ConnectionRequestsBreakdown cRb = new()
+        {
+            Totals = new ConnectionRequests
+            {
+                Made = 28
+            },
+            WeeklyReports = new[]
+            {
+                new ConnectionRequestsDated
+                {
+                    Date = "29 January to 4 February",
+                    Made = 7
+                },
+                new ConnectionRequestsDated
+                {
+                    Date = "5 February to 11 February",
+                    Made = 7
+                },
+                new ConnectionRequestsDated
+                {
+                    Date = "12 February to 18 February",
+                    Made = 7
+                },
+                new ConnectionRequestsDated
+                {
+                    Date = "19 February to 25 February",
+                    Made = 7
+                }
+            }
+        };
+
+        string expectedJsonStr = JsonSerializer.Serialize(cRb, JsonOptions);
+
+        const string dateStr = "2024-02-29";
+
+        HttpResponseMessage httpResponseMessage =
+            await Client.SendAsync(CreateHttpGetRequest(
+                $"report/connection-requests-4-week-breakdown?date={dateStr}",
+                RoleTypes.DfeAdmin));
+
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+
+        string result = await httpResponseMessage.Content.ReadAsStringAsync();
+        Assert.Equal(expectedJsonStr, result);
+    }
+
+    [Fact]
+    public async Task Then_ConnectionRequests_Total_Admin_ShouldBeCorrect()
+    {
+        ConnectionRequests cR = new()
+        {
+            Made = 60
+        };
+
+        string expectedJsonStr = JsonSerializer.Serialize(cR, JsonOptions);
+
+        HttpResponseMessage httpResponseMessage =
+            await Client.SendAsync(CreateHttpGetRequest(
+                $"report/connection-requests-total",
+                RoleTypes.DfeAdmin));
+
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+
+        string result = await httpResponseMessage.Content.ReadAsStringAsync();
+        Assert.Equal(expectedJsonStr, result);
     }
 
     [Theory]
@@ -119,6 +265,18 @@ public class WhenUsingMinimalAdminReportEndPointTest : BaseEndPointTest, IAsyncL
                 roleType));
 
         Assert.Equal(HttpStatusCode.Forbidden, httpResponseMessage.StatusCode);
+    }
+
+    [Theory]
+    [InlineData(RoleTypes.DfeAdmin)]
+    public async Task Then_CorrectRole_Will_BeOK(string roleType)
+    {
+        HttpResponseMessage httpResponseMessage =
+            await Client.SendAsync(CreateHttpGetRequest(
+                $"report/service-searches-total?serviceTypeId={ServiceTypeId}",
+                roleType));
+
+        Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
     }
 
     public Task DisposeAsync() => Task.CompletedTask;

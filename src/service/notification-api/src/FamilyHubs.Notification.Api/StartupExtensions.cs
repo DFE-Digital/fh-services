@@ -17,6 +17,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using FamilyHubs.Notification.Core.Commands.CreateNotification;
 using FamilyHubs.Notification.Data.NotificationServices;
+using FamilyHubs.SharedKernel.Razor.Health;
 using Notify.Client;
 using Notify.Interfaces;
 using FamilyHubs.SharedKernel.Security;
@@ -50,6 +51,8 @@ public static class StartupExtensions
         services.AddSingleton<ICrypto, Crypto>();
 
         services.AddBearerAuthentication(configuration);
+        
+        services.AddFamilyHubsHealthChecks(configuration);
 
         services.RegisterAppDbContext(configuration);
 
@@ -64,7 +67,6 @@ public static class StartupExtensions
 
     private static void RegisterMinimalEndPoints(this IServiceCollection services)
     {
-        services.AddTransient<MinimalGeneralEndPoints>();
         services.AddTransient<MinimalNotifyEndPoints>();
     }
 
@@ -183,15 +185,14 @@ public static class StartupExtensions
 
         webApplication.MapControllers();
 
+        webApplication.MapFamilyHubsHealthChecks(typeof(StartupExtensions).Assembly);
+
         await RegisterEndPoints(webApplication);
     }
 
     private static async Task RegisterEndPoints(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
-
-        var genapi = scope.ServiceProvider.GetService<MinimalGeneralEndPoints>();
-        genapi?.RegisterMinimalGeneralEndPoints(app);
 
         var notifyApi = scope.ServiceProvider.GetService<MinimalNotifyEndPoints>();
         notifyApi?.RegisterMinimalNotifyEndPoints(app);

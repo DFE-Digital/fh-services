@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace FamilyHubs.Report.Api.AcceptanceTests.Builders.Http;
 
@@ -54,7 +50,7 @@ public class HttpRequestFactory
         //if the content is not empty, then create HttpContent with the Accept header set to 'application/json'
         else
         {
-            var json = JsonConvert.SerializeObject(content);
+            var json = JsonSerializer.Serialize(content);
             var result = new ByteArrayContent(Encoding.UTF8.GetBytes(json));
             result.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             return result;

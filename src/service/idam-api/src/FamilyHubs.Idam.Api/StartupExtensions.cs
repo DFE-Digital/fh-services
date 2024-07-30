@@ -5,7 +5,7 @@ using FamilyHubs.Idam.Core.Services;
 using FamilyHubs.Idam.Data.Interceptors;
 using FamilyHubs.Idam.Data.Repository;
 using FamilyHubs.SharedKernel.GovLogin.AppStart;
-using FamilyHubs.SharedKernel.Telemetry;
+using FamilyHubs.SharedKernel.Razor.Health;
 using FamilyHubs.SharedKernel.Security;
 using FluentValidation;
 using MediatR;
@@ -129,6 +129,8 @@ public static class StartupExtensions
         });
 
         services.AddBearerAuthentication(configuration);
+
+        services.AddFamilyHubsHealthChecks(configuration);
     }
 
     public static async Task ConfigureWebApplication(this WebApplication webApplication)
@@ -145,6 +147,8 @@ public static class StartupExtensions
         webApplication.UseHttpsRedirection();
 
         webApplication.MapControllers();
+
+        webApplication.MapFamilyHubsHealthChecks(typeof(StartupExtensions).Assembly);
 
         await webApplication.InitialiseDatabase();
     }
