@@ -18,33 +18,24 @@ public class Program
 {
     private static void Main(string[] args)
     {
-        try
-        {
-            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            AddServices(builder.Services, builder.Configuration);
-            ConfigureAppInsights(builder);
+        AddServices(builder.Services, builder.Configuration);
+        ConfigureAppInsights(builder);
 
-            WebApplication app = builder.Build();
+        WebApplication app = builder.Build();
 
-            IServiceScope serviceScope = app.Services.CreateScope();
-            RegisterMinimalEndPoints(serviceScope, app);
+        IServiceScope serviceScope = app.Services.CreateScope();
+        RegisterMinimalEndPoints(serviceScope, app);
 
-            app.UseSwagger();
-            app.UseSwaggerUI();
-            app.UseSerilogRequestLogging();
-            app.UseMiddleware<ExceptionHandlingMiddleware>();
-            app.UseHttpsRedirection();
-            app.UseAuthorization();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        app.UseSerilogRequestLogging();
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
+        app.UseHttpsRedirection();
+        app.UseAuthorization();
 
-            app.Run();
-        }
-        catch (Exception e)
-        {
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "out.txt");
-            File.WriteAllText(path, e.ToString());
-            throw;
-        }
+        app.Run();
     }
 
     private static void AddServices(IServiceCollection services, IConfiguration configuration)
