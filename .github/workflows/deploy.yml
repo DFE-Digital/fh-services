@@ -192,6 +192,7 @@ jobs:
       project_name: FamilyHubs.Idams.Maintenance.UI
       project_type: ui
       azure_app_name: as-fh-idam-maintenance-ui
+      stop_service: true
     secrets: inherit
 
   ui-manage-deploy:
