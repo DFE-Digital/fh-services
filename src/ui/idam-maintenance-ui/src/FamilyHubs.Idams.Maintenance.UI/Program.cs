@@ -30,6 +30,7 @@ public static class Program
         }
         catch (Exception e)
         {
+            File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "out.txt"), e.ToString());
             Log.Fatal(e, "An unhandled exception occurred during bootstrapping");
         }
         finally
