@@ -109,6 +109,7 @@ public static class StartupExtensions
 
         services.AddFamilyHubs(configuration);
         services.AddFamilyHubsUi(configuration);
+        services.AddFamilyHubsHealthChecks(configuration);
     }
 
     public static void RegisterApplicationComponents(this IServiceCollection services, IConfiguration configuration)
