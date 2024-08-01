@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="FamilyHubs.ReferralService.Shared" Version="1.0.15" />
-    <PackageReference Include="FamilyHubs.ServiceDirectory.Shared" Version="2.0.6" />
+    <PackageReference Include="FamilyHubs.ServiceDirectory.Shared" Version="2.0.7" />
     <PackageReference Include="FamilyHubs.SharedKernel.Razor" Version="9.1.5" />
     <PackageReference Include="FluentValidation" Version="11.7.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
