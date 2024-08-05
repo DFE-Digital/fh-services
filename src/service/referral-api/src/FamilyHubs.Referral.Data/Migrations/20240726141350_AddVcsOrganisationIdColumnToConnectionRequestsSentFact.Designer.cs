@@ -5,6 +5,7 @@ using FamilyHubs.Referral.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,9 +13,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyHubs.Referral.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240726141350_AddVcsOrganisationIdColumnToConnectionRequestsSentFact")]
+    partial class AddVcsOrganisationIdColumnToConnectionRequestsSentFact
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,9 +54,6 @@ namespace FamilyHubs.Referral.Data.Migrations
                     b.Property<short?>("HttpResponseCode")
                         .HasColumnType("smallint");
 
-                    b.Property<long>("LaOrganisationId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
@@ -62,6 +62,9 @@ namespace FamilyHubs.Referral.Data.Migrations
                         .HasColumnType("nvarchar(512)")
                         .HasAnnotation("Microsoft.EntityFrameworkCore.DataEncryption.IsEncrypted", true)
                         .HasAnnotation("Microsoft.EntityFrameworkCore.DataEncryption.StorageFormat", StorageFormat.Default);
+
+                    b.Property<long>("OrganisationId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("RequestCorrelationId")
                         .IsRequired()
