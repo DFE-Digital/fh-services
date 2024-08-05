@@ -82,8 +82,8 @@ public class ConnectionRequestsOverallSteps
 
         // Below assertions to be commented in when tickets for RAPI Accepted and Decline are completed
 
-        /*sevenDaysResponse.Accepted.Should()
-            .BeGreaterOrEqualTo(0, "because there should be a value set for connection requests accepted.");*/
+        sevenDaysResponse?.Accepted.Should()
+            .BeGreaterOrEqualTo(0, "because there should be a value set for connection requests accepted.");
         /*sevenDaysResponse.Declined.Should()
             .BeGreaterOrEqualTo(0, "because there should be a value set for connection requests declined.");*/
     }
@@ -104,8 +104,8 @@ public class ConnectionRequestsOverallSteps
 
         // Below assertions to be commented in when tickets for RAPI Accepted and Decline are completed
 
-        /*fourWeekResponse.Totals.Accepted.Should()
-            .BeGreaterOrEqualTo(0, "because there should be a value set for connection requests accepted.");*/
+        fourWeekResponse?.Totals.Accepted.Should()
+            .BeGreaterOrEqualTo(0, "because there should be a value set for connection requests accepted.");
         /*fourWeekResponse.Totals.Declined.Should()
             .BeGreaterOrEqualTo(0, "because there should be a value set for connection requests declined.");*/
     }
@@ -133,8 +133,8 @@ public class ConnectionRequestsOverallSteps
 
             // Below assertions to be commented in when tickets for RAPI Accepted and Decline are completed
 
-            /*report.Accepted.Should()
-                .BeGreaterOrEqualTo(0, "because there should be a value set for connection requests accepted.");*/
+            report.Accepted.Should()
+                .BeGreaterOrEqualTo(0, "because there should be a value set for connection requests accepted.");
             /*report.Declined.Should()
                 .BeGreaterOrEqualTo(0, "because there should be a value set for connection requests declined.");*/
         }

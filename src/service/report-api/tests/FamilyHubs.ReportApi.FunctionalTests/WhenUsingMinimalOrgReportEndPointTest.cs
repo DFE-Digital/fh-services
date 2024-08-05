@@ -118,24 +118,24 @@ public class WhenUsingMinimalOrgReportEndPointTest : BaseEndPointTest, IAsyncLif
     [Theory]
     [InlineData(10, "2024-01-07", 7)]
     [InlineData(10, "2024-01-14", 7)]
-    [InlineData(32, "2024-01-07", 7)]
-    [InlineData(32, "2024-01-14", 7)]
+    [InlineData(30, "2024-01-07", 7)]
+    [InlineData(30, "2024-01-14", 7)]
     [InlineData(20, "2024-01-07", 0)]
     [InlineData(20, "2024-01-14", 0)]
-    [InlineData(64, "2024-01-07", 0)]
-    [InlineData(64, "2024-01-14", 0)]
+    [InlineData(40, "2024-01-07", 0)]
+    [InlineData(40, "2024-01-14", 0)]
     [InlineData(10, "2024-02-11", 0)]
     [InlineData(10, "2024-02-18", 0)]
-    [InlineData(32, "2024-02-11", 0)]
-    [InlineData(32, "2024-02-18", 0)]
+    [InlineData(30, "2024-02-11", 0)]
+    [InlineData(30, "2024-02-18", 0)]
     [InlineData(20, "2024-02-11", 7)]
     [InlineData(20, "2024-02-18", 7)]
-    [InlineData(64, "2024-02-11", 7)]
-    [InlineData(64, "2024-02-18", 7)]
+    [InlineData(40, "2024-02-11", 7)]
+    [InlineData(40, "2024-02-18", 7)]
     [InlineData(10, "2024-03-31", 0)]
     [InlineData(20, "2024-03-31", 0)]
-    [InlineData(32, "2024-03-31", 0)]
-    [InlineData(64, "2024-03-31", 0)]
+    [InlineData(30, "2024-03-31", 0)]
+    [InlineData(40, "2024-03-31", 0)]
     public async Task Then_ConnectionRequests_PastSevenDays_La_ShouldBeCorrect(long laOrgId, string dateStr, int requestsMade)
     {
         ConnectionRequests cR = new()
@@ -158,7 +158,7 @@ public class WhenUsingMinimalOrgReportEndPointTest : BaseEndPointTest, IAsyncLif
 
     [Theory]
     [InlineData(10)] // LA
-    [InlineData(32)] // VCS
+    [InlineData(30)] // VCS
     public async Task Then_ConnectionRequests_FourWeekBreakdown_La_January_ShouldBeCorrect(int orgId)
     {
         ConnectionRequestsBreakdown cRb = new()
@@ -209,7 +209,7 @@ public class WhenUsingMinimalOrgReportEndPointTest : BaseEndPointTest, IAsyncLif
 
     [Theory]
     [InlineData(20)] // LA
-    [InlineData(64)] // VCS
+    [InlineData(40)] // VCS
     public async Task Then_ConnectionRequests_FourWeekBreakdown_La_February_ShouldBeCorrect(int orgId)
     {
         ConnectionRequestsBreakdown cRb = new()
@@ -260,9 +260,9 @@ public class WhenUsingMinimalOrgReportEndPointTest : BaseEndPointTest, IAsyncLif
 
     [Theory]
     [InlineData(10, 31)] // LA
-    [InlineData(32, 31)] // VCS
+    [InlineData(30, 31)] // VCS
     [InlineData(20, 29)] // LA
-    [InlineData(64, 29)] // VCS
+    [InlineData(40, 29)] // VCS
     public async Task Then_ConnectionRequests_Total_La_ShouldBeCorrect(long laOrgId, int requestsMade)
     {
         ConnectionRequests cR = new()

@@ -44,6 +44,16 @@ public class WhenUsingGetConnectionRequestsSentQuery
             {
                 OrganisationKey = 2,
                 OrganisationId = 20
+            },
+            new OrganisationDim
+            {
+                OrganisationKey = 3,
+                OrganisationId = 30
+            },
+            new OrganisationDim
+            {
+                OrganisationKey = 4,
+                OrganisationId = 40
             }
         };
 
@@ -55,7 +65,8 @@ public class WhenUsingGetConnectionRequestsSentQuery
                 OrganisationKey = 1,
                 DateDim = dateDimList[0],
                 OrganisationDim = organisationDimList[0],
-                VcsOrganisationId = 1
+                VcsOrganisationKey = 3,
+                VcsOrganisationDim = organisationDimList[2]
             },
             new ConnectionRequestsSentFact
             {
@@ -63,7 +74,8 @@ public class WhenUsingGetConnectionRequestsSentQuery
                 OrganisationKey = 1,
                 DateDim = dateDimList[0],
                 OrganisationDim = organisationDimList[0],
-                VcsOrganisationId = 1
+                VcsOrganisationKey = 3,
+                VcsOrganisationDim = organisationDimList[2]
             },
             new ConnectionRequestsSentFact
             {
@@ -71,7 +83,8 @@ public class WhenUsingGetConnectionRequestsSentQuery
                 OrganisationKey = 2,
                 DateDim = dateDimList[0],
                 OrganisationDim = organisationDimList[1],
-                VcsOrganisationId = 2
+                VcsOrganisationKey = 4,
+                VcsOrganisationDim = organisationDimList[3]
             },
             new ConnectionRequestsSentFact
             {
@@ -79,7 +92,8 @@ public class WhenUsingGetConnectionRequestsSentQuery
                 OrganisationKey = 2,
                 DateDim = dateDimList[0],
                 OrganisationDim = organisationDimList[1],
-                VcsOrganisationId = 2
+                VcsOrganisationKey = 4,
+                VcsOrganisationDim = organisationDimList[3]
             },
             new ConnectionRequestsSentFact
             {
@@ -87,7 +101,8 @@ public class WhenUsingGetConnectionRequestsSentQuery
                 OrganisationKey = 1,
                 DateDim = dateDimList[1],
                 OrganisationDim = organisationDimList[0],
-                VcsOrganisationId = 1
+                VcsOrganisationKey = 3,
+                VcsOrganisationDim = organisationDimList[2]
             },
             new ConnectionRequestsSentFact
             {
@@ -95,7 +110,8 @@ public class WhenUsingGetConnectionRequestsSentQuery
                 OrganisationKey = 2,
                 DateDim = dateDimList[1],
                 OrganisationDim = organisationDimList[1],
-                VcsOrganisationId = 3
+                VcsOrganisationKey = 4,
+                VcsOrganisationDim = organisationDimList[3]
             },
             new ConnectionRequestsSentFact
             {
@@ -165,13 +181,13 @@ public class WhenUsingGetConnectionRequestsSentQuery
     [InlineData(10, "2024-08-04", 7, 1)]
     [InlineData(10, "2024-06-08", 7, 0)]
     [InlineData(10, "2024-12-31", 365, 3)]
-    [InlineData(1, "2024-08-08", 1, 2)]
-    [InlineData(1, "2024-08-04", 1, 1)]
-    [InlineData(1, "2024-06-08", 1, 0)]
-    [InlineData(1, "2024-08-08", 7, 3)]
-    [InlineData(1, "2024-08-04", 7, 1)]
-    [InlineData(1, "2024-06-08", 7, 0)]
-    [InlineData(1, "2024-12-31", 365, 3)]
+    [InlineData(30, "2024-08-08", 1, 2)]
+    [InlineData(30, "2024-08-04", 1, 1)]
+    [InlineData(30, "2024-06-08", 1, 0)]
+    [InlineData(30, "2024-08-08", 7, 3)]
+    [InlineData(30, "2024-08-04", 7, 1)]
+    [InlineData(30, "2024-06-08", 7, 0)]
+    [InlineData(30, "2024-12-31", 365, 3)]
     [InlineData(100, "2024-12-31", 365, 0)]
     public async Task Then_GetConnectionRequestsForOrg_Should_Return_ExpectedResult(long orgId, string dateStr, int days, int requestsMade)
     {
@@ -191,10 +207,9 @@ public class WhenUsingGetConnectionRequestsSentQuery
 
     [Theory]
     [InlineData(10, 3)]
-    [InlineData(1, 3)]
+    [InlineData(30, 3)]
     [InlineData(20, 3)]
-    [InlineData(2, 2)]
-    [InlineData(3, 1)]
+    [InlineData(40, 3)]
     [InlineData(100, 0)]
     public async Task Then_GetTotalConnectionRequestsForOrg_Should_Return_ExpectedResult(long orgId, int requestsMade)
     {

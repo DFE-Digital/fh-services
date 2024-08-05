@@ -48,7 +48,7 @@ public class GetConnectionRequestsSentFactQuery : IGetConnectionRequestsSentFact
             .Where(cRSf => cRSf.OrganisationDim != null)
             .Where(cRSf => cRSf.DateDim.Date > startDate && cRSf.DateDim.Date <= request.Date!.Value)
             .Where(cRSf => cRSf.OrganisationDim!.OrganisationId == request.OrgId!.Value ||
-                           cRSf.VcsOrganisationId == request.OrgId!.Value);
+                           cRSf.VcsOrganisationDim!.OrganisationId == request.OrgId!.Value);
 
         return new ConnectionRequests
         {
@@ -63,7 +63,7 @@ public class GetConnectionRequestsSentFactQuery : IGetConnectionRequestsSentFact
             .Include(cRSf => cRSf.OrganisationDim)
             .Where(cRSf => cRSf.OrganisationDim != null)
             .Where(cRSf => cRSf.OrganisationDim!.OrganisationId == request.OrgId!.Value ||
-                           cRSf.VcsOrganisationId == request.OrgId!.Value);
+                           cRSf.VcsOrganisationDim!.OrganisationId == request.OrgId!.Value);
 
         return new ConnectionRequests
         {

@@ -3,7 +3,6 @@ using FamilyHubs.Report.Core.Exceptions;
 using FamilyHubs.SharedKernel.Exceptions;
 using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace FamilyHubs.Report.Api.Middleware;
 
@@ -42,32 +41,23 @@ internal sealed class ExceptionHandlingMiddleware : IMiddleware
         httpContext.Response.StatusCode = statusCode;
         await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
-    private static int GetStatusCode(Exception exception)
-    {
-        if (exception is ReportingException reportingException)
-        {
-            return reportingException.HttpStatusCode;
-        }
 
-        return exception.GetType().ShortDisplayName() switch
+    private static int GetStatusCode(Exception exception) =>
+        exception switch
         {
-            "BadRequestException" => StatusCodes.Status400BadRequest,
-            "NotFoundException" => StatusCodes.Status404NotFound,
-            "ValidationException" => StatusCodes.Status422UnprocessableEntity,
+            ReportingException reportingException => reportingException.HttpStatusCode,
+            BadHttpRequestException bre => bre.StatusCode,
+            ValidationException => StatusCodes.Status422UnprocessableEntity,
             _ => StatusCodes.Status500InternalServerError
         };
-    }
 
-
-    private static string GetTitle(Exception exception)
-    {
-        return exception switch
+    private static string GetTitle(Exception exception) =>
+        exception switch
         {
             ReportingException reportingException => reportingException.Title,
             ApplicationException applicationException => applicationException.Message,
             _ => "Server Error"
         };
-    }
 
     private static IEnumerable<ValidationFailure> GetValidationErrors(Exception exception)
     {

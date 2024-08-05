@@ -133,7 +133,6 @@ public class ReportDbContext : DbContext, IReportDbContext
             entity.Property(e => e.RequestCorrelationId).IsRequired().HasMaxLength(50);
             entity.Property(e => e.ResponseTimestamp).HasPrecision(7);
             entity.Property(e => e.ConnectionRequestReferenceCode).HasColumnType("nchar(6)");
-            entity.Property(e => e.VcsOrganisationId).IsRequired();
             entity.Property(e => e.Created).IsRequired().HasPrecision(7);
             entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(512);
             entity.Property(e => e.Modified).HasPrecision(7);
@@ -214,6 +213,12 @@ public class ReportDbContext : DbContext, IReportDbContext
             .HasOne(e => e.OrganisationDim)
             .WithMany()
             .HasForeignKey(e => e.OrganisationKey)
+            .IsRequired(false);
+
+        modelBuilder.Entity<ConnectionRequestsSentFact>()
+            .HasOne(e => e.VcsOrganisationDim)
+            .WithMany()
+            .HasForeignKey(e => e.VcsOrganisationKey)
             .IsRequired(false);
 
 #if UserAccount

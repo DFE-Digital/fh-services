@@ -187,6 +187,35 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
         reportDbContext.AddOrganisationDim(organisationDimOne);
         reportDbContext.AddOrganisationDim(organisationDimTwo);
+        
+        OrganisationDim vcsOrganisationDimOne = new()
+        {
+            OrganisationKey = 3,
+            OrganisationTypeId = byte.MaxValue,
+            OrganisationTypeName = "",
+            OrganisationId = 30,
+            OrganisationName = "",
+            Created = DateTime.UtcNow,
+            CreatedBy = "",
+            Modified = DateTime.UtcNow,
+            ModifiedBy = ""
+        };
+
+        OrganisationDim vcsOrganisationDimTwo = new()
+        {
+            OrganisationKey = 4,
+            OrganisationTypeId = byte.MaxValue,
+            OrganisationTypeName = "",
+            OrganisationId = 40,
+            OrganisationName = "",
+            Created = DateTime.UtcNow,
+            CreatedBy = "",
+            Modified = DateTime.UtcNow,
+            ModifiedBy = ""
+        };
+
+        reportDbContext.AddOrganisationDim(vcsOrganisationDimOne);
+        reportDbContext.AddOrganisationDim(vcsOrganisationDimTwo);
 
         await reportDbContext.SaveChangesAsync();
     }
@@ -247,7 +276,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 ConnectionRequestsSentMetricsId = 0,
                 RequestTimestamp = DateTime.UtcNow,
                 RequestCorrelationId = "",
-                VcsOrganisationId = 32,
+                VcsOrganisationKey = 3,
                 Created = DateTime.UtcNow,
                 CreatedBy = "",
                 Modified = DateTime.UtcNow,
@@ -267,7 +296,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 ConnectionRequestsSentMetricsId = 0,
                 RequestTimestamp = DateTime.UtcNow,
                 RequestCorrelationId = "",
-                VcsOrganisationId = 64,
+                VcsOrganisationKey = 4,
                 Created = DateTime.UtcNow,
                 CreatedBy = "",
                 Modified = DateTime.UtcNow,

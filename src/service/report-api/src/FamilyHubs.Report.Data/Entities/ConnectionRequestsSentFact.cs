@@ -34,7 +34,8 @@ public class ConnectionRequestsSentFact
 
     public string? ConnectionRequestReferenceCode { get; init; }
 
-    public long VcsOrganisationId { get; init; }
+    public long? VcsOrganisationKey { get; init; }
+    [NotMapped] public OrganisationDim? VcsOrganisationDim { get; init; }
 
     public DateTime Created { get; init; }
 

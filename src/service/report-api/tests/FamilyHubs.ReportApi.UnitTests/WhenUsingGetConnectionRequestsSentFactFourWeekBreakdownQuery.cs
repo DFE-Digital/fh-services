@@ -50,7 +50,17 @@ public class WhenUsingGetConnectionRequestsSentFactFourWeekBreakdownQuery
             {
                 OrganisationKey = 2,
                 OrganisationId = 20
-            }
+            },
+            new OrganisationDim
+            {
+                OrganisationKey = 3,
+                OrganisationId = 30
+            },
+            new OrganisationDim
+            {
+                OrganisationKey = 4,
+                OrganisationId = 40
+            },
         };
 
         List<ConnectionRequestsSentFact> connectionRequestsSentFactList = new()
@@ -61,7 +71,8 @@ public class WhenUsingGetConnectionRequestsSentFactFourWeekBreakdownQuery
                 OrganisationKey = 1,
                 DateDim = dateDimList[0],
                 OrganisationDim = organisationDimList[0],
-                VcsOrganisationId = 1
+                VcsOrganisationKey = 4,
+                VcsOrganisationDim = organisationDimList[3]
             },
             new ConnectionRequestsSentFact
             {
@@ -69,7 +80,8 @@ public class WhenUsingGetConnectionRequestsSentFactFourWeekBreakdownQuery
                 OrganisationKey = 1,
                 DateDim = dateDimList[0],
                 OrganisationDim = organisationDimList[0],
-                VcsOrganisationId = 1
+                VcsOrganisationKey = 4,
+                VcsOrganisationDim = organisationDimList[3]
             },
             new ConnectionRequestsSentFact
             {
@@ -77,7 +89,8 @@ public class WhenUsingGetConnectionRequestsSentFactFourWeekBreakdownQuery
                 OrganisationKey = 2,
                 DateDim = dateDimList[0],
                 OrganisationDim = organisationDimList[1],
-                VcsOrganisationId = 2
+                VcsOrganisationKey = 3,
+                VcsOrganisationDim = organisationDimList[2]
             },
             new ConnectionRequestsSentFact
             {
@@ -85,7 +98,8 @@ public class WhenUsingGetConnectionRequestsSentFactFourWeekBreakdownQuery
                 OrganisationKey = 2,
                 DateDim = dateDimList[0],
                 OrganisationDim = organisationDimList[1],
-                VcsOrganisationId = 2
+                VcsOrganisationKey = 3,
+                VcsOrganisationDim = organisationDimList[2]
             },
             new ConnectionRequestsSentFact
             {
@@ -108,7 +122,8 @@ public class WhenUsingGetConnectionRequestsSentFactFourWeekBreakdownQuery
                 OrganisationKey = 1,
                 DateDim = dateDimList[2],
                 OrganisationDim = organisationDimList[0],
-                VcsOrganisationId = 3
+                VcsOrganisationKey = 4,
+                VcsOrganisationDim = organisationDimList[3]
             },
             new ConnectionRequestsSentFact
             {
@@ -116,7 +131,8 @@ public class WhenUsingGetConnectionRequestsSentFactFourWeekBreakdownQuery
                 OrganisationKey = 2,
                 DateDim = dateDimList[2],
                 OrganisationDim = organisationDimList[1],
-                VcsOrganisationId = 4
+                VcsOrganisationKey = 4,
+                VcsOrganisationDim = organisationDimList[3]
             },
             new ConnectionRequestsSentFact
             {
@@ -229,7 +245,7 @@ public class WhenUsingGetConnectionRequestsSentFactFourWeekBreakdownQuery
 
     [Theory]
     [InlineData(10, 3, 2, 0, 1, 0)] // LA
-    [InlineData(1, 2, 2, 0, 0, 0)] // VCS
+    [InlineData(30, 2, 2, 0, 0, 0)] // VCS
     public async Task Then_GetFourWeekBreakdownForOrg_Should_Return_Results_IfRequestsMade(
         long orgId,
         int madeTotal, int madeWeekOne, int madeWeekTwo, int madeWeekThree, int madeWeekFour)
