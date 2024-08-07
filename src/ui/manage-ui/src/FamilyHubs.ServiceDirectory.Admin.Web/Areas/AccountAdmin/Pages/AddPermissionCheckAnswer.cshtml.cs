@@ -51,7 +51,7 @@ public class AddPermissionCheckAnswer : AccountAdminViewModel
 
         var organisationId = LaJourney ? _laOrganisationId.ToString() : _vcsOrganisationId.ToString();
         dto.Claims.Add(new AccountClaimDto { Name = FamilyHubsClaimTypes.OrganisationId, Value = organisationId });
-        
+
         var outcome = await _idamClient.AddAccount(dto);
 
         if (outcome.IsSuccess)

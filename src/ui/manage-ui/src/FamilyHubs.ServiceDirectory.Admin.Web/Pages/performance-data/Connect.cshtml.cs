@@ -62,15 +62,13 @@ public class ConnectPerformanceDataModel : HeaderPageModel
         Totals = new Dictionary<PerformanceDataType, long>
         {
             { PerformanceDataType.SearchesTotal, searches },
-            { requestsType, requests.Made },
-            { PerformanceDataType.ConnectionAccepted, requests.Accepted }
+            { requestsType, requests.Made }
         };
 
         TotalsLast7Days = new Dictionary<PerformanceDataType, long>
         {
             { PerformanceDataType.SearchesTotal, searchesPast7Days },
-            { requestsType, requestPast7Days.Made },
-            { PerformanceDataType.ConnectionAccepted, requestPast7Days.Accepted }
+            { requestsType, requestPast7Days.Made }
         };
 
         Breakdown = await _reportingClient.GetServicesSearches4WeekBreakdown(ConnectServiceType, organisationId, cancellationToken);
