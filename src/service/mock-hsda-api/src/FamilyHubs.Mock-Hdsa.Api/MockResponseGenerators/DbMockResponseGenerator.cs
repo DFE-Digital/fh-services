@@ -659,7 +659,7 @@ public record MockResponse(
     //todo: either the direct json response, or for lists, an array and we handle the paging with code
     string? ResponseBody = "");
 
-public class DbMockResponseGenerator(MockDbContext context)
+public class DbMockResponseGenerator(MockDbContext context) : IMockResponseGenerator
 {
     public async Task<(int, string?)> GetMockResponseAsync(
         string operationName, string? scenarioName, string? pathParams, string? queryParams)

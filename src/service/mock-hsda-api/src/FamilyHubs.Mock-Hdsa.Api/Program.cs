@@ -29,7 +29,7 @@ var configuration = new ConfigurationBuilder()
 builder.Services.AddDbContext<MockDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("HsdsMockResponsesConnection")));
 
-builder.Services.AddScoped<DbMockResponseGenerator>();
+builder.Services.AddScoped<IMockResponseGenerator, DbMockResponseGenerator>();
 
 var app = builder.Build();
 
