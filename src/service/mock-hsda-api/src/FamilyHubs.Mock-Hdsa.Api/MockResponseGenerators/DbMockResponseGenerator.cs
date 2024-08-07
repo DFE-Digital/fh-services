@@ -1,7 +1,6 @@
-﻿using Azure;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace FamilyHubs.Mock_Hdsa.Api;
+namespace FamilyHubs.Mock_Hdsa.Api.MockResponseGenerators;
 
 public static class Responses
 {
@@ -634,17 +633,17 @@ public class MockDbContext : DbContext
 
         // Seed initial data
         modelBuilder.Entity<MockResponse>().HasData(
-        new MockResponse (1, "getAPIMetaInformation", ResponseBody: "{\r\n  \"version\": \"3.0\",\r\n  \"profile\": \"https://todo/put/our/profile/uri/here\",\r\n  \"openapi_url\": \"https://raw.githubusercontent.com/openreferral/specification/3.0/schema/openapi.json\"\r\n}\r\n"),
-        new MockResponse (2, "getFullyNestedServiceById", PathParams: "id=ac148810-d857-441c-9679-408f346de14b", ResponseBody: Responses.GetFullyNestedServiceByIdDefault),
-        new MockResponse (3, "getPaginatedListOfServices", ResponseBody: Responses.GetPaginatedListOfServicesDefault),
-        new MockResponse (4, "getTaxonomyById"),
-        new MockResponse (5, "getPaginatedListOfTaxonomies"),
-        new MockResponse (6, "getPaginatedListOfTaxonomyTerms"),
-        new MockResponse (7, "getTaxonomyTermById"),
-        new MockResponse (8, "getOrganizationById"),
-        new MockResponse (9, "getPaginatedListOfOrganizations"),
-        new MockResponse (10, "getServiceAtLocationWithNestedDataById"),
-        new MockResponse (11, "getPaginatedListOfServiceAtLocation")
+        new MockResponse(1, "getAPIMetaInformation", ResponseBody: "{\r\n  \"version\": \"3.0\",\r\n  \"profile\": \"https://todo/put/our/profile/uri/here\",\r\n  \"openapi_url\": \"https://raw.githubusercontent.com/openreferral/specification/3.0/schema/openapi.json\"\r\n}\r\n"),
+        new MockResponse(2, "getFullyNestedServiceById", PathParams: "id=ac148810-d857-441c-9679-408f346de14b", ResponseBody: Responses.GetFullyNestedServiceByIdDefault),
+        new MockResponse(3, "getPaginatedListOfServices", ResponseBody: Responses.GetPaginatedListOfServicesDefault),
+        new MockResponse(4, "getTaxonomyById"),
+        new MockResponse(5, "getPaginatedListOfTaxonomies"),
+        new MockResponse(6, "getPaginatedListOfTaxonomyTerms"),
+        new MockResponse(7, "getTaxonomyTermById"),
+        new MockResponse(8, "getOrganizationById"),
+        new MockResponse(9, "getPaginatedListOfOrganizations"),
+        new MockResponse(10, "getServiceAtLocationWithNestedDataById"),
+        new MockResponse(11, "getPaginatedListOfServiceAtLocation")
         );
     }
 }

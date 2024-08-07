@@ -1,6 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
-
-namespace FamilyHubs.Mock_Hdsa.Api;
+﻿namespace FamilyHubs.Mock_Hdsa.Api.MockResponseGenerators;
 
 public class MockResponseGenerator()
 {
