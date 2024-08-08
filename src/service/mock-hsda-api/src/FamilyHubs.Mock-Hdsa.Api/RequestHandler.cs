@@ -96,6 +96,8 @@ public static class RequestHandler
 
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
+        context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+
         await context.Response.WriteAsync(responseBody);
     }
 

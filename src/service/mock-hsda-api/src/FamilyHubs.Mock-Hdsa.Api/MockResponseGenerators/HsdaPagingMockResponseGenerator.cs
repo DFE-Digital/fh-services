@@ -59,6 +59,18 @@ public class HsdaPagingMockResponseGenerator : IMockResponseGenerator
             operationName, scenarioName, pathParams, queryParams);
 
         //todo: handle page and/or perPage being 0
+        //todo: handle page params out of range - what does the canonical api do?
+        // an UK OR example...
+        // https://api.porism.com/ServiceDirectoryService/services/?page=100&per_page=50 (past end of data)
+        // returns...
+        // {"totalElements":3671,"totalPages":74,"number":100,"size":50,"first":false,"last":true,"content":[]}
+        // (note: no empty)
+        // also, https://api.porism.com/ServiceDirectoryService/services/?page=0&per_page=0
+        // returns...
+        // {"timestamp":"2024-08-08T13:42:12.364+0000","status":500,"error":"Internal Server Error","message":"Page index must not be less than zero!","path":"/ServiceDirectoryService/services/"}
+        // note: page index isn't less than zero as the error message says
+        // looks like out of bounds page handling is not part of the spec, so we can just do something sensible
+        //todo: uk swagger has 500 returning '{}'
         if (isListOperation && page != 0 && perPage != 0 && responseBody != null)
         {
             responseBody = GetPagedResultJson(responseBody, page, perPage);
@@ -102,7 +114,7 @@ public class HsdaPagingMockResponseGenerator : IMockResponseGenerator
         int totalPages = (int)Math.Ceiling(totalItems / (double)perPage);
 
         // Determine if the requested page is out of range
-        if (page < 1 || page > totalPages)
+        if (page < 1) // || page > totalPages)
         {
             //todo: what does the spec say about responses in this situation?
             throw new ArgumentOutOfRangeException(nameof(page), "Page number is out of range.");
@@ -123,7 +135,7 @@ public class HsdaPagingMockResponseGenerator : IMockResponseGenerator
             PageNumber = page,
             Size = pagedContents.Count,
             FirstPage = page == 1,
-            LastPage = page == totalPages,
+            LastPage = page == totalPages || pagedContents.Count == 0,
             Empty = pagedContents.Count == 0,
             Contents = pagedContents
         };
