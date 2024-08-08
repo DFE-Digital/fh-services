@@ -766,13 +766,26 @@ public static class Responses
       ]
     }
 """;
+
+    //todo: for lists, could just have the array of contents, as the paging properties are handled automatically
+    public const string GetPaginatedListOfServicesEmpty = """
+    {
+      "total_items": 1,
+      "total_pages": 1,
+      "page_number": 1,
+      "size": 1,
+      "first_page": true,
+      "last_page": false,
+      "empty": false,
+      "contents": [
+      ]
+    }
+""";
 }
 
-public class MockDbContext : DbContext
+public class MockDbContext(DbContextOptions<MockDbContext> options) : DbContext(options)
 {
-    public MockDbContext(DbContextOptions<MockDbContext> options) : base(options) { }
-
-    public DbSet<MockResponse> MockResponses { get; set; }
+    public DbSet<MockResponse> MockResponses { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -791,6 +804,8 @@ public class MockDbContext : DbContext
         new MockResponse(1001, "getFullyNestedServiceById", PathParams: "id=ac148810-d857-441c-9679-408f346de14b", ResponseBody: Responses.GetFullyNestedServiceByIdDefault),
         new MockResponse(2001, "getPaginatedListOfServices", ResponseBody: Responses.GetPaginatedListOfServicesDefault),
         new MockResponse(2002, "getPaginatedListOfServices", ScenarioName: "Pagination", ResponseBody: Responses.GetPaginatedListOfServicesPagination),
+        new MockResponse(2003, "getPaginatedListOfServices", ScenarioName: "Empty", ResponseBody: Responses.GetPaginatedListOfServicesEmpty),
+        new MockResponse(2004, "getPaginatedListOfServices", ScenarioName: "500", StatusCode: 500),
         new MockResponse(3001, "getTaxonomyById"),
         new MockResponse(4001, "getPaginatedListOfTaxonomies"),
         new MockResponse(5001, "getPaginatedListOfTaxonomyTerms"),
@@ -821,6 +836,7 @@ public class DbMockResponseGenerator(MockDbContext context) : IMockResponseGener
     public async Task<(int, string?)> GetMockResponseAsync(
         string operationName, string? scenarioName, string? pathParams, string? queryParams)
     {
+        //todo: case insensitive
         var response = await context.MockResponses
             .Where(r => r.OperationName == operationName &&
                         (r.ScenarioName == scenarioName || r.ScenarioName == null) &&

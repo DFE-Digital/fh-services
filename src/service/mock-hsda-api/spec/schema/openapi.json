@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "REQUIRED -- TITLE OF YOUR API HERE",
-    "version": "REQUIRED -- The version of this document. This is distinct from the OpenAPI Schema version and the version of your API.",
+    "title": "DfE HSDS Mock API",
+    "version": "1.0",
     "summary": "SUMMARY HERE",
     "description": "DESCRIPTION HERE",
     "contact": {
