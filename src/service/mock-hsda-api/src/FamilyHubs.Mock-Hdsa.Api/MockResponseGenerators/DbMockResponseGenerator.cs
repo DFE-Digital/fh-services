@@ -612,6 +612,160 @@ public static class Responses
       ]
     }
 """;
+
+    public const string GetPaginatedListOfServicesPagination = """
+    {
+      "total_items": 1,
+      "total_pages": 1,
+      "page_number": 1,
+      "size": 1,
+      "first_page": true,
+      "last_page": false,
+      "empty": false,
+      "contents": [
+        {
+          "id": "ac148810-d857-441c-9679-408f346de14b",
+          "name": "Service 1"
+        },
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 2"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 3"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 4"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 5"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 6"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 7"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 8"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 9"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 10"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 11"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 12"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 13"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 14"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 15"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 16"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 17"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 18"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 19"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 20"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 21"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 22"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 23"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 24"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 25"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 26"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 27"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 28"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 29"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 30"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 31"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 32"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 33"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 34"
+},
+{
+  "id": "ac148810-d857-441c-9679-408f346de14b",
+  "name": "Service 35"
+}
+      ]
+    }
+""";
 }
 
 public class MockDbContext : DbContext
