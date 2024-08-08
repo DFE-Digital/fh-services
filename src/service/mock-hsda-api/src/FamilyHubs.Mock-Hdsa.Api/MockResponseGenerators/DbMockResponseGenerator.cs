@@ -836,16 +836,13 @@ public class DbMockResponseGenerator(MockDbContext context) : IMockResponseGener
     public async Task<(int, string?)> GetMockResponseAsync(
         string operationName, string? scenarioName, string? pathParams, string? queryParams)
     {
-        //todo: case insensitive
         var response = await context.MockResponses
             .Where(r => r.OperationName == operationName &&
-                        (r.ScenarioName == scenarioName || r.ScenarioName == null) &&
-                        (r.PathParams == pathParams || r.PathParams == null) &&
-                        (r.QueryParams == queryParams || r.QueryParams == null))
+                (scenarioName != null ? r.ScenarioName == scenarioName : r.ScenarioName == null) &&
+                (r.PathParams == pathParams || r.PathParams == null) &&
+                (r.QueryParams == queryParams || r.QueryParams == null))
             .FirstOrDefaultAsync();
 
-        //todo: what to return if no response found, 500, 404?
-        // different status code depending on if get entity or list? 404 for entity, 500 for list?
         if (response == null)
         {
             return (404, "");
