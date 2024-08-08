@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Specialized;
+using System.Text.Json;
+using System.Web;
 
 namespace FamilyHubs.Mock_Hdsa.Api.MockResponseGenerators;
 
@@ -14,7 +16,9 @@ public class PaginatedResult
     public List<dynamic> Contents { get; set; }
 }
 
-
+/// <summary>
+/// Builds on the generic DB mock response generator but adds custom handling for HSDA paging
+/// </summary>
 public class HsdaPagingMockResponseGenerator : IMockResponseGenerator
 {
     private readonly DbMockResponseGenerator _dbMockResponseGenerator;
@@ -24,18 +28,68 @@ public class HsdaPagingMockResponseGenerator : IMockResponseGenerator
         _dbMockResponseGenerator = dbMockResponseGenerator;
     }
 
+    //todo: reorder path params from db to be in alphabetical order, so 
     public async Task<(int, string?)> GetMockResponseAsync(string operationName, string? scenarioName, string? pathParams, string? queryParams)
     {
-        var mockResponse = await _dbMockResponseGenerator.GetMockResponseAsync(operationName, scenarioName, pathParams, queryParams);
+        bool isListOperation = operationName.StartsWith("getPaginatedListOf");
 
-        if (operationName == "getPaginatedListOfServices")
+        int page = 0, perPage = 0;
+
+        if (isListOperation)
         {
+            // if page and per_page have been supplied, take them out of queryParams used for the db search
+            // as we'll handle the paging ourselves
+            if (!string.IsNullOrEmpty(queryParams))
+            {
+                var queryStringParams = HttpUtility.ParseQueryString(queryParams);
+
+                if (int.TryParse(queryStringParams["page"], out page)
+                    && int.TryParse(queryStringParams["per_page"], out perPage))
+                {
+                    queryParams = CreateQueryStringWithoutPageParams(queryStringParams);
+                    if (queryParams == "")
+                    {
+                        queryParams = null;
+                    }
+                }
+            }
         }
 
-        return mockResponse;
+        (int statusCode, string? responseBody) = await _dbMockResponseGenerator.GetMockResponseAsync(
+            operationName, scenarioName, pathParams, queryParams);
+
+        //todo: handle page and/or perPage being 0
+        if (isListOperation && page != 0 && perPage != 0 && responseBody != null)
+        {
+            responseBody = GetPagedResultJson(responseBody, page, perPage);
+        }
+
+        return (statusCode, responseBody);
     }
 
-    public PaginatedResult GetPagedResult(string jsonString, int page, int perPage)
+    private static string CreateQueryStringWithoutPageParams(NameValueCollection queryStringParams)
+    {
+        // Exclude "page" and "per_page" and sort the keys
+        var filteredParams = queryStringParams.AllKeys
+            .Where(key => key != "page" && key != "per_page")
+            .OrderBy(key => key)
+            .SelectMany(key => queryStringParams.GetValues(key)!
+                .Select(value => $"{HttpUtility.UrlEncode(key)}={HttpUtility.UrlEncode(value)}"));
+
+        // Join the key-value pairs into a query string
+        return string.Join("&", filteredParams);
+    }
+
+    private string GetPagedResultJson(string jsonString, int page, int perPage)
+    {
+        var result = GetPagedResult(jsonString, page, perPage);
+        return JsonSerializer.Serialize(result, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
+    }
+
+    private PaginatedResult GetPagedResult(string jsonString, int page, int perPage)
     {
         // Parse the JSON document
         var jsonDoc = JsonDocument.Parse(jsonString);
