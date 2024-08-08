@@ -839,8 +839,8 @@ public class DbMockResponseGenerator(MockDbContext context) : IMockResponseGener
         var response = await context.MockResponses
             .Where(r => r.OperationName == operationName &&
                 (scenarioName != null ? r.ScenarioName == scenarioName : r.ScenarioName == null) &&
-                (r.PathParams == pathParams || r.PathParams == null) &&
-                (r.QueryParams == queryParams || r.QueryParams == null))
+                (pathParams != null ? r.PathParams == pathParams : r.PathParams == null) &&
+                (queryParams != null ? r.QueryParams == queryParams : r.QueryParams == null))
             .FirstOrDefaultAsync();
 
         if (response == null)
