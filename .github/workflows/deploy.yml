@@ -2,7 +2,7 @@ name: Deploy
 run-name: Deploy to ${{ inputs.environment }}
 
 concurrency:
-  group: "${{ github.workflow }}-${{ github.ref }}"
+  group: "${{ github.workflow }}-${{ github.ref }}-${{ inputs.environment }}"
   cancel-in-progress: true
 
 on:
@@ -40,7 +40,7 @@ jobs:
                    src/ui/find-ui/,
                    src/ui/idam-maintenance-ui/,
                    src/ui/manage-ui/
-                 ]
+        ]
         include:
           - project: src/service/idam-api/
             job_name: "Build - IDAM API"

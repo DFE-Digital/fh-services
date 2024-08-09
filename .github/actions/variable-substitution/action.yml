@@ -60,7 +60,6 @@ runs:
         Crypto.KeyVaultIdentifier: ${{ steps.fetch.outputs.CRYPTO_KEYVAULTIDENTIFIER }}
         Crypto.tenantId: ${{ steps.fetch.outputs.CRYPTO_TENANTID }}
         Crypto.UseKeyVault: ${{ steps.fetch.outputs.CRYPTO_USEKEYVAULT }}
-        EventGridUrl: ${{ steps.fetch.outputs.EVENTGRIDURL }}
         GovUkOidcConfiguration.BearerTokenSigningKey: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_BEARERTOKENSIGNINGKEY }}
         ServiceDirectoryApiBaseUrl: ${{ steps.fetch.outputs.SERVICEDIRECTORYAPIBASEURL }}
         ConnectionStrings.ServiceDirectoryConnection: ${{ steps.fetch.outputs.CONNECTIONSTRINGS_SERVICEDIRECTORYCONNECTION }}
@@ -74,8 +73,6 @@ runs:
         ServiceDirectoryUrl: ${{ steps.fetch.outputs.SERVICEDIRECTORYURL }}
         ReferralApiUrl: ${{ steps.fetch.outputs.REFERRALAPIURL }}
         Idams.Endpoint: ${{ steps.fetch.outputs.IDAMS_ENDPOINT }}
-        GovUkOidcConfiguration.PathBasedRouting.SubSiteTriggerPaths: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_PATHBASEDROUTING_SUBSITETRIGGERPATHS }}
-        GovUkOidcConfiguration.PathBasedRouting.DiscriminatorPath: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_PATHBASEDROUTING_DISCRIMINATORPATH }}
         FamilyHubsUi.Urls.GovUkLoginAccountPage: ${{ steps.fetch.outputs.FAMILYHUBSUI_URLS_GOVUKLOGINACCOUNTPAGE }}
         FamilyHubsUi.Urls.DashboardWeb: ${{ steps.fetch.outputs.FAMILYHUBSUI_URLS_DASHBOARDWEB }}
         DataProtection.TenantId: ${{ steps.fetch.outputs.DATAPROTECTION_TENANTID }}
@@ -84,8 +81,6 @@ runs:
         DataProtection.ClientId: ${{ steps.fetch.outputs.DATAPROTECTION_CLIENTID }}
         ConnectionStrings.SharedKernelConnection: ${{ steps.fetch.outputs.CONNECTIONSTRINGS_SHAREDKERNELCONNECTION }}
         ServiceDirectoryAPI.Endpoint: ${{ steps.fetch.outputs.SERVICEDIRECTORYAPI_ENDPOINT }}
-        BlobStorageFilename: ${{ steps.fetch.outputs.BLOBSTORAGEFILENAME }}
-        BlobStorageConnectionString: ${{ steps.fetch.outputs.BLOBSTORAGECONNECTIONSTRING }}
         SqlServerCache.Connection: ${{ steps.fetch.outputs.SQLSERVERCACHE_CONNECTION }}
         CacheConnection: ${{ steps.fetch.outputs.CACHECONNECTION }}
         FamilyHubsUi.Urls.ConnectWeb: ${{ steps.fetch.outputs.FAMILYHUBSUI_URLS_CONNECTWEB }}
@@ -98,12 +93,10 @@ runs:
         GovUkOidcConfiguration.Oidc.ClientId: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_OIDC_CLIENTID }}
         GovUkOidcConfiguration.Oidc.KeyVaultIdentifier: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_OIDC_KEYVAULTIDENTIFIER }}
         GovUkOidcConfiguration.Oidc.TwoFactorEnabled: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_OIDC_TWOFACTORENABLED }}
-        GovUkOidcConfiguration.StubAuthentication.UseStubAuthentication: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_STUBAUTHENTICATION_USESTUBAUTHENTICATION }}
-        GovUkOidcConfiguration.StubAuthentication.UseStubClaims: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_STUBAUTHENTICATION_USESTUBCLAIMS }}
-        GovUkOidcConfiguration.Urls.NoClaimsRedirect: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_URLS_NOCLAIMSREDIRECT }}
-        GovUkOidcConfiguration.Urls.SignedOutRedirect: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_URLS_SIGNEDOUTREDIRECT }}
-        GovUkOidcConfiguration.Urls.TermsAndConditionsRedirect: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_URLS_TERMSANDCONDITIONSREDIRECT }}
         IdamApi: ${{ steps.fetch.outputs.IDAMAPI }}
         Notification.Endpoint: ${{ steps.fetch.outputs.NOTIFICATION_ENDPOINT }}
         ReferralApiBaseUrl: ${{ steps.fetch.outputs.REFERRALAPIBASEURL }}
         ReportingApiBaseUrl: ${{ steps.fetch.outputs.REPORTINGAPIBASEURL }}
+        FamilyHubsUi.Analytics.ContainerId: ${{ steps.fetch.outputs.FAMILYHUBSUI_ANALYTICS_CONTAINERID }}
+        FamilyHubsUi.Analytics.MeasurementId: ${{ steps.fetch.outputs.FAMILYHUBSUI_ANALYTICS_MEASUREMENTID }}
+        FamilyHubsUi.Analytics.ClarityId: ""

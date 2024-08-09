@@ -50,6 +50,7 @@ jobs:
           dotnet-version: ${{ vars.DOTNET_VERSION }}
 
       - name: Install Entity Framework
+        if: ${{ inputs.data_project_name != '' && inputs.database_context != ''}}
         shell: bash
         run: dotnet tool install --global dotnet-ef
 
