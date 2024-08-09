@@ -58,7 +58,7 @@
     </p>
     <h3>Query parameters</h3>
     <p>
-        If the endpoint supported query parameters, the server will return the mock response with the matching query parameters.
+        If the endpoint supports query parameters, the server will return the mock response with the matching query parameters.
     </p>
     <p>
         The query parameters should be in the database as a standard query parameter string (without the initial '?'), except the keys should be sorted alphabetically.
@@ -113,7 +113,7 @@ The CORS response header recommended by the HSDS is added to each response, whic
     </p>
 
     <h1>Development notes</h1>
-    <p>This server has been implemented as a generic mock HTTP server, with HSDS specific customisations dependency injected in via the HsdaPagingMockResponseGenerator class.</p>
+    <p>This server has been implemented as a generic mock HTTP server, fed from an OpenAPI spec file, with HSDS specific customisations dependency injected in via the HsdaPagingMockResponseGenerator class.</p>
 <p>The HSDS specific customisation currently consists of implementing paging over the mocked result set in the list endpoints.</p>
 <p>Further customisation can be added as the needs arise.</p>",
     "contact": {
