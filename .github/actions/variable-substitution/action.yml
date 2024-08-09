@@ -99,4 +99,4 @@ runs:
         ReportingApiBaseUrl: ${{ steps.fetch.outputs.REPORTINGAPIBASEURL }}
         FamilyHubsUi.Analytics.ContainerId: ${{ steps.fetch.outputs.FAMILYHUBSUI_ANALYTICS_CONTAINERID }}
         FamilyHubsUi.Analytics.MeasurementId: ${{ steps.fetch.outputs.FAMILYHUBSUI_ANALYTICS_MEASUREMENTID }}
-        FamilyHubsUi.Analytics.ClarityId: ""
+        FamilyHubsUi.Analytics.ClarityId: ${{ steps.fetch.outputs.FAMILYHUBSUI_ANALYTICS_CLARITYID }}
