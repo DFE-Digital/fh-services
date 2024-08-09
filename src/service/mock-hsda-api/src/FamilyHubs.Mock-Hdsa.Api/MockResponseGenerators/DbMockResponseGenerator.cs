@@ -821,8 +821,6 @@ public class MockDbContext(DbContextOptions<MockDbContext> options) : DbContext(
 // curl "https://localhost:7298/services?page=2&per_page=10" -H "accept: application/json" -H "X-Mock-Response-Id: Pagination"
 // curl -w "\nHTTP Status Code: %{http_code}\n" "https://localhost:7298/services" -H "accept: application/json" -H "X-Mock-Response-Id: 500"
 
-
-//todo: we _could_ combine path params and query params into a single string, but it's probably better to keep them separate
 public record MockResponse(
     int Id,
     string OperationName,

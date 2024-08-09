@@ -120,9 +120,6 @@ public class HsdaPagingMockResponseGenerator : IMockResponseGenerator
             throw new ArgumentOutOfRangeException(nameof(page), "Page number is out of range.");
         }
 
-        // Get the items for the requested page
-        //var pagedContents = contents.Skip((page - 1) * perPage).Take(perPage).ToList();
-
         var pagedContents = contents.Skip((page - 1) * perPage).Take(perPage)
             .Select(x => JsonSerializer.Deserialize<dynamic>(x.GetRawText()))
             .ToList();
