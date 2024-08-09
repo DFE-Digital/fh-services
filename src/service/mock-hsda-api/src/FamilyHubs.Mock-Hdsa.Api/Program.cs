@@ -53,6 +53,7 @@ app.UseSwagger(c =>
     {
         swaggerDoc.Paths = openApiDoc.Paths;
         swaggerDoc.Components = openApiDoc.Components;
+        swaggerDoc.Info.Description = openApiDoc.Info.Description;
     });
 });
 
