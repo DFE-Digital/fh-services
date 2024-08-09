@@ -3,6 +3,14 @@ using FamilyHubs.Mock_Hdsa.Api.MockResponseGenerators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
+// custom mock server vs APIM
+
+// devs can run the server locally
+// no need for devs & testers to learn APIM
+// APIM mock profile is very basic and doesn't support scenarios - still possible by combining other profiles, but working against the tool, rather than the tool working for us
+// custom is more flexible - we can easily get it to do as we need as requirements arise. e.g. paging has been implemented without setting up individual page responses. if we wanted to e.g. see if our code handles 1000 pages, we can implement that easily with a little bit of code, rather than manually setting up 1000 different responses in APIM
+// automated tests can set up and tear down test responses
+
 var builder = WebApplication.CreateBuilder(args);
 
 var openApiDoc = builder.Services.AddOpenApiSpecFromFile();
@@ -10,7 +18,12 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "HSDA Mock API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = openApiDoc.Info.Title,
+        Version = openApiDoc.Info.Version,
+        Description = openApiDoc.Info.Description
+    });
 
     c.CustomOperationIds(apiDesc =>
     {
