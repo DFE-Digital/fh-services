@@ -1,6 +1,11 @@
 @FamilyHubs.Mock_Hdsa.Api_HostAddress = http://localhost:5156
 
-GET {{FamilyHubs.Mock_Hdsa.Api_HostAddress}}/weatherforecast/
+GET {{FamilyHubs.Mock_Hdsa.Api_HostAddress}}/
+Accept: application/json
+
+###
+
+GET {{FamilyHubs.Mock_Hdsa.Api_HostAddress}}/services/ac148810-d857-441c-9679-408f346de14b
 Accept: application/json
 
 ###
