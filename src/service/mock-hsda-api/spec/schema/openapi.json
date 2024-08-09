@@ -4,8 +4,7 @@
     "title": "DfE HSDS Mock API",
     "version": "3.0",
     "summary": "SUMMARY HERE",
-    "description": "<h1>Introduction</h1>
-    <p>A mock server implementing v3 of the <a href=\"http://docs.openreferral.org/en/latest/index.html\">Human Services Data Specification (HSDS)</a>, part of the Open Referral Initiative.</p>
+    "description": "<p>A mock server implementing v3 of the <a href=\"http://docs.openreferral.org/en/latest/index.html\">Human Services Data Specification (HSDS)</a>, part of the Open Referral Initiative.</p>
     <h1>How to use</h1>
     <h2>Mock response keys</h2>
     <p>
@@ -39,18 +38,32 @@
         By default, when an endpoint is called, the server will return the mock response with a null scenario name.
     </p>
     <p>
-        If the request includes a header called X-Mock-Response-Id, the server will return the mock response with the matching scenario name of the given header value.
+        If the request includes a header called X-Mock-Response-Id, the server will return the mock response with the matching scenario name.
     </p>
+    <h4>Example scenario header</h4>
+    <p><code>X-Mock-Response-Id: 500</code></p>
+
     <h3>Path parameters</h3>
     <p>
         If the endpoint has path parameters, the server will return the mock response with the matching path parameters.
+    </p>
+    <p>
         The path parameters should be in the database as a string containing key=value pairs separated by &, ordered alphabetically by key.
-        For example, getFullyNestedServiceById has a path parameter of id, so to key the mock response for the id of ac148810-d857-441c-9679-408f346de14b, the path parameter would be id=ac148810-d857-441c-9679-408f346de14b.
+    </p>
+    <h4>Example path param</h4>
+    <p>
+        For example, getFullyNestedServiceById has a path parameter called id, so to key the mock response for the id of ac148810-d857-441c-9679-408f346de14b, the path parameter would be:
+</p>
+        <p><code>id=ac148810-d857-441c-9679-408f346de14b</code>
     </p>
     <h3>Query parameters</h3>
     <p>
         If the endpoint supported query parameters, the server will return the mock response with the matching query parameters.
+    </p>
+    <p>
         The query parameters should be in the database as a standard query parameter string (without the initial '?'), except the keys should be sorted alphabetically.
+    </p>
+    <p>
         So basically, the path and query parameters are stored in the database in the same format.
     </p>
 
@@ -62,13 +75,15 @@
             <li>response body</li>
         </ul>
     </p>
+    
+This allows errors to be injected, with full control over what response body is returned.
 
-    <h2>Custom response headers</h2>
-    The CORS response header recommended by the HSDS is added to each response.
-
-    <h1>Development notes</h1>
-    <p>This server has been implemented as a generic mock HTTP server, with HSDS specific customisations dependency injected in via the HsdaPagingMockResponseGenerator class.</p>
-    <h2>Seeded mock responses</h2>
+<h2>Custom response headers</h2>
+The CORS response header recommended by the HSDS is added to each response, which is
+<p>
+<code>Access-Control-Allow-Origin: *</code>
+</p>
+    <h1>Seeded mock responses</h1>
     <p>
         The database is seeded with some example mock responses.
         Here are some of the example mock responses for the getPaginatedListOfServices endpoint:
@@ -95,7 +110,12 @@
                 <td>curl -w \"\nHTTP Status Code: %{http_code}\n\" \"https://localhost:7298/services\" -H \"accept: application/json\" -H \"X-Mock-Response-Id: 500\"</td>
             </tr>
         </table>
-    </p>",
+    </p>
+
+    <h1>Development notes</h1>
+    <p>This server has been implemented as a generic mock HTTP server, with HSDS specific customisations dependency injected in via the HsdaPagingMockResponseGenerator class.</p>
+<p>The HSDS specific customisation currently consists of implementing paging over the mocked result set in the list endpoints.</p>
+<p>Further customisation can be added as the needs arise.</p>",
     "contact": {
       "name": "YOUR CONTACT NAME HERE",
       "url": "YOUR CONTACT URL HERE",
