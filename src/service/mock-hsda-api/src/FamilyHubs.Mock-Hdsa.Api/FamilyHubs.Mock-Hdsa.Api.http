@@ -21,7 +21,7 @@ X-Mock-Response-Id: Pagination
 
 ###
 
-GET {{FamilyHubs.Mock_Hdsa.Api_HostAddress}}/services
+GET {{FamilyHubs.Mock_Hdsa.Api_HostAddress}}/services?page=1&per_page=50
 Accept: application/json
 X-Mock-Response-Id: Empty
 
