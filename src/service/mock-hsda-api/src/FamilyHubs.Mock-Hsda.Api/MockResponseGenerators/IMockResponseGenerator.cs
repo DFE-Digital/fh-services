@@ -1,4 +1,4 @@
-﻿namespace FamilyHubs.Mock_Hdsa.Api.MockResponseGenerators;
+﻿namespace FamilyHubs.Mock_Hsda.Api.MockResponseGenerators;
 
 public interface IMockResponseGenerator
 {

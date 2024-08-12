@@ -1,5 +1,5 @@
-using FamilyHubs.Mock_Hdsa.Api;
-using FamilyHubs.Mock_Hdsa.Api.MockResponseGenerators;
+using FamilyHubs.Mock_Hsda.Api.MockResponseGenerators;
+using FamilyHubs.Mock_Hsda.Api;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -28,7 +28,7 @@ builder.Services.AddSwaggerGen(c =>
     c.CustomOperationIds(apiDesc =>
     {
         var path = apiDesc.RelativePath;
-        var method = apiDesc.HttpMethod.ToLowerInvariant();
+        var method = apiDesc.HttpMethod!.ToLowerInvariant();
         return $"{method}_{path?.Replace("/", "_")}";
     });
 });
@@ -40,7 +40,7 @@ var configuration = new ConfigurationBuilder()
     .Build();
 
 builder.Services.AddDbContext<MockDbContext>(options =>
-    options.UseSqlServer(configuration.GetConnectionString("HsdsMockResponsesConnection")));
+    options.UseSqlServer(configuration.GetConnectionString("HsdaMockResponsesConnection")));
 
 builder.Services.AddTransient<DbMockResponseGenerator>();
 builder.Services.AddTransient<IMockResponseGenerator, HsdaPagingMockResponseGenerator>();
@@ -49,7 +49,7 @@ var app = builder.Build();
 
 app.UseSwagger(c =>
 {
-    c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+    c.PreSerializeFilters.Add((swaggerDoc, _) =>
     {
         swaggerDoc.Paths = openApiDoc.Paths;
         swaggerDoc.Components = openApiDoc.Components;
@@ -66,9 +66,6 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapFallback(RequestHandler.Handle);
-});
+app.MapFallback(RequestHandler.Handle);
 
 app.Run();

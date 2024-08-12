@@ -1,7 +1,7 @@
-﻿using FamilyHubs.Mock_Hdsa.Api.MockResponseGenerators;
+﻿using FamilyHubs.Mock_Hsda.Api.MockResponseGenerators;
 using Microsoft.OpenApi.Models;
 
-namespace FamilyHubs.Mock_Hdsa.Api;
+namespace FamilyHubs.Mock_Hsda.Api;
 
 public static class RequestHandler
 {
@@ -13,7 +13,7 @@ public static class RequestHandler
         var path = context.Request.Path.Value;
         var method = context.Request.Method;
 
-        var (pathTemplate, pathParameters) = FindMatchingPathTemplate(openApiDoc, path);
+        var (pathTemplate, pathParameters) = FindMatchingPathTemplate(openApiDoc, path!);
         if (pathTemplate == null)
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
@@ -47,9 +47,9 @@ public static class RequestHandler
 
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
-        context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+        context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
 
-        await context.Response.WriteAsync(responseBody);
+        await context.Response.WriteAsync(responseBody!);
     }
 
     private static (string? PathTemplate, Dictionary<string, string>? Parameters) FindMatchingPathTemplate(

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace FamilyHubs.Mock_Hdsa.Api.MockResponseGenerators;
+namespace FamilyHubs.Mock_Hsda.Api.MockResponseGenerators;
 
 public class MockDbContext(DbContextOptions<MockDbContext> options) : DbContext(options)
 {

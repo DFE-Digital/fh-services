@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Web;
 
-namespace FamilyHubs.Mock_Hdsa.Api.MockResponseGenerators;
+namespace FamilyHubs.Mock_Hsda.Api.MockResponseGenerators;
 
 public class PaginatedResult
 {
@@ -13,7 +13,7 @@ public class PaginatedResult
     public bool FirstPage { get; set; }
     public bool LastPage { get; set; }
     public bool Empty { get; set; }
-    public List<dynamic> Contents { get; set; }
+    public List<object?> Contents { get; set; } = null!;
 }
 
 /// <summary>

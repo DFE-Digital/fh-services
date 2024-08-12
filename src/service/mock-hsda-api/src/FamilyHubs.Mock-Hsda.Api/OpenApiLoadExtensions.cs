@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Readers;
 
-namespace FamilyHubs.Mock_Hdsa.Api;
+namespace FamilyHubs.Mock_Hsda.Api;
 
 public static class OpenApiLoadExtensions
 {
