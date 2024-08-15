@@ -87,7 +87,7 @@ public class Time_Details_At_LocationModel : ServicePageModel<TimeDetailsUserInp
 
         var location = GetLocation();
 
-        ServiceModel!.Updated = ServiceModel!.Updated || HaveTimesDescriptionAtLocationBeenUpdated(location);
+        ServiceModel!.Updated = true;
 
         if (UserInput.HasDetails == true)
         {
@@ -107,10 +107,5 @@ public class Time_Details_At_LocationModel : ServicePageModel<TimeDetailsUserInp
         }
 
         return NextPage();
-    }
-
-    private bool HaveTimesDescriptionAtLocationBeenUpdated(ServiceLocationModel location)
-    {
-        return location.TimeDescription != UserInput.Description;
     }
 }
