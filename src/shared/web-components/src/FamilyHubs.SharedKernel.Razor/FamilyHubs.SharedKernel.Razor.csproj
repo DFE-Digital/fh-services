@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 	<PackageId>FamilyHubs.SharedKernel.Razor</PackageId>
-	<VersionPrefix>9.3.3</VersionPrefix>
+	<VersionPrefix>9.3.4</VersionPrefix>
 	<PackageReadmeFile>readme.md</PackageReadmeFile>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<RepositoryUrl>https://github.com/DFE-Digital/fh-shared-kernel</RepositoryUrl>

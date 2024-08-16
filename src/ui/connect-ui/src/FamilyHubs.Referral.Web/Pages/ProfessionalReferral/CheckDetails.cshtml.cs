@@ -7,6 +7,8 @@ using FamilyHubs.ReferralService.Shared.Dto;
 using FamilyHubs.ReferralService.Shared.Models;
 using FamilyHubs.SharedKernel.Identity.Models;
 using Microsoft.AspNetCore.Mvc;
+using FamilyHubs.ReferralService.Shared.Dto.CreateUpdate;
+using FamilyHubs.ReferralService.Shared.Dto.Metrics;
 using ReferralOrganisationDto = FamilyHubs.ReferralService.Shared.Dto.OrganisationDto;
 
 namespace FamilyHubs.Referral.Web.Pages.ProfessionalReferral;
@@ -71,7 +73,10 @@ public class CheckDetailsModel : ProfessionalReferralCacheModel
         // remove any previously entered contact details that are no longer selected
         model.RemoveNonSelectedContactDetails();
 
-        var referralResponse = await CreateConnectionRequest(long.Parse(model.ServiceId!), model);
+        var requestTimestamp = DateTimeOffset.UtcNow;
+
+        ReferralResponse referralResponse =
+            await CreateConnectionRequest(long.Parse(model.ServiceId!), model, requestTimestamp);
 
         await _referralNotificationService.OnCreateReferral(
             ProfessionalUser.Email, referralResponse.OrganisationId, referralResponse.ServiceName, referralResponse.Id);
@@ -79,11 +84,16 @@ public class CheckDetailsModel : ProfessionalReferralCacheModel
         return RedirectToPage("/ProfessionalReferral/Confirmation", new { requestNumber = referralResponse.Id });
     }
 
-    private async Task<ReferralResponse> CreateConnectionRequest(long serviceId, ConnectionRequestModel model)
+    private async Task<ReferralResponse> CreateConnectionRequest(
+        long serviceId,
+        ConnectionRequestModel model,
+        DateTimeOffset requestTimestamp)
     {
         var referralDto = CreateReferralDto(model, ProfessionalUser, serviceId);
 
-        return await _referralClientService.CreateReferral(referralDto);
+        var metric = new ConnectionRequestsSentMetricDto(requestTimestamp);
+
+        return await _referralClientService.CreateReferral(new CreateReferralDto(referralDto, metric));
     }
 
     private static ReferralDto CreateReferralDto(

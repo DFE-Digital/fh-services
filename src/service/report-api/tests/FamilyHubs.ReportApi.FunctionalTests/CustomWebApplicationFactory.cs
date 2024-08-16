@@ -62,7 +62,9 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         await SeedDateDimTable(reportDbContext);
         await SeedTimeDimTable(reportDbContext);
         await SeedServiceSearchesDimTable(reportDbContext);
+        await SeedOrganisationDimTable(reportDbContext);
         await SeedServiceSearchFactTable(reportDbContext);
+        await SeedConnectionRequestsSentFact(reportDbContext);
     }
 
     private static async Task SeedDateDimTable(IReportDbContext reportDbContext)
@@ -155,8 +157,72 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         await reportDbContext.SaveChangesAsync();
     }
 
+    private static async Task SeedOrganisationDimTable(IReportDbContext reportDbContext)
+    {
+        OrganisationDim organisationDimOne = new()
+        {
+            OrganisationKey = 1,
+            OrganisationTypeId = byte.MaxValue,
+            OrganisationTypeName = "",
+            OrganisationId = 10,
+            OrganisationName = "",
+            Created = DateTime.UtcNow,
+            CreatedBy = "",
+            Modified = DateTime.UtcNow,
+            ModifiedBy = ""
+        };
+
+        OrganisationDim organisationDimTwo = new()
+        {
+            OrganisationKey = 2,
+            OrganisationTypeId = byte.MaxValue,
+            OrganisationTypeName = "",
+            OrganisationId = 20,
+            OrganisationName = "",
+            Created = DateTime.UtcNow,
+            CreatedBy = "",
+            Modified = DateTime.UtcNow,
+            ModifiedBy = ""
+        };
+
+        reportDbContext.AddOrganisationDim(organisationDimOne);
+        reportDbContext.AddOrganisationDim(organisationDimTwo);
+        
+        OrganisationDim vcsOrganisationDimOne = new()
+        {
+            OrganisationKey = 3,
+            OrganisationTypeId = byte.MaxValue,
+            OrganisationTypeName = "",
+            OrganisationId = 30,
+            OrganisationName = "",
+            Created = DateTime.UtcNow,
+            CreatedBy = "",
+            Modified = DateTime.UtcNow,
+            ModifiedBy = ""
+        };
+
+        OrganisationDim vcsOrganisationDimTwo = new()
+        {
+            OrganisationKey = 4,
+            OrganisationTypeId = byte.MaxValue,
+            OrganisationTypeName = "",
+            OrganisationId = 40,
+            OrganisationName = "",
+            Created = DateTime.UtcNow,
+            CreatedBy = "",
+            Modified = DateTime.UtcNow,
+            ModifiedBy = ""
+        };
+
+        reportDbContext.AddOrganisationDim(vcsOrganisationDimOne);
+        reportDbContext.AddOrganisationDim(vcsOrganisationDimTwo);
+
+        await reportDbContext.SaveChangesAsync();
+    }
+
     private static async Task SeedServiceSearchFactTable(IReportDbContext reportDbContext)
     {
+        long serviceSearchFactId = 1;
         int dateKey = 1;
         long serviceSearchId = 1;
 
@@ -165,6 +231,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         {
             reportDbContext.AddServiceSearchFact(new ServiceSearchFact
             {
+                Id = serviceSearchFactId++,
                 DateKey = dateKey++,
                 TimeKey = 1,
                 ServiceSearchesKey = 1,
@@ -179,12 +246,61 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         {
             reportDbContext.AddServiceSearchFact(new ServiceSearchFact
             {
+                Id = serviceSearchFactId++,
                 DateKey = dateKey++,
                 TimeKey = 1,
                 ServiceSearchesKey = 2,
                 ServiceSearchId = serviceSearchId++,
                 Created = DateTime.UtcNow,
                 Modified = DateTime.UtcNow
+            });
+        }
+
+        await reportDbContext.SaveChangesAsync();
+    }
+
+    private static async Task SeedConnectionRequestsSentFact(IReportDbContext reportDbContext)
+    {
+        int connectionRequestsSentFactId = 1;
+        int dateKey = 1;
+
+        // January
+        for (int i = 1; i <= 31; i++)
+        {
+            reportDbContext.AddConnectionRequestsSentFact(new ConnectionRequestsSentFact
+            {
+                Id = connectionRequestsSentFactId++,
+                DateKey = dateKey++,
+                TimeKey = 1,
+                OrganisationKey = 1,
+                ConnectionRequestsSentMetricsId = 0,
+                RequestTimestamp = DateTime.UtcNow,
+                RequestCorrelationId = "",
+                VcsOrganisationKey = 3,
+                Created = DateTime.UtcNow,
+                CreatedBy = "",
+                Modified = DateTime.UtcNow,
+                ModifiedBy = ""
+            });
+        }
+
+        // February
+        for (int i = 1; i <= 29; i++)
+        {
+            reportDbContext.AddConnectionRequestsSentFact(new ConnectionRequestsSentFact
+            {
+                Id = connectionRequestsSentFactId++,
+                DateKey = dateKey++,
+                TimeKey = 1,
+                OrganisationKey = 2,
+                ConnectionRequestsSentMetricsId = 0,
+                RequestTimestamp = DateTime.UtcNow,
+                RequestCorrelationId = "",
+                VcsOrganisationKey = 4,
+                Created = DateTime.UtcNow,
+                CreatedBy = "",
+                Modified = DateTime.UtcNow,
+                ModifiedBy = ""
             });
         }
 

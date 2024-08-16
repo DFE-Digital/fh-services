@@ -1,11 +1,13 @@
 using EFCoreSecondLevelCacheInterceptor;
 using FamilyHubs.Report.Api.Endpoints;
 using FamilyHubs.Report.Api.Middleware;
+using FamilyHubs.Report.Core.Queries.ConnectionRequestsSentFacts;
 using FamilyHubs.Report.Core.Queries.ServiceSearchFacts;
 using FamilyHubs.Report.Core.Queries.ServiceSearchFacts.Validators;
 using FamilyHubs.Report.Data;
 using FamilyHubs.Report.Data.Repository;
 using FamilyHubs.SharedKernel.GovLogin.AppStart;
+using FamilyHubs.SharedKernel.Razor.Health;
 using FluentValidation;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +36,7 @@ public class Program
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         app.UseHttpsRedirection();
         app.UseAuthorization();
+        app.MapFamilyHubsHealthChecks(typeof(Program).Assembly);
 
         app.Run();
     }
@@ -49,6 +52,7 @@ public class Program
         services.AddApplicationInsightsTelemetry();
         services.AddTransient<ExceptionHandlingMiddleware>();
 
+        services.AddFamilyHubsHealthChecks(configuration);
 
         services.AddEFSecondLevelCache(options =>
         {
@@ -69,17 +73,21 @@ public class Program
 
         services.AddTransient<IGetServiceSearchFactQuery, GetServiceSearchFactQuery>();
         services.AddTransient<IGetFourWeekBreakdownQuery, GetFourWeekBreakdownQuery>();
+
+        services.AddTransient<IGetConnectionRequestsSentFactQuery, GetConnectionRequestsSentFactQuery>();
+        services.AddTransient<IGetConnectionRequestsSentFactFourWeekBreakdownQuery, GetConnectionRequestsSentFactFourWeekBreakdownQuery>();
+
         services.AddValidatorsFromAssembly(typeof(LaRequestValidator).Assembly);
 
         services.AddSingleton<MinimalAdminReportEndPoints>();
-        services.AddSingleton<MinimalLaReportEndPoints>();
+        services.AddSingleton<MinimalOrgReportEndPoints>();
     }
     
 
     private static void RegisterMinimalEndPoints(IServiceScope scope, WebApplication app)
     {
         scope.ServiceProvider.GetService<MinimalAdminReportEndPoints>()?.RegisterAdminReportEndPoints(app);
-        scope.ServiceProvider.GetService<MinimalLaReportEndPoints>()?.RegisterLaReportEndPoints(app);
+        scope.ServiceProvider.GetService<MinimalOrgReportEndPoints>()?.RegisterOrgReportEndPoints(app);
     }
 
     private static void ConfigureAppInsights(WebApplicationBuilder builder)

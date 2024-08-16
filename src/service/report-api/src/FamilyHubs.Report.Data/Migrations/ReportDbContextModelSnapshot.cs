@@ -23,6 +23,80 @@ namespace FamilyHubs.Report.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("FamilyHubs.Report.Data.Entities.ConnectionRequestsSentFact", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ConnectionRequestId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ConnectionRequestReferenceCode")
+                        .HasColumnType("nchar(6)");
+
+                    b.Property<long>("ConnectionRequestsSentMetricsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("Created")
+                        .HasPrecision(7)
+                        .HasColumnType("datetime2(7)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<int>("DateKey")
+                        .HasColumnType("int");
+
+                    b.Property<short?>("HttpResponseCode")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("Modified")
+                        .HasPrecision(7)
+                        .HasColumnType("datetime2(7)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<long?>("OrganisationKey")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("RequestCorrelationId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("RequestTimestamp")
+                        .HasPrecision(7)
+                        .HasColumnType("datetime2(7)");
+
+                    b.Property<DateTime?>("ResponseTimestamp")
+                        .HasPrecision(7)
+                        .HasColumnType("datetime2(7)");
+
+                    b.Property<int>("TimeKey")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("VcsOrganisationKey")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"));
+
+                    b.HasIndex("DateKey");
+
+                    b.HasIndex("OrganisationKey");
+
+                    b.HasIndex("TimeKey");
+
+                    b.HasIndex("VcsOrganisationKey");
+
+                    b.ToTable("ConnectionRequestsSentFacts", "dim");
+                });
+
             modelBuilder.Entity("FamilyHubs.Report.Data.Entities.DateDim", b =>
                 {
                     b.Property<int>("DateKey")
@@ -82,13 +156,59 @@ namespace FamilyHubs.Report.Data.Migrations
                     b.ToTable("DateDim", "dim");
                 });
 
-            modelBuilder.Entity("FamilyHubs.Report.Data.Entities.ServiceSearchFact", b =>
+            modelBuilder.Entity("FamilyHubs.Report.Data.Entities.OrganisationDim", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<long>("OrganisationKey")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OrganisationKey"));
+
+                    b.Property<DateTime>("Created")
+                        .HasPrecision(7)
+                        .HasColumnType("datetime2(7)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
+
+                    b.Property<DateTime>("Modified")
+                        .HasPrecision(7)
+                        .HasColumnType("datetime2(7)");
+
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
+
+                    b.Property<long>("OrganisationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("OrganisationName")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<byte>("OrganisationTypeId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("OrganisationTypeName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("OrganisationKey");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("OrganisationKey"));
+
+                    b.ToTable("OrganisationDim", "idam");
+                });
+
+            modelBuilder.Entity("FamilyHubs.Report.Data.Entities.ServiceSearchFact", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("Created")
                         .HasPrecision(7)
@@ -249,6 +369,118 @@ namespace FamilyHubs.Report.Data.Migrations
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("TimeKey"));
 
                     b.ToTable("TimeDim", "dim");
+                });
+
+            modelBuilder.Entity("FamilyHubs.Report.Data.Entities.UserAccountDim", b =>
+                {
+                    b.Property<long>("UserAccountKey")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UserAccountKey"));
+
+                    b.Property<DateTime>("Created")
+                        .HasPrecision(7)
+                        .HasColumnType("datetime2(7)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<DateTime>("LastModified")
+                        .HasPrecision(7)
+                        .HasColumnType("datetime2(7)");
+
+                    b.Property<string>("LastModifiedBy")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<long>("OrganisationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("OrganisationName")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<byte>("OrganisationTypeId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("OrganisationTypeName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTime>("SysEndTime")
+                        .HasPrecision(7)
+                        .HasColumnType("datetime2(7)");
+
+                    b.Property<DateTime>("SysStartTime")
+                        .HasPrecision(7)
+                        .HasColumnType("datetime2(7)");
+
+                    b.Property<long>("UserAccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<byte>("UserAccountRoleTypeId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("UserAccountRoleTypeName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("UserAccountKey");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("UserAccountKey"));
+
+                    b.ToTable("UserAccountDim", "idam");
+                });
+
+            modelBuilder.Entity("FamilyHubs.Report.Data.Entities.ConnectionRequestsSentFact", b =>
+                {
+                    b.HasOne("FamilyHubs.Report.Data.Entities.DateDim", "DateDim")
+                        .WithMany()
+                        .HasForeignKey("DateKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.Report.Data.Entities.OrganisationDim", "OrganisationDim")
+                        .WithMany()
+                        .HasForeignKey("OrganisationKey");
+
+                    b.HasOne("FamilyHubs.Report.Data.Entities.TimeDim", "TimeDim")
+                        .WithMany()
+                        .HasForeignKey("TimeKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.Report.Data.Entities.OrganisationDim", "VcsOrganisationDim")
+                        .WithMany()
+                        .HasForeignKey("VcsOrganisationKey");
+
+                    b.Navigation("DateDim");
+
+                    b.Navigation("OrganisationDim");
+
+                    b.Navigation("TimeDim");
+
+                    b.Navigation("VcsOrganisationDim");
                 });
 
             modelBuilder.Entity("FamilyHubs.Report.Data.Entities.ServiceSearchFact", b =>

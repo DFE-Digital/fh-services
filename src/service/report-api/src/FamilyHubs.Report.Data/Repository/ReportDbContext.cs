@@ -11,13 +11,19 @@ public class ReportDbContext : DbContext, IReportDbContext
 
     public DbSet<ServiceSearchFact> ServiceSearchFacts { get; init; } = null!;
 
+    public DbSet<ConnectionRequestsSentFact> ConnectionRequestsSentFacts { get; init; } = null!;
+
     public DbSet<DateDim> DateDim { get; init; } = null!;
 
     public DbSet<TimeDim> TimeDim { get; init; } = null!;
 
     public DbSet<ServiceSearchesDim> ServiceSearchesDim { get; init; } = null!;
 
+    public DbSet<OrganisationDim> OrganisationDim { get; init; }= null!;
+
     IQueryable<ServiceSearchFact> IReportDbContext.ServiceSearchFacts => ServiceSearchFacts;
+
+    IQueryable<ConnectionRequestsSentFact> IReportDbContext.ConnectionRequestsSentFacts => ConnectionRequestsSentFacts;
 
     public void AddServiceSearchFact(ServiceSearchFact serviceSearchFact) => ServiceSearchFacts.Add(serviceSearchFact);
 
@@ -26,6 +32,11 @@ public class ReportDbContext : DbContext, IReportDbContext
     public void AddTimeDim(TimeDim timeDim) => TimeDim.Add(timeDim);
 
     public void AddServiceSearchesDim(ServiceSearchesDim serviceSearchesDim) => ServiceSearchesDim.Add(serviceSearchesDim);
+
+    public void AddOrganisationDim(OrganisationDim organisationDim) => OrganisationDim.Add(organisationDim);
+
+    public void AddConnectionRequestsSentFact(ConnectionRequestsSentFact connectionRequestsSentFact) =>
+        ConnectionRequestsSentFacts.Add(connectionRequestsSentFact);
 
     public Task<int> ExecuteRawSql(FormattableString sql, CancellationToken cancellationToken = default) =>
         Database.ExecuteSqlAsync(sql, cancellationToken);
@@ -49,7 +60,7 @@ public class ReportDbContext : DbContext, IReportDbContext
         modelBuilder.Entity<ServiceSearchFact>(entity =>
         {
             entity.HasKey(e => e.Id).IsClustered();
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.DateKey).IsRequired();
             entity.Property(e => e.TimeKey).IsRequired();
             entity.Property(e => e.ServiceSearchesKey).IsRequired();
@@ -111,6 +122,61 @@ public class ReportDbContext : DbContext, IReportDbContext
             entity.Property(e => e.Modified).IsRequired().HasPrecision(7);
         });
 
+        modelBuilder.Entity<ConnectionRequestsSentFact>(entity =>
+        {
+            entity.HasKey(e => e.Id).IsClustered();
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.DateKey).IsRequired();
+            entity.Property(e => e.TimeKey).IsRequired();
+            entity.Property(e => e.ConnectionRequestsSentMetricsId).IsRequired();
+            entity.Property(e => e.RequestTimestamp).IsRequired().HasPrecision(7);
+            entity.Property(e => e.RequestCorrelationId).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.ResponseTimestamp).HasPrecision(7);
+            entity.Property(e => e.ConnectionRequestReferenceCode).HasColumnType("nchar(6)");
+            entity.Property(e => e.Created).IsRequired().HasPrecision(7);
+            entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(512);
+            entity.Property(e => e.Modified).HasPrecision(7);
+            entity.Property(e => e.ModifiedBy).HasMaxLength(512);
+        });
+
+        modelBuilder.Entity<OrganisationDim>().ToTable("OrganisationDim", schema: "idam");
+        modelBuilder.Entity<OrganisationDim>(entity =>
+        {
+            entity.HasKey(e => e.OrganisationKey).IsClustered();
+            entity.Property(e => e.OrganisationKey).ValueGeneratedOnAdd();
+            entity.Property(e => e.OrganisationTypeId).IsRequired();
+            entity.Property(e => e.OrganisationTypeName).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.OrganisationId).IsRequired();
+            entity.Property(e => e.OrganisationName).IsRequired().HasMaxLength(512);
+            entity.Property(e => e.Created).IsRequired().HasPrecision(7);
+            entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(320);
+            entity.Property(e => e.Modified).IsRequired().HasPrecision(7);
+            entity.Property(e => e.ModifiedBy).IsRequired().HasMaxLength(320);
+        });
+
+        modelBuilder.Entity<UserAccountDim>().ToTable("UserAccountDim", schema: "idam");
+        modelBuilder.Entity<UserAccountDim>(entity =>
+        {
+            entity.HasKey(e => e.UserAccountKey).IsClustered();
+            entity.Property(e => e.UserAccountKey).ValueGeneratedOnAdd();
+            entity.Property(e => e.UserAccountId).IsRequired();
+            entity.Property(e => e.UserAccountRoleTypeId).IsRequired();
+            entity.Property(e => e.UserAccountRoleTypeName).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.OrganisationTypeId).IsRequired();
+            entity.Property(e => e.OrganisationId).IsRequired();
+            entity.Property(e => e.OrganisationName).IsRequired().HasMaxLength(512);
+            entity.Property(e => e.OrganisationTypeName).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(255);
+            entity.Property(e => e.Email).IsRequired().HasMaxLength(512);
+            entity.Property(e => e.Status).IsRequired();
+            entity.Property(e => e.Created).IsRequired().HasPrecision(7);
+            entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(320);
+            entity.Property(e => e.LastModified).IsRequired().HasPrecision(7);
+            entity.Property(e => e.LastModifiedBy).IsRequired().HasMaxLength(320);
+            entity.Property(e => e.SysStartTime).IsRequired().HasPrecision(7);
+            entity.Property(e => e.SysEndTime).IsRequired().HasPrecision(7);
+        });
+
         // Relationship Mapping
 
         modelBuilder.Entity<ServiceSearchFact>()
@@ -130,6 +196,38 @@ public class ReportDbContext : DbContext, IReportDbContext
             .WithMany()
             .HasForeignKey(e => e.ServiceSearchesKey)
             .IsRequired();
+
+        modelBuilder.Entity<ConnectionRequestsSentFact>()
+            .HasOne(e => e.DateDim)
+            .WithMany()
+            .HasForeignKey(e => e.DateKey)
+            .IsRequired();
+
+        modelBuilder.Entity<ConnectionRequestsSentFact>()
+            .HasOne(e => e.TimeDim)
+            .WithMany()
+            .HasForeignKey(e => e.TimeKey)
+            .IsRequired();
+
+        modelBuilder.Entity<ConnectionRequestsSentFact>()
+            .HasOne(e => e.OrganisationDim)
+            .WithMany()
+            .HasForeignKey(e => e.OrganisationKey)
+            .IsRequired(false);
+
+        modelBuilder.Entity<ConnectionRequestsSentFact>()
+            .HasOne(e => e.VcsOrganisationDim)
+            .WithMany()
+            .HasForeignKey(e => e.VcsOrganisationKey)
+            .IsRequired(false);
+
+#if UserAccount
+        modelBuilder.Entity<ConnectionRequestsSentFact>()
+            .HasOne(e => e.UserAccountDim)
+            .WithMany()
+            .HasForeignKey(e => e.UserAccountKey)
+            .IsRequired(false);
+#endif
 
         base.OnModelCreating(modelBuilder);
     }

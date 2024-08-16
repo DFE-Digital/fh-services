@@ -252,6 +252,6 @@ public static class StartupExtensions
 
         app.MapRazorPages();
 
-        app.MapFamilyHubsHealthChecks();
+        app.MapFamilyHubsHealthChecks(typeof(StartupExtensions).Assembly);
     }
 }
