@@ -21,9 +21,6 @@ permissions:
   id-token: write
   contents: read
 
-# TODO: Review sequential running of "deploy" stages
-#   We currently run each "deploy" stage in sequential order as our App Service Plans are too weak, when we action ..
-#   .. this and upgrade we should look into parallelising the "deploy" stages again.
 jobs:
   build-projects-upload-artifacts:
     name: ${{ matrix.job_name }}
@@ -40,168 +37,142 @@ jobs:
                    src/ui/find-ui/,
                    src/ui/idam-maintenance-ui/,
                    src/ui/manage-ui/
-        ]
+                 ]
         include:
           - project: src/service/idam-api/
-            job_name: "Build - IDAM API"
+            job_name: Build - IDAM API
           - project: src/service/notification-api/
-            job_name: "Build - Notification API"
+            job_name: Build - Notification API
           - project: src/service/referral-api/
-            job_name: "Build - Referral API"
+            job_name: Build - Referral API
           - project: src/service/report-api/
-            job_name: "Build - Report API"
+            job_name: Build - Report API
           - project: src/service/service-directory-api/
-            job_name: "Build - Service Directory API"
+            job_name: Build - Service Directory API
           - project: src/ui/connect-dashboard-ui/
-            job_name: "Build - Connect Dashboard UI"
+            job_name: Build - Connect Dashboard UI
           - project: src/ui/connect-ui/
-            job_name: "Build - Connect UI"
+            job_name: Build - Connect UI
           - project: src/ui/find-ui/
-            job_name: "Build - Find UI"
+            job_name: Build - Find UI
           - project: src/ui/idam-maintenance-ui/
-            job_name: "Build - IDAM Maintenance UI"
+            job_name: Build - IDAM Maintenance UI
           - project: src/ui/manage-ui/
-            job_name: "Build - Manage UI"
+            job_name: Build - Manage UI
     uses: ./.github/workflows/build-upload-artifact.yml
     with:
       project: ${{ matrix.project }}
 
-  api-idam-deploy:
-    name: Deploy - IDAM API
+  deploy-api-services:
+    name: ${{ matrix.job_name }}
     needs: [ build-projects-upload-artifacts ]
+    strategy:
+      matrix:
+        artifact_name: [ idam-api,
+                         notification-api,
+                         referral-api,
+                         report-api,
+                         service-directory-api
+                       ]
+        include:
+          - artifact_name: idam-api
+            job_name: Deploy - IDAM API
+            keyvault_prefix: IDAM-API
+            project_name: FamilyHubs.Idam.Api
+            data_project_name: FamilyHubs.Idam.Data
+            database_context: ApplicationDbContext
+            azure_app_name: as-fh-idam-api
+
+          - artifact_name: notification-api
+            job_name: Deploy - Notification API
+            keyvault_prefix: NOTIFICATIONS-API
+            project_name: FamilyHubs.Notification.Api
+            data_project_name: FamilyHubs.Notification.Data
+            database_context: ApplicationDbContext
+            azure_app_name: as-fh-notification-api
+
+          - artifact_name: referral-api
+            job_name: Deploy - Referral API
+            keyvault_prefix: REFERRAL-API
+            project_name: FamilyHubs.Referral.Api
+            data_project_name: FamilyHubs.Referral.Data
+            database_context: ApplicationDbContext
+            azure_app_name: as-fh-referral-api
+
+          - artifact_name: report-api
+            job_name: Deploy - Report API
+            keyvault_prefix: REPORT-API
+            project_name: FamilyHubs.Report.Api
+            data_project_name: FamilyHubs.Report.Data
+            database_context: ReportDbContext
+            azure_app_name: as-fh-report-api
+
+          - artifact_name: service-directory-api
+            job_name: Deploy - Service Directory API
+            keyvault_prefix: SD-API
+            project_name: FamilyHubs.ServiceDirectory.Api
+            data_project_name: FamilyHubs.ServiceDirectory.Data
+            database_context: ApplicationDbContext
+            azure_app_name: as-fh-sd-api
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
-      artifact_name: idam-api
-      keyvault_prefix: IDAM-API
-      project_name: FamilyHubs.Idam.Api
-      data_project_name: FamilyHubs.Idam.Data
-      database_context: ApplicationDbContext
+      artifact_name: ${{ matrix.artifact_name }}
+      keyvault_prefix: ${{ matrix.keyvault_prefix }}
+      project_name: ${{ matrix.project_name }}
+      data_project_name: ${{ matrix.data_project_name }}
+      database_context: ${{ matrix.database_context }}
       project_type: service
-      azure_app_name: as-fh-idam-api
+      azure_app_name: ${{ matrix.azure_app_name }}
     secrets: inherit
 
-  api-notification-deploy:
-    name: Deploy - Notification API
-    needs: [ api-idam-deploy ]
+  deploy-ui-services:
+    name: ${{ matrix.job_name }}
+    needs: [ deploy-api-services ]
+    strategy:
+      matrix:
+        artifact_name: [ connect-dashboard-ui,
+                         connect-ui,
+                         find-ui,
+                         idam-maintenance-ui,
+                         manage-ui
+                       ]
+        include:
+          - artifact_name: connect-dashboard-ui
+            job_name: Deploy - Connect Dashboard UI
+            keyvault_prefix: CONNECT-DASHBOARD-UI
+            project_name: FamilyHubs.RequestForSupport.Web
+            azure_app_name: as-fh-ref-dash-ui
+
+          - artifact_name: connect-ui
+            job_name: Deploy - Connect UI
+            keyvault_prefix: CONNECT-UI
+            project_name: FamilyHubs.Referral.Web
+            azure_app_name: as-fh-referral-ui
+
+          - artifact_name: find-ui
+            job_name: Deploy - Find UI
+            keyvault_prefix: FIND-UI
+            project_name: FamilyHubs.ServiceDirectory.Web
+            azure_app_name: as-fh-sd-ui
+
+          - artifact_name: idam-maintenance-ui
+            job_name: Deploy - IDAM Maintenance UI
+            keyvault_prefix: IDAM-MAINTENANCE-UI
+            project_name: FamilyHubs.Idams.Maintenance.UI
+            azure_app_name: as-fh-idam-maintenance-ui
+
+          - artifact_name: manage-ui
+            job_name: Deploy - Manage UI
+            keyvault_prefix: MANAGE-UI
+            project_name: FamilyHubs.ServiceDirectory.Admin.Web
+            azure_app_name: as-fh-sd-admin-ui
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
-      artifact_name: notification-api
-      keyvault_prefix: NOTIFICATIONS-API
-      project_name: FamilyHubs.Notification.Api
-      data_project_name: FamilyHubs.Notification.Data
-      database_context: ApplicationDbContext
-      project_type: service
-      azure_app_name: as-fh-notification-api
-    secrets: inherit
-
-  api-referral-deploy:
-    name: Deploy - Referral API
-    needs: [ api-notification-deploy ]
-    uses: ./.github/workflows/deploy-service.yml
-    with:
-      environment: ${{ inputs.environment }}
-      artifact_name: referral-api
-      keyvault_prefix: REFERRAL-API
-      project_name: FamilyHubs.Referral.Api
-      data_project_name: FamilyHubs.Referral.Data
-      database_context: ApplicationDbContext
-      project_type: service
-      azure_app_name: as-fh-referral-api
-    secrets: inherit
-
-  api-report-deploy:
-    name: Deploy - Report API
-    needs: [ api-referral-deploy ]
-    uses: ./.github/workflows/deploy-service.yml
-    with:
-      environment: ${{ inputs.environment }}
-      artifact_name: report-api
-      keyvault_prefix: REPORT-API
-      project_name: FamilyHubs.Report.Api
-      data_project_name: FamilyHubs.Report.Data
-      database_context: ReportDbContext
-      project_type: service
-      azure_app_name: as-fh-report-api
-    secrets: inherit
-
-  api-service-directory-deploy:
-    name: Deploy - Service Directory API
-    needs: [ api-report-deploy ]
-    uses: ./.github/workflows/deploy-service.yml
-    with:
-      environment: ${{ inputs.environment }}
-      artifact_name: service-directory-api
-      keyvault_prefix: SD-API
-      project_name: FamilyHubs.ServiceDirectory.Api
-      data_project_name: FamilyHubs.ServiceDirectory.Data
-      database_context: ApplicationDbContext
-      project_type: service
-      azure_app_name: as-fh-sd-api
-    secrets: inherit
-
-  ui-connect-dashboard-deploy:
-    name: Deploy - Connect Dashboard UI
-    needs: [ api-service-directory-deploy ]
-    uses: ./.github/workflows/deploy-service.yml
-    with:
-      environment: ${{ inputs.environment }}
-      artifact_name: connect-dashboard-ui
-      keyvault_prefix: CONNECT-DASHBOARD-UI
-      project_name: FamilyHubs.RequestForSupport.Web
+      artifact_name: ${{ matrix.artifact_name }}
+      keyvault_prefix: ${{ matrix.keyvault_prefix }}
+      project_name: ${{ matrix.project_name }}
       project_type: ui
-      azure_app_name: as-fh-ref-dash-ui
-    secrets: inherit
-
-  ui-connect-deploy:
-    name: Deploy - Connect UI
-    needs: [ ui-connect-dashboard-deploy ]
-    uses: ./.github/workflows/deploy-service.yml
-    with:
-      environment: ${{ inputs.environment }}
-      artifact_name: connect-ui
-      keyvault_prefix: CONNECT-UI
-      project_name: FamilyHubs.Referral.Web
-      project_type: ui
-      azure_app_name: as-fh-referral-ui
-    secrets: inherit
-
-  ui-find-deploy:
-    name: Deploy - Find UI
-    needs: [ ui-connect-deploy ]
-    uses: ./.github/workflows/deploy-service.yml
-    with:
-      environment: ${{ inputs.environment }}
-      artifact_name: find-ui
-      keyvault_prefix: FIND-UI
-      project_name: FamilyHubs.ServiceDirectory.Web
-      project_type: ui
-      azure_app_name: as-fh-sd-ui
-    secrets: inherit
-
-  ui-idam-maintenance-deploy:
-    name: Deploy - IDAM Maintenance UI
-    needs: [ ui-find-deploy ]
-    uses: ./.github/workflows/deploy-service.yml
-    with:
-      environment: ${{ inputs.environment }}
-      artifact_name: idam-maintenance-ui
-      keyvault_prefix: IDAM-MAINTENANCE-UI
-      project_name: FamilyHubs.Idams.Maintenance.UI
-      project_type: ui
-      azure_app_name: as-fh-idam-maintenance-ui
-    secrets: inherit
-
-  ui-manage-deploy:
-    name: Deploy - Manage UI
-    needs: [ ui-idam-maintenance-deploy ]
-    uses: ./.github/workflows/deploy-service.yml
-    with:
-      environment: ${{ inputs.environment }}
-      artifact_name: manage-ui
-      keyvault_prefix: MANAGE-UI
-      project_name: FamilyHubs.ServiceDirectory.Admin.Web
-      project_type: ui
-      azure_app_name: as-fh-sd-admin-ui
+      azure_app_name: ${{ matrix.azure_app_name }}
     secrets: inherit
