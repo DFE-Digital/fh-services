@@ -6,6 +6,8 @@ public interface IReportDbContext
 {
     public IQueryable<ServiceSearchFact> ServiceSearchFacts { get; }
 
+    public IQueryable<ConnectionRequestsSentFact> ConnectionRequestsSentFacts { get; }
+
     public void AddServiceSearchFact(ServiceSearchFact serviceSearchFact);
 
     public void AddDateDim(DateDim dateDim);
@@ -13,6 +15,10 @@ public interface IReportDbContext
     public void AddTimeDim(TimeDim timeDim);
 
     public void AddServiceSearchesDim(ServiceSearchesDim serviceSearchesDim);
+
+    public void AddOrganisationDim(OrganisationDim organisationDim);
+
+    public void AddConnectionRequestsSentFact(ConnectionRequestsSentFact connectionRequestsSentFact);
 
     Task<int> ExecuteRawSql(FormattableString sql, CancellationToken cancellationToken = default);
 

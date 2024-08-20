@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FamilyHubs.SharedKernel" Version="2.3.2" />
+        <PackageReference Include="FamilyHubs.SharedKernel" Version="2.4.0" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.17" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.19" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />

@@ -1,12 +1,12 @@
-﻿using FamilyHubs.ReferralService.Shared.Dto;
-using FamilyHubs.ReferralService.Shared.Models;
+﻿using FamilyHubs.ReferralService.Shared.Models;
 using System.Net.Http.Json;
+using FamilyHubs.ReferralService.Shared.Dto.CreateUpdate;
 
 namespace FamilyHubs.Referral.Core.ApiClients;
 
 public interface IReferralClientService
 {
-    Task<ReferralResponse> CreateReferral(ReferralDto referralDto, CancellationToken cancellationToken = default);
+    Task<ReferralResponse> CreateReferral(CreateReferralDto createReferralDto, CancellationToken cancellationToken = default);
 }
 
 //todo: have single combined client (in referralshared)?
@@ -16,9 +16,9 @@ public class ReferralClientService : ApiService, IReferralClientService
     {
     }
 
-    public async Task<ReferralResponse> CreateReferral(ReferralDto referralDto, CancellationToken cancellationToken = default)
+    public async Task<ReferralResponse> CreateReferral(CreateReferralDto createReferralDto, CancellationToken cancellationToken = default)
     {
-        using var response = await Client.PostAsJsonAsync($"{Client.BaseAddress}api/referrals", referralDto, cancellationToken);
+        using var response = await Client.PostAsJsonAsync($"{Client.BaseAddress}api/referrals", createReferralDto, cancellationToken);
         if (!response.IsSuccessStatusCode)
         {
             throw new ReferralClientServiceException(response, await response.Content.ReadAsStringAsync(cancellationToken));

@@ -25,9 +25,11 @@ public class ServiceSearchesForAnLaOrgTests
     [InlineData("LaManager", "6", "1", "2024-06-11", HttpStatusCode.OK)]
     [InlineData("LaDualRole", "6", "1", "2024-06-11", HttpStatusCode.OK)]
     [InlineData("VcsManager", "6", "1", "2024-06-11", HttpStatusCode.OK)]
+    [InlineData("VcsDualRole", "6", "1", "2024-06-11", HttpStatusCode.OK)]
     [InlineData("LaManager", "6", "2", "2024-06-11", HttpStatusCode.OK)]
     [InlineData("LaDualRole", "6", "2", "2024-06-11", HttpStatusCode.OK)]
     [InlineData("VcsManager", "6", "2", "2024-06-11", HttpStatusCode.OK)]
+    [InlineData("VcsDualRole", "6", "2", "2024-06-11", HttpStatusCode.OK)]  
     public void Service_Searches_In_The_Past_Seven_Days_For_An_La_Org_Returns_200_For_Valid_Role_Type(string role,
         int laOrgId, string serviceTypeId, string date, HttpStatusCode statusCode)
     {
@@ -43,9 +45,11 @@ public class ServiceSearchesForAnLaOrgTests
     [InlineData("LaManager", "6", "1", "2024-06-11", HttpStatusCode.Unauthorized)]
     [InlineData("LaDualRole", "6", "1", "2024-06-11", HttpStatusCode.Unauthorized)]
     [InlineData("VcsManager", "6", "1", "2024-06-11", HttpStatusCode.Unauthorized)]
+    [InlineData("VcsDualRole", "6", "1", "2024-06-11", HttpStatusCode.Unauthorized)]
     [InlineData("LaManager", "6", "2", "2024-06-11", HttpStatusCode.Unauthorized)]
     [InlineData("LaDualRole", "6", "2", "2024-06-11", HttpStatusCode.Unauthorized)]
     [InlineData("VcsManager", "6", "2", "2024-06-11", HttpStatusCode.Unauthorized)]
+    [InlineData("VcsDualRole", "6", "2", "2024-06-11", HttpStatusCode.Unauthorized)]
     public void Service_Searches_In_The_Past_Seven_Days_For_An_La_Org_Returns_401_With_An_Invalid_Bearer_Token(
         string role, int laOrgId, string serviceTypeId, string date, HttpStatusCode statusCode)
     {
@@ -56,17 +60,15 @@ public class ServiceSearchesForAnLaOrgTests
             .BDDfy();
     }
 
-    //Service Searches in the Past 7 days GET Request With a role other than LA Manager,LA Dual Role or VCS Manager returns 403 Forbidden (Find and Connect)
+    //Service Searches in the Past 7 days GET Request With a role other than LA Manager,LA Dual Role, VCS Dual Role or VCS Manager returns 403 Forbidden (Find and Connect)
     [Theory]
     [InlineData("DfeAdmin", "6", "1", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("LaProfessional", "6", "1", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("VcsProfessional", "6", "1", "2024-06-11", HttpStatusCode.Forbidden)]
-    [InlineData("VcsDualRole", "6", "1", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("ServiceAccount", "6", "1", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("DfeAdmin", "6", "2", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("LaProfessional", "6", "2", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("VcsProfessional", "6", "2", "2024-06-11", HttpStatusCode.Forbidden)]
-    [InlineData("VcsDualRole", "6", "2", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("ServiceAccount", "6", "2", "2024-06-11", HttpStatusCode.Forbidden)]
     public void
         Service_Searches_In_The_Past_Seven_Days_For_An_La_Org_Error_Returns_403_When_Unsupported_Role_Is_Requested(
@@ -112,6 +114,7 @@ public class ServiceSearchesForAnLaOrgTests
     [InlineData("LaManager", "6", "4", "2024-06-11", HttpStatusCode.UnprocessableEntity)]
     [InlineData("LaDualRole", "6", "3", "2024-06-11", HttpStatusCode.UnprocessableEntity)]
     [InlineData("VcsManager", "6", "3", "2024-06-11", HttpStatusCode.UnprocessableEntity)]
+    [InlineData("VcsDualRole", "6", "3", "2024-06-11", HttpStatusCode.UnprocessableEntity)]
     public void Service_Searches_In_The_Past_Seven_Days_For_An_La_Org_Returns_422_For_Unsupported_ServiceTypeId(
         string role, int laOrgId, string serviceTypeId, string date, HttpStatusCode statusCode)
     {
@@ -131,9 +134,11 @@ public class ServiceSearchesForAnLaOrgTests
     [InlineData("LaManager", "6", "1", "2024-06-11", HttpStatusCode.OK)]
     [InlineData("LaDualRole", "6", "1", "2024-06-11", HttpStatusCode.OK)]
     [InlineData("VcsManager", "6", "1", "2024-06-11", HttpStatusCode.OK)]
+    [InlineData("VcsDualRole", "6", "1", "2024-06-11", HttpStatusCode.OK)]
     [InlineData("LaManager", "6", "2", "2024-06-11", HttpStatusCode.OK)]
     [InlineData("LaDualRole", "6", "2", "2024-06-11", HttpStatusCode.OK)]
     [InlineData("VcsManager", "6", "2", "2024-06-11", HttpStatusCode.OK)]
+    [InlineData("VcsDualRole", "6", "2", "2024-06-11", HttpStatusCode.OK)]
     public void Service_Searches_For_Week_Breakdown_For_An_La_Org_Returns_200(string role, int laOrgId,
         string serviceTypeId, string date, HttpStatusCode statusCode)
     {
@@ -149,9 +154,11 @@ public class ServiceSearchesForAnLaOrgTests
     [InlineData("LaManager", "6", "1", "2024-06-11", HttpStatusCode.Unauthorized)]
     [InlineData("LaDualRole", "6", "1", "2024-06-11", HttpStatusCode.Unauthorized)]
     [InlineData("VcsManager", "6", "1", "2024-06-11", HttpStatusCode.Unauthorized)]
+    [InlineData("VcsDualRole", "6", "1", "2024-06-11", HttpStatusCode.Unauthorized)]
     [InlineData("LaManager", "6", "2", "2024-06-11", HttpStatusCode.Unauthorized)]
     [InlineData("LaDualRole", "6", "2", "2024-06-11", HttpStatusCode.Unauthorized)]
     [InlineData("VcsManager", "6", "2", "2024-06-11", HttpStatusCode.Unauthorized)]
+    [InlineData("VcsDualRole", "6", "2", "2024-06-11", HttpStatusCode.Unauthorized)]
     public void Service_Searches_For_Week_Breakdown_For_An_La_Org_Returns_401_With_Invalid_Bearer_Token(string role,
         int laOrgId, string serviceTypeId, string date, HttpStatusCode statusCode)
     {
@@ -162,17 +169,15 @@ public class ServiceSearchesForAnLaOrgTests
             .BDDfy();
     }
 
-    //Service Searches 4 Week Breakdown For An LA Org GET Request As a role other than LA Manager or LA Dual Role returns a 403 (Find and Connect)
+    //Service Searches 4 Week Breakdown For An LA Org GET Request As a role other than LA Manager, VCS Manager, VCS Dual Role or LA Dual Role returns a 403 (Find and Connect)
     [Theory]
     [InlineData("DfeAdmin", "6", "1", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("LaProfessional", "6", "1", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("VcsProfessional", "6", "1", "2024-06-11", HttpStatusCode.Forbidden)]
-    [InlineData("VcsDualRole", "6", "1", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("ServiceAccount", "6", "1", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("DfeAdmin", "6", "2", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("LaProfessional", "6", "2", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("VcsProfessional", "6", "2", "2024-06-11", HttpStatusCode.Forbidden)]
-    [InlineData("VcsDualRole", "6", "2", "2024-06-11", HttpStatusCode.Forbidden)]
     [InlineData("ServiceAccount", "6", "2", "2024-06-11", HttpStatusCode.Forbidden)]
     public void Service_Searches_For_Week_Breakdown_For_An_La_Org_Error_Messages_For_Missing_Parameters(string role,
         int laOrgId, string serviceTypeId, string date, HttpStatusCode statusCode)
@@ -215,6 +220,7 @@ public class ServiceSearchesForAnLaOrgTests
     [InlineData("LaManager", "6", "4", "2024-06-11", HttpStatusCode.UnprocessableEntity)]
     [InlineData("LaDualRole", "6", "3", "2024-06-11", HttpStatusCode.UnprocessableEntity)]
     [InlineData("VcsManager", "6", "3", "2024-06-11", HttpStatusCode.UnprocessableEntity)]
+    [InlineData("VcsDualRole", "6", "3", "2024-06-11", HttpStatusCode.UnprocessableEntity)]
     public void Service_Searches_For_Week_Breakdown_For_An_La_Org_422_Error_When_ServiceTypeID_Parameter_Is_Unsupported(
         string role, int laOrgId, string serviceTypeId, string date, HttpStatusCode statusCode)
     {
@@ -234,9 +240,11 @@ public class ServiceSearchesForAnLaOrgTests
     [InlineData("LaManager", "6", "1", HttpStatusCode.OK)]
     [InlineData("LaDualRole", "6", "1", HttpStatusCode.OK)]
     [InlineData("VcsManager", "6", "1", HttpStatusCode.OK)]
+    [InlineData("VcsDualRole", "6", "1", HttpStatusCode.OK)]
     [InlineData("LaManager", "6", "2", HttpStatusCode.OK)]
     [InlineData("LaDualRole", "6", "2", HttpStatusCode.OK)]
     [InlineData("VcsManager", "6", "2", HttpStatusCode.OK)]
+    [InlineData("VcsDualRole", "6", "2", HttpStatusCode.OK)]
     public void Service_SearchesTotal_For_An_La_Org_Returns_200(string role, int laOrgId, string serviceTypeId,
         HttpStatusCode statusCode)
     {
@@ -252,9 +260,11 @@ public class ServiceSearchesForAnLaOrgTests
     [InlineData("LaManager", "6", "1", HttpStatusCode.Unauthorized)]
     [InlineData("LaDualRole", "6", "1", HttpStatusCode.Unauthorized)]
     [InlineData("VcsManager", "6", "1", HttpStatusCode.Unauthorized)]
+    [InlineData("VcsDualRole", "6", "1", HttpStatusCode.Unauthorized)]
     [InlineData("LaManager", "6", "2", HttpStatusCode.Unauthorized)]
     [InlineData("LaDualRole", "6", "2", HttpStatusCode.Unauthorized)]
     [InlineData("VcsManager", "6", "2", HttpStatusCode.Unauthorized)]
+    [InlineData("VcsDualRole", "6", "2", HttpStatusCode.Unauthorized)]
     public void Service_SearchesTotal_For_An_La_Org_Returns_400_With_Invalid_Bearer_Token(string role, int laOrgId,
         string serviceTypeId, HttpStatusCode statusCode)
     {
@@ -265,17 +275,15 @@ public class ServiceSearchesForAnLaOrgTests
             .BDDfy();
     }
 
-    //Service Searches Total For An LA Org GET Request As a role other than LA Manager,LA Dual Role or VCS Manager returns a 403
+    //Service Searches Total For An LA Org GET Request As a role other than LA Manager,LA Dual Role, VCS Dual Role or VCS Manager returns a 403
     [Theory]
     [InlineData("DfeAdmin", "6", "1", HttpStatusCode.Forbidden)]
     [InlineData("LaProfessional", "6", "1", HttpStatusCode.Forbidden)]
     [InlineData("VcsProfessional", "6", "1", HttpStatusCode.Forbidden)]
-    [InlineData("VcsDualRole", "6", "1", HttpStatusCode.Forbidden)]
     [InlineData("ServiceAccount", "6", "1", HttpStatusCode.Forbidden)]
     [InlineData("DfeAdmin", "6", "2", HttpStatusCode.Forbidden)]
     [InlineData("LaProfessional", "6", "2", HttpStatusCode.Forbidden)]
     [InlineData("VcsProfessional", "6", "2", HttpStatusCode.Forbidden)]
-    [InlineData("VcsDualRole", "6", "2", HttpStatusCode.Forbidden)]
     [InlineData("ServiceAccount", "6", "2", HttpStatusCode.Forbidden)]
     public void Service_SearchesTotal_For_An_La_Org_Returns_403_For_Unsupported_Roles(string role, int laOrgId,
         string serviceTypeId, HttpStatusCode statusCode)
@@ -304,6 +312,7 @@ public class ServiceSearchesForAnLaOrgTests
     [InlineData("LaManager", "6", "3", HttpStatusCode.UnprocessableEntity)]
     [InlineData("LaDualRole", "6", "3", HttpStatusCode.UnprocessableEntity)]
     [InlineData("VcsManager", "6", "3", HttpStatusCode.UnprocessableEntity)]
+    [InlineData("VcsDualRole", "6", "3", HttpStatusCode.UnprocessableEntity)]
     public void Service_SearchesTotal_For_An_La_Org_Returns_400_Invalid_ServiceTypeId(string role, int laOrgId,
         string serviceTypeId, HttpStatusCode statusCode)
     {

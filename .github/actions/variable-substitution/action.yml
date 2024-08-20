@@ -93,6 +93,8 @@ runs:
         GovUkOidcConfiguration.Oidc.ClientId: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_OIDC_CLIENTID }}
         GovUkOidcConfiguration.Oidc.KeyVaultIdentifier: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_OIDC_KEYVAULTIDENTIFIER }}
         GovUkOidcConfiguration.Oidc.TwoFactorEnabled: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_OIDC_TWOFACTORENABLED }}
+        GovUkOidcConfiguration.StubAuthentication.UseStubAuthentication: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_STUBAUTHENTICATION_USESTUBAUTHENTICATION }}
+        GovUkOidcConfiguration.StubAuthentication.UseStubClaims: ${{ steps.fetch.outputs.GOVUKOIDCCONFIGURATION_STUBAUTHENTICATION_USESTUBCLAIMS }}
         IdamApi: ${{ steps.fetch.outputs.IDAMAPI }}
         Notification.Endpoint: ${{ steps.fetch.outputs.NOTIFICATION_ENDPOINT }}
         ReferralApiBaseUrl: ${{ steps.fetch.outputs.REFERRALAPIBASEURL }}
