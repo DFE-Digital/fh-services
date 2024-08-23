@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Spec\" />
+    <Folder Include="Tests\" />
   </ItemGroup>
 
 </Project>
