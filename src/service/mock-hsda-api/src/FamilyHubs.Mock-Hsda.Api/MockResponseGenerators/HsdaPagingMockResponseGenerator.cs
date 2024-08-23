@@ -6,14 +6,14 @@ namespace FamilyHubs.Mock_Hsda.Api.MockResponseGenerators;
 
 public class PaginatedResult
 {
-    public int TotalItems { get; set; }
-    public int TotalPages { get; set; }
-    public int PageNumber { get; set; }
-    public int Size { get; set; }
-    public bool FirstPage { get; set; }
-    public bool LastPage { get; set; }
-    public bool Empty { get; set; }
-    public List<object?> Contents { get; set; } = null!;
+    public int total_items { get; set; }
+    public int total_pages { get; set; }
+    public int page_number { get; set; }
+    public int size { get; set; }
+    public bool first_page { get; set; }
+    public bool last_page { get; set; }
+    public bool empty { get; set; }
+    public List<object?> contents { get; set; } = null!;
 }
 
 /// <summary>
@@ -127,14 +127,14 @@ public class HsdaPagingMockResponseGenerator : IMockResponseGenerator
         // Create the paginated result
         var result = new PaginatedResult
         {
-            TotalItems = totalItems,
-            TotalPages = totalPages,
-            PageNumber = page,
-            Size = pagedContents.Count,
-            FirstPage = page == 1,
-            LastPage = page == totalPages || pagedContents.Count == 0,
-            Empty = pagedContents.Count == 0,
-            Contents = pagedContents
+            total_items = totalItems,
+            total_pages = totalPages,
+            page_number = page,
+            size = pagedContents.Count,
+            first_page = page == 1,
+            last_page = page == totalPages || pagedContents.Count == 0,
+            empty = pagedContents.Count == 0,
+            contents = pagedContents
         };
 
         return result;
