@@ -21,7 +21,7 @@ IHost host = new HostBuilder()
         services.ConfigureFunctionsApplicationInsights();
 
         services.AddHttpClient<IHsdaApiService, HsdaApiService>(httpClient =>
-            httpClient.BaseAddress = new Uri(config["ApiConnection"]!)).SetHandlerLifetime(TimeSpan.FromMinutes(2));
+            httpClient.BaseAddress = new Uri(config["ApiConnection"]!));
 
         services.AddDbContext<IFunctionDbContext, FunctionDbContext>(options =>
         {
