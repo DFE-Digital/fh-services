@@ -28,7 +28,7 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
             return (HttpStatusCode.NotFound, null);
         }
 
-        logger.LogInformation("Found {serviceCount} service(s)..", serviceList.Count());
+        logger.LogInformation("Found {serviceCount} service(s)", serviceList.Count());
 
         return (HttpStatusCode.OK, serviceList);
     }

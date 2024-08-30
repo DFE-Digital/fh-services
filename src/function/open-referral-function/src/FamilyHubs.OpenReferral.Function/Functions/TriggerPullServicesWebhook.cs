@@ -47,12 +47,12 @@ public class TriggerPullServicesWebhook(
 
     private async Task UpdateDatabase(List<ServiceJson> serviceJsonList)
     {
-        logger.LogInformation("Truncating database before inserting services..");
+        logger.LogInformation("Truncating database before inserting services");
         await functionDbContext.TruncateServicesTempAsync();
 
         foreach (ServiceJson serviceJson in serviceJsonList)
         {
-            logger.LogInformation("Adding service with ID {serviceId} to the database..", serviceJson.Id);
+            logger.LogInformation("Adding service with ID {serviceId} to the database", serviceJson.Id);
             functionDbContext.AddServiceTemp(new ServicesTemp
             {
                 Id = Guid.Parse(serviceJson.Id),
@@ -61,7 +61,7 @@ public class TriggerPullServicesWebhook(
             });
         }
 
-        logger.LogInformation("Saving changes to the database..");
+        logger.LogInformation("Saving changes to the database");
         await functionDbContext.SaveChangesAsync();
     }
 }
