@@ -82,7 +82,6 @@ public class WhenUsingHsdaApiService
 
         string? serviceName = JsonDocument.Parse(servicesById[0].Json).RootElement.GetProperty("name").ToString();
 
-        Assert.NotNull(serviceName);
         Assert.Equal("Test", serviceName);
     }
 
