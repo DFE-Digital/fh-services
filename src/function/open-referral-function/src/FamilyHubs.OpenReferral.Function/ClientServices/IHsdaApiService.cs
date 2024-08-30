@@ -1,12 +1,12 @@
 using System.Net;
+using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.Entities;
-using Newtonsoft.Json.Linq;
 
 namespace FamilyHubs.OpenReferral.Function.ClientServices;
 
 public interface IHsdaApiService
 {
-    public Task<(HttpStatusCode, JArray?)> GetServices();
+    public Task<(HttpStatusCode, JsonElement.ArrayEnumerator?)> GetServices();
 
-    public Task<List<ServiceJson>> GetServicesById(JArray services);
+    public Task<List<ServiceJson>> GetServicesById(JsonElement.ArrayEnumerator services);
 }

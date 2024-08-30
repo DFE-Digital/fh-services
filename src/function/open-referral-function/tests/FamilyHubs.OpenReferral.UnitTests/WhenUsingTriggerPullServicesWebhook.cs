@@ -7,7 +7,6 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using NSubstitute;
 
 namespace FamilyHubs.OpenReferral.UnitTests;
@@ -40,7 +39,7 @@ public class WhenUsingTriggerPullServicesWebhook
         List<ServiceJson> servicesById = [new ServiceJson { Id = Guid.NewGuid().ToString(), Json = "OK" }];
 
         _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
-        _hsdaApiServiceMock.GetServicesById(Arg.Any<JArray>()).Returns(servicesById);
+        _hsdaApiServiceMock.GetServicesById(default).Returns(servicesById);
 
         HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
 
@@ -64,7 +63,7 @@ public class WhenUsingTriggerPullServicesWebhook
         List<ServiceJson> servicesById = [new ServiceJson { Id = Guid.NewGuid().ToString(), Json = "OK" }];
 
         _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
-        _hsdaApiServiceMock.GetServicesById(Arg.Any<JArray>()).Returns(servicesById);
+        _hsdaApiServiceMock.GetServicesById(default).Returns(servicesById);
 
         _functionDbContextMock.When(dbContext => dbContext.SaveChangesAsync())
             .Do(_ => throw new DbUpdateException());
@@ -80,7 +79,7 @@ public class WhenUsingTriggerPullServicesWebhook
         List<ServiceJson> servicesById = [];
 
         _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
-        _hsdaApiServiceMock.GetServicesById(Arg.Any<JArray>()).Returns(servicesById);
+        _hsdaApiServiceMock.GetServicesById(default).Returns(servicesById);
 
         HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
 
