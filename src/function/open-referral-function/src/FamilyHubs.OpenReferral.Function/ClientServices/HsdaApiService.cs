@@ -49,7 +49,7 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
                 continue;
             }
 
-            servicesById.Add(new ServiceJson { Id = serviceId, Json = jsonResponse! });
+            servicesById.Add(new ServiceJson (Id: serviceId, Json: jsonResponse!));
         }
 
         return servicesById;

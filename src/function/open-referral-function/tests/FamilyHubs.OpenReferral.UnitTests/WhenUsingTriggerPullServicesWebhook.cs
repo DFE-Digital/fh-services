@@ -36,7 +36,7 @@ public class WhenUsingTriggerPullServicesWebhook
     [Fact]
     public async Task Then_NormalOperation_BeingReturned_ShouldResultIn_200_OK()
     {
-        List<ServiceJson> servicesById = [new ServiceJson { Id = Guid.NewGuid().ToString(), Json = "OK" }];
+        List<ServiceJson> servicesById = [new( Id: Guid.NewGuid().ToString(), Json: "OK" )];
 
         _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
         _hsdaApiServiceMock.GetServicesById(default).Returns(servicesById);
@@ -60,7 +60,7 @@ public class WhenUsingTriggerPullServicesWebhook
     [Fact]
     public async Task Then_DatabaseFailingToUpdate_Should_ResultIn_500_InternalServerError()
     {
-        List<ServiceJson> servicesById = [new ServiceJson { Id = Guid.NewGuid().ToString(), Json = "OK" }];
+        List<ServiceJson> servicesById = [new(Id: Guid.NewGuid().ToString(), Json: "OK")];
 
         _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
         _hsdaApiServiceMock.GetServicesById(default).Returns(servicesById);
