@@ -25,7 +25,7 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
         if (!serviceList.Any())
         {
             logger.LogWarning("Query was OK, but no services were found");
-            return (HttpStatusCode.NotFound, null);
+            return (HttpStatusCode.NoContent, null);
         }
 
         logger.LogInformation("Found {serviceCount} service(s)", serviceList.Count());

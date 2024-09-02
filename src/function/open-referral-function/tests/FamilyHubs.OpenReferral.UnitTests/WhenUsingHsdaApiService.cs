@@ -64,6 +64,18 @@ public class WhenUsingHsdaApiService
     }
 
     [Fact]
+    public async Task Then_GetServices_Returns_NoContent_When_QueryIsOK_But_NoServicesWereReturned()
+    {
+        _mockHttpMessageHandler.StatusCode = HttpStatusCode.OK;
+        _mockHttpMessageHandler.Content = "{\"contents\":[]}";
+
+        (HttpStatusCode httpStatusCode, JsonElement.ArrayEnumerator? services) = await _hsdaApiService.GetServices();
+
+        Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);
+        Assert.Null(services);
+    }
+
+    [Fact]
     public async Task Then_GetServicesById_Returns_CorrectData()
     {
         _mockHttpMessageHandler.StatusCode = HttpStatusCode.OK;
