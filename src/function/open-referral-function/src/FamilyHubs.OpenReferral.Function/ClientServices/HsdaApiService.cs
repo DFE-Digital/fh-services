@@ -24,7 +24,7 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
 
         if (!serviceList.Any())
         {
-            logger.LogInformation("Query was OK, but no services were found");
+            logger.LogWarning("Query was OK, but no services were found");
             return (HttpStatusCode.NotFound, null);
         }
 
@@ -33,7 +33,7 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
         return (HttpStatusCode.OK, serviceList);
     }
 
-    public async Task<List<ServiceJson>> GetServicesById(JsonElement.ArrayEnumerator services)
+    public async Task<(HttpStatusCode, List<ServiceJson>)> GetServicesById(JsonElement.ArrayEnumerator services)
     {
         List<ServiceJson> servicesById = [];
 
@@ -52,7 +52,11 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
             servicesById.Add(new ServiceJson (Id: serviceId, Json: jsonResponse!));
         }
 
-        return servicesById;
+        bool gotResults = servicesById.Count > 0;
+
+        if (!gotResults) logger.LogWarning("Getting Services by ID returned no results");
+
+        return (gotResults ? HttpStatusCode.OK : HttpStatusCode.NoContent, servicesById);
     }
 
     private async Task<(HttpStatusCode, string?)> HttpGet(string endpoint)

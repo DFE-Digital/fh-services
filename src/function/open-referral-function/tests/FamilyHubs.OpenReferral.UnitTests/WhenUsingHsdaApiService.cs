@@ -75,12 +75,14 @@ public class WhenUsingHsdaApiService
 
         _mockHttpMessageHandler.Content = "{\"id\":\"ABC\",\"name\":\"Test\"}";
 
-        List<ServiceJson> servicesById = await  _hsdaApiService.GetServicesById(services.Value);
+        (HttpStatusCode httpStatusCode, List<ServiceJson> servicesById) = await _hsdaApiService.GetServicesById(services.Value);
+
+        Assert.Equal(HttpStatusCode.OK, httpStatusCode);
 
         Assert.Single(servicesById);
         Assert.Equal("ABC", servicesById[0].Id);
 
-        string? serviceName = JsonDocument.Parse(servicesById[0].Json).RootElement.GetProperty("name").ToString();
+        string serviceName = JsonDocument.Parse(servicesById[0].Json).RootElement.GetProperty("name").ToString();
 
         Assert.Equal("Test", serviceName);
     }
@@ -98,8 +100,9 @@ public class WhenUsingHsdaApiService
         _mockHttpMessageHandler.StatusCode = HttpStatusCode.NotFound;
         _mockHttpMessageHandler.Content = "";
 
-        List<ServiceJson> servicesById = await  _hsdaApiService.GetServicesById(services.Value);
+        (HttpStatusCode httpStatusCode, List<ServiceJson> servicesById) = await _hsdaApiService.GetServicesById(services.Value);
 
+        Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);
         Assert.Empty(servicesById);
     }
 }

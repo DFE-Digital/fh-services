@@ -20,21 +20,15 @@ public class TriggerPullServicesWebhook(
     {
         logger.LogInformation("[ApiReceiver] HTTP Trigger Function Started");
 
-        (HttpStatusCode httpStatusCode, JsonElement.ArrayEnumerator? services) = await hsdaApiService.GetServices();
+        (HttpStatusCode HttpStatusCode, JsonElement.ArrayEnumerator? Result) services = await hsdaApiService.GetServices();
+        if (services.HttpStatusCode != HttpStatusCode.OK) return req.CreateResponse(services.HttpStatusCode);
 
-        if (httpStatusCode != HttpStatusCode.OK) return req.CreateResponse(httpStatusCode);
-
-        List<ServiceJson> servicesById = await hsdaApiService.GetServicesById(services!.Value);
-
-        if (servicesById.Count == 0)
-        {
-            logger.LogInformation("Getting the services by ID returned no results!");
-            return req.CreateResponse(HttpStatusCode.NotFound);
-        }
+        (HttpStatusCode HttpStatusCode, List<ServiceJson> Result) servicesById = await hsdaApiService.GetServicesById(services.Result!.Value);
+        if (servicesById.HttpStatusCode != HttpStatusCode.OK) return req.CreateResponse(servicesById.HttpStatusCode);
 
         try
         {
-            await UpdateDatabase(servicesById);
+            await UpdateDatabase(servicesById.Result);
         }
         catch (Exception e)
         {

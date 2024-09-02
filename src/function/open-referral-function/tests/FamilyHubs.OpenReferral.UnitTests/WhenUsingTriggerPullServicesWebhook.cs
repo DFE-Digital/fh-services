@@ -39,7 +39,7 @@ public class WhenUsingTriggerPullServicesWebhook
         List<ServiceJson> servicesById = [new( Id: Guid.NewGuid().ToString(), Json: "OK" )];
 
         _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
-        _hsdaApiServiceMock.GetServicesById(default).Returns(servicesById);
+        _hsdaApiServiceMock.GetServicesById(default).Returns((HttpStatusCode.OK, servicesById));
 
         HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
 
@@ -63,7 +63,7 @@ public class WhenUsingTriggerPullServicesWebhook
         List<ServiceJson> servicesById = [new(Id: Guid.NewGuid().ToString(), Json: "OK")];
 
         _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
-        _hsdaApiServiceMock.GetServicesById(default).Returns(servicesById);
+        _hsdaApiServiceMock.GetServicesById(default).Returns((HttpStatusCode.OK, servicesById));
 
         _functionDbContextMock.When(dbContext => dbContext.SaveChangesAsync())
             .Do(_ => throw new DbUpdateException());
@@ -79,10 +79,10 @@ public class WhenUsingTriggerPullServicesWebhook
         List<ServiceJson> servicesById = [];
 
         _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
-        _hsdaApiServiceMock.GetServicesById(default).Returns(servicesById);
+        _hsdaApiServiceMock.GetServicesById(default).Returns((HttpStatusCode.NoContent, servicesById));
 
         HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
 }
