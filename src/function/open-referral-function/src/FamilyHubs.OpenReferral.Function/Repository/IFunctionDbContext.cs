@@ -1,4 +1,4 @@
-using FamilyHubs.ServiceDirectory.Data.Entities.Staging;
+using FamilyHubs.SharedKernel.OpenReferral;
 
 namespace FamilyHubs.OpenReferral.Function.Repository;
 

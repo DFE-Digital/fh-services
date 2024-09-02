@@ -3,7 +3,7 @@ using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.ClientServices;
 using FamilyHubs.OpenReferral.Function.Entities;
 using FamilyHubs.OpenReferral.Function.Repository;
-using FamilyHubs.ServiceDirectory.Data.Entities.Staging;
+using FamilyHubs.SharedKernel.OpenReferral;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Functions.Worker.Http;
