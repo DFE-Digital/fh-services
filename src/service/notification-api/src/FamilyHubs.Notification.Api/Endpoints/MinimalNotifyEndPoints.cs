@@ -12,26 +12,26 @@ public class MinimalNotifyEndPoints
 {
     public void RegisterMinimalNotifyEndPoints(WebApplication app)
     {
-        app.MapPost("api/notify", [Authorize] async ([FromBody] MessageDto request, CancellationToken cancellationToken, ISender _mediator) =>
+        app.MapPost("api/notify", [Authorize] async ([FromBody] MessageDto request, CancellationToken cancellationToken, ISender mediator) =>
         {
             CreateNotificationCommand command = new CreateNotificationCommand(request);
-            var result = await _mediator.Send(command, cancellationToken);
+            var result = await mediator.Send(command, cancellationToken);
             return result;
 
         }).WithMetadata(new SwaggerOperationAttribute("Notifications", "Send Notification") { Tags = new[] { "Notifications" } });
         
-        app.MapGet("api/notify", [Authorize] async (ApiKeyType? apiKeyType, NotificationOrderBy ? orderBy, bool? isAscending, int? pageNumber, int? pageSize, CancellationToken cancellationToken, ISender _mediator) =>
+        app.MapGet("api/notify", [Authorize] async (ApiKeyType? apiKeyType, NotificationOrderBy ? orderBy, bool? isAscending, int? pageNumber, int? pageSize, CancellationToken cancellationToken, ISender mediator) =>
         {
             GetNotificationsCommand request = new(apiKeyType, orderBy, isAscending, pageNumber, pageSize);
-            var result = await _mediator.Send(request, cancellationToken);
+            var result = await mediator.Send(request, cancellationToken);
             return result;
 
         }).WithMetadata(new SwaggerOperationAttribute("Get Notifications", "Get Paginated Notification List") { Tags = new[] { "Notifications" } });
 
-        app.MapGet("api/notify/{id}", [Authorize] async (long id, CancellationToken cancellationToken, ISender _mediator) =>
+        app.MapGet("api/notify/{id}", [Authorize] async (long id, CancellationToken cancellationToken, ISender mediator) =>
         {
             GetNotificationByIdCommand request = new(id);
-            var result = await _mediator.Send(request, cancellationToken);
+            var result = await mediator.Send(request, cancellationToken);
             return result;
 
         }).WithMetadata(new SwaggerOperationAttribute("Get Notification By Id", "Get Notification By Id") { Tags = new[] { "Notifications" } });

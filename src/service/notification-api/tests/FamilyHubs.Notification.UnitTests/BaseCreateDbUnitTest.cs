@@ -23,7 +23,7 @@ public class BaseCreateDbUnitTest
         var mockIHttpContextAccessor = new Mock<IHttpContextAccessor>();
         var context = new DefaultHttpContext();
 
-        context.User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        context.User = new ClaimsPrincipal(new ClaimsIdentity(new[]
         {
             new Claim(ClaimTypes.Name, "John Doe"),
             new Claim("OrganisationId", "1"),

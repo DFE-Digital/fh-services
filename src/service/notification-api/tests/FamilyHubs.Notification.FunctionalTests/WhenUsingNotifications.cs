@@ -11,33 +11,34 @@ namespace FamilyHubs.Notification.FunctionalTests;
 
 public class WhenUsingNotifications : BaseWhenUsingOpenReferralApiUnitTests
 {
-    private readonly ITestOutputHelper output;
+    private readonly ITestOutputHelper _output;
 
     public WhenUsingNotifications(ITestOutputHelper output)
     {
-        this.output = output;
+        _output = output;
     }
 
     public class ConsoleWriter : StringWriter
     {
-        private readonly ITestOutputHelper output;
+        private readonly ITestOutputHelper _output;
         public ConsoleWriter(ITestOutputHelper output)
         {
-            this.output = output;
+            _output = output;
         }
 
         public override void WriteLine(string? value)
         {
-            output.WriteLine(value);
+            _output.WriteLine(value);
         }
     }
 
     // Uncomment to run locally
-    //[Theory]
-    //[InlineData("ProfessionalAcceptRequest")]
-    //[InlineData("ProfessionalDecineRequest")]
-    //[InlineData("ProfessionalSentRequest")]
-    //[InlineData("VcsNewRequest")]
+    /*
+    [Theory]
+    [InlineData("ProfessionalAcceptRequest")]
+    [InlineData("ProfessionalDecineRequest")]
+    [InlineData("ProfessionalSentRequest")]
+    [InlineData("VcsNewRequest")]
     public async Task ThenSendEmailNotificationToUser(string key)
     {
         if (!IsRunningLocally() || Client == null)
@@ -47,7 +48,7 @@ public class WhenUsingNotifications : BaseWhenUsingOpenReferralApiUnitTests
             return;
         }
 
-        Console.SetOut(new ConsoleWriter(output));
+        Console.SetOut(new ConsoleWriter(_output));
         if (!_templates!.ContainsKey(key))
         {
             return;
@@ -89,6 +90,7 @@ public class WhenUsingNotifications : BaseWhenUsingOpenReferralApiUnitTests
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         result.Should().BeTrue();
     }
+    */
 
     [Fact]
     public async Task ThenGetNotificationsList()
@@ -110,7 +112,7 @@ public class WhenUsingNotifications : BaseWhenUsingOpenReferralApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + $"api/notify"),
         };
 
-        request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue($"Bearer", $"{new JwtSecurityTokenHandler().WriteToken(_token)}");
+        request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue($"Bearer", $"{new JwtSecurityTokenHandler().WriteToken(Token)}");
 
         using var response = await Client.SendAsync(request);
 
@@ -144,7 +146,7 @@ public class WhenUsingNotifications : BaseWhenUsingOpenReferralApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + $"api/notify/1"),
         };
 
-        request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue($"Bearer", $"{new JwtSecurityTokenHandler().WriteToken(_token)}");
+        request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue($"Bearer", $"{new JwtSecurityTokenHandler().WriteToken(Token)}");
 
         using var response = await Client.SendAsync(request);
 

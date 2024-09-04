@@ -35,7 +35,7 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
         if (context is null) return;
 
         var updatedBy = "System";
-        var user = _httpContextAccessor?.HttpContext?.GetFamilyHubsUser();
+        var user = _httpContextAccessor.HttpContext?.GetFamilyHubsUser();
         if (user != null && !string.IsNullOrEmpty(user.Email))
         {
             updatedBy = user.Email;

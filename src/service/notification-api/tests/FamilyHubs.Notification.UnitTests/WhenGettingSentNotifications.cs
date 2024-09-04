@@ -2,9 +2,7 @@
 using FamilyHubs.Notification.Api.Contracts;
 using FamilyHubs.Notification.Core.Queries.GetSentNotifications;
 using FamilyHubs.Notification.Data.Entities;
-using FamilyHubs.Notification.Data.Repository;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 
 namespace FamilyHubs.Notification.UnitTests;
 
@@ -32,7 +30,7 @@ public class WhenGettingSentNotifications : BaseCreateDbUnitTest
         GetNotificationsCommandHandler handler = new GetNotificationsCommandHandler(context, GetMapper());
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         //Assert
         result.Should().NotBeNull();
@@ -57,7 +55,7 @@ public class WhenGettingSentNotifications : BaseCreateDbUnitTest
         GetNotificationsCommandHandler handler = new GetNotificationsCommandHandler(context, GetMapper());
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         //Assert
         result.Should().NotBeNull();
@@ -81,7 +79,7 @@ public class WhenGettingSentNotifications : BaseCreateDbUnitTest
         GetNotificationByIdCommandHandler handler = new(context, GetMapper());
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         //Assert
         result.Should().NotBeNull();

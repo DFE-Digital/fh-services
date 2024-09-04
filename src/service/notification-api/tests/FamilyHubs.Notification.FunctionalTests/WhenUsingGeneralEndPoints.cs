@@ -24,7 +24,7 @@ public class WhenUsingGeneralEndPoints : BaseWhenUsingOpenReferralApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + $"api/info"),
         };
 
-        request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue($"Bearer", $"{new JwtSecurityTokenHandler().WriteToken(_token)}");
+        request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue($"Bearer", $"{new JwtSecurityTokenHandler().WriteToken(Token)}");
 
         using var response = await Client.SendAsync(request);
 

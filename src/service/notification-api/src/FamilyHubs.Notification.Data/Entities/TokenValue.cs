@@ -1,4 +1,5 @@
-﻿namespace FamilyHubs.Notification.Data.Entities
+﻿// ReSharper disable EntityFramework.ModelValidation.UnlimitedStringLength
+namespace FamilyHubs.Notification.Data.Entities
 {
     public class TokenValue : EntityBase<long>
     {

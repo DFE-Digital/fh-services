@@ -1,4 +1,5 @@
 ﻿using FamilyHubs.Notification.Api.Contracts;
+// ReSharper disable EntityFramework.ModelValidation.UnlimitedStringLength
 
 namespace FamilyHubs.Notification.Data.Entities
 {

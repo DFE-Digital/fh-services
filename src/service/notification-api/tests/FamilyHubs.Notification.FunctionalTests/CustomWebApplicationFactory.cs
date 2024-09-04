@@ -74,11 +74,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         try
         {
 #pragma warning disable S1481
-            var context = scopedServices.GetRequiredService<ApplicationDbContext>();
+            _ = scopedServices.GetRequiredService<ApplicationDbContext>();
 #pragma warning restore S1481
-
-
-
         }
         catch (Exception ex)
         {

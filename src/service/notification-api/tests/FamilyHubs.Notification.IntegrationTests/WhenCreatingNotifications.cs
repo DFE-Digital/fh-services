@@ -2,6 +2,7 @@ using FamilyHubs.Notification.Api.Contracts;
 using FamilyHubs.Notification.Core.Commands.CreateNotification;
 using FamilyHubs.Notification.Data.NotificationServices;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -39,7 +40,10 @@ public class WhenCreatingNotifications : DataIntegrationTestBase
         //Act
         var result = await handler.Handle(createNotificationCommand, new CancellationToken());
         result.Should().BeTrue();
-        var actualNotification = TestDbContext.SentNotifications.SingleOrDefault(x => x.Id == createNotificationCommand.MessageDto.Id);
+        var actualNotification = TestDbContext.SentNotifications
+            .Include(x => x.Notified)
+            .Include(x => x.TokenValues)
+            .SingleOrDefault(x => x.Id == createNotificationCommand.MessageDto.Id);
         ArgumentNullException.ThrowIfNull(actualNotification);
         actualNotification.ApiKeyType.Should().Be(apiKeyType);
         actualNotification.TemplateId.Should().Be(createNotificationCommand.MessageDto.TemplateId);
@@ -51,5 +55,6 @@ public class WhenCreatingNotifications : DataIntegrationTestBase
         }
         actualNotification.Notified.Should().Contain(x => x.Value == createNotificationCommand.MessageDto.NotificationEmails[0]);
         actualNotification.Notified.Should().Contain(x => x.Value == createNotificationCommand.MessageDto.NotificationEmails[1]);
+        sendEmailCallback.Should().Be(1);
     }
 }

@@ -11,10 +11,10 @@ public class MyWebApplicationFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureHostConfiguration(config =>
         {
-            IEnumerable<KeyValuePair<string, string?>>? initialData = new List<KeyValuePair<string, string?>>
+            IEnumerable<KeyValuePair<string, string?>> initialData = new List<KeyValuePair<string, string?>>
             {
-                new KeyValuePair<string, string?>("UseSqlite", "true"),
-                new KeyValuePair<string, string?>("UseVault", "false")
+                new("UseSqlite", "true"),
+                new("UseVault", "false")
             };
             config.AddInMemoryCollection(initialData);
         });

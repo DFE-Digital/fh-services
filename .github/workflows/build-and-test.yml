@@ -6,7 +6,7 @@ concurrency:
 
 on:
   push:
-    branches: ["main", "release-*"]
+    branches: ["main", "release-*", "feature/fhb-381-build-warnings"]
   pull_request:
     paths:
       - '.github/workflows/build-and-test.yml'

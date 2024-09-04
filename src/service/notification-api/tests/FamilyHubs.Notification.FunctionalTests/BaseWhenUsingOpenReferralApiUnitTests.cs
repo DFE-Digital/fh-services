@@ -7,7 +7,6 @@ using FamilyHubs.Notification.Data.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Notify.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -16,15 +15,13 @@ namespace FamilyHubs.Notification.FunctionalTests;
 #pragma warning disable S3881
 public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
 {
-    protected readonly HttpClient? Client;
-    protected readonly CustomWebApplicationFactory? _webAppFactory;
-    private bool _disposed;
-    protected readonly JwtSecurityToken? _token;
-    protected string? _emailRecipient;
-    protected Dictionary<string, string>? _templates;
     private readonly bool _initSuccessful;
     private readonly IConfiguration? _configuration;
-
+    private readonly CustomWebApplicationFactory? _webAppFactory;
+    // ReSharper disable once NotAccessedField.Local
+    private string? _emailRecipient;
+    private bool _disposed;
+    
     protected BaseWhenUsingOpenReferralApiUnitTests()
     {
         _disposed = false;
@@ -42,24 +39,25 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
 
             string[] keys = { "ProfessionalAcceptRequest", "ProfessionalDecineRequest", "ProfessionalSentRequest", "VcsNewRequest" };
 
-            _templates = new Dictionary<string, string>();
-            foreach (string templatekey in keys)
+            // ReSharper disable once CollectionNeverQueried.Local
+            Dictionary<string, string> templates = new();
+            foreach (string templateKey in keys)
             {
-                var value = config.GetValue<string>(templatekey);
+                var value = config.GetValue<string>(templateKey);
                 if (value != null)
-                    _templates[templatekey] = value;
+                    templates[templateKey] = value;
             }
 
 
             var jti = Guid.NewGuid().ToString();
             var key = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(config["GovUkOidcConfiguration:BearerTokenSigningKey"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
-            _token = new JwtSecurityToken(
+            Token = new JwtSecurityToken(
                 claims: new List<Claim>
                    {
-                    new Claim("sub", config["GovUkOidcConfiguration:Oidc:ClientId"] ?? ""),
-                    new Claim("jti", jti),
-                    new Claim(ClaimTypes.Role, "Professional")
+                    new("sub", config["GovUkOidcConfiguration:Oidc:ClientId"] ?? ""),
+                    new("jti", jti),
+                    new(ClaimTypes.Role, "Professional")
 
                    },
                 signingCredentials: creds,
@@ -80,6 +78,10 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
         }
         
     }
+
+    protected HttpClient? Client { get; }
+    
+    protected JwtSecurityToken? Token { get; }
 
     protected virtual void Dispose(bool disposing)
     {
@@ -107,10 +109,7 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
             Client.Dispose();
         }
 
-        if (_webAppFactory != null)
-        {
-            _webAppFactory.Dispose();
-        }
+        _webAppFactory?.Dispose();
 
         GC.SuppressFinalize(this);
     }
@@ -135,13 +134,13 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
     {
         return new List<SentNotification>
         {
-            new SentNotification
+            new()
             {
                 Id = 1,
                 ApiKeyType = ApiKeyType.ManageKey,
                 Notified = new List<Notified>
                 {
-                    new Notified
+                    new()
                     {
                         Id = 1,
                         NotificationId = 1,
@@ -151,7 +150,7 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
                 TemplateId = "11111",
                 TokenValues = new List<TokenValue>
                 {
-                    new TokenValue
+                    new()
                     {
                         Id = 1,
                         NotificationId = 1,
@@ -162,13 +161,13 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
 
             },
 
-            new SentNotification
+            new()
             {
                 Id = 2,
                 ApiKeyType = ApiKeyType.ConnectKey,
                 Notified = new List<Notified>
                 {
-                    new Notified
+                    new()
                     {
                         Id = 2,
                         NotificationId = 2,
@@ -178,7 +177,7 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
                 TemplateId = "2222",
                 TokenValues = new List<TokenValue>
                 {
-                    new TokenValue
+                    new()
                     {
                         Id = 2,
                         NotificationId = 2,
@@ -186,8 +185,7 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
                         Value = "Value2"
                     }
                 }
-
-            },
+            }
         };
     }
 

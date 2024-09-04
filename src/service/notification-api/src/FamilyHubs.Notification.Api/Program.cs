@@ -1,4 +1,3 @@
-using FamilyHubs.Notification.Api;
 using Serilog;
 
 namespace FamilyHubs.Notification.Api;
@@ -6,7 +5,6 @@ namespace FamilyHubs.Notification.Api;
 public class Program
 {
     protected Program() { }
-    public static IServiceProvider ServiceProvider { get; private set; } = default!;
 
     public static async Task Main(string[] args)
     {

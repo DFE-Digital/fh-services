@@ -18,8 +18,6 @@ using Microsoft.EntityFrameworkCore;
 using FamilyHubs.Notification.Core.Commands.CreateNotification;
 using FamilyHubs.Notification.Data.NotificationServices;
 using FamilyHubs.SharedKernel.Razor.Health;
-using Notify.Client;
-using Notify.Interfaces;
 using FamilyHubs.SharedKernel.Security;
 
 namespace FamilyHubs.Notification.Api;
@@ -79,14 +77,14 @@ public static class StartupExtensions
             //todo: use config exception
             throw new InvalidOperationException("Connect API Key is not configured");
         }
-        services.AddSingleton<IServiceNotificationClient>(s => new ServiceNotificationClient(ApiKeyType.ConnectKey, connectNotifyApiKey));
+        services.AddSingleton<IServiceNotificationClient>(_ => new ServiceNotificationClient(ApiKeyType.ConnectKey, connectNotifyApiKey));
         
         string? manageNotifyApiKey = configuration["GovNotifySetting:ManageAPIKey"];
         if (manageNotifyApiKey == null)
         {
             throw new InvalidOperationException("Manage API Key is not configured");
         }
-        services.AddSingleton<IServiceNotificationClient>(s => new ServiceNotificationClient(ApiKeyType.ManageKey, manageNotifyApiKey));
+        services.AddSingleton<IServiceNotificationClient>(_ => new ServiceNotificationClient(ApiKeyType.ManageKey, manageNotifyApiKey));
     }
 
     private static void RegisterAutoMapper(this IServiceCollection services)

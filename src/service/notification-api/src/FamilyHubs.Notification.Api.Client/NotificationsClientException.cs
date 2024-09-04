@@ -1,4 +1,5 @@
 ﻿using System.Net;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace FamilyHubs.Notification.Api.Client;
 // at some point we might want a more generic HttpClientException / RestHttpClientException

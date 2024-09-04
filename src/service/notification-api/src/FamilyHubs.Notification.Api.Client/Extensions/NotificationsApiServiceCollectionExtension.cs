@@ -37,9 +37,9 @@ public static class NotificationsApiServiceCollectionExtension
                                       ?? throw new ArgumentException($"IHttpContextAccessor required for {nameof(AddNotificationsApiClient)}");
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {httpContextAccessor.HttpContext!.GetBearerToken()}");
         })
-            .AddPolicyHandler((callbackServices, request) => HttpPolicyExtensions
+            .AddPolicyHandler((callbackServices, _) => HttpPolicyExtensions
                 .HandleTransientHttpError()
-                .WaitAndRetryAsync(delay, (result, timespan, retryAttempt, context) =>
+                .WaitAndRetryAsync(delay, (_, timespan, retryAttempt, _) =>
                 {
                     callbackServices.GetService<ILogger<NotificationsApi>>()?
                         .LogWarning("Delaying for {Timespan}, then making retry {RetryAttempt}.",

@@ -1,4 +1,5 @@
-﻿namespace FamilyHubs.Notification.Data.Entities;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+namespace FamilyHubs.Notification.Data.Entities;
 
 /// <summary>
 /// Base types for all Entities which track state using a given Id.

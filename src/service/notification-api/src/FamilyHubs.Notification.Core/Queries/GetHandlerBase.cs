@@ -9,13 +9,16 @@ namespace FamilyHubs.Notification.Core.Queries;
 
 public class GetHandlerBase
 {
-    protected readonly ApplicationDbContext _context;
-    protected readonly IMapper _mapper;
+    private readonly IMapper _mapper;
+    
     protected GetHandlerBase(ApplicationDbContext context, IMapper mapper)
     {
-        _context = context;
+        Context = context;
         _mapper = mapper;
     }
+    
+    protected ApplicationDbContext Context { get; }
+    
     protected async Task<PaginatedList<MessageDto>> GetPaginatedList(bool requestIsNull, IQueryable<SentNotification> referralList, int pageNumber, int pageSize)
     {
         int totalRecords = referralList.Count();
@@ -42,8 +45,8 @@ public class GetHandlerBase
         {
             case NotificationOrderBy.RecipientEmail:
                 if (isAscending.Value)
-                    return currentList.OrderBy(x => x.Notified.Select(x => x.Value).FirstOrDefault());
-                return currentList.OrderByDescending(x => x.Notified.Select(x => x.Value).FirstOrDefault());
+                    return currentList.OrderBy(sn => sn.Notified.Select(n => n.Value).FirstOrDefault());
+                return currentList.OrderByDescending(sn => sn.Notified.Select(n => n.Value).FirstOrDefault());
                 
             case NotificationOrderBy.Created:
                 if (isAscending.Value)

@@ -1,8 +1,8 @@
-using FluentAssertions;
 using System.Linq.Expressions;
 using System.Reflection;
+using FluentAssertions;
 
-namespace FamilyHubs.Notification.Api.Contracts.Tests.csproj;
+namespace FamilyHubs.Notification.Api.Contracts.Tests;
 public abstract class DtoComparerTestBase<T, TPropertyType> where T : DtoBase<long>
 {
     private readonly T _sut;
