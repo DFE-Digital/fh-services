@@ -1,9 +1,9 @@
 ﻿using FamilyHubs.Notification.Api.Contracts;
 using FluentAssertions;
 using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 using System.Text.Json;
 using Xunit.Abstractions;
+// ReSharper disable NotAccessedField.Local
 
 namespace FamilyHubs.Notification.FunctionalTests;
 

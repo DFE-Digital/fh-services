@@ -1,4 +1,5 @@
-﻿namespace FamilyHubs.Notification.Api.Contracts;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+namespace FamilyHubs.Notification.Api.Contracts;
 
 public record DtoBase<TId>
 {

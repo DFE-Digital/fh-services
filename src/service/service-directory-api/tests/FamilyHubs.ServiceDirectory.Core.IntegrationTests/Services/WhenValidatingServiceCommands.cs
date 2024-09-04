@@ -9,12 +9,14 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Services;
 
 public class WhenValidatingServiceCommands
 {
-    protected IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor _httpContextAccessor = Mock.Of<IHttpContextAccessor>();
+    
     public IMapper Mapper { get; }
 
     public WhenValidatingServiceCommands()
@@ -27,8 +29,7 @@ public class WhenValidatingServiceCommands
     private ServiceProvider CreateNewServiceProvider()
     {
         var serviceDirectoryConnection = $"Data Source=sd-{Random.Shared.Next().ToString()}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
-
-        //todo: do we need a (mock) _httpContextAccessor?
+        
         var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(_httpContextAccessor);
 
         return new ServiceCollection().AddEntityFrameworkSqlite()

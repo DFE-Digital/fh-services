@@ -26,7 +26,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         byte[]? byteEncryptionKey;
         byte[]? byteEncryptionIV;
 
-        string? encryptionKey = keyProvider.GetDbEncryptionKey().Result;
+        string encryptionKey = keyProvider.GetDbEncryptionKey().Result;
         if (!string.IsNullOrEmpty(encryptionKey))
         {
             byteEncryptionKey = ConvertStringToByteArray(encryptionKey);
@@ -35,7 +35,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         {
             throw new ArgumentException("EncryptionKey is missing");
         }
-        string? encryptionIV = keyProvider.GetDbEncryptionIVKey().Result;
+        string encryptionIV = keyProvider.GetDbEncryptionIVKey().Result;
         if (!string.IsNullOrEmpty(encryptionIV))
         {
             byteEncryptionIV = ConvertStringToByteArray(encryptionIV);

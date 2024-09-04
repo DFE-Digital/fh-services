@@ -4,6 +4,7 @@ using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
+using Microsoft.EntityFrameworkCore;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Services;
 
@@ -67,7 +68,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = TestDbContext.Services.Include(s => s.Eligibilities).SingleOrDefault(s => s.Name == service.Name);
         actualService.Should().NotBeNull();
         actualService!.Eligibilities.Count.Should().Be(1);
 
@@ -104,7 +105,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = TestDbContext.Services.Include(s => s.Eligibilities).SingleOrDefault(s => s.Name == service.Name);
         actualService.Should().NotBeNull();
         actualService!.Eligibilities.Count.Should().Be(1);
 
@@ -140,7 +141,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = TestDbContext.Services.Include(s => s.ServiceAreas).SingleOrDefault(s => s.Name == service.Name);
         actualService.Should().NotBeNull();
         actualService!.ServiceAreas.Count.Should().Be(1);
 
@@ -176,7 +177,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = TestDbContext.Services.Include(s => s.ServiceAreas).SingleOrDefault(s => s.Name == service.Name);
         actualService.Should().NotBeNull();
         actualService!.ServiceAreas.Count.Should().Be(1);
 
@@ -207,7 +208,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = TestDbContext.Services.Include(s => s.ServiceDeliveries).SingleOrDefault(s => s.Name == service.Name);
         actualService.Should().NotBeNull();
         actualService!.ServiceDeliveries.Count.Should().Be(0);
 
@@ -236,7 +237,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = TestDbContext.Services.Include(s => s.ServiceDeliveries).SingleOrDefault(s => s.Name == service.Name);
         actualService.Should().NotBeNull();
         actualService!.ServiceDeliveries.Count.Should().Be(1);
 
@@ -273,7 +274,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = TestDbContext.Services.Include(s => s.Languages).SingleOrDefault(s => s.Name == service.Name);
         actualService.Should().NotBeNull();
         actualService!.Languages.Count.Should().Be(1);
 
@@ -309,7 +310,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = TestDbContext.Services.Include(s => s.Languages).SingleOrDefault(s => s.Name == serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Languages.Count.Should().Be(1);
 
@@ -349,7 +350,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = TestDbContext.Services.Include(s => s.CostOptions).SingleOrDefault(s => s.Name == serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.CostOptions.Count.Should().Be(1);
 
@@ -386,7 +387,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = TestDbContext.Services.Include(s => s.CostOptions).SingleOrDefault(s => s.Name == serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.CostOptions.Count.Should().Be(1);
 
@@ -423,7 +424,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = TestDbContext.Services.Include(s => s.Contacts).SingleOrDefault(s => s.Name == serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Contacts.Count.Should().Be(1);
 
@@ -460,7 +461,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = TestDbContext.Services.Include(s => s.Contacts).SingleOrDefault(s => s.Name == serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Contacts.Count.Should().Be(1);
 
@@ -499,7 +500,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = TestDbContext.Services.Include(s => s.Schedules).SingleOrDefault(s => s.Name == serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Schedules.Count.Should().Be(1);
 
@@ -535,7 +536,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = TestDbContext.Services.Include(s => s.Schedules).SingleOrDefault(s => s.Name == serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Schedules.Count.Should().Be(1);
 
@@ -586,7 +587,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = TestDbContext.Services.Include(s => s.Locations).SingleOrDefault(s => s.Name == serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Locations.Count.Should().Be(1);
 
@@ -666,7 +667,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = TestDbContext.Services.Include(s => s.Locations).SingleOrDefault(s => s.Name == serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Locations.Should().HaveCount(1);
 
@@ -720,10 +721,10 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         result.Should().NotBe(0);
         result.Should().Be(serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = TestDbContext.Services.Include(s => s.Taxonomies).SingleOrDefault(s => s.Name == serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Taxonomies.Count.Should().Be(1);
-        actualService!.Taxonomies.Select(t => t.Id).Should().BeEquivalentTo(new[] { newTaxonomy.Id });
+        actualService.Taxonomies.Select(t => t.Id).Should().BeEquivalentTo(new[] { newTaxonomy.Id });
 
         // Delete wont cascade delete Taxonomies, so existing will be left behind
         var detachedEntity = TestDbContext.Taxonomies.SingleOrDefault(s => s.Name == taxonomy.Name);

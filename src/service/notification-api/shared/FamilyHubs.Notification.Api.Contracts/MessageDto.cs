@@ -1,11 +1,15 @@
-﻿namespace FamilyHubs.Notification.Api.Contracts;
+﻿// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable NonReadonlyMemberInGetHashCode
+// ReSharper disable UnusedMember.Global
+// ReSharper disable UsageOfDefaultStructEquality
+namespace FamilyHubs.Notification.Api.Contracts;
 
 public record MessageDto : DtoBase<long>
 {
     public required ApiKeyType ApiKeyType { get; set; }
     public required List<string> NotificationEmails { get; set; }
     public required string TemplateId { get; set; }
-    public Dictionary<string, string> TemplateTokens { get; set; } = new Dictionary<string, string>();
+    public Dictionary<string, string> TemplateTokens { get; set; } = new();
     public DateTime? Created { get; set; }
 
     public override int GetHashCode()
@@ -54,8 +58,7 @@ public record MessageDto : DtoBase<long>
         return
             EqualityComparer<ApiKeyType>.Default.Equals(ApiKeyType, other.ApiKeyType) &&
             NotificationEmails.SequenceEqual(other.NotificationEmails) &&
-            EqualityComparer<string>.Default.Equals(TemplateId, other.TemplateId)
-            ;
+            EqualityComparer<string>.Default.Equals(TemplateId, other.TemplateId);
     }
 }
 
