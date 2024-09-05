@@ -6,70 +6,70 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 public class Location
 {
     [JsonPropertyName("id")]
-    public required Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [JsonPropertyName("location_type")]
-    public required string LocationType { get; set; }
+    public required string LocationType { get; init; }
 
     [JsonPropertyName("url")]
-    public string? Url { get; set; }
+    public string? Url { get; init; }
 
     [JsonPropertyName("organization_id")]
-    public Guid? OrganizationId { get; set; }
+    public Guid? OrganizationId { get; init; }
 
     [JsonPropertyName("name")]
-    public string? Name { get; set; }
+    public string? Name { get; init; }
 
     [JsonPropertyName("alternate_name")]
-    public string? AlternateName { get; set; }
+    public string? AlternateName { get; init; }
 
     [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    public string? Description { get; init; }
 
     [JsonPropertyName("transportation")]
-    public string? Transportation { get; set; }
+    public string? Transportation { get; init; }
 
     [JsonPropertyName("latitude")]
-    public decimal? Latitude { get; set; }
+    public decimal? Latitude { get; init; }
 
     [JsonPropertyName("longitude")]
-    public decimal? Longitude { get; set; }
+    public decimal? Longitude { get; init; }
 
     [JsonPropertyName("external_identifier")]
-    public string? ExternalIdentifier { get; set; }
+    public string? ExternalIdentifier { get; init; }
 
     [JsonPropertyName("external_identifier_type")]
-    public string? ExternalIdentifierType { get; set; }
+    public string? ExternalIdentifierType { get; init; }
 
     [JsonPropertyName("languages")]
     [NotMapped]
-    public List<Language> Languages { get; set; } = new();
+    public List<Language> Languages { get; init; } = new();
 
     [JsonPropertyName("addresses")]
     [NotMapped]
-    public List<Address> Addresses { get; set; } = new();
+    public List<Address> Addresses { get; init; } = new();
 
     [JsonPropertyName("contacts")]
     [NotMapped]
-    public List<Contact> Contacts { get; set; } = new();
+    public List<Contact> Contacts { get; init; } = new();
 
     [JsonPropertyName("accessibility")]
     [NotMapped]
-    public List<Accessibility> Accessibility { get; set; } = new();
+    public List<Accessibility> Accessibility { get; init; } = new();
 
     [JsonPropertyName("phones")]
     [NotMapped]
-    public List<Phone> Phones { get; set; } = new();
+    public List<Phone> Phones { get; init; } = new();
 
     [JsonPropertyName("schedules")]
     [NotMapped]
-    public List<Schedule> Schedules { get; set; } = new();
+    public List<Schedule> Schedules { get; init; } = new();
 
     [JsonPropertyName("attributes")]
     [NotMapped]
-    public List<Attribute> Attributes { get; set; } = new();
+    public List<Attribute> Attributes { get; init; } = new();
 
     [JsonPropertyName("metadata")]
     [NotMapped]
-    public List<Metadata> Metadata { get; set; } = new();
+    public List<Metadata> Metadata { get; init; } = new();
 }

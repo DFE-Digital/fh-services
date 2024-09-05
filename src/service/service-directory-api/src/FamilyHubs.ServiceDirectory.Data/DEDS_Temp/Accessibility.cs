@@ -6,25 +6,25 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 public class Accessibility
 {
     [JsonPropertyName("id")]
-    public required Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [JsonPropertyName("location_id")]
-    public Guid? LocationId { get; set; }
+    public Guid? LocationId { get; init; }
 
     [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    public string? Description { get; init; }
 
     [JsonPropertyName("details")]
-    public string? Details { get; set; }
+    public string? Details { get; init; }
 
     [JsonPropertyName("url")]
-    public string? Url { get; set; }
+    public string? Url { get; init; }
 
     [JsonPropertyName("attributes")]
     [NotMapped]
-    public List<Attribute> Attributes { get; set; } = new();
+    public List<Attribute> Attributes { get; init; } = new();
 
     [JsonPropertyName("metadata")]
     [NotMapped]
-    public List<Metadata> Metadata { get; set; } = new();
+    public List<Metadata> Metadata { get; init; } = new();
 }

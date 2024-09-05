@@ -6,22 +6,22 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 public class RequiredDocument
 {
     [JsonPropertyName("id")]
-    public required Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [JsonPropertyName("service_id")]
-    public Guid? ServiceId { get; set; }
+    public Guid? ServiceId { get; init; }
 
     [JsonPropertyName("document")]
-    public string? Document { get; set; }
+    public string? Document { get; init; }
 
     [JsonPropertyName("uri")]
-    public string? Uri { get; set; }
+    public string? Uri { get; init; }
 
     [JsonPropertyName("attributes")]
     [NotMapped]
-    public List<Attribute> Attributes { get; set; } = new();
+    public List<Attribute> Attributes { get; init; } = new();
 
     [JsonPropertyName("metadata")]
     [NotMapped]
-    public List<Metadata> Metadata { get; set; } = new();
+    public List<Metadata> Metadata { get; init; } = new();
 }

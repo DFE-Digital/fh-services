@@ -6,114 +6,114 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 public class Service
 {
     [JsonPropertyName("id")]
-    public required Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [JsonPropertyName("organization_id")]
-    public required Guid OrganizationId { get; set; }
+    public required Guid OrganizationId { get; init; }
 
     [JsonPropertyName("program_id")]
-    public required Guid ProgramId { get; set; }
+    public required Guid ProgramId { get; init; }
 
     [JsonPropertyName("name")]
-    public required string Name { get; set; }
+    public required string Name { get; init; }
 
     [JsonPropertyName("alternate_name")]
-    public string? AlternateName { get; set; }
+    public string? AlternateName { get; init; }
 
     [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    public string? Description { get; init; }
 
     [JsonPropertyName("url")]
-    public string? Url { get; set; }
+    public string? Url { get; init; }
 
     [JsonPropertyName("email")]
-    public string? Email { get; set; }
+    public string? Email { get; init; }
 
     [JsonPropertyName("status")]
-    public required string Status { get; set; }
+    public required string Status { get; init; }
 
     [JsonPropertyName("interpretation_services")]
-    public string? InterpretationServices { get; set; }
+    public string? InterpretationServices { get; init; }
 
     [JsonPropertyName("application_process")]
-    public string? ApplicationProcess { get; set; }
+    public string? ApplicationProcess { get; init; }
 
     [JsonPropertyName("fees_description")]
-    public string? FeesDescription { get; set; }
+    public string? FeesDescription { get; init; }
 
     [JsonPropertyName("accreditations")]
-    public string? Accreditations { get; set; }
+    public string? Accreditations { get; init; }
 
     [JsonPropertyName("eligibility_description")]
-    public string? EligibilityDescription { get; set; }
+    public string? EligibilityDescription { get; init; }
 
     [JsonPropertyName("minimum_age")]
-    public byte MinimumAge { get; set; }
+    public byte MinimumAge { get; init; }
 
     [JsonPropertyName("maximum_age")]
-    public byte MaximumAge { get; set; }
+    public byte MaximumAge { get; init; }
 
     [JsonPropertyName("assured_date")]
-    public DateTime? AssuredDate { get; set; }
+    public DateTime? AssuredDate { get; init; }
 
     [JsonPropertyName("assurer_email")]
-    public string? AssurerEmail { get; set; }
+    public string? AssurerEmail { get; init; }
 
     [JsonPropertyName("alert")]
-    public string? Alert { get; set; }
+    public string? Alert { get; init; }
 
     [JsonPropertyName("last_modified")]
-    public DateTime? LastModified { get; set; }
+    public DateTime? LastModified { get; init; }
 
     [JsonPropertyName("phones")]
     [NotMapped]
-    public List<Phone> Phones { get; set; } = new();
+    public List<Phone> Phones { get; init; } = new();
 
     [JsonPropertyName("schedules")]
     [NotMapped]
-    public List<Schedule> Schedules { get; set; } = new();
+    public List<Schedule> Schedules { get; init; } = new();
 
     [JsonPropertyName("service_areas")]
     [NotMapped]
-    public List<ServiceArea> ServiceAreas { get; set; } = new();
+    public List<ServiceArea> ServiceAreas { get; init; } = new();
 
     [JsonPropertyName("service_at_locations")]
     [NotMapped]
-    public List<ServiceAtLocation> ServiceAtLocations { get; set; } = new();
+    public List<ServiceAtLocation> ServiceAtLocations { get; init; } = new();
 
     [JsonPropertyName("languages")]
     [NotMapped]
-    public List<Language> Languages { get; set; } = new();
+    public List<Language> Languages { get; init; } = new();
 
     [JsonPropertyName("organization")]
     [NotMapped]
-    public Organization? Organization { get; set; }
+    public Organization? Organization { get; init; }
 
     [JsonPropertyName("funding")]
     [NotMapped]
-    public List<Funding> Funding { get; set; } = new();
+    public List<Funding> Funding { get; init; } = new();
 
     [JsonPropertyName("cost_options")]
     [NotMapped]
-    public List<CostOption> CostOptions { get; set; } = new();
+    public List<CostOption> CostOptions { get; init; } = new();
 
     [JsonPropertyName("program")]
     [NotMapped]
-    public Program? Program { get; set; }
+    public Program? Program { get; init; }
 
     [JsonPropertyName("required_documents")]
     [NotMapped]
-    public List<RequiredDocument> RequiredDocuments { get; set; } = new();
+    public List<RequiredDocument> RequiredDocuments { get; init; } = new();
 
     [JsonPropertyName("contacts")]
     [NotMapped]
-    public List<Contact> Contacts { get; set; } = new();
+    public List<Contact> Contacts { get; init; } = new();
 
     [JsonPropertyName("attributes")]
     [NotMapped]
-    public List<Attribute> Attributes { get; set; } = new();
+    public List<Attribute> Attributes { get; init; } = new();
 
     [JsonPropertyName("metadata")]
     [NotMapped]
-    public List<Metadata> Metadata { get; set; } = new();
+    public List<Metadata> Metadata { get; init; } = new();
 }

@@ -6,25 +6,25 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 public class OrganizationIdentifier
 {
     [JsonPropertyName("id")]
-    public required Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [JsonPropertyName("organization_id")]
-    public Guid? OrganizationId { get; set; }
+    public Guid? OrganizationId { get; init; }
 
     [JsonPropertyName("identifier_scheme")]
-    public string? IdentifierScheme { get; set; }
+    public string? IdentifierScheme { get; init; }
 
     [JsonPropertyName("identifier_type")]
-    public string? IdentifierType { get; set; }
+    public string? IdentifierType { get; init; }
 
     [JsonPropertyName("identifier")]
-    public string? Identifier { get; set; }
+    public string? Identifier { get; init; }
 
     [JsonPropertyName("attributes")]
     [NotMapped]
-    public List<Attribute> Attributes { get; set; } = new();
+    public List<Attribute> Attributes { get; init; } = new();
 
     [JsonPropertyName("metadata")]
     [NotMapped]
-    public List<Metadata> Metadata { get; set; } = new();
+    public List<Metadata> Metadata { get; init; } = new();
 }

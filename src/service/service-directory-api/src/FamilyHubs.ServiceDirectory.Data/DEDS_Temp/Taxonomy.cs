@@ -6,21 +6,21 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 public class Taxonomy
 {
     [JsonPropertyName("id")]
-    public required Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [JsonPropertyName("name")]
-    public required string Name { get; set; }
+    public required string Name { get; init; }
 
     [JsonPropertyName("description")]
-    public required string Description { get; set; }
+    public required string Description { get; init; }
 
     [JsonPropertyName("uri")]
-    public string? Uri { get; set; }
+    public string? Uri { get; init; }
 
     [JsonPropertyName("version")]
-    public string? Version { get; set; }
+    public string? Version { get; init; }
 
     [JsonPropertyName("metadata")]
     [NotMapped]
-    public List<Metadata> Metadata { get; set; } = new();
+    public List<Metadata> Metadata { get; init; } = new();
 }

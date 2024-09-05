@@ -6,79 +6,79 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 public class Schedule
 {
     [JsonPropertyName("id")]
-    public required Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [JsonPropertyName("service_id")]
-    public Guid? ServiceId { get; set; }
+    public Guid? ServiceId { get; init; }
 
     [JsonPropertyName("location_id")]
-    public Guid? LocationId { get; set; }
+    public Guid? LocationId { get; init; }
 
     [JsonPropertyName("service_at_location_id")]
-    public Guid? ServiceAtLocationId { get; set; }
+    public Guid? ServiceAtLocationId { get; init; }
 
     [JsonPropertyName("valid_from")]
-    public DateTime? ValidFrom { get; set; }
+    public DateTime? ValidFrom { get; init; }
 
     [JsonPropertyName("valid_to")]
-    public DateTime? ValidTo { get; set; }
+    public DateTime? ValidTo { get; init; }
 
     [JsonPropertyName("dtstart")]
-    public DateTime? Dtstart { get; set; }
+    public DateTime? Dtstart { get; init; }
 
     [JsonPropertyName("timezone")]
-    public byte? Timezone { get; set; }
+    public byte? Timezone { get; init; }
 
     [JsonPropertyName("until")]
-    public DateTime? Until { get; set; }
+    public DateTime? Until { get; init; }
 
     [JsonPropertyName("count")]
-    public short? Count { get; set; }
+    public short? Count { get; init; }
 
     [JsonPropertyName("wkst")]
-    public string? Wkst { get; set; }
+    public string? Wkst { get; init; }
 
     [JsonPropertyName("freq")]
-    public string? Freq { get; set; }
+    public string? Freq { get; init; }
 
     [JsonPropertyName("interval")]
-    public short? Interval { get; set; }
+    public short? Interval { get; init; }
 
     [JsonPropertyName("byday")]
-    public string? Byday { get; set; }
+    public string? Byday { get; init; }
 
     [JsonPropertyName("byweekno")]
-    public string? Byweekno { get; set; }
+    public string? Byweekno { get; init; }
 
     [JsonPropertyName("bymonthday")]
-    public string? Bymonthday { get; set; }
+    public string? Bymonthday { get; init; }
 
     [JsonPropertyName("byyearday")]
-    public string? Byyearday { get; set; }
+    public string? Byyearday { get; init; }
 
     [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    public string? Description { get; init; }
 
     [JsonPropertyName("opens_at")]
-    public DateTime? OpensAt { get; set; }
+    public DateTime? OpensAt { get; init; }
 
     [JsonPropertyName("closes_at")]
-    public DateTime? ClosesAt { get; set; }
+    public DateTime? ClosesAt { get; init; }
 
     [JsonPropertyName("schedule_link")]
-    public string? ScheduleLink { get; set; }
+    public string? ScheduleLink { get; init; }
 
     [JsonPropertyName("attending_type")]
-    public string? AttendingType { get; set; }
+    public string? AttendingType { get; init; }
 
     [JsonPropertyName("notes")]
-    public string? Notes { get; set; }
+    public string? Notes { get; init; }
 
     [JsonPropertyName("attributes")]
     [NotMapped]
-    public List<Attribute> Attributes { get; set; } = new();
+    public List<Attribute> Attributes { get; init; } = new();
 
     [JsonPropertyName("metadata")]
     [NotMapped]
-    public List<Metadata> Metadata { get; set; } = new();
+    public List<Metadata> Metadata { get; init; } = new();
 }

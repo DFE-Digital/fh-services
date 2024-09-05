@@ -6,40 +6,40 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 public class TaxonomyTerm
 {
     [JsonPropertyName("id")]
-    public required Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [JsonPropertyName("code")]
-    public required string Code { get; set; }
+    public required string Code { get; init; }
 
     [JsonPropertyName("name")]
-    public required string Name { get; set; }
+    public required string Name { get; init; }
 
     [JsonPropertyName("description")]
-    public required string Description { get; set; }
+    public required string Description { get; init; }
 
     [JsonPropertyName("parent_id")]
-    public Guid? ParentId { get; set; }
+    public Guid? ParentId { get; init; }
 
     [JsonPropertyName("taxonomy")]
-    public string? Taxonomy { get; set; }
+    public string? Taxonomy { get; init; }
 
     [JsonPropertyName("version")]
-    public string? Version { get; set; }
+    public string? Version { get; init; }
 
     [JsonPropertyName("taxonomy_detail")]
     [NotMapped]
-    public Taxonomy? TaxonomyDetail { get; set; }
+    public Taxonomy? TaxonomyDetail { get; init; }
 
     [JsonPropertyName("language")]
-    public string? Language { get; set; }
+    public string? Language { get; init; }
 
     [JsonPropertyName("taxonomy_id")]
-    public Guid? TaxonomyId { get; set; }
+    public Guid? TaxonomyId { get; init; }
 
     [JsonPropertyName("term_uri")]
-    public string? TermUri { get; set; }
+    public string? TermUri { get; init; }
 
     [JsonPropertyName("metadata")]
     [NotMapped]
-    public List<Metadata> Metadata { get; set; } = new();
+    public List<Metadata> Metadata { get; init; } = new();
 }

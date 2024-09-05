@@ -6,44 +6,44 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 public class Phone
 {
     [JsonPropertyName("id")]
-    public required Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [JsonPropertyName("location_id")]
-    public Guid? LocationId { get; set; }
+    public Guid? LocationId { get; init; }
 
     [JsonPropertyName("service_id")]
-    public Guid? ServiceId { get; set; }
+    public Guid? ServiceId { get; init; }
 
     [JsonPropertyName("organization_id")]
-    public Guid? OrganizationId { get; set; }
+    public Guid? OrganizationId { get; init; }
 
     [JsonPropertyName("contact_id")]
-    public Guid? ContactId { get; set; }
+    public Guid? ContactId { get; init; }
 
     [JsonPropertyName("service_at_location_id")]
-    public Guid? ServiceAtLocationId { get; set; }
+    public Guid? ServiceAtLocationId { get; init; }
 
     [JsonPropertyName("number")]
-    public required string Number { get; set; }
+    public required string Number { get; init; }
 
     [JsonPropertyName("extension")]
-    public short? Extension { get; set; }
+    public short? Extension { get; init; }
 
     [JsonPropertyName("type")]
-    public string? Type { get; set; }
+    public string? Type { get; init; }
 
     [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    public string? Description { get; init; }
 
     [JsonPropertyName("languages")]
     [NotMapped]
-    public List<Language> Languages { get; set; } = new();
+    public List<Language> Languages { get; init; } = new();
 
     [JsonPropertyName("attributes")]
     [NotMapped]
-    public List<Attribute> Attributes { get; set; } = new();
+    public List<Attribute> Attributes { get; init; } = new();
 
     [JsonPropertyName("metadata")]
     [NotMapped]
-    public List<Metadata> Metadata { get; set; } = new();
+    public List<Metadata> Metadata { get; init; } = new();
 }

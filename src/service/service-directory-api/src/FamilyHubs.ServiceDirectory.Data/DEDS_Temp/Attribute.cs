@@ -6,28 +6,28 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 public class Attribute
 {
     [JsonPropertyName("id")]
-    public required Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [JsonPropertyName("link_id")]
-    public required Guid LinkId { get; set; }
+    public required Guid LinkId { get; init; }
 
     [JsonPropertyName("taxonomy_term_id")]
-    public required Guid TaxonomyTermId { get; set; }
+    public required Guid TaxonomyTermId { get; init; }
 
     [JsonPropertyName("link_type")]
-    public string? LinkType { get; set; }
+    public string? LinkType { get; init; }
 
     [JsonPropertyName("link_entity")]
-    public required string LinkEntity { get; set; }
+    public required string LinkEntity { get; init; }
 
     [JsonPropertyName("value")]
-    public string? Value { get; set; }
+    public string? Value { get; init; }
 
     [JsonPropertyName("taxonomy_term")]
     [NotMapped]
-    public TaxonomyTerm? TaxonomyTerm { get; set; }
+    public TaxonomyTerm? TaxonomyTerm { get; init; }
 
     [JsonPropertyName("metadata")]
     [NotMapped]
-    public List<Metadata> Metadata { get; set; } = new();
+    public List<Metadata> Metadata { get; init; } = new();
 }

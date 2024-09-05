@@ -6,38 +6,38 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 public class ServiceAtLocation
 {
     [JsonPropertyName("id")]
-    public required Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [JsonPropertyName("service_id")]
-    public Guid? ServiceId { get; set; }
+    public Guid? ServiceId { get; init; }
 
     [JsonPropertyName("location_id")]
-    public Guid? LocationId { get; set; }
+    public Guid? LocationId { get; init; }
 
     [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    public string? Description { get; init; }
 
     [JsonPropertyName("contacts")]
     [NotMapped]
-    public List<Contact> Contacts { get; set; } = new();
+    public List<Contact> Contacts { get; init; } = new();
 
     [JsonPropertyName("phones")]
     [NotMapped]
-    public List<Phone> Phones { get; set; } = new();
+    public List<Phone> Phones { get; init; } = new();
 
     [JsonPropertyName("schedules")]
     [NotMapped]
-    public List<Schedule> Schedules { get; set; } = new();
+    public List<Schedule> Schedules { get; init; } = new();
 
     [JsonPropertyName("location")]
     [NotMapped]
-    public Location? Location { get; set; }
+    public Location? Location { get; init; }
 
     [JsonPropertyName("attributes")]
     [NotMapped]
-    public List<Attribute> Attributes { get; set; } = new();
+    public List<Attribute> Attributes { get; init; } = new();
 
     [JsonPropertyName("metadata")]
     [NotMapped]
-    public List<Metadata> Metadata { get; set; } = new();
+    public List<Metadata> Metadata { get; init; } = new();
 }
