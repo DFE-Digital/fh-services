@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -6,9 +5,8 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 
 public class Funding
 {
-    [Required]
     [JsonPropertyName("id")]
-    public required string Id { get; set; }
+    public required Guid Id { get; set; }
 
     [JsonPropertyName("organization_id")]
     public Guid? OrganizationId { get; set; }

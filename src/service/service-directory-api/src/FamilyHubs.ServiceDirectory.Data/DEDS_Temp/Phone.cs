@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -6,7 +5,6 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 
 public class Phone
 {
-    [Required]
     [JsonPropertyName("id")]
     public required Guid Id { get; set; }
 
@@ -25,7 +23,6 @@ public class Phone
     [JsonPropertyName("service_at_location_id")]
     public Guid? ServiceAtLocationId { get; set; }
 
-    [Required]
     [JsonPropertyName("number")]
     public required string Number { get; set; }
 

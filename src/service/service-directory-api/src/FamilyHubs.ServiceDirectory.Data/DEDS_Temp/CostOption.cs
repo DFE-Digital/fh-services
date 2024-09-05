@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -6,11 +5,9 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 
 public class CostOption
 {
-    [Required]
     [JsonPropertyName("id")]
     public required Guid Id { get; set; }
 
-    [Required]
     [JsonPropertyName("service_id")]
     public required Guid ServiceId { get; set; }
 

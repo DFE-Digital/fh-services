@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -6,19 +5,15 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 
 public class Service
 {
-    [Required]
     [JsonPropertyName("id")]
     public required Guid Id { get; set; }
 
-    [Required]
     [JsonPropertyName("organization_id")]
     public required Guid OrganizationId { get; set; }
 
-    [Required]
     [JsonPropertyName("program_id")]
     public required Guid ProgramId { get; set; }
 
-    [Required]
     [JsonPropertyName("name")]
     public required string Name { get; set; }
 
@@ -34,7 +29,6 @@ public class Service
     [JsonPropertyName("email")]
     public string? Email { get; set; }
 
-    [Required]
     [JsonPropertyName("status")]
     public required string Status { get; set; }
 

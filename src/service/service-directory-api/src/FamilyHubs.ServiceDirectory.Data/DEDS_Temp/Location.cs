@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -6,11 +5,9 @@ namespace FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 
 public class Location
 {
-    [Required]
     [JsonPropertyName("id")]
     public required Guid Id { get; set; }
 
-    [Required]
     [JsonPropertyName("location_type")]
     public required string LocationType { get; set; }
 

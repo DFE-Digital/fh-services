@@ -1,10 +1,21 @@
 ﻿using System.Reflection;
+using FamilyHubs.ServiceDirectory.Data.DEDS_Temp;
 using FamilyHubs.ServiceDirectory.Data.Entities;
-using FamilyHubs.ServiceDirectory.Data.Entities.ManyToMany;
 using FamilyHubs.ServiceDirectory.Data.Interceptors;
 using FamilyHubs.SharedKernel.OpenReferral;
 using Enums = FamilyHubs.ServiceDirectory.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
+using Attribute = FamilyHubs.ServiceDirectory.Data.DEDS_Temp.Attribute;
+using Contact = FamilyHubs.ServiceDirectory.Data.Entities.Contact;
+using CostOption = FamilyHubs.ServiceDirectory.Data.Entities.CostOption;
+using Funding = FamilyHubs.ServiceDirectory.Data.Entities.Funding;
+using Language = FamilyHubs.ServiceDirectory.Data.Entities.Language;
+using Location = FamilyHubs.ServiceDirectory.Data.Entities.Location;
+using Schedule = FamilyHubs.ServiceDirectory.Data.Entities.Schedule;
+using Service = FamilyHubs.ServiceDirectory.Data.Entities.Service;
+using ServiceArea = FamilyHubs.ServiceDirectory.Data.Entities.ServiceArea;
+using ServiceAtLocation = FamilyHubs.ServiceDirectory.Data.Entities.ManyToMany.ServiceAtLocation;
+using Taxonomy = FamilyHubs.ServiceDirectory.Data.Entities.Taxonomy;
 
 namespace FamilyHubs.ServiceDirectory.Data.Repository
 {
@@ -15,6 +26,230 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
         {
             _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
+        }
+
+        // TODO: Rename & move this over to the shared kernel along with everything in "DEDS_Temp"
+        private static void OnModelCreatingTemp(ModelBuilder modelBuilder)
+        {
+            // Table Mapping
+            modelBuilder.Entity<DEDS_Temp.Accessibility>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Url).HasMaxLength(2048);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Address>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Attention).HasMaxLength(255);
+                entity.Property(e => e.Address1).HasMaxLength(255);
+                entity.Property(e => e.Address2).HasMaxLength(255);
+                entity.Property(e => e.City).HasMaxLength(255);
+                entity.Property(e => e.Region).HasMaxLength(255);
+                entity.Property(e => e.StateProvince).HasMaxLength(255);
+                entity.Property(e => e.PostalCode).HasMaxLength(255);
+                entity.Property(e => e.Country).HasMaxLength(255);
+                entity.Property(e => e.AddressType).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Attribute>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.LinkType).HasMaxLength(50);
+                entity.Property(e => e.LinkEntity).HasMaxLength(50);
+                entity.Property(e => e.Value).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Contact>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Name).HasMaxLength(255);
+                entity.Property(e => e.Title).HasMaxLength(255);
+                entity.Property(e => e.Department).HasMaxLength(255);
+                entity.Property(e => e.Email).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.CostOption>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.ValidFrom).HasColumnType("date");
+                entity.Property(e => e.ValidTo).HasColumnType("date");
+                entity.Property(e => e.Currency).HasColumnType("nchar(3)");
+                entity.Property(e => e.Amount).HasPrecision(18, 2);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Funding>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Language>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Name).HasMaxLength(255);
+                entity.Property(e => e.Code).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Location>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.LocationType).HasMaxLength(255);
+                entity.Property(e => e.LocationType).HasMaxLength(2048);
+                entity.Property(e => e.Name).HasMaxLength(255);
+                entity.Property(e => e.AlternateName).HasMaxLength(255);
+                entity.Property(e => e.Transportation).HasMaxLength(255);
+                entity.Property(e => e.Latitude).HasPrecision(18, 2);
+                entity.Property(e => e.Longitude).HasPrecision(18, 2);
+                entity.Property(e => e.ExternalIdentifier).HasMaxLength(255);
+                entity.Property(e => e.ExternalIdentifierType).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Metadata>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.ResourceType).HasMaxLength(50);
+                entity.Property(e => e.LastActionDate).HasColumnType("date");
+                entity.Property(e => e.LastActionType).HasMaxLength(255);
+                entity.Property(e => e.FieldName).HasMaxLength(50);
+                entity.Property(e => e.UpdatedBy).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.MetaTableDescription>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Name).HasMaxLength(255);
+                entity.Property(e => e.Language).HasMaxLength(50);
+                entity.Property(e => e.CharacterSet).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Organization>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Name).HasMaxLength(255);
+                entity.Property(e => e.AlternateName).HasMaxLength(255);
+                entity.Property(e => e.Email).HasMaxLength(255);
+                entity.Property(e => e.Website).HasMaxLength(2048);
+                entity.Property(e => e.LegalStatus).HasMaxLength(255);
+                entity.Property(e => e.Logo).HasMaxLength(2048);
+                entity.Property(e => e.Uri).HasMaxLength(2048);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.OrganizationIdentifier>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.IdentifierScheme).HasMaxLength(50);
+                entity.Property(e => e.IdentifierType).HasMaxLength(50);
+                entity.Property(e => e.Identifier).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Phone>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Number).HasMaxLength(50);
+                entity.Property(e => e.Type).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Program>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Name).HasMaxLength(255);
+                entity.Property(e => e.AlternateName).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.RequiredDocument>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Document).HasMaxLength(255);
+                entity.Property(e => e.Uri).HasMaxLength(2048);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Schedule>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.ValidFrom).HasColumnType("date");
+                entity.Property(e => e.ValidTo).HasColumnType("date");
+                entity.Property(e => e.Dtstart).HasMaxLength(50);
+                entity.Property(e => e.Until).HasMaxLength(50);
+                entity.Property(e => e.Wkst).HasMaxLength(50);
+                entity.Property(e => e.Freq).HasMaxLength(50);
+                entity.Property(e => e.Byday).HasMaxLength(255);
+                entity.Property(e => e.Byweekno).HasMaxLength(255);
+                entity.Property(e => e.Bymonthday).HasMaxLength(255);
+                entity.Property(e => e.Byyearday).HasMaxLength(255);
+                entity.Property(e => e.OpensAt).HasMaxLength(50);
+                entity.Property(e => e.ClosesAt).HasMaxLength(50);
+                entity.Property(e => e.ScheduleLink).HasMaxLength(2048);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Service>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Name).HasMaxLength(255);
+                entity.Property(e => e.AlternateName).HasMaxLength(255);
+                entity.Property(e => e.Url).HasMaxLength(2048);
+                entity.Property(e => e.Email).HasMaxLength(255);
+                entity.Property(e => e.Status).HasMaxLength(255);
+                entity.Property(e => e.InterpretationServices).HasMaxLength(512);
+                entity.Property(e => e.ApplicationProcess).HasMaxLength(512);
+                entity.Property(e => e.AssuredDate).HasColumnType("date");
+                entity.Property(e => e.AssurerEmail).HasMaxLength(255);
+                entity.Property(e => e.Alert).HasMaxLength(255);
+                entity.Property(e => e.LastModified).HasPrecision(7);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.ServiceArea>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Name).HasMaxLength(255);
+                entity.Property(e => e.Extent).HasMaxLength(255);
+                entity.Property(e => e.ExtentType).HasMaxLength(255);
+                entity.Property(e => e.Uri).HasMaxLength(2048);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.ServiceAtLocation>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+            });
+
+            modelBuilder.Entity<DEDS_Temp.Taxonomy>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Name).HasMaxLength(255);
+                entity.Property(e => e.Uri).HasMaxLength(2048);
+                entity.Property(e => e.Version).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<DEDS_Temp.TaxonomyTerm>(entity =>
+            {
+                entity.HasKey(e => e.Id).IsClustered(false);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Code).HasMaxLength(255);
+                entity.Property(e => e.Name).HasMaxLength(255);
+                entity.Property(e => e.Taxonomy).HasMaxLength(255);
+                entity.Property(e => e.Version).HasMaxLength(50);
+                entity.Property(e => e.Language).HasMaxLength(50);
+                entity.Property(e => e.TermUri).HasMaxLength(2048);
+            });
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -152,10 +387,13 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
                         Description = "Connect"
                     }
                 );
-            
+
+            // TODO: Remove this and update migration
             modelBuilder.Entity<ServicesTemp>()
                 .ToTable("services_temp", "staging")
                 .HasKey(e => e.Id);
+
+            OnModelCreatingTemp(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
         }
