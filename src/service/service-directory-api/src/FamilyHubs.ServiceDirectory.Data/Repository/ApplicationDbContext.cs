@@ -253,6 +253,9 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             // Relationship Mapping
 
+            // TODO: This might actually fit better in the deserialisation ticket (FHB-549) so might be worth removing
+            // TODO: from this PR and having it part of the other one
+
             //  Accessibility Table
 
             modelBuilder.Entity<DEDS_Temp.Accessibility>()
