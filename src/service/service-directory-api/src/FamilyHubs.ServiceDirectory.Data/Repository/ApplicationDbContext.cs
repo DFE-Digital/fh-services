@@ -300,7 +300,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
             modelBuilder.Entity<DEDS_Temp.Contact>()
                 .HasMany(e => e.Phones)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ContactId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Contact>()
@@ -362,37 +362,37 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
             modelBuilder.Entity<DEDS_Temp.Location>()
                 .HasMany(e => e.Languages)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.LocationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Location>()
                 .HasMany(e => e.Addresses)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.LocationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Location>()
                 .HasMany(e => e.Contacts)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.LocationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Location>()
                 .HasMany(e => e.Accessibility)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.LocationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Location>()
                 .HasMany(e => e.Phones)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.LocationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Location>()
                 .HasMany(e => e.Schedules)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.LocationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Location>()
@@ -426,37 +426,37 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
             modelBuilder.Entity<DEDS_Temp.Organization>()
                 .HasMany(e => e.Funding)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.OrganizationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Organization>()
                 .HasMany(e => e.Contacts)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.OrganizationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Organization>()
                 .HasMany(e => e.Phones)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.OrganizationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Organization>()
                 .HasMany(e => e.Locations)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.OrganizationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Organization>()
                 .HasMany(e => e.Programs)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.OrganizationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Organization>()
                 .HasMany(e => e.OrganizationIdentifiers)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.OrganizationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Organization>()
@@ -490,7 +490,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
             modelBuilder.Entity<DEDS_Temp.Phone>()
                 .HasMany(e => e.Languages)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.PhoneId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Phone>()
@@ -552,31 +552,31 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
             modelBuilder.Entity<DEDS_Temp.Service>()
                 .HasMany(e => e.Phones)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ServiceId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Service>()
                 .HasMany(e => e.Schedules)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ServiceId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Service>()
                 .HasMany(e => e.ServiceAreas)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ServiceId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Service>()
                 .HasMany(e => e.ServiceAtLocations)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ServiceId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Service>()
                 .HasMany(e => e.Languages)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ServiceId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Service>()
@@ -588,13 +588,13 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
             modelBuilder.Entity<DEDS_Temp.Service>()
                 .HasMany(e => e.Funding)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ServiceId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Service>()
                 .HasMany(e => e.CostOptions)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ServiceId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Service>()
@@ -606,13 +606,13 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
             modelBuilder.Entity<DEDS_Temp.Service>()
                 .HasMany(e => e.RequiredDocuments)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ServiceId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Service>()
                 .HasMany(e => e.Contacts)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ServiceId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Service>()
@@ -646,19 +646,19 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
             modelBuilder.Entity<DEDS_Temp.ServiceAtLocation>()
                 .HasMany(e => e.Contacts)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ServiceAtLocationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.ServiceAtLocation>()
                 .HasMany(e => e.Phones)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ServiceAtLocationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.ServiceAtLocation>()
                 .HasMany(e => e.Schedules)
                 .WithOne()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.ServiceAtLocationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.ServiceAtLocation>()
