@@ -15,6 +15,7 @@ public class Location
     public string? Url { get; init; }
 
     [JsonPropertyName("organization_id")]
+    [JsonIgnore]
     public Guid? OrganizationId { get; init; }
 
     [JsonPropertyName("name")]

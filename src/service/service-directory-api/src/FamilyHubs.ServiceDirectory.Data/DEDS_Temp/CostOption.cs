@@ -9,13 +9,14 @@ public class CostOption
     public required Guid Id { get; init; }
 
     [JsonPropertyName("service_id")]
-    public required Guid ServiceId { get; init; }
+    [JsonIgnore]
+    public Guid ServiceId { get; init; }
 
     [JsonPropertyName("valid_from")]
-    public DateTime? ValidFrom { get; init; }
+    public DateOnly? ValidFrom { get; init; }
 
     [JsonPropertyName("valid_to")]
-    public DateTime? ValidTo { get; init; }
+    public DateOnly? ValidTo { get; init; }
 
     [JsonPropertyName("option")]
     public string? Option { get; init; }

@@ -8,7 +8,8 @@ public class Metadata
     public required Guid Id { get; init; }
 
     [JsonPropertyName("resource_id")]
-    public required Guid ResourceId { get; init; }
+    [JsonIgnore]
+    public Guid ResourceId { get; init; }
 
     [JsonPropertyName("resource_type")]
     public required string ResourceType { get; init; }

@@ -34,13 +34,16 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
             // Table Mapping
             modelBuilder.Entity<DEDS_Temp.Accessibility>(entity =>
             {
+                entity.ToTable("Accessibility", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Url).HasMaxLength(2048);
             });
 
+
             modelBuilder.Entity<DEDS_Temp.Address>(entity =>
             {
+                entity.ToTable("Address", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Attention).HasMaxLength(255);
@@ -56,8 +59,11 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.Attribute>(entity =>
             {
+                entity.ToTable("Attribute", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.LinkId).IsRequired();
+                entity.Property(e => e.TaxonomyTerm).IsRequired();
                 entity.Property(e => e.LinkType).HasMaxLength(50);
                 entity.Property(e => e.LinkEntity).HasMaxLength(50);
                 entity.Property(e => e.Value).HasMaxLength(50);
@@ -65,6 +71,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.Contact>(entity =>
             {
+                entity.ToTable("Contact", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Name).HasMaxLength(255);
@@ -75,8 +82,10 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.CostOption>(entity =>
             {
+                entity.ToTable("CostOption", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.ServiceId).IsRequired();
                 entity.Property(e => e.ValidFrom).HasColumnType("date");
                 entity.Property(e => e.ValidTo).HasColumnType("date");
                 entity.Property(e => e.Currency).HasColumnType("nchar(3)");
@@ -85,12 +94,14 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.Funding>(entity =>
             {
+                entity.ToTable("Funding", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
             });
 
             modelBuilder.Entity<DEDS_Temp.Language>(entity =>
             {
+                entity.ToTable("Language", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Name).HasMaxLength(255);
@@ -99,6 +110,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.Location>(entity =>
             {
+                entity.ToTable("Location", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.LocationType).HasMaxLength(255);
@@ -114,8 +126,10 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.Metadata>(entity =>
             {
+                entity.ToTable("Metadata", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.ResourceId).IsRequired();
                 entity.Property(e => e.ResourceType).HasMaxLength(50);
                 entity.Property(e => e.LastActionDate).HasColumnType("date");
                 entity.Property(e => e.LastActionType).HasMaxLength(255);
@@ -125,6 +139,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.MetaTableDescription>(entity =>
             {
+                entity.ToTable("MetaTableDescription", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Name).HasMaxLength(255);
@@ -134,6 +149,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.Organization>(entity =>
             {
+                entity.ToTable("Organization", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Name).HasMaxLength(255);
@@ -147,6 +163,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.OrganizationIdentifier>(entity =>
             {
+                entity.ToTable("OrganizationIdentifier", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.IdentifierScheme).HasMaxLength(50);
@@ -156,6 +173,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.Phone>(entity =>
             {
+                entity.ToTable("Phone", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Number).HasMaxLength(50);
@@ -164,6 +182,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.Program>(entity =>
             {
+                entity.ToTable("Program", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Name).HasMaxLength(255);
@@ -172,6 +191,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.RequiredDocument>(entity =>
             {
+                entity.ToTable("RequiredDocument", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Document).HasMaxLength(255);
@@ -180,6 +200,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.Schedule>(entity =>
             {
+                entity.ToTable("Schedule", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.ValidFrom).HasColumnType("date");
@@ -199,8 +220,11 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.Service>(entity =>
             {
+                entity.ToTable("Service", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.OrganizationId).IsRequired();
+                entity.Property(e => e.ProgramId).IsRequired();
                 entity.Property(e => e.Name).HasMaxLength(255);
                 entity.Property(e => e.AlternateName).HasMaxLength(255);
                 entity.Property(e => e.Url).HasMaxLength(2048);
@@ -216,6 +240,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.ServiceArea>(entity =>
             {
+                entity.ToTable("ServiceArea", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Name).HasMaxLength(255);
@@ -226,12 +251,14 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.ServiceAtLocation>(entity =>
             {
+                entity.ToTable("ServiceAtLocation", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
             });
 
             modelBuilder.Entity<DEDS_Temp.Taxonomy>(entity =>
             {
+                entity.ToTable("Taxonomy", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Name).HasMaxLength(255);
@@ -241,6 +268,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
 
             modelBuilder.Entity<DEDS_Temp.TaxonomyTerm>(entity =>
             {
+                entity.ToTable("TaxonomyTerm", schema: "deds");
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Code).HasMaxLength(255);
@@ -252,9 +280,6 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
             });
 
             // Relationship Mapping
-
-            // TODO: This might actually fit better in the deserialisation ticket (FHB-549) so might be worth removing
-            // TODO: from this PR and having it part of the other one
 
             //  Accessibility Table
 
@@ -585,7 +610,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
             modelBuilder.Entity<DEDS_Temp.Service>()
                 .HasOne(e => e.Organization)
                 .WithMany()
-                .HasForeignKey(e => e.Id)
+                .HasForeignKey(e => e.OrganizationId)
                 .IsRequired(false);
 
             modelBuilder.Entity<DEDS_Temp.Service>()

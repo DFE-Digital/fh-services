@@ -34,6 +34,7 @@ public class TaxonomyTerm
     public string? Language { get; init; }
 
     [JsonPropertyName("taxonomy_id")]
+    [JsonIgnore]
     public Guid? TaxonomyId { get; init; }
 
     [JsonPropertyName("term_uri")]

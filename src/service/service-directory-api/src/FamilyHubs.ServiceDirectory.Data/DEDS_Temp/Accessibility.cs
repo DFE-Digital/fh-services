@@ -9,6 +9,7 @@ public class Accessibility
     public required Guid Id { get; init; }
 
     [JsonPropertyName("location_id")]
+    [JsonIgnore]
     public Guid? LocationId { get; init; }
 
     [JsonPropertyName("description")]

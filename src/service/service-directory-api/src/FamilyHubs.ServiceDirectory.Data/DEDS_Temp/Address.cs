@@ -9,6 +9,7 @@ public class Address
     public required Guid Id { get; init; }
 
     [JsonPropertyName("location_id")]
+    [JsonIgnore]
     public Guid? LocationId { get; init; }
 
     [JsonPropertyName("attention")]

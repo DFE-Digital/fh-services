@@ -9,12 +9,15 @@ public class Schedule
     public required Guid Id { get; init; }
 
     [JsonPropertyName("service_id")]
+    [JsonIgnore]
     public Guid? ServiceId { get; init; }
 
     [JsonPropertyName("location_id")]
+    [JsonIgnore]
     public Guid? LocationId { get; init; }
 
     [JsonPropertyName("service_at_location_id")]
+    [JsonIgnore]
     public Guid? ServiceAtLocationId { get; init; }
 
     [JsonPropertyName("valid_from")]
@@ -60,10 +63,10 @@ public class Schedule
     public string? Description { get; init; }
 
     [JsonPropertyName("opens_at")]
-    public DateTime? OpensAt { get; init; }
+    public TimeOnly? OpensAt { get; init; }
 
     [JsonPropertyName("closes_at")]
-    public DateTime? ClosesAt { get; init; }
+    public TimeOnly? ClosesAt { get; init; }
 
     [JsonPropertyName("schedule_link")]
     public string? ScheduleLink { get; init; }

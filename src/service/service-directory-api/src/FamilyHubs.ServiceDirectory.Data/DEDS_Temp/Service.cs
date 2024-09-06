@@ -9,10 +9,12 @@ public class Service
     public required Guid Id { get; init; }
 
     [JsonPropertyName("organization_id")]
-    public required Guid OrganizationId { get; init; }
+    [JsonIgnore]
+    public Guid OrganizationId { get; init; }
 
     [JsonPropertyName("program_id")]
-    public required Guid ProgramId { get; init; }
+    [JsonIgnore]
+    public Guid ProgramId { get; init; }
 
     [JsonPropertyName("name")]
     public required string Name { get; init; }

@@ -9,10 +9,12 @@ public class Attribute
     public required Guid Id { get; init; }
 
     [JsonPropertyName("link_id")]
-    public required Guid LinkId { get; init; }
+    [JsonIgnore]
+    public Guid LinkId { get; init; }
 
     [JsonPropertyName("taxonomy_term_id")]
-    public required Guid TaxonomyTermId { get; init; }
+    [JsonIgnore]
+    public Guid TaxonomyTermId { get; init; }
 
     [JsonPropertyName("link_type")]
     public string? LinkType { get; init; }

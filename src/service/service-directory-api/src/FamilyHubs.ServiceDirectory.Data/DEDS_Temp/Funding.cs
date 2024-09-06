@@ -9,9 +9,11 @@ public class Funding
     public required Guid Id { get; init; }
 
     [JsonPropertyName("organization_id")]
+    [JsonIgnore]
     public Guid? OrganizationId { get; init; }
 
     [JsonPropertyName("service_id")]
+    [JsonIgnore]
     public Guid? ServiceId { get; init; }
 
     [JsonPropertyName("source")]

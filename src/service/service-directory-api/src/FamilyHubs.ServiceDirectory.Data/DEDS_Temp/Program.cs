@@ -9,6 +9,7 @@ public class Program
     public required Guid Id { get; init; }
 
     [JsonPropertyName("organization_id")]
+    [JsonIgnore]
     public Guid? OrganizationId { get; init; }
 
     [JsonPropertyName("name")]

@@ -9,6 +9,7 @@ public class ServiceArea
     public required Guid Id { get; init; }
 
     [JsonPropertyName("service_id")]
+    [JsonIgnore]
     public Guid? ServiceId { get; init; }
 
     [JsonPropertyName("name")]
