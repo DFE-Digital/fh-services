@@ -63,7 +63,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
                 entity.HasKey(e => e.Id).IsClustered(false);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.LinkId).IsRequired();
-                entity.Property(e => e.TaxonomyTerm).IsRequired();
+                entity.Property(e => e.TaxonomyTermId).IsRequired();
                 entity.Property(e => e.LinkType).HasMaxLength(50);
                 entity.Property(e => e.LinkEntity).HasMaxLength(50);
                 entity.Property(e => e.Value).HasMaxLength(50);
@@ -213,8 +213,8 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
                 entity.Property(e => e.Byweekno).HasMaxLength(255);
                 entity.Property(e => e.Bymonthday).HasMaxLength(255);
                 entity.Property(e => e.Byyearday).HasMaxLength(255);
-                entity.Property(e => e.OpensAt).HasMaxLength(50);
-                entity.Property(e => e.ClosesAt).HasMaxLength(50);
+                entity.Property(e => e.OpensAt).HasColumnType("time");
+                entity.Property(e => e.ClosesAt).HasColumnType("time");
                 entity.Property(e => e.ScheduleLink).HasMaxLength(2048);
             });
 

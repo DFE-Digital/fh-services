@@ -63,10 +63,10 @@ public class Schedule
     public string? Description { get; init; }
 
     [JsonPropertyName("opens_at")]
-    public TimeOnly? OpensAt { get; init; }
+    public TimeSpan? OpensAt { get; init; } // TODO: // TODO: .NET 8 supports native TimeOnly, so convert.
 
     [JsonPropertyName("closes_at")]
-    public TimeOnly? ClosesAt { get; init; }
+    public TimeSpan? ClosesAt { get; init; } // TODO: .NET 8 supports native TimeOnly, so convert.
 
     [JsonPropertyName("schedule_link")]
     public string? ScheduleLink { get; init; }

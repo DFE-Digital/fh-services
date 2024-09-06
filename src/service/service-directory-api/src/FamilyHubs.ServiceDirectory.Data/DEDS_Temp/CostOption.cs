@@ -13,10 +13,10 @@ public class CostOption
     public Guid ServiceId { get; init; }
 
     [JsonPropertyName("valid_from")]
-    public DateOnly? ValidFrom { get; init; }
+    public DateTime? ValidFrom { get; init; } // TODO: .NET 8 supports native DateOnly, so convert.
 
     [JsonPropertyName("valid_to")]
-    public DateOnly? ValidTo { get; init; }
+    public DateTime? ValidTo { get; init; } // TODO: .NET 8 supports native DateOnly, so convert.
 
     [JsonPropertyName("option")]
     public string? Option { get; init; }
