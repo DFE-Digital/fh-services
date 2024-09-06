@@ -3,7 +3,6 @@ using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.ClientServices;
 using FamilyHubs.OpenReferral.Function.Entities;
 using FamilyHubs.OpenReferral.Function.Repository;
-using FamilyHubs.SharedKernel.OpenReferral;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -47,12 +46,12 @@ public class TriggerPullServicesWebhook(
         foreach (ServiceJson serviceJson in serviceJsonList)
         {
             logger.LogInformation("Adding service with ID {serviceId} to the database", serviceJson.Id);
-            functionDbContext.AddServiceTemp(new ServicesTemp
-            {
-                Id = Guid.Parse(serviceJson.Id),
-                Json = serviceJson.Json,
-                LastModified = DateTime.UtcNow
-            });
+            // functionDbContext.AddServiceTemp(new ServicesTemp
+            // {
+            //     Id = Guid.Parse(serviceJson.Id),
+            //     Json = serviceJson.Json,
+            //     LastModified = DateTime.UtcNow
+            // });
         }
 
         logger.LogInformation("Saving changes to the database");
