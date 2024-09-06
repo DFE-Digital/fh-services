@@ -1,19 +1,10 @@
 ﻿using System.Reflection;
 using FamilyHubs.ServiceDirectory.Data.Entities;
+using FamilyHubs.ServiceDirectory.Data.Entities.ManyToMany;
 using FamilyHubs.ServiceDirectory.Data.Interceptors;
 using FamilyHubs.SharedKernel.OpenReferral.Repository;
-using Enums = FamilyHubs.ServiceDirectory.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
-using Contact = FamilyHubs.ServiceDirectory.Data.Entities.Contact;
-using CostOption = FamilyHubs.ServiceDirectory.Data.Entities.CostOption;
-using Funding = FamilyHubs.ServiceDirectory.Data.Entities.Funding;
-using Language = FamilyHubs.ServiceDirectory.Data.Entities.Language;
-using Location = FamilyHubs.ServiceDirectory.Data.Entities.Location;
-using Schedule = FamilyHubs.ServiceDirectory.Data.Entities.Schedule;
-using Service = FamilyHubs.ServiceDirectory.Data.Entities.Service;
-using ServiceArea = FamilyHubs.ServiceDirectory.Data.Entities.ServiceArea;
-using ServiceAtLocation = FamilyHubs.ServiceDirectory.Data.Entities.ManyToMany.ServiceAtLocation;
-using Taxonomy = FamilyHubs.ServiceDirectory.Data.Entities.Taxonomy;
+using Enums = FamilyHubs.ServiceDirectory.Shared.Enums;
 
 namespace FamilyHubs.ServiceDirectory.Data.Repository
 {
