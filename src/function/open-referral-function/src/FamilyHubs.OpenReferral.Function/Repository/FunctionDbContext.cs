@@ -1,4 +1,5 @@
 using FamilyHubs.SharedKernel.OpenReferral;
+using FamilyHubs.SharedKernel.OpenReferral.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamilyHubs.OpenReferral.Function.Repository;
@@ -15,9 +16,8 @@ public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : Db
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ServicesTemp>()
-            .ToTable("services_temp", "staging")
-            .HasKey(e => e.Id);
+        OpenReferralDbContextExtension openReferralDbContextExtension = new();
+        openReferralDbContextExtension.OnModelCreating(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
     }
