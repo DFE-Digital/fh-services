@@ -72,7 +72,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
                 .HasOne(e => e.ServiceSearchType)
                 .WithMany(e => e.ServiceSearches)
                 .HasForeignKey(e => e.ServiceSearchTypeId)
-                .IsRequired(true);
+                .IsRequired();
             
             modelBuilder.Entity<ServiceSearch>()
                 .Property(e => e.CorrelationId)
