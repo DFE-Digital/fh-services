@@ -1,8 +1,8 @@
 using System.Net;
 using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.ClientServices;
-using FamilyHubs.OpenReferral.Function.Entities;
 using FamilyHubs.OpenReferral.Function.Repository;
+using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -22,7 +22,7 @@ public class TriggerPullServicesWebhook(
         (HttpStatusCode HttpStatusCode, JsonElement.ArrayEnumerator? Result) services = await hsdaApiService.GetServices();
         if (services.HttpStatusCode != HttpStatusCode.OK) return req.CreateResponse(services.HttpStatusCode);
 
-        (HttpStatusCode HttpStatusCode, List<ServiceJson> Result) servicesById = await hsdaApiService.GetServicesById(services.Result!.Value);
+        (HttpStatusCode HttpStatusCode, List<Service> Result) servicesById = await hsdaApiService.GetServicesById(services.Result!.Value);
         if (servicesById.HttpStatusCode != HttpStatusCode.OK) return req.CreateResponse(servicesById.HttpStatusCode);
 
         try
@@ -38,12 +38,12 @@ public class TriggerPullServicesWebhook(
         return req.CreateResponse(HttpStatusCode.OK);
     }
 
-    private async Task UpdateDatabase(List<ServiceJson> serviceJsonList)
+    private async Task UpdateDatabase(List<Service> serviceJsonList)
     {
         logger.LogInformation("Truncating database before inserting services");
         await functionDbContext.TruncateServicesTempAsync();
 
-        foreach (ServiceJson serviceJson in serviceJsonList)
+        foreach (Service serviceJson in serviceJsonList)
         {
             logger.LogInformation("Adding service with ID {serviceId} to the database", serviceJson.Id);
             // functionDbContext.AddServiceTemp(new ServicesTemp

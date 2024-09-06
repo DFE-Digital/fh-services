@@ -11,7 +11,8 @@ public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : Db
     public void AddService(Service service) => Services.Add(service);
 
     // TODO: Update for new schema -> TruncateDEDSSchemaAsync
-    public Task TruncateServicesTempAsync() => Database.ExecuteSqlRawAsync("TRUNCATE TABLE [staging].[services_temp]");
+    // Just a dummy statement for now since the [staging].[services_temp] no longer exists :)
+    public Task TruncateServicesTempAsync() => Database.ExecuteSqlRawAsync("SELECT TOP (1) [Id] FROM [deds].[Service]");
 
     public Task<int> SaveChangesAsync() => base.SaveChangesAsync();
 
