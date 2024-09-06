@@ -31,11 +31,6 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ vars.DOTNET_VERSION }}
-
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:

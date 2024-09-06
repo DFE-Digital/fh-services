@@ -68,3 +68,4 @@ jobs:
           name: ${{ steps.get-name.outputs.artifact_name }}
           path: ${{ env.BUILD_DIRECTORY }}
           if-no-files-found: error
+          include-hidden-files: true # Required so folders such as .azurefunctions are included in the zip
