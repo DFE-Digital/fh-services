@@ -1,4 +1,4 @@
-using FamilyHubs.SharedKernel.OpenReferral.Entities;
+using Service = FamilyHubs.OpenReferral.Function.Repository.Entities.Service;
 
 namespace FamilyHubs.OpenReferral.Function.Repository;
 

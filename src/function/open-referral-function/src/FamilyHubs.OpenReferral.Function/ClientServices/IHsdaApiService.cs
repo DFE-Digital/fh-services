@@ -1,6 +1,6 @@
 using System.Net;
 using System.Text.Json;
-using FamilyHubs.SharedKernel.OpenReferral.Entities;
+using Service = FamilyHubs.OpenReferral.Function.Repository.Entities.Service;
 
 namespace FamilyHubs.OpenReferral.Function.ClientServices;
 
