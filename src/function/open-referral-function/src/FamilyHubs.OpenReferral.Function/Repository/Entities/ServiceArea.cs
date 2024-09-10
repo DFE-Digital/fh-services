@@ -13,7 +13,9 @@ public class ServiceArea
 
     [JsonPropertyName("service_id")]
     [JsonIgnore]
-    public Guid? ServiceId { get; init; }
+    public Guid? ServiceOrId { get; init; }
+    [JsonIgnore]
+    public virtual Service? Service { get; init; }
 
     [JsonPropertyName("name")]
     public string? Name { get; init; }

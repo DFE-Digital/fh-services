@@ -19,11 +19,15 @@ public class Language
 
     [JsonPropertyName("location_id")]
     [JsonIgnore]
-    public Guid? LocationId { get; init; }
+    public Guid? LocationOrId { get; init; }
+    [JsonIgnore]
+    public virtual Location? Location { get; init; }
 
     [JsonPropertyName("phone_id")]
     [JsonIgnore]
-    public Guid? PhoneId { get; init; }
+    public Guid? PhoneOrId { get; init; }
+    [JsonIgnore]
+    public virtual Phone? Phone { get; init; }
 
     [JsonPropertyName("name")]
     public string? Name { get; init; }

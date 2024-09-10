@@ -19,7 +19,9 @@ public class Location
 
     [JsonPropertyName("organization_id")]
     [JsonIgnore]
-    public Guid? OrganizationId { get; init; }
+    public Guid? OrganizationOrId { get; init; }
+    [JsonIgnore]
+    public virtual Organization? Organization { get; init; }
 
     [JsonPropertyName("name")]
     public string? Name { get; init; }
@@ -47,8 +49,8 @@ public class Location
 
     [JsonPropertyName("languages")]
     public virtual List<Language> Languages { get; init; } = new();
-    [JsonPropertyName("addresses")]
 
+    [JsonPropertyName("addresses")]
     public virtual List<Address> Addresses { get; init; } = new();
 
     [JsonPropertyName("contacts")]
@@ -62,6 +64,9 @@ public class Location
 
     [JsonPropertyName("schedules")]
     public virtual List<Schedule> Schedules { get; init; } = new();
+
+    [JsonIgnore]
+    public virtual List<ServiceAtLocation> ServiceAtLocations { get; init; } = new();
 
     [JsonPropertyName("attributes")]
     public virtual List<Attribute> Attributes { get; init; } = new();

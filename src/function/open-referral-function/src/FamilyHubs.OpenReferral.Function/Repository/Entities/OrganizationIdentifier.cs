@@ -13,7 +13,9 @@ public class OrganizationIdentifier
 
     [JsonPropertyName("organization_id")]
     [JsonIgnore]
-    public Guid? OrganizationId { get; init; }
+    public Guid? OrganizationOrId { get; init; }
+    [JsonIgnore]
+    public virtual Organization? Organization { get; init; }
 
     [JsonPropertyName("identifier_scheme")]
     public string? IdentifierScheme { get; init; }

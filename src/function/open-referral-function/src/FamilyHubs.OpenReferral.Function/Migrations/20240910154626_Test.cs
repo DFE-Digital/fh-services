@@ -53,6 +53,13 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     table.PrimaryKey("PK_Organization", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
+                    table.UniqueConstraint("AK_Organization_OrId", x => x.OrId);
+                    table.ForeignKey(
+                        name: "FK_Organization_Organization_ParentOrganizationId",
+                        column: x => x.ParentOrganizationId,
+                        principalSchema: "deds",
+                        principalTable: "Organization",
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -82,7 +89,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LocationType = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrganizationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrganizationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     AlternateName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -96,12 +103,13 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     table.PrimaryKey("PK_Location", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
+                    table.UniqueConstraint("AK_Location_OrId", x => x.OrId);
                     table.ForeignKey(
-                        name: "FK_Location_Organization_OrganizationId",
-                        column: x => x.OrganizationId,
+                        name: "FK_Location_Organization_OrganizationOrId",
+                        column: x => x.OrganizationOrId,
                         principalSchema: "deds",
                         principalTable: "Organization",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -111,7 +119,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrganizationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrganizationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     IdentifierScheme = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     IdentifierType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Identifier = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
@@ -121,11 +129,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     table.PrimaryKey("PK_OrganizationIdentifier", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
-                        name: "FK_OrganizationIdentifier_Organization_OrganizationId",
-                        column: x => x.OrganizationId,
+                        name: "FK_OrganizationIdentifier_Organization_OrganizationOrId",
+                        column: x => x.OrganizationOrId,
                         principalSchema: "deds",
                         principalTable: "Organization",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -135,7 +143,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrganizationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrganizationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     AlternateName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -144,12 +152,13 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     table.PrimaryKey("PK_Program", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
+                    table.UniqueConstraint("AK_Program_OrId", x => x.OrId);
                     table.ForeignKey(
-                        name: "FK_Program_Organization_OrganizationId",
-                        column: x => x.OrganizationId,
+                        name: "FK_Program_Organization_OrganizationOrId",
+                        column: x => x.OrganizationOrId,
                         principalSchema: "deds",
                         principalTable: "Organization",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -188,7 +197,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LocationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Url = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: true)
@@ -198,11 +207,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     table.PrimaryKey("PK_Accessibility", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
-                        name: "FK_Accessibility_Location_LocationId",
-                        column: x => x.LocationId,
+                        name: "FK_Accessibility_Location_LocationOrId",
+                        column: x => x.LocationOrId,
                         principalSchema: "deds",
                         principalTable: "Location",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -212,7 +221,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LocationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Attention = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Address1 = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Address2 = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
@@ -228,11 +237,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     table.PrimaryKey("PK_Address", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
-                        name: "FK_Address_Location_LocationId",
-                        column: x => x.LocationId,
+                        name: "FK_Address_Location_LocationOrId",
+                        column: x => x.LocationOrId,
                         principalSchema: "deds",
                         principalTable: "Location",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -242,8 +251,8 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrganizationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ProgramId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrganizationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ProgramOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     AlternateName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -266,18 +275,19 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     table.PrimaryKey("PK_Service", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
+                    table.UniqueConstraint("AK_Service_OrId", x => x.OrId);
                     table.ForeignKey(
-                        name: "FK_Service_Organization_OrganizationId",
-                        column: x => x.OrganizationId,
+                        name: "FK_Service_Organization_OrganizationOrId",
+                        column: x => x.OrganizationOrId,
                         principalSchema: "deds",
                         principalTable: "Organization",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_Service_Program_ProgramId",
-                        column: x => x.ProgramId,
+                        name: "FK_Service_Program_ProgramOrId",
+                        column: x => x.ProgramOrId,
                         principalSchema: "deds",
                         principalTable: "Program",
-                        principalColumn: "Id",
+                        principalColumn: "OrId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -288,7 +298,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ServiceOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ValidFrom = table.Column<DateTime>(type: "date", nullable: true),
                     ValidTo = table.Column<DateTime>(type: "date", nullable: true),
                     Option = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -301,11 +311,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     table.PrimaryKey("PK_CostOption", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
-                        name: "FK_CostOption_Service_ServiceId",
-                        column: x => x.ServiceId,
+                        name: "FK_CostOption_Service_ServiceOrId",
+                        column: x => x.ServiceOrId,
                         principalSchema: "deds",
                         principalTable: "Service",
-                        principalColumn: "Id",
+                        principalColumn: "OrId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -316,8 +326,8 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrganizationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrganizationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ServiceOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Source = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -325,17 +335,17 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     table.PrimaryKey("PK_Funding", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
-                        name: "FK_Funding_Organization_OrganizationId",
-                        column: x => x.OrganizationId,
+                        name: "FK_Funding_Organization_OrganizationOrId",
+                        column: x => x.OrganizationOrId,
                         principalSchema: "deds",
                         principalTable: "Organization",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_Funding_Service_ServiceId",
-                        column: x => x.ServiceId,
+                        name: "FK_Funding_Service_ServiceOrId",
+                        column: x => x.ServiceOrId,
                         principalSchema: "deds",
                         principalTable: "Service",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -345,7 +355,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ServiceOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Document = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Uri = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: true)
                 },
@@ -354,11 +364,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     table.PrimaryKey("PK_RequiredDocument", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
-                        name: "FK_RequiredDocument_Service_ServiceId",
-                        column: x => x.ServiceId,
+                        name: "FK_RequiredDocument_Service_ServiceOrId",
+                        column: x => x.ServiceOrId,
                         principalSchema: "deds",
                         principalTable: "Service",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -368,7 +378,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ServiceOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Extent = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
@@ -380,11 +390,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     table.PrimaryKey("PK_ServiceArea", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
-                        name: "FK_ServiceArea_Service_ServiceId",
-                        column: x => x.ServiceId,
+                        name: "FK_ServiceArea_Service_ServiceOrId",
+                        column: x => x.ServiceOrId,
                         principalSchema: "deds",
                         principalTable: "Service",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -394,26 +404,27 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ServiceOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LocationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ServiceAtLocation", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
+                    table.UniqueConstraint("AK_ServiceAtLocation_OrId", x => x.OrId);
                     table.ForeignKey(
-                        name: "FK_ServiceAtLocation_Location_LocationId",
-                        column: x => x.LocationId,
+                        name: "FK_ServiceAtLocation_Location_LocationOrId",
+                        column: x => x.LocationOrId,
                         principalSchema: "deds",
                         principalTable: "Location",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_ServiceAtLocation_Service_ServiceId",
-                        column: x => x.ServiceId,
+                        name: "FK_ServiceAtLocation_Service_ServiceOrId",
+                        column: x => x.ServiceOrId,
                         principalSchema: "deds",
                         principalTable: "Service",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -424,11 +435,8 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrganizationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    OrganizationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ServiceOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ServiceAtLocationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ServiceAtLocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     LocationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
@@ -440,6 +448,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     table.PrimaryKey("PK_Contact", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
+                    table.UniqueConstraint("AK_Contact_OrId", x => x.OrId);
                     table.ForeignKey(
                         name: "FK_Contact_Location_LocationId",
                         column: x => x.LocationId,
@@ -447,23 +456,23 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         principalTable: "Location",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Contact_Organization_OrganizationId",
-                        column: x => x.OrganizationId,
+                        name: "FK_Contact_Organization_OrganizationOrId",
+                        column: x => x.OrganizationOrId,
                         principalSchema: "deds",
                         principalTable: "Organization",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_Contact_ServiceAtLocation_ServiceAtLocationId",
-                        column: x => x.ServiceAtLocationId,
+                        name: "FK_Contact_ServiceAtLocation_ServiceAtLocationOrId",
+                        column: x => x.ServiceAtLocationOrId,
                         principalSchema: "deds",
                         principalTable: "ServiceAtLocation",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_Contact_Service_ServiceId",
-                        column: x => x.ServiceId,
+                        name: "FK_Contact_Service_ServiceOrId",
+                        column: x => x.ServiceOrId,
                         principalSchema: "deds",
                         principalTable: "Service",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -473,9 +482,9 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ServiceAtLocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ServiceOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LocationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ServiceAtLocationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ValidFrom = table.Column<DateTime>(type: "date", nullable: true),
                     ValidTo = table.Column<DateTime>(type: "date", nullable: true),
                     Dtstart = table.Column<DateTime>(type: "datetime2", maxLength: 50, nullable: true),
@@ -501,23 +510,23 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     table.PrimaryKey("PK_Schedule", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
-                        name: "FK_Schedule_Location_LocationId",
-                        column: x => x.LocationId,
+                        name: "FK_Schedule_Location_LocationOrId",
+                        column: x => x.LocationOrId,
                         principalSchema: "deds",
                         principalTable: "Location",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_Schedule_ServiceAtLocation_ServiceAtLocationId",
-                        column: x => x.ServiceAtLocationId,
+                        name: "FK_Schedule_ServiceAtLocation_ServiceAtLocationOrId",
+                        column: x => x.ServiceAtLocationOrId,
                         principalSchema: "deds",
                         principalTable: "ServiceAtLocation",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_Schedule_Service_ServiceId",
-                        column: x => x.ServiceId,
+                        name: "FK_Schedule_Service_ServiceOrId",
+                        column: x => x.ServiceOrId,
                         principalSchema: "deds",
                         principalTable: "Service",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -527,11 +536,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    OrganizationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ContactId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ServiceAtLocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LocationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ServiceOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OrganizationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ContactOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ServiceAtLocationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Number = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Extension = table.Column<short>(type: "smallint", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -541,36 +550,37 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     table.PrimaryKey("PK_Phone", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
+                    table.UniqueConstraint("AK_Phone_OrId", x => x.OrId);
                     table.ForeignKey(
-                        name: "FK_Phone_Contact_ContactId",
-                        column: x => x.ContactId,
+                        name: "FK_Phone_Contact_ContactOrId",
+                        column: x => x.ContactOrId,
                         principalSchema: "deds",
                         principalTable: "Contact",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_Phone_Location_LocationId",
-                        column: x => x.LocationId,
+                        name: "FK_Phone_Location_LocationOrId",
+                        column: x => x.LocationOrId,
                         principalSchema: "deds",
                         principalTable: "Location",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_Phone_Organization_OrganizationId",
-                        column: x => x.OrganizationId,
+                        name: "FK_Phone_Organization_OrganizationOrId",
+                        column: x => x.OrganizationOrId,
                         principalSchema: "deds",
                         principalTable: "Organization",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_Phone_ServiceAtLocation_ServiceAtLocationId",
-                        column: x => x.ServiceAtLocationId,
+                        name: "FK_Phone_ServiceAtLocation_ServiceAtLocationOrId",
+                        column: x => x.ServiceAtLocationOrId,
                         principalSchema: "deds",
                         principalTable: "ServiceAtLocation",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_Phone_Service_ServiceId",
-                        column: x => x.ServiceId,
+                        name: "FK_Phone_Service_ServiceOrId",
+                        column: x => x.ServiceOrId,
                         principalSchema: "deds",
                         principalTable: "Service",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -581,9 +591,8 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ServiceOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    PhoneId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LocationOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PhoneOrId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -593,23 +602,23 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     table.PrimaryKey("PK_Language", x => x.Id)
                         .Annotation("SqlServer:Clustered", false);
                     table.ForeignKey(
-                        name: "FK_Language_Location_LocationId",
-                        column: x => x.LocationId,
+                        name: "FK_Language_Location_LocationOrId",
+                        column: x => x.LocationOrId,
                         principalSchema: "deds",
                         principalTable: "Location",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_Language_Phone_PhoneId",
-                        column: x => x.PhoneId,
+                        name: "FK_Language_Phone_PhoneOrId",
+                        column: x => x.PhoneOrId,
                         principalSchema: "deds",
                         principalTable: "Phone",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                     table.ForeignKey(
-                        name: "FK_Language_Service_ServiceId",
-                        column: x => x.ServiceId,
+                        name: "FK_Language_Service_ServiceOrId",
+                        column: x => x.ServiceOrId,
                         principalSchema: "deds",
                         principalTable: "Service",
-                        principalColumn: "Id");
+                        principalColumn: "OrId");
                 });
 
             migrationBuilder.CreateTable(
@@ -920,16 +929,16 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Accessibility_LocationId",
+                name: "IX_Accessibility_LocationOrId",
                 schema: "deds",
                 table: "Accessibility",
-                column: "LocationId");
+                column: "LocationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Address_LocationId",
+                name: "IX_Address_LocationOrId",
                 schema: "deds",
                 table: "Address",
-                column: "LocationId");
+                column: "LocationOrId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attribute_AccessibilityId",
@@ -1046,64 +1055,64 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contact_OrganizationId",
+                name: "IX_Contact_OrganizationOrId",
                 schema: "deds",
                 table: "Contact",
-                column: "OrganizationId");
+                column: "OrganizationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contact_ServiceAtLocationId",
+                name: "IX_Contact_ServiceAtLocationOrId",
                 schema: "deds",
                 table: "Contact",
-                column: "ServiceAtLocationId");
+                column: "ServiceAtLocationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contact_ServiceId",
+                name: "IX_Contact_ServiceOrId",
                 schema: "deds",
                 table: "Contact",
-                column: "ServiceId");
+                column: "ServiceOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CostOption_ServiceId",
+                name: "IX_CostOption_ServiceOrId",
                 schema: "deds",
                 table: "CostOption",
-                column: "ServiceId");
+                column: "ServiceOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Funding_OrganizationId",
+                name: "IX_Funding_OrganizationOrId",
                 schema: "deds",
                 table: "Funding",
-                column: "OrganizationId");
+                column: "OrganizationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Funding_ServiceId",
+                name: "IX_Funding_ServiceOrId",
                 schema: "deds",
                 table: "Funding",
-                column: "ServiceId");
+                column: "ServiceOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Language_LocationId",
+                name: "IX_Language_LocationOrId",
                 schema: "deds",
                 table: "Language",
-                column: "LocationId");
+                column: "LocationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Language_PhoneId",
+                name: "IX_Language_PhoneOrId",
                 schema: "deds",
                 table: "Language",
-                column: "PhoneId");
+                column: "PhoneOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Language_ServiceId",
+                name: "IX_Language_ServiceOrId",
                 schema: "deds",
                 table: "Language",
-                column: "ServiceId");
+                column: "ServiceOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Location_OrganizationId",
+                name: "IX_Location_OrganizationOrId",
                 schema: "deds",
                 table: "Location",
-                column: "OrganizationId");
+                column: "OrganizationOrId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Metadata_AccessibilityId",
@@ -1226,100 +1235,106 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 column: "TaxonomyTermId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrganizationIdentifier_OrganizationId",
+                name: "IX_Organization_ParentOrganizationId",
+                schema: "deds",
+                table: "Organization",
+                column: "ParentOrganizationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrganizationIdentifier_OrganizationOrId",
                 schema: "deds",
                 table: "OrganizationIdentifier",
-                column: "OrganizationId");
+                column: "OrganizationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Phone_ContactId",
+                name: "IX_Phone_ContactOrId",
                 schema: "deds",
                 table: "Phone",
-                column: "ContactId");
+                column: "ContactOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Phone_LocationId",
+                name: "IX_Phone_LocationOrId",
                 schema: "deds",
                 table: "Phone",
-                column: "LocationId");
+                column: "LocationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Phone_OrganizationId",
+                name: "IX_Phone_OrganizationOrId",
                 schema: "deds",
                 table: "Phone",
-                column: "OrganizationId");
+                column: "OrganizationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Phone_ServiceAtLocationId",
+                name: "IX_Phone_ServiceAtLocationOrId",
                 schema: "deds",
                 table: "Phone",
-                column: "ServiceAtLocationId");
+                column: "ServiceAtLocationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Phone_ServiceId",
+                name: "IX_Phone_ServiceOrId",
                 schema: "deds",
                 table: "Phone",
-                column: "ServiceId");
+                column: "ServiceOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Program_OrganizationId",
+                name: "IX_Program_OrganizationOrId",
                 schema: "deds",
                 table: "Program",
-                column: "OrganizationId");
+                column: "OrganizationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RequiredDocument_ServiceId",
+                name: "IX_RequiredDocument_ServiceOrId",
                 schema: "deds",
                 table: "RequiredDocument",
-                column: "ServiceId");
+                column: "ServiceOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Schedule_LocationId",
+                name: "IX_Schedule_LocationOrId",
                 schema: "deds",
                 table: "Schedule",
-                column: "LocationId");
+                column: "LocationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Schedule_ServiceAtLocationId",
+                name: "IX_Schedule_ServiceAtLocationOrId",
                 schema: "deds",
                 table: "Schedule",
-                column: "ServiceAtLocationId");
+                column: "ServiceAtLocationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Schedule_ServiceId",
+                name: "IX_Schedule_ServiceOrId",
                 schema: "deds",
                 table: "Schedule",
-                column: "ServiceId");
+                column: "ServiceOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Service_OrganizationId",
+                name: "IX_Service_OrganizationOrId",
                 schema: "deds",
                 table: "Service",
-                column: "OrganizationId");
+                column: "OrganizationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Service_ProgramId",
+                name: "IX_Service_ProgramOrId",
                 schema: "deds",
                 table: "Service",
-                column: "ProgramId");
+                column: "ProgramOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceArea_ServiceId",
+                name: "IX_ServiceArea_ServiceOrId",
                 schema: "deds",
                 table: "ServiceArea",
-                column: "ServiceId");
+                column: "ServiceOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceAtLocation_LocationId",
+                name: "IX_ServiceAtLocation_LocationOrId",
                 schema: "deds",
                 table: "ServiceAtLocation",
-                column: "LocationId");
+                column: "LocationOrId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceAtLocation_ServiceId",
+                name: "IX_ServiceAtLocation_ServiceOrId",
                 schema: "deds",
                 table: "ServiceAtLocation",
-                column: "ServiceId");
+                column: "ServiceOrId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TaxonomyTerm_TaxonomyId",

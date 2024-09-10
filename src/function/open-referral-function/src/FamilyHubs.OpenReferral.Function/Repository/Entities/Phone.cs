@@ -13,23 +13,33 @@ public class Phone
 
     [JsonPropertyName("location_id")]
     [JsonIgnore]
-    public Guid? LocationId { get; init; }
+    public Guid? LocationOrId { get; init; }
+    [JsonIgnore]
+    public virtual Location? Location { get; init; }
 
     [JsonPropertyName("service_id")]
     [JsonIgnore]
-    public Guid? ServiceId { get; init; }
+    public Guid? ServiceOrId { get; init; }
+    [JsonIgnore]
+    public virtual Service? Service { get; init; }
 
     [JsonPropertyName("organization_id")]
     [JsonIgnore]
-    public Guid? OrganizationId { get; init; }
+    public Guid? OrganizationOrId { get; init; }
+    [JsonIgnore]
+    public virtual Organization? Organization { get; init; }
 
     [JsonPropertyName("contact_id")]
     [JsonIgnore]
-    public Guid? ContactId { get; init; }
+    public Guid? ContactOrId { get; init; }
+    [JsonIgnore]
+    public virtual Contact? Contact { get; init; }
 
     [JsonPropertyName("service_at_location_id")]
     [JsonIgnore]
-    public Guid? ServiceAtLocationId { get; init; }
+    public Guid? ServiceAtLocationOrId { get; init; }
+    [JsonIgnore]
+    public virtual ServiceAtLocation? ServiceAtLocation { get; init; }
 
     [JsonPropertyName("number")]
     public required string Number { get; init; }

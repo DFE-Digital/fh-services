@@ -13,7 +13,9 @@ public class Address
 
     [JsonPropertyName("location_id")]
     [JsonIgnore]
-    public Guid? LocationId { get; init; }
+    public Guid? LocationOrId { get; init; }
+    [JsonIgnore]
+    public virtual Location? Location { get; init; }
 
     [JsonPropertyName("attention")]
     public string? Attention { get; init; }

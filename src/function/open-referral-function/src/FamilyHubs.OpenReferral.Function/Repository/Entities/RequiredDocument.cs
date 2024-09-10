@@ -13,7 +13,9 @@ public class RequiredDocument
 
     [JsonPropertyName("service_id")]
     [JsonIgnore]
-    public Guid? ServiceId { get; init; }
+    public Guid? ServiceOrId { get; init; }
+    [JsonIgnore]
+    public virtual Service? Service { get; init; }
 
     [JsonPropertyName("document")]
     public string? Document { get; init; }

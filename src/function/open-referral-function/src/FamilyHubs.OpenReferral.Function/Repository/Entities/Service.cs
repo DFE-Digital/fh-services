@@ -13,11 +13,11 @@ public class Service
 
     [JsonPropertyName("organization_id")]
     [JsonIgnore]
-    public Guid? OrganizationId { get; init; }
+    public Guid? OrganizationOrId { get; init; }
 
     [JsonPropertyName("program_id")]
     [JsonIgnore]
-    public Guid ProgramId { get; init; }
+    public Guid ProgramOrId { get; init; }
 
     [JsonPropertyName("name")]
     public required string Name { get; init; }

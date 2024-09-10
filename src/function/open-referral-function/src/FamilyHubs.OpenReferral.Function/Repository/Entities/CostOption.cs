@@ -13,7 +13,9 @@ public class CostOption
 
     [JsonPropertyName("service_id")]
     [JsonIgnore]
-    public Guid ServiceId { get; init; }
+    public Guid ServiceOrId { get; init; }
+    [JsonIgnore]
+    public virtual Service? Service { get; init; }
 
     [JsonPropertyName("valid_from")]
     public DateTime? ValidFrom { get; init; } // TODO: .NET 8 supports native DateOnly, so convert.

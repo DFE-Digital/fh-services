@@ -40,6 +40,13 @@ public class Organization
 
     [JsonPropertyName("parent_organization_id")]
     public Guid? ParentOrganizationId { get; init; }
+    [JsonIgnore]
+    public virtual Organization? ParentOrganization { get; init; }
+    [JsonIgnore]
+    public virtual List<Organization> ChildOrganizations { get; init; } = new();
+
+    [JsonIgnore]
+    public virtual List<Service> Services { get; init; } = new();
 
     [JsonPropertyName("funding")]
     public virtual List<Funding> Funding { get; init; } = new();

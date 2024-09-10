@@ -13,11 +13,11 @@ public class ServiceAtLocation
 
     [JsonPropertyName("service_id")]
     [JsonIgnore]
-    public Guid? ServiceId { get; init; }
+    public Guid? ServiceOrId { get; init; }
 
     [JsonPropertyName("location_id")]
     [JsonIgnore]
-    public Guid? LocationId { get; init; }
+    public Guid? LocationOrId { get; init; }
 
     [JsonPropertyName("description")]
     public string? Description { get; init; }

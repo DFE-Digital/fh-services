@@ -13,7 +13,9 @@ public class Program
 
     [JsonPropertyName("organization_id")]
     [JsonIgnore]
-    public Guid? OrganizationId { get; init; }
+    public Guid? OrganizationOrId { get; init; }
+    [JsonIgnore]
+    public virtual Organization? Organization { get; init; }
 
     [JsonPropertyName("name")]
     public string? Name { get; init; }
@@ -23,6 +25,9 @@ public class Program
 
     [JsonPropertyName("description")]
     public string? Description { get; init; }
+
+    [JsonIgnore]
+    public virtual List<Service> Services { get; init; } = new();
 
     [JsonPropertyName("attributes")]
     public virtual List<Attribute> Attributes { get; init; } = new();

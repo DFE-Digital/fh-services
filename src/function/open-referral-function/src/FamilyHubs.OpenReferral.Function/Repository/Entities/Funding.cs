@@ -13,11 +13,15 @@ public class Funding
 
     [JsonPropertyName("organization_id")]
     [JsonIgnore]
-    public Guid? OrganizationId { get; init; }
+    public Guid? OrganizationOrId { get; init; }
+    [JsonIgnore]
+    public virtual Organization? Organization { get; init; }
 
     [JsonPropertyName("service_id")]
     [JsonIgnore]
-    public Guid? ServiceId { get; init; }
+    public Guid? ServiceOrId { get; init; }
+    [JsonIgnore]
+    public virtual Service? Service { get; init; }
 
     [JsonPropertyName("source")]
     public string? Source { get; init; }
