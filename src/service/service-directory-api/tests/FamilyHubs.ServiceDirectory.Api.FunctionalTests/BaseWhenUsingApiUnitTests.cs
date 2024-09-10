@@ -40,6 +40,7 @@ public abstract class BaseWhenUsingApiUnitTests : IDisposable
         catch
         {
             _initSuccessful = false;
+            throw;
         }
     }
 

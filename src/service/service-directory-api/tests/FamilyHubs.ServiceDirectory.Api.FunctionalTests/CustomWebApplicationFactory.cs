@@ -1,6 +1,8 @@
-﻿using FamilyHubs.ServiceDirectory.Data.Repository;
+﻿using System.Runtime.InteropServices;
+using FamilyHubs.ServiceDirectory.Data.Repository;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,14 +21,29 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         builder.ConfigureServices(services =>
         {
-            var efCoreServices = services.Where(s => 
+            // remove existing EF Core services
+            var efCoreServices = services.Where(s =>
                 s.ServiceType.FullName?.Contains("EntityFrameworkCore") == true).ToList();
-
             efCoreServices.ForEach(s => services.Remove(s));
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlite(_serviceDirectoryConnection, mg =>
+                var sqliteConnection = new SqliteConnection(_serviceDirectoryConnection);
+
+                // check if the test is running on Linux and load spatialite
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    sqliteConnection.Open();
+
+                    using var command = sqliteConnection.CreateCommand();
+                    command.CommandText = "SELECT load_extension('mod_spatialite');";
+                    command.ExecuteNonQuery();
+
+                    sqliteConnection.Close();
+                }
+
+                // use the connection with NetTopologySuite and spatial support
+                options.UseSqlite(sqliteConnection, mg =>
                     mg.UseNetTopologySuite().MigrationsAssembly(typeof(ApplicationDbContext).Assembly.ToString()));
             });
         });
@@ -42,6 +59,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
         builder.UseEnvironment("Development");
     }
+
     public void SetupTestDatabaseAndSeedData()
     {
         using var scope = Services.CreateScope();
