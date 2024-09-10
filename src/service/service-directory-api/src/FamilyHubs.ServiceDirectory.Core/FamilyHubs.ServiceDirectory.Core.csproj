@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 	    <NoWarn>S1135;S125;S2139;S6678</NoWarn>
+	    <NuGetAuditMode>direct</NuGetAuditMode>
 	</PropertyGroup>
 
     <ItemGroup>

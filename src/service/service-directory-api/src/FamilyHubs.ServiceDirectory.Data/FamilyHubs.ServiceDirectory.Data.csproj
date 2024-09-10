@@ -7,6 +7,7 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <Nullable>enable</Nullable>
     <NoWarn>S1135;S125</NoWarn>
+    <NuGetAuditMode>direct</NuGetAuditMode>
   </PropertyGroup>
 
 	<ItemGroup>
