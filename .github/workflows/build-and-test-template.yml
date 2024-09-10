@@ -36,7 +36,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y sqlite3 libsqlite3-mod-spatialite
+          sudo apt-get install -y libsqlite3-mod-spatialite
 
       - name: Package Cache
         uses: actions/cache@v4
