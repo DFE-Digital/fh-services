@@ -32,6 +32,12 @@ jobs:
         with:
           dotnet-version: ${{ inputs.dotnet_version }}
 
+      - name: Install libspatialite (Linux only)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsqlite3-mod-spatialite
+
       - name: Package Cache
         uses: actions/cache@v4
         with:
