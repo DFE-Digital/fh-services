@@ -171,7 +171,7 @@ public class OpenReferralDbContextExtension
             entity.ToTable(nameof(RequiredDocument), schema: "deds");
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            entity.Property(e => e.Document).HasMaxLength(255);
+            //entity.Property(e => e.Document).HasMaxLength(255);
             entity.Property(e => e.Uri).HasMaxLength(2048);
         });
 

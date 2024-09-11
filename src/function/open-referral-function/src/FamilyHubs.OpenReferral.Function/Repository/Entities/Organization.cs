@@ -3,13 +3,8 @@ using System.Text.Json.Serialization;
 
 namespace FamilyHubs.OpenReferral.Function.Repository.Entities;
 
-public class Organization
+public class Organization: BaseHSDSEntity
 {
-    [JsonIgnore]
-    public Guid Id { get; init; }
-
-    [JsonPropertyName("id")]
-    public required Guid OrId { get; init; }
 
     [JsonPropertyName("name")]
     public required string Name { get; init; }
@@ -40,10 +35,10 @@ public class Organization
 
     [JsonPropertyName("parent_organization_id")]
     public Guid? ParentOrganizationId { get; init; }
-    [JsonIgnore]
-    public virtual Organization? ParentOrganization { get; init; }
-    [JsonIgnore]
-    public virtual List<Organization> ChildOrganizations { get; init; } = new();
+    //[JsonIgnore]
+    //public virtual Organization? ParentOrganization { get; init; }
+    //[JsonIgnore]
+    //public virtual List<Organization> ChildOrganizations { get; init; } = new();
 
     [JsonIgnore]
     public virtual List<Service> Services { get; init; } = new();

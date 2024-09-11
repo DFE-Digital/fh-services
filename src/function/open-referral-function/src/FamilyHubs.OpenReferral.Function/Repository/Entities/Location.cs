@@ -3,13 +3,8 @@ using System.Text.Json.Serialization;
 
 namespace FamilyHubs.OpenReferral.Function.Repository.Entities;
 
-public class Location
+public class Location: BaseHSDSEntity
 {
-    [JsonIgnore]
-    public Guid Id { get; init; }
-
-    [JsonPropertyName("id")]
-    public required Guid OrId { get; init; }
 
     [JsonPropertyName("location_type")]
     public required string LocationType { get; init; }
@@ -19,7 +14,7 @@ public class Location
 
     [JsonPropertyName("organization_id")]
     [JsonIgnore]
-    public Guid? OrganizationOrId { get; init; }
+    public Guid? OrganizationId { get; init; }
     [JsonIgnore]
     public virtual Organization? Organization { get; init; }
 

@@ -4,6 +4,7 @@ using FamilyHubs.OpenReferral.Function.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyHubs.OpenReferral.Function.Migrations
 {
     [DbContext(typeof(FunctionDbContext))]
-    partial class FunctionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240911095559_TestTestTest")]
+    partial class TestTestTest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

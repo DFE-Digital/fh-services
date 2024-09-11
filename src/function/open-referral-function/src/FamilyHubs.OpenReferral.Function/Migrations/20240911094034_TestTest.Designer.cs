@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyHubs.OpenReferral.Function.Migrations
 {
     [DbContext(typeof(FunctionDbContext))]
-    [Migration("20240910154626_Test")]
-    partial class Test
+    [Migration("20240911094034_TestTest")]
+    partial class TestTest
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasAnnotation("Relational:JsonPropertyName", "details");
 
-                    b.Property<Guid?>("LocationOrId")
+                    b.Property<Guid?>("LocationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "location_id");
 
@@ -56,7 +56,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("LocationOrId");
+                    b.HasIndex("LocationId");
 
                     b.ToTable("Accessibility", "deds");
 
@@ -103,7 +103,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasAnnotation("Relational:JsonPropertyName", "country");
 
-                    b.Property<Guid?>("LocationOrId")
+                    b.Property<Guid?>("LocationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "location_id");
 
@@ -132,7 +132,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("LocationOrId");
+                    b.HasIndex("LocationId");
 
                     b.ToTable("Address", "deds");
 
@@ -286,9 +286,6 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "email");
 
                     b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("LocationOrId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "location_id");
 
@@ -301,15 +298,15 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid?>("OrganizationOrId")
+                    b.Property<Guid?>("OrganizationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "organization_id");
 
-                    b.Property<Guid?>("ServiceAtLocationOrId")
+                    b.Property<Guid?>("ServiceAtLocationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "service_at_location_id");
 
-                    b.Property<Guid?>("ServiceOrId")
+                    b.Property<Guid?>("ServiceId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "service_id");
 
@@ -324,11 +321,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.HasIndex("OrganizationOrId");
+                    b.HasIndex("OrganizationId");
 
-                    b.HasIndex("ServiceAtLocationOrId");
+                    b.HasIndex("ServiceAtLocationId");
 
-                    b.HasIndex("ServiceOrId");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("Contact", "deds");
 
@@ -362,7 +359,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid>("ServiceOrId")
+                    b.Property<Guid>("ServiceId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "service_id");
 
@@ -378,7 +375,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("ServiceOrId");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("CostOption", "deds");
 
@@ -395,11 +392,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid?>("OrganizationOrId")
+                    b.Property<Guid?>("OrganizationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "organization_id");
 
-                    b.Property<Guid?>("ServiceOrId")
+                    b.Property<Guid?>("ServiceId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "service_id");
 
@@ -411,9 +408,9 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("OrganizationOrId");
+                    b.HasIndex("OrganizationId");
 
-                    b.HasIndex("ServiceOrId");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("Funding", "deds");
 
@@ -431,7 +428,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasAnnotation("Relational:JsonPropertyName", "code");
 
-                    b.Property<Guid?>("LocationOrId")
+                    b.Property<Guid?>("LocationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "location_id");
 
@@ -448,11 +445,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid?>("PhoneOrId")
+                    b.Property<Guid?>("PhoneId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "phone_id");
 
-                    b.Property<Guid?>("ServiceOrId")
+                    b.Property<Guid?>("ServiceId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "service_id");
 
@@ -460,11 +457,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("LocationOrId");
+                    b.HasIndex("LocationId");
 
-                    b.HasIndex("PhoneOrId");
+                    b.HasIndex("PhoneId");
 
-                    b.HasIndex("ServiceOrId");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("Language", "deds");
 
@@ -521,7 +518,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid?>("OrganizationOrId")
+                    b.Property<Guid?>("OrganizationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "organization_id");
 
@@ -538,7 +535,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("OrganizationOrId");
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Location", "deds");
 
@@ -802,8 +799,6 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("ParentOrganizationId");
-
                     b.ToTable("Organization", "deds");
 
                     b.HasAnnotation("Relational:JsonPropertyName", "organization");
@@ -834,7 +829,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid?>("OrganizationOrId")
+                    b.Property<Guid?>("OrganizationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "organization_id");
 
@@ -842,7 +837,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("OrganizationOrId");
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("OrganizationIdentifier", "deds");
 
@@ -855,7 +850,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ContactOrId")
+                    b.Property<Guid?>("ContactId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "contact_id");
 
@@ -867,7 +862,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("smallint")
                         .HasAnnotation("Relational:JsonPropertyName", "extension");
 
-                    b.Property<Guid?>("LocationOrId")
+                    b.Property<Guid?>("LocationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "location_id");
 
@@ -881,15 +876,15 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid?>("OrganizationOrId")
+                    b.Property<Guid?>("OrganizationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "organization_id");
 
-                    b.Property<Guid?>("ServiceAtLocationOrId")
+                    b.Property<Guid?>("ServiceAtLocationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "service_at_location_id");
 
-                    b.Property<Guid?>("ServiceOrId")
+                    b.Property<Guid?>("ServiceId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "service_id");
 
@@ -902,15 +897,15 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("ContactOrId");
+                    b.HasIndex("ContactId");
 
-                    b.HasIndex("LocationOrId");
+                    b.HasIndex("LocationId");
 
-                    b.HasIndex("OrganizationOrId");
+                    b.HasIndex("OrganizationId");
 
-                    b.HasIndex("ServiceAtLocationOrId");
+                    b.HasIndex("ServiceAtLocationId");
 
-                    b.HasIndex("ServiceOrId");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("Phone", "deds");
 
@@ -941,7 +936,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid?>("OrganizationOrId")
+                    b.Property<Guid?>("OrganizationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "organization_id");
 
@@ -949,7 +944,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("OrganizationOrId");
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Program", "deds");
 
@@ -971,7 +966,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid?>("ServiceOrId")
+                    b.Property<Guid?>("ServiceId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "service_id");
 
@@ -984,7 +979,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("ServiceOrId");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("RequiredDocument", "deds");
 
@@ -1047,7 +1042,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("smallint")
                         .HasAnnotation("Relational:JsonPropertyName", "interval");
 
-                    b.Property<Guid?>("LocationOrId")
+                    b.Property<Guid?>("LocationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "location_id");
 
@@ -1068,11 +1063,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("nvarchar(2048)")
                         .HasAnnotation("Relational:JsonPropertyName", "schedule_link");
 
-                    b.Property<Guid?>("ServiceAtLocationOrId")
+                    b.Property<Guid?>("ServiceAtLocationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "service_at_location_id");
 
-                    b.Property<Guid?>("ServiceOrId")
+                    b.Property<Guid?>("ServiceId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "service_id");
 
@@ -1102,11 +1097,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("LocationOrId");
+                    b.HasIndex("LocationId");
 
-                    b.HasIndex("ServiceAtLocationOrId");
+                    b.HasIndex("ServiceAtLocationId");
 
-                    b.HasIndex("ServiceOrId");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("Schedule", "deds");
 
@@ -1192,11 +1187,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid?>("OrganizationOrId")
+                    b.Property<Guid?>("OrganizationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "organization_id");
 
-                    b.Property<Guid>("ProgramOrId")
+                    b.Property<Guid>("ProgramId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "program_id");
 
@@ -1215,9 +1210,9 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("OrganizationOrId");
+                    b.HasIndex("OrganizationId");
 
-                    b.HasIndex("ProgramOrId");
+                    b.HasIndex("ProgramId");
 
                     b.ToTable("Service", "deds");
 
@@ -1253,7 +1248,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid?>("ServiceOrId")
+                    b.Property<Guid?>("ServiceId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "service_id");
 
@@ -1266,7 +1261,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("ServiceOrId");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("ServiceArea", "deds");
 
@@ -1283,7 +1278,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasAnnotation("Relational:JsonPropertyName", "description");
 
-                    b.Property<Guid?>("LocationOrId")
+                    b.Property<Guid?>("LocationId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "location_id");
 
@@ -1291,7 +1286,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid?>("ServiceOrId")
+                    b.Property<Guid?>("ServiceId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "service_id");
 
@@ -1299,9 +1294,9 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("LocationOrId");
+                    b.HasIndex("LocationId");
 
-                    b.HasIndex("ServiceOrId");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("ServiceAtLocation", "deds");
 
@@ -1418,8 +1413,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
                         .WithMany("Accessibilities")
-                        .HasForeignKey("LocationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("LocationId");
 
                     b.Navigation("Location");
                 });
@@ -1428,8 +1422,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
                         .WithMany("Addresses")
-                        .HasForeignKey("LocationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("LocationId");
 
                     b.Navigation("Location");
                 });
@@ -1521,18 +1514,15 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
                         .WithMany("Contacts")
-                        .HasForeignKey("OrganizationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("OrganizationId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.ServiceAtLocation", "ServiceAtLocation")
                         .WithMany("Contacts")
-                        .HasForeignKey("ServiceAtLocationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("ServiceAtLocationId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
                         .WithMany("Contacts")
-                        .HasForeignKey("ServiceOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("ServiceId");
 
                     b.Navigation("Location");
 
@@ -1547,8 +1537,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
                         .WithMany("CostOptions")
-                        .HasForeignKey("ServiceOrId")
-                        .HasPrincipalKey("OrId")
+                        .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1559,13 +1548,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
                         .WithMany("Funding")
-                        .HasForeignKey("OrganizationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("OrganizationId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
                         .WithMany("Funding")
-                        .HasForeignKey("ServiceOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("ServiceId");
 
                     b.Navigation("Organization");
 
@@ -1576,18 +1563,15 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
                         .WithMany("Languages")
-                        .HasForeignKey("LocationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("LocationId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Phone", "Phone")
                         .WithMany("Languages")
-                        .HasForeignKey("PhoneOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("PhoneId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
                         .WithMany("Languages")
-                        .HasForeignKey("ServiceOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("ServiceId");
 
                     b.Navigation("Location");
 
@@ -1600,8 +1584,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
                         .WithMany("Locations")
-                        .HasForeignKey("OrganizationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("OrganizationId");
 
                     b.Navigation("Organization");
                 });
@@ -1689,22 +1672,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasForeignKey("TaxonomyTermId");
                 });
 
-            modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", b =>
-                {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "ParentOrganization")
-                        .WithMany("ChildOrganizations")
-                        .HasForeignKey("ParentOrganizationId")
-                        .HasPrincipalKey("OrId");
-
-                    b.Navigation("ParentOrganization");
-                });
-
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.OrganizationIdentifier", b =>
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
                         .WithMany("OrganizationIdentifiers")
-                        .HasForeignKey("OrganizationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("OrganizationId");
 
                     b.Navigation("Organization");
                 });
@@ -1713,28 +1685,23 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Contact", "Contact")
                         .WithMany("Phones")
-                        .HasForeignKey("ContactOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("ContactId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
                         .WithMany("Phones")
-                        .HasForeignKey("LocationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("LocationId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
                         .WithMany("Phones")
-                        .HasForeignKey("OrganizationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("OrganizationId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.ServiceAtLocation", "ServiceAtLocation")
                         .WithMany("Phones")
-                        .HasForeignKey("ServiceAtLocationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("ServiceAtLocationId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
                         .WithMany("Phones")
-                        .HasForeignKey("ServiceOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("ServiceId");
 
                     b.Navigation("Contact");
 
@@ -1751,8 +1718,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
                         .WithMany("Programs")
-                        .HasForeignKey("OrganizationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("OrganizationId");
 
                     b.Navigation("Organization");
                 });
@@ -1761,8 +1727,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
                         .WithMany("RequiredDocuments")
-                        .HasForeignKey("ServiceOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("ServiceId");
 
                     b.Navigation("Service");
                 });
@@ -1771,18 +1736,15 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
                         .WithMany("Schedules")
-                        .HasForeignKey("LocationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("LocationId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.ServiceAtLocation", "ServiceAtLocation")
                         .WithMany("Schedules")
-                        .HasForeignKey("ServiceAtLocationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("ServiceAtLocationId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
                         .WithMany("Schedules")
-                        .HasForeignKey("ServiceOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("ServiceId");
 
                     b.Navigation("Location");
 
@@ -1795,13 +1757,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
                         .WithMany("Services")
-                        .HasForeignKey("OrganizationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("OrganizationId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Program", "Program")
                         .WithMany("Services")
-                        .HasForeignKey("ProgramOrId")
-                        .HasPrincipalKey("OrId")
+                        .HasForeignKey("ProgramId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1814,8 +1774,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
                         .WithMany("ServiceAreas")
-                        .HasForeignKey("ServiceOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("ServiceId");
 
                     b.Navigation("Service");
                 });
@@ -1824,13 +1783,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
                         .WithMany("ServiceAtLocations")
-                        .HasForeignKey("LocationOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("LocationId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
                         .WithMany("ServiceAtLocations")
-                        .HasForeignKey("ServiceOrId")
-                        .HasPrincipalKey("OrId");
+                        .HasForeignKey("ServiceId");
 
                     b.Navigation("Location");
 
@@ -1926,8 +1883,6 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", b =>
                 {
                     b.Navigation("Attributes");
-
-                    b.Navigation("ChildOrganizations");
 
                     b.Navigation("Contacts");
 

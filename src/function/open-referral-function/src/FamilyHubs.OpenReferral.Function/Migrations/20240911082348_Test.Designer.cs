@@ -4,6 +4,7 @@ using FamilyHubs.OpenReferral.Function.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyHubs.OpenReferral.Function.Migrations
 {
     [DbContext(typeof(FunctionDbContext))]
-    partial class FunctionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240911082348_Test")]
+    partial class Test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -796,6 +799,8 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
+                    b.HasIndex("ParentOrganizationId");
+
                     b.ToTable("Organization", "deds");
 
                     b.HasAnnotation("Relational:JsonPropertyName", "organization");
@@ -955,7 +960,8 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Document")
-                        .HasColumnType("nvarchar(max)")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
                         .HasAnnotation("Relational:JsonPropertyName", "document");
 
                     b.Property<Guid>("OrId")
@@ -1668,6 +1674,15 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasForeignKey("TaxonomyTermId");
                 });
 
+            modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", b =>
+                {
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "ParentOrganization")
+                        .WithMany("ChildOrganizations")
+                        .HasForeignKey("ParentOrganizationId");
+
+                    b.Navigation("ParentOrganization");
+                });
+
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.OrganizationIdentifier", b =>
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
@@ -1879,6 +1894,8 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", b =>
                 {
                     b.Navigation("Attributes");
+
+                    b.Navigation("ChildOrganizations");
 
                     b.Navigation("Contacts");
 

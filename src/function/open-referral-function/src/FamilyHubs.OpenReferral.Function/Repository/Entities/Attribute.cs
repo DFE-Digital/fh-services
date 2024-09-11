@@ -3,14 +3,8 @@ using System.Text.Json.Serialization;
 
 namespace FamilyHubs.OpenReferral.Function.Repository.Entities;
 
-public class Attribute
+public class Attribute : BaseHSDSEntity
 {
-    [JsonIgnore]
-    public Guid Id { get; init; }
-
-    [JsonPropertyName("id")]
-    public required Guid OrId { get; init; }
-
     [JsonPropertyName("link_id")]
     [JsonIgnore]
     public Guid LinkId { get; init; }
