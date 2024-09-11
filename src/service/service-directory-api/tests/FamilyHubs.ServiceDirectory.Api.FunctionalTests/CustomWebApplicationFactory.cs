@@ -28,22 +28,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                var sqliteConnection = new SqliteConnection(_serviceDirectoryConnection);
-
-                // check if the test is running on Linux and load spatialite
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    sqliteConnection.Open();
-
-                    using var command = sqliteConnection.CreateCommand();
-                    command.CommandText = "SELECT load_extension('mod_spatialite');";
-                    command.ExecuteNonQuery();
-
-                    sqliteConnection.Close();
-                }
-
-                // use the connection with NetTopologySuite and spatial support
-                options.UseSqlite(sqliteConnection, mg =>
+                options.UseSqlite(_serviceDirectoryConnection, mg =>
                     mg.UseNetTopologySuite().MigrationsAssembly(typeof(ApplicationDbContext).Assembly.ToString()));
             });
         });
