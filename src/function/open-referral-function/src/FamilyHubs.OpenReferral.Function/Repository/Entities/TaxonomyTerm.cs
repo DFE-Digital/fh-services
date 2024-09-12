@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace FamilyHubs.OpenReferral.Function.Repository.Entities;
 
-public class TaxonomyTerm: BaseHSDSEntity
+public class TaxonomyTerm: BaseHsdsEntity
 {
 
     [JsonPropertyName("code")]

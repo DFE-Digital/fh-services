@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace FamilyHubs.OpenReferral.Function.Repository.Entities;
 
-public class MetaTableDescription: BaseHSDSEntity
+public class MetaTableDescription: BaseHsdsEntity
 {
 
     [JsonPropertyName("name")]

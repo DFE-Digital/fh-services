@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace FamilyHubs.OpenReferral.Function.Repository.Entities;
 
-public class Language: BaseHSDSEntity
+public class Language: BaseHsdsEntity
 {
 
     [JsonPropertyName("service_id")]

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace FamilyHubs.OpenReferral.Function.Repository.Entities;
 
-public abstract class BaseHSDSEntity
+public abstract class BaseHsdsEntity
 {
     [JsonIgnore]
     public Guid Id { get; init; }
