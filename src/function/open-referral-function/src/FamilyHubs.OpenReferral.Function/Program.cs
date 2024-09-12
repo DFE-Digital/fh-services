@@ -26,7 +26,7 @@ IHost host = new HostBuilder()
         services.AddDbContext<IFunctionDbContext, FunctionDbContext>(options =>
         {
             options.UseSqlServer(config["ServiceDirectoryConnection"])
-                .EnableSensitiveDataLogging(); // TODO: Remove after testing
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
         });
     })
     .Build();
