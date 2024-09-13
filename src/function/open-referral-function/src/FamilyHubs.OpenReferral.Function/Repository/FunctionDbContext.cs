@@ -1,4 +1,3 @@
-using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
 using static FamilyHubs.OpenReferral.Function.Repository.OpenReferralSchemaConstants;
@@ -8,7 +7,8 @@ namespace FamilyHubs.OpenReferral.Function.Repository;
 
 public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : DbContext(options), IFunctionDbContext
 {
-    public DbSet<Service> Services { get; init; } = null!;
+    private DbSet<Service> Services { get; init; } = null!;
+    IQueryable<Service> IFunctionDbContext.Services => Services.AsSplitQuery();
 
     public void AddService(Service service)
     {
@@ -29,20 +29,7 @@ public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : Db
         ////  return Database.ExecuteSqlRawAsync("SELECT TOP (1) [Id] FROM [deds].[Service]");
     }
 
-    public async Task<int> SaveChangesAsync()
-    {
-        // await base.SaveChangesAsync();
-
-        // Test code !!
-        Service? serviceFromDb = await Services
-            .AsSplitQuery()
-            //.Include(e => e.Organization)
-            .FirstOrDefaultAsync(s => s.OrId == Guid.Parse("ac148810-d857-441c-9679-408f346de14b"));
-        string serviceFromDbJson = JsonSerializer.Serialize(serviceFromDb);
-        Console.WriteLine(serviceFromDbJson);
-
-        return 0;
-    }
+    public Task<int> SaveChangesAsync() => base.SaveChangesAsync();
 
     private static void CreateEntityAttributeRelationships(ModelBuilder modelBuilder)
     {
