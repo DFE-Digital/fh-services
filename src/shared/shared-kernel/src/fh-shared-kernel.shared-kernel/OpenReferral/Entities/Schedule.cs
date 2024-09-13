@@ -20,7 +20,7 @@ public class Schedule : BaseHsdsEntity
     public DateTime? ValidTo { get; init; }
 
     [JsonPropertyName("dtstart")]
-    public DateTime? Dtstart { get; init; }
+    public DateTime? DtStart { get; init; }
 
     [JsonPropertyName("timezone")]
     public byte? Timezone { get; init; }
@@ -41,16 +41,16 @@ public class Schedule : BaseHsdsEntity
     public short? Interval { get; init; }
 
     [JsonPropertyName("byday")]
-    public string? Byday { get; init; }
+    public string? ByDay { get; init; }
 
     [JsonPropertyName("byweekno")]
-    public string? Byweekno { get; init; }
+    public string? ByWeekNo { get; init; }
 
     [JsonPropertyName("bymonthday")]
-    public string? Bymonthday { get; init; }
+    public string? ByMonthDay { get; init; }
 
     [JsonPropertyName("byyearday")]
-    public string? Byyearday { get; init; }
+    public string? ByYearDay { get; init; }
 
     [JsonPropertyName("description")]
     public string? Description { get; init; }
