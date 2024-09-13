@@ -1,13 +1,15 @@
 using FamilyHubs.OpenReferral.Function.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
-using static FamilyHubs.OpenReferral.Function.Repository.OpenReferralSchemaConstants;
 using Attribute = FamilyHubs.OpenReferral.Function.Repository.Entities.Attribute;
 
 namespace FamilyHubs.OpenReferral.Function.Repository;
 
 public static class OpenReferralDbContextExtension
 {
-        private static void CreateTableMapping(ModelBuilder modelBuilder)
+    private const string Deds = "deds";
+    private const string DedsMeta = "dedsmeta";
+
+    private static void CreateTableMapping(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Accessibility>(entity =>
         {

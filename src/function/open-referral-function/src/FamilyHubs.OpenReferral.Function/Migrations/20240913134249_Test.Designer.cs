@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyHubs.OpenReferral.Function.Migrations
 {
     [DbContext(typeof(FunctionDbContext))]
-    [Migration("20240913120038_Test")]
+    [Migration("20240913134249_Test")]
     partial class Test
     {
         /// <inheritdoc />
