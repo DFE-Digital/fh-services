@@ -1,4 +1,5 @@
-using FamilyHubs.OpenReferral.Function.Repository.Entities;
+using FamilyHubs.SharedKernel.OpenReferral.Entities;
+using FamilyHubs.SharedKernel.OpenReferral.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamilyHubs.OpenReferral.Function.Repository;

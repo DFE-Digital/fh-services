@@ -2,10 +2,10 @@ using System.Net;
 using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.ClientServices;
 using FamilyHubs.OpenReferral.Function.Repository;
+using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Functions.Worker.Http;
-using Service = FamilyHubs.OpenReferral.Function.Repository.Entities.Service;
 
 namespace FamilyHubs.OpenReferral.Function.Functions;
 

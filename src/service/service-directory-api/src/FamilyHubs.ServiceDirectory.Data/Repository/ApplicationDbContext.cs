@@ -153,8 +153,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
                     }
                 );
 
-            OpenReferralDbContextExtension openReferralDbContextExtension = new();
-            openReferralDbContextExtension.OnModelCreating(modelBuilder);
+            OpenReferralDbContextExtension.OnModelCreating(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
         }
