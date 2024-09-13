@@ -45,7 +45,7 @@ public class TriggerPullServicesWebhook(
 
         foreach (Service service in serviceList)
         {
-            logger.LogInformation("Adding service with ID {serviceId} to the database", service.Id);
+            logger.LogInformation("Adding service with ID {serviceId} to the database", service.OrId);
             functionDbContext.AddService(service);
         }
 
