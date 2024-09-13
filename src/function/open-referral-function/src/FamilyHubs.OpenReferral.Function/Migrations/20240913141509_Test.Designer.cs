@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyHubs.OpenReferral.Function.Migrations
 {
     [DbContext(typeof(FunctionDbContext))]
-    [Migration("20240913134945_Test")]
+    [Migration("20240913141509_Test")]
     partial class Test
     {
         /// <inheritdoc />
@@ -370,8 +370,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "details");
 
                     b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "location_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("OrId")
                         .HasColumnType("uniqueidentifier")
@@ -434,8 +433,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "country");
 
                     b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "location_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("OrId")
                         .HasColumnType("uniqueidentifier")
@@ -494,9 +492,8 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<Guid>("TaxonomyTermId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "taxonomy_term_id");
+                    b.Property<Guid?>("TaxonomyTermId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Value")
                         .HasMaxLength(50)
@@ -507,7 +504,9 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("TaxonomyTermId");
+                    b.HasIndex("TaxonomyTermId")
+                        .IsUnique()
+                        .HasFilter("[TaxonomyTermId] IS NOT NULL");
 
                     b.ToTable("Attribute", "deds");
 
@@ -531,8 +530,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "email");
 
                     b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "location_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
@@ -544,16 +542,13 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<Guid?>("OrganizationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "organization_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ServiceAtLocationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "service_at_location_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ServiceId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "service_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
                         .HasMaxLength(255)
@@ -605,8 +600,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<Guid>("ServiceId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "service_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("ValidFrom")
                         .HasColumnType("date")
@@ -638,12 +632,10 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<Guid?>("OrganizationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "organization_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ServiceId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "service_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Source")
                         .HasColumnType("nvarchar(max)")
@@ -674,8 +666,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "code");
 
                     b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "location_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
@@ -691,12 +682,10 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<Guid?>("PhoneId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "phone_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ServiceId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "service_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -764,8 +753,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<Guid?>("OrganizationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "organization_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Transportation")
                         .HasMaxLength(255)
@@ -975,8 +963,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<Guid?>("OrganizationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "organization_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -996,8 +983,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ContactId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "contact_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)")
@@ -1008,8 +994,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "extension");
 
                     b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "location_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Number")
                         .IsRequired()
@@ -1022,16 +1007,13 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<Guid?>("OrganizationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "organization_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ServiceAtLocationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "service_at_location_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ServiceId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "service_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Type")
                         .HasMaxLength(50)
@@ -1082,8 +1064,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<Guid?>("OrganizationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "organization_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -1111,8 +1092,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<Guid?>("ServiceId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "service_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Uri")
                         .HasMaxLength(2048)
@@ -1187,8 +1167,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "interval");
 
                     b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "location_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)")
@@ -1208,12 +1187,10 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "schedule_link");
 
                     b.Property<Guid?>("ServiceAtLocationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "service_at_location_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ServiceId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "service_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<byte?>("Timezone")
                         .HasColumnType("tinyint")
@@ -1332,12 +1309,10 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<Guid?>("OrganizationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "organization_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ProgramId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "program_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -1391,8 +1366,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<Guid?>("ServiceId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "service_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Uri")
                         .HasMaxLength(2048)
@@ -1421,16 +1395,14 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "description");
 
                     b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "location_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("OrId")
                         .HasColumnType("uniqueidentifier")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<Guid?>("ServiceId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "service_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -1527,8 +1499,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "taxonomy");
 
                     b.Property<Guid?>("TaxonomyId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasAnnotation("Relational:JsonPropertyName", "taxonomy_id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TermUri")
                         .HasMaxLength(2048)
@@ -1544,7 +1515,9 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
                     SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
 
-                    b.HasIndex("TaxonomyId");
+                    b.HasIndex("TaxonomyId")
+                        .IsUnique()
+                        .HasFilter("[TaxonomyId] IS NOT NULL");
 
                     b.ToTable("TaxonomyTerm", "deds");
 
@@ -2108,11 +2081,9 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Accessibility", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", null)
                         .WithMany("Accessibilities")
                         .HasForeignKey("LocationId");
-
-                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Address", b =>
@@ -2125,10 +2096,8 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Attribute", b =>
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.TaxonomyTerm", "TaxonomyTerm")
-                        .WithMany()
-                        .HasForeignKey("TaxonomyTermId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithOne()
+                        .HasForeignKey("FamilyHubs.OpenReferral.Function.Repository.Entities.Attribute", "TaxonomyTermId");
 
                     b.Navigation("TaxonomyTerm");
                 });
@@ -2293,8 +2262,8 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.TaxonomyTerm", b =>
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Taxonomy", "TaxonomyDetail")
-                        .WithMany()
-                        .HasForeignKey("TaxonomyId");
+                        .WithOne()
+                        .HasForeignKey("FamilyHubs.OpenReferral.Function.Repository.Entities.TaxonomyTerm", "TaxonomyId");
 
                     b.Navigation("TaxonomyDetail");
                 });

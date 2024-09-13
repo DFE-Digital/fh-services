@@ -4,15 +4,12 @@ namespace FamilyHubs.OpenReferral.Function.Repository.Entities;
 
 public class Language : BaseHsdsEntity
 {
-    [JsonPropertyName("service_id")]
     [JsonIgnore]
     public Guid? ServiceId { get; init; }
 
-    [JsonPropertyName("location_id")]
     [JsonIgnore]
     public Guid? LocationId { get; init; }
 
-    [JsonPropertyName("phone_id")]
     [JsonIgnore]
     public Guid? PhoneId { get; init; }
 

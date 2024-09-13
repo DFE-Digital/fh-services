@@ -18,7 +18,6 @@ public class TaxonomyTerm : BaseHsdsEntity
 
     [JsonPropertyName("language")] public string? Language { get; init; }
 
-    [JsonPropertyName("taxonomy_id")]
     [JsonIgnore]
     public Guid? TaxonomyId { get; init; }
     [JsonPropertyName("taxonomy_detail")] public Taxonomy? TaxonomyDetail { get; init; }

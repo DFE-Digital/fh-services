@@ -475,7 +475,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LinkId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    TaxonomyTermId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TaxonomyTermId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     LinkType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     LinkEntity = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -490,8 +490,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         column: x => x.TaxonomyTermId,
                         principalSchema: "deds",
                         principalTable: "TaxonomyTerm",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1697,7 +1696,9 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 name: "IX_Attribute_TaxonomyTermId",
                 schema: "deds",
                 table: "Attribute",
-                column: "TaxonomyTermId");
+                column: "TaxonomyTermId",
+                unique: true,
+                filter: "[TaxonomyTermId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AttributeContact_ContactId",
@@ -2063,7 +2064,9 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 name: "IX_TaxonomyTerm_TaxonomyId",
                 schema: "deds",
                 table: "TaxonomyTerm",
-                column: "TaxonomyId");
+                column: "TaxonomyId",
+                unique: true,
+                filter: "[TaxonomyId] IS NOT NULL");
         }
 
         /// <inheritdoc />

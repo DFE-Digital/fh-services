@@ -4,11 +4,8 @@ namespace FamilyHubs.OpenReferral.Function.Repository.Entities;
 
 public class Accessibility : BaseHsdsEntity
 {
-    [JsonPropertyName("location_id")]
     [JsonIgnore]
     public Guid? LocationId { get; init; }
-
-    [JsonIgnore] public Location? Location { get; init; }
 
     [JsonPropertyName("description")] public string? Description { get; init; }
 

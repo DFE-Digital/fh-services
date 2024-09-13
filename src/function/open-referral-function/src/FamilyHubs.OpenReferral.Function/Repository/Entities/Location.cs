@@ -8,7 +8,6 @@ public class Location : BaseHsdsEntity
 
     [JsonPropertyName("url")] public string? Url { get; init; }
 
-    [JsonPropertyName("organization_id")]
     [JsonIgnore]
     public Guid? OrganizationId { get; init; }
 

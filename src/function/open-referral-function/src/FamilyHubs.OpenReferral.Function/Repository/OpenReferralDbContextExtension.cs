@@ -40,8 +40,6 @@ public static class OpenReferralDbContextExtension
             entity.ToTable(nameof(Attribute), schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            //entity.Property(e => e.LinkId).IsRequired();
-            //entity.Property(e => e.TaxonomyTermId).IsRequired();
             entity.Property(e => e.LinkType).HasMaxLength(50);
             entity.Property(e => e.LinkEntity).HasMaxLength(50);
             entity.Property(e => e.Value).HasMaxLength(50);
@@ -63,7 +61,6 @@ public static class OpenReferralDbContextExtension
             entity.ToTable(nameof(CostOption), schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            //entity.Property(e => e.ServiceId).IsRequired();
             entity.Property(e => e.ValidFrom).HasColumnType("date");
             entity.Property(e => e.ValidTo).HasColumnType("date");
             entity.Property(e => e.Currency).HasColumnType("nchar(3)");
@@ -107,7 +104,6 @@ public static class OpenReferralDbContextExtension
             entity.ToTable(nameof(Metadata), schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            //entity.Property(e => e.ResourceId).IsRequired();
             entity.Property(e => e.ResourceType).HasMaxLength(50);
             entity.Property(e => e.LastActionDate).HasColumnType("date");
             entity.Property(e => e.LastActionType).HasMaxLength(255);
@@ -172,7 +168,6 @@ public static class OpenReferralDbContextExtension
             entity.ToTable(nameof(RequiredDocument), schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            //entity.Property(e => e.Document).HasMaxLength(255);
             entity.Property(e => e.Uri).HasMaxLength(2048);
         });
 
@@ -201,7 +196,6 @@ public static class OpenReferralDbContextExtension
             entity.ToTable(nameof(Service), schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            //entity.Property(e => e.ProgramId).IsRequired();
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.AlternateName).HasMaxLength(255);
             entity.Property(e => e.Url).HasMaxLength(2048);
@@ -538,7 +532,7 @@ public static class OpenReferralDbContextExtension
     {
         modelBuilder.Entity<Location>()
             .HasMany<Accessibility>(e => e.Accessibilities)
-            .WithOne(e => e.Location)
+            .WithOne()
             .HasForeignKey(e => e.LocationId);
 
         modelBuilder.Entity<Location>()
@@ -607,6 +601,20 @@ public static class OpenReferralDbContextExtension
             .HasMany<Language>(e => e.Languages)
             .WithOne()
             .HasForeignKey(e => e.PhoneId);
+    }
+
+    private static void CreateAttributeRelationships(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Attribute>()
+            .HasOne<TaxonomyTerm>(e => e.TaxonomyTerm)
+            .WithOne();
+    }
+
+    private static void CreateTaxonomyTermRelationships(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<TaxonomyTerm>()
+            .HasOne<Taxonomy>(e => e.TaxonomyDetail)
+            .WithOne();
     }
 
     private static void CreateNavigationAutoIncludes(ModelBuilder modelBuilder)
@@ -748,6 +756,8 @@ public static class OpenReferralDbContextExtension
         CreatePhoneRelationships(modelBuilder);
         CreateProgramRelationships(modelBuilder);
         CreateContactRelationships(modelBuilder);
+        CreateAttributeRelationships(modelBuilder);
+        CreateTaxonomyTermRelationships(modelBuilder);
 
         // Attributes & Metadata Relationships
         CreateEntityAttributeRelationships(modelBuilder);
