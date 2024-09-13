@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyHubs.OpenReferral.Function.Migrations
 {
     [DbContext(typeof(FunctionDbContext))]
-    [Migration("20240912135508_Test")]
+    [Migration("20240913120038_Test")]
     partial class Test
     {
         /// <inheritdoc />
@@ -1351,8 +1351,6 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     b.HasIndex("ProgramId");
 
                     b.ToTable("Service", "deds");
-
-                    b.HasAnnotation("Relational:JsonPropertyName", "service");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.ServiceArea", b =>
@@ -2111,11 +2109,9 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Address", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", null)
                         .WithMany("Addresses")
                         .HasForeignKey("LocationId");
-
-                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Attribute", b =>
@@ -2131,176 +2127,132 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Contact", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", null)
                         .WithMany("Contacts")
                         .HasForeignKey("LocationId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", null)
                         .WithMany("Contacts")
                         .HasForeignKey("OrganizationId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.ServiceAtLocation", "ServiceAtLocation")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.ServiceAtLocation", null)
                         .WithMany("Contacts")
                         .HasForeignKey("ServiceAtLocationId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", null)
                         .WithMany("Contacts")
                         .HasForeignKey("ServiceId");
-
-                    b.Navigation("Location");
-
-                    b.Navigation("Organization");
-
-                    b.Navigation("Service");
-
-                    b.Navigation("ServiceAtLocation");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.CostOption", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", null)
                         .WithMany("CostOptions")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Funding", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", null)
                         .WithMany("Funding")
                         .HasForeignKey("OrganizationId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", null)
                         .WithMany("Funding")
                         .HasForeignKey("ServiceId");
-
-                    b.Navigation("Organization");
-
-                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Language", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", null)
                         .WithMany("Languages")
                         .HasForeignKey("LocationId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Phone", "Phone")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Phone", null)
                         .WithMany("Languages")
                         .HasForeignKey("PhoneId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", null)
                         .WithMany("Languages")
                         .HasForeignKey("ServiceId");
-
-                    b.Navigation("Location");
-
-                    b.Navigation("Phone");
-
-                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", null)
                         .WithMany("Locations")
                         .HasForeignKey("OrganizationId");
-
-                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.OrganizationIdentifier", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", null)
                         .WithMany("OrganizationIdentifiers")
                         .HasForeignKey("OrganizationId");
-
-                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Phone", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Contact", "Contact")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Contact", null)
                         .WithMany("Phones")
                         .HasForeignKey("ContactId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", null)
                         .WithMany("Phones")
                         .HasForeignKey("LocationId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", null)
                         .WithMany("Phones")
                         .HasForeignKey("OrganizationId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.ServiceAtLocation", "ServiceAtLocation")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.ServiceAtLocation", null)
                         .WithMany("Phones")
                         .HasForeignKey("ServiceAtLocationId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", null)
                         .WithMany("Phones")
                         .HasForeignKey("ServiceId");
-
-                    b.Navigation("Contact");
-
-                    b.Navigation("Location");
-
-                    b.Navigation("Organization");
-
-                    b.Navigation("Service");
-
-                    b.Navigation("ServiceAtLocation");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Program", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", null)
                         .WithMany("Programs")
                         .HasForeignKey("OrganizationId");
-
-                    b.Navigation("Organization");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.RequiredDocument", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", null)
                         .WithMany("RequiredDocuments")
                         .HasForeignKey("ServiceId");
-
-                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Schedule", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", null)
                         .WithMany("Schedules")
                         .HasForeignKey("LocationId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.ServiceAtLocation", "ServiceAtLocation")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.ServiceAtLocation", null)
                         .WithMany("Schedules")
                         .HasForeignKey("ServiceAtLocationId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", null)
                         .WithMany("Schedules")
                         .HasForeignKey("ServiceId");
-
-                    b.Navigation("Location");
-
-                    b.Navigation("Service");
-
-                    b.Navigation("ServiceAtLocation");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", b =>
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", "Organization")
-                        .WithMany("Services")
+                        .WithMany()
                         .HasForeignKey("OrganizationId");
 
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Program", "Program")
-                        .WithMany("Services")
+                        .WithMany()
                         .HasForeignKey("ProgramId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2312,26 +2264,22 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.ServiceArea", b =>
                 {
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", null)
                         .WithMany("ServiceAreas")
                         .HasForeignKey("ServiceId");
-
-                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.ServiceAtLocation", b =>
                 {
                     b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Location", "Location")
-                        .WithMany("ServiceAtLocations")
+                        .WithMany()
                         .HasForeignKey("LocationId");
 
-                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", "Service")
+                    b.HasOne("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", null)
                         .WithMany("ServiceAtLocations")
                         .HasForeignKey("ServiceId");
 
                     b.Navigation("Location");
-
-                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.TaxonomyTerm", b =>
@@ -2586,8 +2534,6 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     b.Navigation("Phones");
 
                     b.Navigation("Schedules");
-
-                    b.Navigation("ServiceAtLocations");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Organization", b =>
@@ -2603,18 +2549,11 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                     b.Navigation("Phones");
 
                     b.Navigation("Programs");
-
-                    b.Navigation("Services");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Phone", b =>
                 {
                     b.Navigation("Languages");
-                });
-
-            modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Program", b =>
-                {
-                    b.Navigation("Services");
                 });
 
             modelBuilder.Entity("FamilyHubs.OpenReferral.Function.Repository.Entities.Service", b =>

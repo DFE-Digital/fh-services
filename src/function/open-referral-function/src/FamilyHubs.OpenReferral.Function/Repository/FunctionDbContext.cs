@@ -1,3 +1,4 @@
+using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
 using static FamilyHubs.OpenReferral.Function.Repository.OpenReferralSchemaConstants;
@@ -22,14 +23,28 @@ public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : Db
 
     // TODO: Update for new schema -> TruncateDEDSSchemaAsync
     // Just a dummy statement for now since the [staging].[services_temp] no longer exists :)
-    public Task TruncateServicesTempAsync() => Database.ExecuteSqlRawAsync("SELECT TOP (1) [Id] FROM [deds].[Service]");
-
-    public Task<int> SaveChangesAsync()
+    public Task TruncateServicesTempAsync()
     {
-        return base.SaveChangesAsync();
+        return Task.CompletedTask;
+        ////  return Database.ExecuteSqlRawAsync("SELECT TOP (1) [Id] FROM [deds].[Service]");
     }
 
-    private static void AddEntityAttributeRelationships(ModelBuilder modelBuilder)
+    public async Task<int> SaveChangesAsync()
+    {
+        // await base.SaveChangesAsync();
+
+        // Test code !!
+        Service? serviceFromDb = await Services
+            .AsSplitQuery()
+            //.Include(e => e.Organization)
+            .FirstOrDefaultAsync(s => s.OrId == Guid.Parse("ac148810-d857-441c-9679-408f346de14b"));
+        string serviceFromDbJson = JsonSerializer.Serialize(serviceFromDb);
+        Console.WriteLine(serviceFromDbJson);
+
+        return 0;
+    }
+
+    private static void CreateEntityAttributeRelationships(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Accessibility>()
             .HasMany<Attribute>(e => e.Attributes)
@@ -117,7 +132,7 @@ public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : Db
                 e => { e.Metadata.SetSchema(DedsMeta); });
     }
 
-    private static void AddEntityMetadataRelationships(ModelBuilder modelBuilder)
+    private static void CreateEntityMetadataRelationships(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Accessibility>()
             .HasMany<Metadata>(e => e.Metadata)
@@ -223,95 +238,90 @@ public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : Db
     private static void CreateOrganizationRelationships(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Organization>()
-            .HasMany<Service>(e => e.Services)
+            .HasMany<Service>()
             .WithOne(e => e.Organization)
             .HasForeignKey(e => e.OrganizationId);
 
         modelBuilder.Entity<Organization>()
             .HasMany<Location>(e => e.Locations)
-            .WithOne(e => e.Organization)
+            .WithOne()
             .HasForeignKey(e => e.OrganizationId);
 
         modelBuilder.Entity<Organization>()
             .HasMany<Entities.Program>(e => e.Programs)
-            .WithOne(e => e.Organization)
+            .WithOne()
             .HasForeignKey(e => e.OrganizationId);
 
         modelBuilder.Entity<Organization>()
             .HasMany<Funding>(e => e.Funding)
-            .WithOne(e => e.Organization)
+            .WithOne()
             .HasForeignKey(e => e.OrganizationId);
 
         modelBuilder.Entity<Organization>()
             .HasMany<OrganizationIdentifier>(e => e.OrganizationIdentifiers)
-            .WithOne(e => e.Organization)
+            .WithOne()
             .HasForeignKey(e => e.OrganizationId);
 
         modelBuilder.Entity<Organization>()
             .HasMany<Phone>(e => e.Phones)
-            .WithOne(e => e.Organization)
+            .WithOne()
             .HasForeignKey(e => e.OrganizationId);
 
         modelBuilder.Entity<Organization>()
             .HasMany<Contact>(e => e.Contacts)
-            .WithOne(e => e.Organization)
+            .WithOne()
             .HasForeignKey(e => e.OrganizationId);
-
-        // modelBuilder.Entity<Organization>()
-        //     .HasOne<Organization>(e => e.ParentOrganization)
-        //     .WithMany(e => e.ChildOrganizations)
-        //     .HasForeignKey(e => e.ParentOrganizationId);
     }
 
-    private void CreateServiceRelationships(ModelBuilder modelBuilder)
+    private static void CreateServiceRelationships(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Service>()
             .HasMany<CostOption>(e => e.CostOptions)
-            .WithOne(e => e.Service)
+            .WithOne()
             .HasForeignKey(e => e.ServiceId);
 
         modelBuilder.Entity<Service>()
             .HasMany<ServiceArea>(e => e.ServiceAreas)
-            .WithOne(e => e.Service)
+            .WithOne()
             .HasForeignKey(e => e.ServiceId);
 
         modelBuilder.Entity<Service>()
             .HasMany<RequiredDocument>(e => e.RequiredDocuments)
-            .WithOne(e => e.Service)
+            .WithOne()
             .HasForeignKey(e => e.ServiceId);
 
         modelBuilder.Entity<Service>()
             .HasMany<Funding>(e => e.Funding)
-            .WithOne(e => e.Service)
+            .WithOne()
             .HasForeignKey(e => e.ServiceId);
 
         modelBuilder.Entity<Service>()
             .HasMany<Schedule>(e => e.Schedules)
-            .WithOne(e => e.Service)
+            .WithOne()
             .HasForeignKey(e => e.ServiceId);
 
         modelBuilder.Entity<Service>()
             .HasMany<ServiceAtLocation>(e => e.ServiceAtLocations)
-            .WithOne(e => e.Service)
+            .WithOne()
             .HasForeignKey(e => e.ServiceId);
 
         modelBuilder.Entity<Service>()
             .HasMany<Contact>(e => e.Contacts)
-            .WithOne(e => e.Service)
+            .WithOne()
             .HasForeignKey(e => e.ServiceId);
 
         modelBuilder.Entity<Service>()
             .HasMany<Phone>(e => e.Phones)
-            .WithOne(e => e.Service)
+            .WithOne()
             .HasForeignKey(e => e.ServiceId);
 
         modelBuilder.Entity<Service>()
             .HasMany<Language>(e => e.Languages)
-            .WithOne(e => e.Service)
+            .WithOne()
             .HasForeignKey(e => e.ServiceId);
     }
 
-    private void CreateLocationRelationships(ModelBuilder modelBuilder)
+    private static void CreateLocationRelationships(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Location>()
             .HasMany<Accessibility>(e => e.Accessibilities)
@@ -320,70 +330,161 @@ public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : Db
 
         modelBuilder.Entity<Location>()
             .HasMany<Address>(e => e.Addresses)
-            .WithOne(e => e.Location)
+            .WithOne()
             .HasForeignKey(e => e.LocationId);
 
         modelBuilder.Entity<Location>()
             .HasMany<Phone>(e => e.Phones)
-            .WithOne(e => e.Location)
+            .WithOne()
             .HasForeignKey(e => e.LocationId);
 
         modelBuilder.Entity<Location>()
             .HasMany<Language>(e => e.Languages)
-            .WithOne(e => e.Location)
+            .WithOne()
             .HasForeignKey(e => e.LocationId);
 
         modelBuilder.Entity<Location>()
             .HasMany<Schedule>(e => e.Schedules)
-            .WithOne(e => e.Location)
+            .WithOne()
             .HasForeignKey(e => e.LocationId);
 
         modelBuilder.Entity<Location>()
-            .HasMany<ServiceAtLocation>(e => e.ServiceAtLocations)
+            .HasMany<ServiceAtLocation>()
             .WithOne(e => e.Location)
             .HasForeignKey(e => e.LocationId);
     }
 
-    private void CreateServiceAtLocationRelationships(ModelBuilder modelBuilder)
+    private static void CreateServiceAtLocationRelationships(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ServiceAtLocation>()
             .HasMany<Schedule>(e => e.Schedules)
-            .WithOne(e => e.ServiceAtLocation)
+            .WithOne()
             .HasForeignKey(e => e.ServiceAtLocationId);
 
         modelBuilder.Entity<ServiceAtLocation>()
             .HasMany<Contact>(e => e.Contacts)
-            .WithOne(e => e.ServiceAtLocation)
+            .WithOne()
             .HasForeignKey(e => e.ServiceAtLocationId);
 
         modelBuilder.Entity<ServiceAtLocation>()
             .HasMany<Phone>(e => e.Phones)
-            .WithOne(e => e.ServiceAtLocation)
+            .WithOne()
             .HasForeignKey(e => e.ServiceAtLocationId);
     }
 
-    private void CreateProgramRelationships(ModelBuilder modelBuilder)
+    private static void CreateProgramRelationships(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Entities.Program>()
-            .HasMany<Service>(e => e.Services)
+            .HasMany<Service>()
             .WithOne(e => e.Program)
             .HasForeignKey(e => e.ProgramId);
     }
 
-    private void CreateContactRelationships(ModelBuilder modelBuilder)
+    private static void CreateContactRelationships(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Contact>()
             .HasMany<Phone>(e => e.Phones)
-            .WithOne(e => e.Contact)
+            .WithOne()
             .HasForeignKey(e => e.ContactId);
     }
 
-    private void CreatePhoneRelationships(ModelBuilder modelBuilder)
+    private static void CreatePhoneRelationships(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Phone>()
             .HasMany<Language>(e => e.Languages)
-            .WithOne(e => e.Phone)
+            .WithOne()
             .HasForeignKey(e => e.PhoneId);
+    }
+
+    private static void CreateNavigationAutoIncludes(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Accessibility>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<Accessibility>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<Address>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<Address>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<Attribute>().Navigation(e => e.TaxonomyTerm).AutoInclude();
+        modelBuilder.Entity<Attribute>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<Contact>().Navigation(e => e.Phones).AutoInclude();
+        modelBuilder.Entity<Contact>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<Contact>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<CostOption>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<CostOption>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<Funding>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<Funding>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<Language>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<Language>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<Location>().Navigation(e => e.Languages).AutoInclude();
+        modelBuilder.Entity<Location>().Navigation(e => e.Addresses).AutoInclude();
+        modelBuilder.Entity<Location>().Navigation(e => e.Contacts).AutoInclude();
+        modelBuilder.Entity<Location>().Navigation(e => e.Accessibilities).AutoInclude();
+        modelBuilder.Entity<Location>().Navigation(e => e.Phones).AutoInclude();
+        modelBuilder.Entity<Location>().Navigation(e => e.Schedules).AutoInclude();
+        modelBuilder.Entity<Location>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<Location>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<MetaTableDescription>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<MetaTableDescription>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<Organization>().Navigation(e => e.Funding).AutoInclude();
+        modelBuilder.Entity<Organization>().Navigation(e => e.Contacts).AutoInclude();
+        modelBuilder.Entity<Organization>().Navigation(e => e.Phones).AutoInclude();
+        modelBuilder.Entity<Organization>().Navigation(e => e.Locations).AutoInclude();
+        modelBuilder.Entity<Organization>().Navigation(e => e.Programs).AutoInclude();
+        modelBuilder.Entity<Organization>().Navigation(e => e.OrganizationIdentifiers).AutoInclude();
+        modelBuilder.Entity<Organization>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<Organization>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<OrganizationIdentifier>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<OrganizationIdentifier>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<Phone>().Navigation(e => e.Languages).AutoInclude();
+        modelBuilder.Entity<Phone>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<Phone>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<Entities.Program>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<Entities.Program>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<RequiredDocument>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<RequiredDocument>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<Schedule>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<Schedule>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<Service>().Navigation(e => e.Phones).AutoInclude();
+        modelBuilder.Entity<Service>().Navigation(e => e.Schedules).AutoInclude();
+        modelBuilder.Entity<Service>().Navigation(e => e.ServiceAreas).AutoInclude();
+        modelBuilder.Entity<Service>().Navigation(e => e.ServiceAtLocations).AutoInclude();
+        modelBuilder.Entity<Service>().Navigation(e => e.Languages).AutoInclude();
+        modelBuilder.Entity<Service>().Navigation(e => e.Organization).AutoInclude();
+        modelBuilder.Entity<Service>().Navigation(e => e.Funding).AutoInclude();
+        modelBuilder.Entity<Service>().Navigation(e => e.CostOptions).AutoInclude();
+        modelBuilder.Entity<Service>().Navigation(e => e.Program).AutoInclude();
+        modelBuilder.Entity<Service>().Navigation(e => e.RequiredDocuments).AutoInclude();
+        modelBuilder.Entity<Service>().Navigation(e => e.Contacts).AutoInclude();
+        modelBuilder.Entity<Service>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<Service>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<ServiceArea>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<ServiceArea>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<ServiceAtLocation>().Navigation(e => e.Contacts).AutoInclude();
+        modelBuilder.Entity<ServiceAtLocation>().Navigation(e => e.Phones).AutoInclude();
+        modelBuilder.Entity<ServiceAtLocation>().Navigation(e => e.Schedules).AutoInclude();
+        modelBuilder.Entity<ServiceAtLocation>().Navigation(e => e.Location).AutoInclude();
+        modelBuilder.Entity<ServiceAtLocation>().Navigation(e => e.Attributes).AutoInclude();
+        modelBuilder.Entity<ServiceAtLocation>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<Taxonomy>().Navigation(e => e.Metadata).AutoInclude();
+
+        modelBuilder.Entity<TaxonomyTerm>().Navigation(e => e.TaxonomyDetail).AutoInclude();
+        modelBuilder.Entity<TaxonomyTerm>().Navigation(e => e.Metadata).AutoInclude();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -392,6 +493,7 @@ public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : Db
         openReferralDbContextExtension.OnModelCreating(modelBuilder);
 
         /*
+         *
          * -- Core Objects --
          *
          * The schema defines four core objects / relationships: Organization, Service, Location, ServiceAtLocation.
@@ -408,7 +510,7 @@ public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : Db
          *
          * -- Attributes & Metadata --
          *
-         * Each of the core and other objects have many attributes and/or many metadatas. The schema is incomplete on
+         * Each of the core and other objects have many attributes and/or metadata. The schema is incomplete on
          * how to represent these relationships, so we have decided to map them out as many-to-many. These have however
          * been normalised by EF Core, and so in a separate schema there will be intermediate one-to-many tables, e.g.,
          * "AttributeService", "MetadataService", "AttributeSchedule", "MetadataSchedule", etc.
@@ -430,8 +532,11 @@ public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : Db
 
         // Attributes & Metadata Relationships
 
-        AddEntityAttributeRelationships(modelBuilder);
-        AddEntityMetadataRelationships(modelBuilder);
+        CreateEntityAttributeRelationships(modelBuilder);
+        CreateEntityMetadataRelationships(modelBuilder);
+
+        // Necessary for traversing the full entity graph when reading data out from the Db
+        CreateNavigationAutoIncludes(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
     }

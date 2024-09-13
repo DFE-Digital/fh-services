@@ -1,71 +1,48 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace FamilyHubs.OpenReferral.Function.Repository.Entities;
 
-public class Schedule: BaseHsdsEntity
+public class Schedule : BaseHsdsEntity
 {
-
     [JsonPropertyName("service_id")]
     [JsonIgnore]
     public Guid? ServiceId { get; init; }
 
-    [JsonIgnore]
-    public virtual Service? Service { get; init; }
-
     [JsonPropertyName("location_id")]
     [JsonIgnore]
     public Guid? LocationId { get; init; }
-    [JsonIgnore]
-    public virtual Location? Location { get; init; }
 
     [JsonPropertyName("service_at_location_id")]
     [JsonIgnore]
     public Guid? ServiceAtLocationId { get; init; }
-    [JsonIgnore]
-    public virtual ServiceAtLocation? ServiceAtLocation { get; init; }
 
-    [JsonPropertyName("valid_from")]
-    public DateTime? ValidFrom { get; init; }
+    [JsonPropertyName("valid_from")] public DateTime? ValidFrom { get; init; }
 
-    [JsonPropertyName("valid_to")]
-    public DateTime? ValidTo { get; init; }
+    [JsonPropertyName("valid_to")] public DateTime? ValidTo { get; init; }
 
-    [JsonPropertyName("dtstart")]
-    public DateTime? Dtstart { get; init; }
+    [JsonPropertyName("dtstart")] public DateTime? Dtstart { get; init; }
 
-    [JsonPropertyName("timezone")]
-    public byte? Timezone { get; init; }
+    [JsonPropertyName("timezone")] public byte? Timezone { get; init; }
 
-    [JsonPropertyName("until")]
-    public DateTime? Until { get; init; }
+    [JsonPropertyName("until")] public DateTime? Until { get; init; }
 
-    [JsonPropertyName("count")]
-    public short? Count { get; init; }
+    [JsonPropertyName("count")] public short? Count { get; init; }
 
-    [JsonPropertyName("wkst")]
-    public string? Wkst { get; init; }
+    [JsonPropertyName("wkst")] public string? Wkst { get; init; }
 
-    [JsonPropertyName("freq")]
-    public string? Freq { get; init; }
+    [JsonPropertyName("freq")] public string? Freq { get; init; }
 
-    [JsonPropertyName("interval")]
-    public short? Interval { get; init; }
+    [JsonPropertyName("interval")] public short? Interval { get; init; }
 
-    [JsonPropertyName("byday")]
-    public string? Byday { get; init; }
+    [JsonPropertyName("byday")] public string? Byday { get; init; }
 
-    [JsonPropertyName("byweekno")]
-    public string? Byweekno { get; init; }
+    [JsonPropertyName("byweekno")] public string? Byweekno { get; init; }
 
-    [JsonPropertyName("bymonthday")]
-    public string? Bymonthday { get; init; }
+    [JsonPropertyName("bymonthday")] public string? Bymonthday { get; init; }
 
-    [JsonPropertyName("byyearday")]
-    public string? Byyearday { get; init; }
+    [JsonPropertyName("byyearday")] public string? Byyearday { get; init; }
 
-    [JsonPropertyName("description")]
-    public string? Description { get; init; }
+    [JsonPropertyName("description")] public string? Description { get; init; }
 
     [JsonPropertyName("opens_at")]
     public TimeSpan? OpensAt { get; init; } // TODO: // TODO: .NET 8 supports native TimeOnly, so convert.
@@ -73,18 +50,13 @@ public class Schedule: BaseHsdsEntity
     [JsonPropertyName("closes_at")]
     public TimeSpan? ClosesAt { get; init; } // TODO: .NET 8 supports native TimeOnly, so convert.
 
-    [JsonPropertyName("schedule_link")]
-    public string? ScheduleLink { get; init; }
+    [JsonPropertyName("schedule_link")] public string? ScheduleLink { get; init; }
 
-    [JsonPropertyName("attending_type")]
-    public string? AttendingType { get; init; }
+    [JsonPropertyName("attending_type")] public string? AttendingType { get; init; }
 
-    [JsonPropertyName("notes")]
-    public string? Notes { get; init; }
+    [JsonPropertyName("notes")] public string? Notes { get; init; }
 
-    [JsonPropertyName("attributes")]
-    public virtual List<Attribute> Attributes { get; init; } = new();
+    [JsonPropertyName("attributes")] public List<Attribute> Attributes { get; init; } = new();
 
-    [JsonPropertyName("metadata")]
-    public virtual List<Metadata> Metadata { get; init; } = new();
+    [JsonPropertyName("metadata")] public List<Metadata> Metadata { get; init; } = new();
 }
