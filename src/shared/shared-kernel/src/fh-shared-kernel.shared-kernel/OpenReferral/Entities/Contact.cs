@@ -16,17 +16,24 @@ public class Contact : BaseHsdsEntity
     [JsonIgnore]
     public Guid? LocationId { get; init; }
 
-    [JsonPropertyName("name")] public string? Name { get; init; }
+    [JsonPropertyName("name")]
+    public string? Name { get; init; }
 
-    [JsonPropertyName("title")] public string? Title { get; init; }
+    [JsonPropertyName("title")]
+    public string? Title { get; init; }
 
-    [JsonPropertyName("department")] public string? Department { get; init; }
+    [JsonPropertyName("department")]
+    public string? Department { get; init; }
 
-    [JsonPropertyName("email")] public string? Email { get; init; }
+    [JsonPropertyName("email")]
+    public string? Email { get; init; }
 
-    [JsonPropertyName("phones")] public List<Phone> Phones { get; init; } = new();
+    [JsonPropertyName("phones")]
+    public List<Phone> Phones { get; init; } = new();
 
-    [JsonPropertyName("attributes")] public List<Attribute> Attributes { get; init; } = new();
+    [JsonPropertyName("attributes")]
+    public List<Attribute> Attributes { get; init; } = new();
 
-    [JsonPropertyName("metadata")] public List<Metadata> Metadata { get; init; } = new();
+    [JsonPropertyName("metadata")]
+    public List<Metadata> Metadata { get; init; } = new();
 }

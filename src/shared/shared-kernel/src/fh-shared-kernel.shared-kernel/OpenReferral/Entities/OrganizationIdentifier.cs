@@ -10,11 +10,15 @@ public class OrganizationIdentifier : BaseHsdsEntity
     [JsonPropertyName("identifier_scheme")]
     public string? IdentifierScheme { get; init; }
 
-    [JsonPropertyName("identifier_type")] public string? IdentifierType { get; init; }
+    [JsonPropertyName("identifier_type")]
+    public string? IdentifierType { get; init; }
 
-    [JsonPropertyName("identifier")] public string? Identifier { get; init; }
+    [JsonPropertyName("identifier")]
+    public string? Identifier { get; init; }
 
-    [JsonPropertyName("attributes")] public List<Attribute> Attributes { get; init; } = new();
+    [JsonPropertyName("attributes")]
+    public List<Attribute> Attributes { get; init; } = new();
 
-    [JsonPropertyName("metadata")] public List<Metadata> Metadata { get; init; } = new();
+    [JsonPropertyName("metadata")]
+    public List<Metadata> Metadata { get; init; } = new();
 }

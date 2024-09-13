@@ -19,17 +19,24 @@ public class Phone : BaseHsdsEntity
     [JsonIgnore]
     public Guid? ServiceAtLocationId { get; init; }
 
-    [JsonPropertyName("number")] public required string Number { get; init; }
+    [JsonPropertyName("number")]
+    public required string Number { get; init; }
 
-    [JsonPropertyName("extension")] public short? Extension { get; init; }
+    [JsonPropertyName("extension")]
+    public short? Extension { get; init; }
 
-    [JsonPropertyName("type")] public string? Type { get; init; }
+    [JsonPropertyName("type")]
+    public string? Type { get; init; }
 
-    [JsonPropertyName("description")] public string? Description { get; init; }
+    [JsonPropertyName("description")]
+    public string? Description { get; init; }
 
-    [JsonPropertyName("languages")] public List<Language> Languages { get; init; } = new();
+    [JsonPropertyName("languages")]
+    public List<Language> Languages { get; init; } = new();
 
-    [JsonPropertyName("attributes")] public List<Attribute> Attributes { get; init; } = new();
+    [JsonPropertyName("attributes")]
+    public List<Attribute> Attributes { get; init; } = new();
 
-    [JsonPropertyName("metadata")] public List<Metadata> Metadata { get; init; } = new();
+    [JsonPropertyName("metadata")]
+    public List<Metadata> Metadata { get; init; } = new();
 }
