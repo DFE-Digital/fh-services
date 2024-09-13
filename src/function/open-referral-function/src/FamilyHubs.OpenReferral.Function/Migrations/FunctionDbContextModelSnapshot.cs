@@ -478,6 +478,10 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasAnnotation("Relational:JsonPropertyName", "link_entity");
 
+                    b.Property<Guid?>("LinkId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "link_id");
+
                     b.Property<string>("LinkType")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
@@ -847,6 +851,10 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasAnnotation("Relational:JsonPropertyName", "replacement_value");
+
+                    b.Property<Guid?>("ResourceId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "resource_id");
 
                     b.Property<string>("ResourceType")
                         .IsRequired()

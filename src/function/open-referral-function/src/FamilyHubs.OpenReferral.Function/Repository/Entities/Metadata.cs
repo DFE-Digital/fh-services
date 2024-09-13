@@ -4,9 +4,7 @@ namespace FamilyHubs.OpenReferral.Function.Repository.Entities;
 
 public class Metadata : BaseHsdsEntity
 {
-    // [JsonPropertyName("resource_id")]
-    // [JsonIgnore]
-    // public Guid ResourceId { get; init; }
+    [JsonPropertyName("resource_id")] public Guid? ResourceId { get; init; }
 
     [JsonPropertyName("resource_type")] public required string ResourceType { get; init; }
 

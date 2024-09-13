@@ -4,9 +4,7 @@ namespace FamilyHubs.OpenReferral.Function.Repository.Entities;
 
 public class Attribute : BaseHsdsEntity
 {
-    // [JsonPropertyName("link_id")]
-    // [JsonIgnore]
-    // public Guid LinkId { get; init; }
+    [JsonPropertyName("link_id")] public Guid? LinkId { get; init; }
 
     [JsonPropertyName("taxonomy_term_id")]
     [JsonIgnore]

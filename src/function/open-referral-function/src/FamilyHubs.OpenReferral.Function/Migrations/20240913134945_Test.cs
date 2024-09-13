@@ -23,6 +23,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ResourceId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ResourceType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastActionDate = table.Column<DateTime>(type: "date", nullable: false),
                     LastActionType = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
@@ -473,6 +474,7 @@ namespace FamilyHubs.OpenReferral.Function.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LinkId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     TaxonomyTermId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LinkType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     LinkEntity = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
