@@ -1,35 +1,20 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace FamilyHubs.SharedKernel.OpenReferral.Entities;
 
-public class Attribute
+public class Attribute : BaseHsdsEntity
 {
-    [JsonPropertyName("id")]
-    public required Guid Id { get; init; }
+    [JsonPropertyName("link_id")] public Guid? LinkId { get; init; }
 
-    [JsonPropertyName("link_id")]
     [JsonIgnore]
-    public Guid LinkId { get; init; }
+    public Guid? TaxonomyTermId { get; init; }
+    [JsonPropertyName("taxonomy_term")] public TaxonomyTerm? TaxonomyTerm { get; init; }
 
-    [JsonPropertyName("taxonomy_term_id")]
-    [JsonIgnore]
-    public Guid TaxonomyTermId { get; init; }
+    [JsonPropertyName("link_type")] public string? LinkType { get; init; }
 
-    [JsonPropertyName("link_type")]
-    public string? LinkType { get; init; }
+    [JsonPropertyName("link_entity")] public required string LinkEntity { get; init; }
 
-    [JsonPropertyName("link_entity")]
-    public required string LinkEntity { get; init; }
+    [JsonPropertyName("value")] public string? Value { get; init; }
 
-    [JsonPropertyName("value")]
-    public string? Value { get; init; }
-
-    [JsonPropertyName("taxonomy_term")]
-    [NotMapped]
-    public TaxonomyTerm? TaxonomyTerm { get; init; }
-
-    [JsonPropertyName("metadata")]
-    [NotMapped]
-    public List<Metadata> Metadata { get; init; } = new();
+    [JsonPropertyName("metadata")] public List<Metadata> Metadata { get; init; } = new();
 }
