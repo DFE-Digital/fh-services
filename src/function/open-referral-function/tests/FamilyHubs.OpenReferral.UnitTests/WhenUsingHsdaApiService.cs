@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.ClientServices;
-using FamilyHubs.OpenReferral.Function.Entities;
 using FamilyHubs.OpenReferral.UnitTests.Helpers;
 using Microsoft.Extensions.Logging;
 using NSubstitute;

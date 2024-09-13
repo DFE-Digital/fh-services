@@ -1,11 +1,9 @@
 using System.Net;
 using FamilyHubs.OpenReferral.Function.ClientServices;
-using FamilyHubs.OpenReferral.Function.Entities;
 using FamilyHubs.OpenReferral.Function.Functions;
 using FamilyHubs.OpenReferral.Function.Repository;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
