@@ -156,7 +156,8 @@ jobs:
       project_type: service
       azure_app_name: ${{ matrix.azure_app_name }}
     secrets: inherit
-
+    
+    
   deploy-ui-services:
     name: ${{ matrix.job_name }}
     needs: [ deploy-api-services ]
@@ -208,6 +209,8 @@ jobs:
       azure_app_name: ${{ matrix.azure_app_name }}
     secrets: inherit
 
+
+
   deploy-functions:
     name: ${{ matrix.job_name }}
     needs: [ build-projects-upload-artifacts ]
@@ -228,4 +231,38 @@ jobs:
       artifact_name: ${{ matrix.artifact_name }}
       keyvault_prefix: ${{ matrix.keyvault_prefix }}
       azure_app_name: ${{ matrix.azure_app_name }}
+    secrets: inherit
+    
+    
+  run-api-acceptance-tests:
+    if: startsWith(inputs.environment, 'Test')
+    name: ${{ matrix.job_name }}
+    needs: [ deploy-ui-services ]
+    strategy:
+      matrix:
+        project_name: [
+          report-api,
+          referral-api,
+          service-directory-api
+        ]
+        include:
+          - project_name: report-api
+            job_name: Test - Report API
+            keyvault_prefix: TEST-REPORT-API
+            test_project_name: FamilyHubs.Report.Api.AcceptanceTests
+          - project_name: referral-api
+            job_name: Test - Referral API
+            keyvault_prefix: TEST-REFERRAL-API
+            test_project_name: FamilyHubs.Referral.Api.AcceptanceTests
+          - project_name: service-directory-api
+            job_name: Test - Service Directory API
+            keyvault_prefix: TEST-SERVICE-DIRECTORY-API
+            test_project_name: FamilyHubs.ServiceDirectory.Api.AcceptanceTests
+    uses: ./.github/workflows/run-acceptance-tests.yml
+    with:
+      environment: ${{ inputs.environment }}
+      project_name: ${{ matrix.project_name }}
+      keyvault_prefix: ${{ matrix.keyvault_prefix }}
+      test_project_name: ${{ matrix.test_project_name }}
+      project_type: service
     secrets: inherit

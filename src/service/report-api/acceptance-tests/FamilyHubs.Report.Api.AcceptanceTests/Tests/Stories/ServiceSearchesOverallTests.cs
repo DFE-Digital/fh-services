@@ -7,14 +7,8 @@ namespace FamilyHubs.Report.Api.AcceptanceTests.Tests.Stories;
 
 public class ServiceSearchesOverallTests
 {
-    private readonly SharedSteps _sharedSteps;
-    private readonly ServiceSearchesOverallSteps _steps;
-
-    public ServiceSearchesOverallTests()
-    {
-        _steps = new ServiceSearchesOverallSteps();
-        _sharedSteps = new SharedSteps();
-    }
+    private readonly SharedSteps _sharedSteps = new();
+    private readonly ServiceSearchesOverallSteps _steps = new();
 
     #region Overall Service Searches in the Past 7 Days Tests
 

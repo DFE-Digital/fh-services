@@ -12,6 +12,11 @@ public class IndexModel : HeaderPageModel
         CookiePage = cookiePage;
     }
 
+    public void OnGet()
+    {
+        CookiePage.OnGet(Request);
+    }
+
     public void OnPost(bool analytics)
     {
         CookiePage.OnPost(analytics, Request, Response);

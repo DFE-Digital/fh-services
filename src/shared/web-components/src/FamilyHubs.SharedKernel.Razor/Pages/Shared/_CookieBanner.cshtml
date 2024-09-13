@@ -77,7 +77,7 @@
             @* Show the banner if there is no consent cookie or if it is outdated *@
             var currentConsentCookie = document.cookie.match(new RegExp('(^| )@(Model.Analytics.CookieName)=([^;]+)'))
 
-            if (!currentConsentCookie || !isValidConsentCookie(JSON.parse(currentConsentCookie[2]))) {
+            if (!currentConsentCookie || !isValidConsentCookie(JSON.parse(decodeURIComponent(currentConsentCookie[2])))) {
                 var cookieBanner = document.querySelector("[data-module='govuk-cookie-banner']")
                 cookieBanner.removeAttribute('hidden')
             }

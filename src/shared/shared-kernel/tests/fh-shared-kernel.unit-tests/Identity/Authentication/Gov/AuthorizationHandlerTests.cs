@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace FamilyHubs.SharedKernel.UnitTests.Identity.Authentication.Gov
 {

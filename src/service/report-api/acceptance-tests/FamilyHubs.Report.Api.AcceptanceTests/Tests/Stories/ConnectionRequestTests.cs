@@ -7,14 +7,8 @@ namespace FamilyHubs.Report.Api.AcceptanceTests.Tests.Stories;
 
 public class ConnectionRequestTests
 {
-    private readonly SharedSteps _sharedSteps;
-    private readonly ConnectionRequestsOverallSteps _steps;
-    
-    public ConnectionRequestTests()
-    {
-        _steps = new ConnectionRequestsOverallSteps();
-        _sharedSteps = new SharedSteps();
-    }
+    private readonly SharedSteps _sharedSteps = new();
+    private readonly ConnectionRequestsOverallSteps _steps = new();
 
     #region Total Connection Requests
 

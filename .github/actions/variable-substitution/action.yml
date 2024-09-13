@@ -9,13 +9,23 @@ outputs:
 inputs:
   keyvault_name:
     required: true
+    type: string
     description: Key vault name without the prefix
   keyvault_prefix:
     required: true
+    type: string
     description: The prefix of the KeyVault Key, e.g., IDAM-API-SECRET-NAME will have the prefix IDAM-API
   files:
     required: true
     description: Comma seperated list of files to update
+    type: string
+  configure:
+    required: true
+    type: choice
+    options:
+      - 'Applications'
+      - 'Functions'
+      - 'Tests'
 
 runs:
   using: composite
@@ -43,6 +53,7 @@ runs:
       # Keys that aren't in an appsettings.json file and aren't in the fetch step's output are ignored ..
       # .. so each API / UI only populates what is relevant to it.
     - name: App Settings Variable Substitution
+      if: inputs.configure == 'Applications'
       uses: microsoft/variable-substitution@v1
       with:
         files: ${{ inputs.files }}
@@ -100,8 +111,23 @@ runs:
         ReportingApiBaseUrl: ${{ steps.fetch.outputs.REPORTINGAPIBASEURL }}
         FamilyHubsUi.Analytics.ContainerId: ${{ steps.fetch.outputs.FAMILYHUBSUI_ANALYTICS_CONTAINERID }}
         FamilyHubsUi.Analytics.MeasurementId: ${{ steps.fetch.outputs.FAMILYHUBSUI_ANALYTICS_MEASUREMENTID }}
-        FamilyHubsUi.Analytics.ClarityId: ""
+        FamilyHubsUi.Analytics.ClarityId: ${{ steps.fetch.outputs.FAMILYHUBSUI_ANALYTICS_CLARITYID }}
         ConnectionStrings.HsdaMockResponsesConnection: ${{ steps.fetch.outputs.CONNECTIONSTRINGS_HSDAMOCKRESPONSESCONNECTION }}
-        # Functions
+
+    - name: Function Settings Variable Substitution
+      if: inputs.configure == 'Functions'
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: ${{ inputs.files }}
+      env:
         ApiConnection: ${{ steps.fetch.outputs.CONNECTIONAPI }}
         ServiceDirectoryConnection: ${{ steps.fetch.outputs.SERVICEDIRECTORYCONNECTION }}
+        
+    - name: Test Settings Variable Substitution
+      if: inputs.configure == 'Tests'
+      uses: microsoft/variable-substitution@v1
+      with:
+        files: ${{ inputs.files }}
+      env:
+        BaseUrl: ${{ steps.fetch.outputs.BASEURL }}
+        BearerTokenSigningKey: ${{ steps.fetch.outputs.BEARERTOKENSIGNINGKEY }}   

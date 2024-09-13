@@ -2,14 +2,10 @@ using System.Text.Json.Serialization;
 
 namespace FamilyHubs.SharedKernel.OpenReferral.Entities;
 
-public class Metadata
+public class Metadata : BaseHsdsEntity
 {
-    [JsonPropertyName("id")]
-    public required Guid Id { get; init; }
-
     [JsonPropertyName("resource_id")]
-    [JsonIgnore]
-    public Guid ResourceId { get; init; }
+    public Guid? ResourceId { get; init; }
 
     [JsonPropertyName("resource_type")]
     public required string ResourceType { get; init; }

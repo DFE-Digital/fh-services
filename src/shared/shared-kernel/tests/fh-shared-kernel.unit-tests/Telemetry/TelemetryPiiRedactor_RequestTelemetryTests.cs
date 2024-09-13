@@ -1,4 +1,5 @@
-﻿using FamilyHubs.SharedKernel.Telemetry;
+﻿using System;
+using FamilyHubs.SharedKernel.Telemetry;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 

@@ -1,14 +1,9 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace FamilyHubs.SharedKernel.OpenReferral.Entities;
 
-public class Accessibility
+public class Accessibility : BaseHsdsEntity
 {
-    [JsonPropertyName("id")]
-    public required Guid Id { get; init; }
-
-    [JsonPropertyName("location_id")]
     [JsonIgnore]
     public Guid? LocationId { get; init; }
 
@@ -22,10 +17,8 @@ public class Accessibility
     public string? Url { get; init; }
 
     [JsonPropertyName("attributes")]
-    [NotMapped]
     public List<Attribute> Attributes { get; init; } = new();
 
     [JsonPropertyName("metadata")]
-    [NotMapped]
     public List<Metadata> Metadata { get; init; } = new();
 }

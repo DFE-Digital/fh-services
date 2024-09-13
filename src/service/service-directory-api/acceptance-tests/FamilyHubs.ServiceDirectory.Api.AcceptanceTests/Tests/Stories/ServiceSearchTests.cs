@@ -10,7 +10,6 @@ namespace FamilyHubs.ServiceDirectory.Api.AcceptanceTests.Tests.Stories;
     AsA = "user of the metrics api",
     IWant = "to be able to update usage information for postcode searches and filters",
     SoThat = "I can record how search functionality is being used")]
-[TestClass]
 public class ServiceSearchTests
 {
     private readonly ServiceSearchSteps _steps;

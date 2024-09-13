@@ -1,4 +1,7 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AutoFixture;
 using FamilyHubs.SharedKernel.GovLogin.Configuration;
 using FamilyHubs.SharedKernel.Identity.Authentication.Gov;
 using FamilyHubs.SharedKernel.Identity.Authorisation;
@@ -17,8 +20,11 @@ using Moq;
 using Moq.Protected;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.SharedKernel.UnitTests.Identity.Authentication.Gov

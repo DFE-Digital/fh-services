@@ -23,7 +23,7 @@ public enum Column
 }
 
 
-[Authorize(Roles = $"{RoleTypes.LaDualRole},{RoleTypes.LaManager}")]
+[Authorize(Roles = "None")]
 public class SubjectAccessResultDetailsModel : HeaderPageModel, IDashboard<ReferralDto>
 {
     private readonly IRequestDistributedCache _requestCache;

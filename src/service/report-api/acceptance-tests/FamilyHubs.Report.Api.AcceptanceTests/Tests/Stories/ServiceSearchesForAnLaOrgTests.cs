@@ -7,14 +7,8 @@ namespace FamilyHubs.Report.Api.AcceptanceTests.Tests.Stories;
 
 public class ServiceSearchesForAnLaOrgTests
 {
-    private readonly SharedSteps _sharedSteps;
-    private readonly ServiceSearchesForAnLaOrgSteps _steps;
-
-    public ServiceSearchesForAnLaOrgTests()
-    {
-        _steps = new ServiceSearchesForAnLaOrgSteps();
-        _sharedSteps = new SharedSteps();
-    }
+    private readonly SharedSteps _sharedSteps = new();
+    private readonly ServiceSearchesForAnLaOrgSteps _steps = new();
 
     #region Service Searches in 7 days For An LA Org Tests
 

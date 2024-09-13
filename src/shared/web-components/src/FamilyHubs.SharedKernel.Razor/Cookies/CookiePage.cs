@@ -1,12 +1,13 @@
 ﻿using FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options;
 using Microsoft.AspNetCore.Http;
-using System.Globalization;
+using System.Text.Json;
 
 namespace FamilyHubs.SharedKernel.Razor.Cookies;
 
 public class CookiePage : ICookiePage
 {
     public string CookiePolicyContent { get; }
+    public ICookiePage.ConsentCookie? Cookie { get; private set; }
     private readonly AnalyticsOptions? _analyticsOptions;
 
     public CookiePage(IOptions<FamilyHubsUiOptions> familyHubsUiOptions, string cookiePolicyContent = "_CookiePolicy.cshtml")
@@ -17,12 +18,17 @@ public class CookiePage : ICookiePage
 
     public bool ShowSuccessBanner { get; set; }
 
+    public void OnGet(HttpRequest request)
+    {
+        Cookie = JsonSerializer.Deserialize<ICookiePage.ConsentCookie>(request.Cookies[_analyticsOptions!.CookieName] ?? "{}");
+    }
+
     public void OnPost(bool analytics, HttpRequest request, HttpResponse response)
     {
         if (_analyticsOptions == null)
             return;
 
-        SetConsentCookie(request, response, analytics);
+        Cookie = SetConsentCookie(request, response, analytics);
         if (!analytics)
         {
             ResetAnalyticCookies(request, response);
@@ -36,7 +42,7 @@ public class CookiePage : ICookiePage
     /// * this needs to be compatible with our javascript cookie code, such as cookie-functions.ts
     /// * Response.Cookies has a static EnableCookieNameEncoding - can we use that and switch to Append?
     /// </remarks>
-    private void SetConsentCookie(HttpRequest request, HttpResponse response, bool analyticsAllowed)
+    private ICookiePage.ConsentCookie SetConsentCookie(HttpRequest request, HttpResponse response, bool analyticsAllowed)
     {
         var cookieOptions = new CookieOptions
         {
@@ -50,8 +56,15 @@ public class CookiePage : ICookiePage
             cookieOptions.Secure = true;
         }
 
-        response.AppendRawCookie(_analyticsOptions!.CookieName,
-            $$"""{"analytics": {{analyticsAllowed.ToString(CultureInfo.InvariantCulture).ToLowerInvariant()}}, "version": {{_analyticsOptions!.CookieVersion}}}""", cookieOptions);
+        var cookie = new ICookiePage.ConsentCookie
+        {
+            analytics = analyticsAllowed,
+            version = _analyticsOptions!.CookieVersion
+        };
+
+        response.Cookies.Append(_analyticsOptions!.CookieName, JsonSerializer.Serialize(cookie), cookieOptions);
+
+        return cookie;
     }
 
     private void ResetAnalyticCookies(HttpRequest request, HttpResponse response)
@@ -62,6 +75,9 @@ public class CookiePage : ICookiePage
         }
 
         DeleteCookies(response, "_gid");
+
+        // MS Clarity
+        DeleteCookies(response, "_clck", "_clsk", "CLID", "ANONCHK", "MR", "MUID", "SM");
     }
 
     /// <summary>

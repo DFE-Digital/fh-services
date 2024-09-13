@@ -5,6 +5,7 @@
 /*import 'govuk-frontend/govuk/vendor/polyfills/Event'*/
 import { nodeListForEach } from './helpers'
 import { sendPageViewEvent, sendFilterPageCustomEvent, sendAnalyticsCustomEvent, updateAnalyticsStorageConsent } from './analytics';
+import { updateConsent as updateClarityConsent } from './clarity'
 
 const cookieBannerAcceptSelector = '.js-cookie-banner-accept'
 const cookieBannerRejectSelector = '.js-cookie-banner-reject'
@@ -61,6 +62,7 @@ CookieBanner.prototype.acceptCookies = function () {
     CookieFunctions.setConsentCookie({ analytics: true });
 
     updateAnalyticsStorageConsent(true);
+    updateClarityConsent(true);
 
     sendAnalyticsCustomEvent(true, 'banner');
     sendPageViewEvent();
@@ -78,6 +80,7 @@ CookieBanner.prototype.rejectCookies = function () {
     sendAnalyticsCustomEvent(false, 'banner');
 
     updateAnalyticsStorageConsent(false);
+    updateClarityConsent(false);
 
     //setTimeout(CookieFunctions.setConsentCookie.bind({ analytics: false }), 250);
     CookieFunctions.setConsentCookie({ analytics: false });

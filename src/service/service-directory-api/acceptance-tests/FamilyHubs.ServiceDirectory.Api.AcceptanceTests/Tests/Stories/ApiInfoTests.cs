@@ -4,21 +4,20 @@ using FamilyHubs.ServiceDirectory.Api.AcceptanceTests.Tests.Steps;
 
 namespace FamilyHubs.ServiceDirectory.Api.AcceptanceTests.Tests.Stories;
 
-[TestClass]
 public class ApiInfoTests
 {
-    private readonly ApiInfoSteps steps;
+    private readonly ApiInfoSteps _steps;
 
     public ApiInfoTests()
     {
-        steps = new ApiInfoSteps();
+        _steps = new ApiInfoSteps();
     }
 
-    [TestMethod]
+    [Fact]
     public void Api_Info_Returned()
     {
-        this.When(s => steps.ICheckTheApiInfo())
-            .Then(s => steps.AnOkStatusCodeIsReturned())
+        this.When(s => _steps.ICheckTheApiInfo())
+            .Then(s => _steps.AnOkStatusCodeIsReturned())
             .BDDfy();
     }
 }

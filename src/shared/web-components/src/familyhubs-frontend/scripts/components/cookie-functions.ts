@@ -1,7 +1,5 @@
 ﻿
 export interface ConsentCookie {
-    //todo: just remove essential?
-    essential?: boolean;
     analytics?: boolean;
     version?: number;
 }
@@ -50,7 +48,7 @@ export function getConsentCookie(): ConsentCookie | null {
 
     if (consentCookie) {
         try {
-            consentCookieObj = JSON.parse(consentCookie);
+            consentCookieObj = JSON.parse(decodeURIComponent(consentCookie));
         } catch (err) {
             return null;
         }
@@ -83,13 +81,10 @@ export function setConsentCookie(options: ConsentCookie) {
         cookieConsent[option] = options[option];
     }
 
-    // Essential cookies cannot be deselected, ignore this cookie type
-    delete cookieConsent.essential;
-
     cookieConsent.version = window.GDS_CONSENT_COOKIE_VERSION;
 
     // Set the consent cookie
-    setCookie(window.GA_COOKIE_NAME, JSON.stringify(cookieConsent), { days: 365 });
+    setCookie(window.GA_COOKIE_NAME, encodeURIComponent(JSON.stringify(cookieConsent)), { days: 365 });
 
     // Update the other cookies
     resetCookies();

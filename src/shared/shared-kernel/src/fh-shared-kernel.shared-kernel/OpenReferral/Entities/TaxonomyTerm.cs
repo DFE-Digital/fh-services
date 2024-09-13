@@ -1,13 +1,9 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace FamilyHubs.SharedKernel.OpenReferral.Entities;
 
-public class TaxonomyTerm
+public class TaxonomyTerm : BaseHsdsEntity
 {
-    [JsonPropertyName("id")]
-    public required Guid Id { get; init; }
-
     [JsonPropertyName("code")]
     public required string Code { get; init; }
 
@@ -26,21 +22,17 @@ public class TaxonomyTerm
     [JsonPropertyName("version")]
     public string? Version { get; init; }
 
-    [JsonPropertyName("taxonomy_detail")]
-    [NotMapped]
-    public Taxonomy? TaxonomyDetail { get; init; }
-
     [JsonPropertyName("language")]
     public string? Language { get; init; }
 
-    [JsonPropertyName("taxonomy_id")]
     [JsonIgnore]
     public Guid? TaxonomyId { get; init; }
+    [JsonPropertyName("taxonomy_detail")]
+    public Taxonomy? TaxonomyDetail { get; init; }
 
     [JsonPropertyName("term_uri")]
     public string? TermUri { get; init; }
 
     [JsonPropertyName("metadata")]
-    [NotMapped]
     public List<Metadata> Metadata { get; init; } = new();
 }

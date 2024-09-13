@@ -5,7 +5,6 @@ using Xunit;
 
 namespace FamilyHubs.Referral.Api.AcceptanceTests.Tests.Stories;
 
-[TestClass]
 public class ApiInfoTests
 {
     private readonly ApiInfoSteps _steps;
@@ -17,7 +16,7 @@ public class ApiInfoTests
         _sharedSteps = new SharedSteps();
     }
 
-    [TestMethod]
+    [Fact]
     public void Api_Info_Returned()
     {
         this.When(s => _steps.CheckTheApiInfo())

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Pages.La;
 
-[Authorize(Roles = $"{RoleTypes.LaDualRole},{RoleTypes.LaManager}")]
+[Authorize(Roles = "None")]
 public class PersonsDetailsModel : HeaderPageModel
 {
     [BindProperty]

@@ -1,20 +1,18 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace FamilyHubs.SharedKernel.OpenReferral.Entities;
 
-public class Service
+public class Service : BaseHsdsEntity
 {
-    [JsonPropertyName("id")]
-    public required Guid Id { get; init; }
-
-    [JsonPropertyName("organization_id")]
     [JsonIgnore]
-    public Guid OrganizationId { get; init; }
+    public Guid? OrganizationId { get; init; }
+    [JsonPropertyName("organization")]
+    public Organization? Organization { get; init; }
 
-    [JsonPropertyName("program_id")]
     [JsonIgnore]
     public Guid ProgramId { get; init; }
+    [JsonPropertyName("program")]
+    public Program? Program { get; init; }
 
     [JsonPropertyName("name")]
     public required string Name { get; init; }
@@ -68,54 +66,35 @@ public class Service
     public DateTime? LastModified { get; init; }
 
     [JsonPropertyName("phones")]
-    [NotMapped]
     public List<Phone> Phones { get; init; } = new();
 
     [JsonPropertyName("schedules")]
-    [NotMapped]
     public List<Schedule> Schedules { get; init; } = new();
 
     [JsonPropertyName("service_areas")]
-    [NotMapped]
     public List<ServiceArea> ServiceAreas { get; init; } = new();
 
     [JsonPropertyName("service_at_locations")]
-    [NotMapped]
     public List<ServiceAtLocation> ServiceAtLocations { get; init; } = new();
 
     [JsonPropertyName("languages")]
-    [NotMapped]
     public List<Language> Languages { get; init; } = new();
 
-    [JsonPropertyName("organization")]
-    [NotMapped]
-    public Organization? Organization { get; init; }
-
     [JsonPropertyName("funding")]
-    [NotMapped]
     public List<Funding> Funding { get; init; } = new();
 
     [JsonPropertyName("cost_options")]
-    [NotMapped]
     public List<CostOption> CostOptions { get; init; } = new();
 
-    [JsonPropertyName("program")]
-    [NotMapped]
-    public Program? Program { get; init; }
-
     [JsonPropertyName("required_documents")]
-    [NotMapped]
     public List<RequiredDocument> RequiredDocuments { get; init; } = new();
 
     [JsonPropertyName("contacts")]
-    [NotMapped]
     public List<Contact> Contacts { get; init; } = new();
 
     [JsonPropertyName("attributes")]
-    [NotMapped]
     public List<Attribute> Attributes { get; init; } = new();
 
     [JsonPropertyName("metadata")]
-    [NotMapped]
     public List<Metadata> Metadata { get; init; } = new();
 }

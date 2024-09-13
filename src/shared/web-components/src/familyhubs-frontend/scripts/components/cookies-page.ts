@@ -1,6 +1,7 @@
 ﻿import { getConsentCookie, setConsentCookie, ConsentCookie } from './cookie-functions'
 import { nodeListForEach } from './helpers'
 import { sendPageViewEvent, sendAnalyticsCustomEvent, updateAnalyticsStorageConsent } from './analytics'
+import { updateConsent as updateClarityConsent } from "./clarity";
 
 function CookiesPage($module) {
     this.$module = $module
@@ -53,6 +54,7 @@ CookiesPage.prototype.savePreferences = function (event) {
         updateAnalyticsStorageConsent(false);
     }
 
+    updateClarityConsent(analyticsAccepted);
     setConsentCookie(preferences);
 
     // handle the corner case, where the user has selected their preference on the cookie page, whilst the banner is still open as they haven't previously selected their preference

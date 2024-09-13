@@ -2,6 +2,8 @@
 
 //todo: swap to a components folder?
 
+import {getConsentCookie} from "./components/cookie-functions";
+
 declare global {
     interface Window {
         GDS_CONSENT_COOKIE_VERSION: number;
@@ -39,8 +41,9 @@ window.FamilyHubsFrontend.initAll = () => {
     const $cookieBanner = document.querySelector('[data-module="govuk-cookie-banner"]') as HTMLElement | null;
     new CookieBanner($cookieBanner).init();
 
-    initAnalytics(window.GA_MEASUREMENT_ID);
-    initClarity(window.CLARITY_ID);
+    const userConsent = getConsentCookie();
+    initAnalytics(window.GA_MEASUREMENT_ID, userConsent);
+    initClarity(window.CLARITY_ID, userConsent);
 
     //todo: move this into scripts section on cookie page
     // Initialise cookie page

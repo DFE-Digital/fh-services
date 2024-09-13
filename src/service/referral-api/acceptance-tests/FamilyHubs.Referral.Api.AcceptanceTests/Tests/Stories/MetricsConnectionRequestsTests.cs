@@ -10,7 +10,6 @@ namespace FamilyHubs.Referral.Api.AcceptanceTests.Tests.Stories;
     AsA = "user of the metrics api",
     IWant = "to be able to update usage information for connection requests made",
     SoThat = "I can record how search functionality is being used")]
-[TestClass]
 public class MetricsConnectionRequestsTests
 {
     private readonly MetricsConnectionRequestsSteps _steps;

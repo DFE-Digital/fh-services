@@ -1,7 +1,7 @@
 ﻿
 //todo: consent mode debugging/check: https://developers.google.com/tag-platform/devguides/consent-debugging
 
-import { getConsentCookie, isValidConsentCookie } from './cookie-functions'
+import {ConsentCookie, isValidConsentCookie} from './cookie-functions'
 import { toOutcode } from './postcode'
 
 function gtag(command: string, ...args: any[]): void {
@@ -13,7 +13,7 @@ let GaMeasurementId: string = '';
 
 //todo: use prototype? (or class?)
 // (having an object (prototype/class) will ensure that GaMeasurementId will have already been set)
-export default function initAnalytics(gaMeasurementId: string) {
+export default function initAnalytics(gaMeasurementId: string, userConsent: ConsentCookie) {
 
     // if the environment doesn't have a measurement id, don't load analytics
     if (!Boolean(gaMeasurementId)) {
@@ -39,7 +39,6 @@ export default function initAnalytics(gaMeasurementId: string) {
         cookie_flags: 'secure'
     });
 
-    const userConsent = getConsentCookie();
     if (userConsent && isValidConsentCookie(userConsent) && userConsent.analytics) {
         updateAnalyticsStorageConsent(true);
     }

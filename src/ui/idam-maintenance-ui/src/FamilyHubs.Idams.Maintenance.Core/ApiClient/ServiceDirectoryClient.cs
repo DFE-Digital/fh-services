@@ -12,12 +12,16 @@ public interface IServiceDirectoryClient
 
 public class ServiceDirectoryClient : ApiService<ServiceDirectoryClient>, IServiceDirectoryClient
 {
+#if MABUSE_DistributedCache
     private readonly ICacheService _cacheService;
+#endif
 
     public ServiceDirectoryClient(HttpClient client, ICacheService cacheService, ILogger<ServiceDirectoryClient> logger)
         : base(client, logger)
     {
+#if MABUSE_DistributedCache
         _cacheService = cacheService;
+#endif
     }
 
     public async Task<OrganisationWithServicesDto?> GetOrganisationById(long id)
@@ -37,9 +41,11 @@ public class ServiceDirectoryClient : ApiService<ServiceDirectoryClient>, IServi
     public async Task<List<OrganisationDto>> GetOrganisations(CancellationToken cancellationToken = default)
     {
         var semaphore = new SemaphoreSlim(1, 1);
-        var organisations = await _cacheService.GetOrganisations();
-        if (organisations is not null)
-            return organisations;
+#if MABUSE_DistributedCache
+        var cachedOrganisations = await _cacheService.GetOrganisations();
+        if (cachedOrganisations is not null)
+            return cachedOrganisations;
+#endif
 
         await semaphore.WaitAsync(cancellationToken);
 
@@ -51,11 +57,13 @@ public class ServiceDirectoryClient : ApiService<ServiceDirectoryClient>, IServi
 
         response.EnsureSuccessStatusCode();
 
-        organisations = await DeserializeResponse<List<OrganisationDto>>(response, cancellationToken) ?? new List<OrganisationDto>();
+        var organisations = await DeserializeResponse<List<OrganisationDto>>(response, cancellationToken) ?? new List<OrganisationDto>();
 
         Logger.LogInformation($"{nameof(ServiceDirectoryClient)} Returning  {organisations.Count} Organisations");
 
+#if MABUSE_DistributedCache
         await _cacheService.StoreOrganisations(organisations);
+#endif
 
         return organisations;
     }

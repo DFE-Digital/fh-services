@@ -1,0 +1,59 @@
+name: Deploy Function
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      project_name:
+        required: true
+        type: string
+      keyvault_prefix:
+        required: true
+        type: string
+      test_project_name:
+        required: true
+        type: string
+      project_type:
+        required: true
+        type: string
+
+jobs:
+  run-acceptance-tests:
+    name: Run Acceptance Tests
+    runs-on: ubuntu-22.04
+    environment: ${{ inputs.environment }}
+    env:
+      KEYVAULT: ${{ vars.AZURE_RESOURCE_PREFIX }}-kv-fh-general
+      RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION }}
+
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Test Settings Variable Substitution
+        id: substitution
+        uses: ./.github/actions/variable-substitution
+        with:
+          keyvault_name: ${{ env.KEYVAULT }}
+          keyvault_prefix: ${{ inputs.keyvault_prefix }}
+          files: '${{ github.workspace }}/src/${{ inputs.project_type }}/${{ inputs.project_name }}/acceptance-tests/${{ inputs.test_project_name }}/appsettings.json'
+          configure: 'Tests'
+
+      - name: Run Acceptance Tests
+        shell: bash
+        run: dotnet test "${{ github.workspace }}/src/${{ inputs.project_type }}/${{ inputs.project_name }}/acceptance-tests/${{ inputs.test_project_name }}/${{ inputs.test_project_name }}.csproj" --logger "html;logfilename=testResults.html"

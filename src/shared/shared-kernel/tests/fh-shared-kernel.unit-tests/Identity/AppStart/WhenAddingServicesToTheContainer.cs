@@ -1,4 +1,7 @@
-﻿using FamilyHubs.SharedKernel.GovLogin.AppStart;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using FamilyHubs.SharedKernel.GovLogin.AppStart;
 using FamilyHubs.SharedKernel.Identity.Authentication.Gov;
 using FamilyHubs.SharedKernel.Identity.Authorisation;
 using FamilyHubs.SharedKernel.UnitTests.Identity.TestHelpers;
@@ -7,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace FamilyHubs.SharedKernel.UnitTests.Identity.AppStart
 {

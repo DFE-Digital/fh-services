@@ -1,22 +1,15 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace FamilyHubs.SharedKernel.OpenReferral.Entities;
 
-public class Schedule
+public class Schedule : BaseHsdsEntity
 {
-    [JsonPropertyName("id")]
-    public required Guid Id { get; init; }
-
-    [JsonPropertyName("service_id")]
     [JsonIgnore]
     public Guid? ServiceId { get; init; }
 
-    [JsonPropertyName("location_id")]
     [JsonIgnore]
     public Guid? LocationId { get; init; }
 
-    [JsonPropertyName("service_at_location_id")]
     [JsonIgnore]
     public Guid? ServiceAtLocationId { get; init; }
 
@@ -27,7 +20,7 @@ public class Schedule
     public DateTime? ValidTo { get; init; }
 
     [JsonPropertyName("dtstart")]
-    public DateTime? Dtstart { get; init; }
+    public DateTime? DtStart { get; init; }
 
     [JsonPropertyName("timezone")]
     public byte? Timezone { get; init; }
@@ -48,16 +41,16 @@ public class Schedule
     public short? Interval { get; init; }
 
     [JsonPropertyName("byday")]
-    public string? Byday { get; init; }
+    public string? ByDay { get; init; }
 
     [JsonPropertyName("byweekno")]
-    public string? Byweekno { get; init; }
+    public string? ByWeekNo { get; init; }
 
     [JsonPropertyName("bymonthday")]
-    public string? Bymonthday { get; init; }
+    public string? ByMonthDay { get; init; }
 
     [JsonPropertyName("byyearday")]
-    public string? Byyearday { get; init; }
+    public string? ByYearDay { get; init; }
 
     [JsonPropertyName("description")]
     public string? Description { get; init; }
@@ -78,10 +71,8 @@ public class Schedule
     public string? Notes { get; init; }
 
     [JsonPropertyName("attributes")]
-    [NotMapped]
     public List<Attribute> Attributes { get; init; } = new();
 
     [JsonPropertyName("metadata")]
-    [NotMapped]
     public List<Metadata> Metadata { get; init; } = new();
 }

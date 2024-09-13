@@ -34,13 +34,13 @@
                                 </legend>
                                 <div class="govuk-radios" data-module="govuk-radios">
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="analytics-cookies-yes" name="analytics" type="radio" value="true">
+                                        <input class="govuk-radios__input" id="analytics-cookies-yes" name="analytics" type="radio" value="true" @if (Model.Cookie?.analytics == true) { <text>checked</text> }>
                                         <label class="govuk-label govuk-radios__label" for="analytics-cookies-yes">
                                             Yes
                                         </label>
                                     </div>
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="analytics-cookies-no" name="analytics" type="radio" value="false" checked>
+                                        <input class="govuk-radios__input" id="analytics-cookies-no" name="analytics" type="radio" value="false" @if (Model.Cookie?.analytics != true) { <text>checked</text> }>
                                         <label class="govuk-label govuk-radios__label" for="analytics-cookies-no">
                                             No
                                         </label>

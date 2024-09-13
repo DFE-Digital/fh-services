@@ -77,6 +77,7 @@ jobs:
           keyvault_name: ${{ env.KEYVAULT }}
           keyvault_prefix: ${{ inputs.keyvault_prefix }}
           files: "${{ github.workspace }}/src/${{ inputs.project_type }}/${{ inputs.artifact_name }}/src/${{ inputs.project_name }}/appsettings.json, ./out/appsettings.json"
+          configure: 'Applications'
 
       - name: Deploy Artifact to Azure
         uses: azure/webapps-deploy@v3
