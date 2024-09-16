@@ -1,24 +1,17 @@
 using Microsoft.Extensions.Configuration;
-using System.IO;
 
 namespace FamilyHubs.ServiceDirectory.Api.AcceptanceTests.Configuration;
 
-public class ConfigAccessor
+public static class ConfigAccessor
 {
-    static IConfigurationRoot root;
-
     private static IConfigurationRoot GetIConfigurationRoot()
     {
-        if (root == null)
-        {
-            root = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false)
-                .AddEnvironmentVariables()
-                .Build();
-        }
+        var root = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddEnvironmentVariables()
+            .Build();
 
         return root;
-
     }
 
     public static ConfigModel GetApplicationConfiguration()
