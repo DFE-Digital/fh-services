@@ -54,7 +54,6 @@ public class WhenUsingTriggerPullServicesWebhook
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
-    // If GetServices() returns a 500, then the response of the call to the function should also be 500.
     [Fact]
     public async Task Then_FailedGet_Should_ResultIn_500_InternalServerError()
     {
@@ -63,6 +62,19 @@ public class WhenUsingTriggerPullServicesWebhook
         HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
 
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Then_NoServicesByIdReturned_Should_ResultIn_204_NoContent()
+    {
+        List<Service> servicesById = [];
+
+        _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
+        _hsdaApiServiceMock.GetServicesById(default).Returns((HttpStatusCode.NoContent, servicesById));
+
+        HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
 
     [Fact]
@@ -81,18 +93,5 @@ public class WhenUsingTriggerPullServicesWebhook
         HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
 
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task Then_NoServicesByIdReturned_Should_ResultIn_204_NoContent()
-    {
-        List<Service> servicesById = [];
-
-        _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
-        _hsdaApiServiceMock.GetServicesById(default).Returns((HttpStatusCode.NoContent, servicesById));
-
-        HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
-
-        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
 }
