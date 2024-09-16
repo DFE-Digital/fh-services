@@ -49,15 +49,17 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
                 continue;
             }
 
-            Service? service = JsonSerializer.Deserialize<Service>(jsonResponse!);
-
-            if (service is null)
+            try
             {
-                logger.LogWarning("Unable to deserialise JSON into Service | JSON = {jsonResponse}", jsonResponse);
-                continue;
+                Service? service = JsonSerializer.Deserialize<Service>(jsonResponse!);
+                servicesById.Add(service ?? throw new InvalidOperationException());
             }
-
-            servicesById.Add(service);
+            catch (Exception e)
+            {
+                logger.LogWarning(e,
+                    "Incoming JSON cannot be deserialised into a type of Service | JSON = {jsonResponse}",
+                    jsonResponse);
+            }
         }
 
         bool gotResults = servicesById.Count > 0;

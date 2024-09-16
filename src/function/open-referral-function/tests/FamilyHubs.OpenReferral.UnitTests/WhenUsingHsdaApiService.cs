@@ -111,10 +111,47 @@ public class WhenUsingHsdaApiService
 
         Assert.NotNull(services);
 
-        _mockHttpMessageHandler.StatusCode = HttpStatusCode.NotFound;
         _mockHttpMessageHandler.Content = "";
 
         (HttpStatusCode httpStatusCode, List<Service> servicesById) = await _hsdaApiService.GetServicesById(services.Value);
+
+        Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);
+        Assert.Empty(servicesById);
+    }
+
+    [Fact]
+    public async Task Then_GetServicesById_Continues_When_IncomingJson_IsNot_A_Valid_Service()
+    {
+        _mockHttpMessageHandler.StatusCode = HttpStatusCode.OK;
+        _mockHttpMessageHandler.Content = "{\"contents\":[{\"id\":\"00000000-0000-0000-0000-000000000000\"}]}";
+
+        (HttpStatusCode _, JsonElement.ArrayEnumerator? services) = await _hsdaApiService.GetServices();
+
+        Assert.NotNull(services);
+
+        _mockHttpMessageHandler.Content = "{\"incorrect\":\"schema\"}";
+
+        (HttpStatusCode httpStatusCode, List<Service> servicesById) =
+            await _hsdaApiService.GetServicesById(services.Value);
+
+        Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);
+        Assert.Empty(servicesById);
+    }
+
+    [Fact]
+    public async Task Then_GetServicesById_Continues_When_IncomingJson_Is_A_Null_JsonObject()
+    {
+        _mockHttpMessageHandler.StatusCode = HttpStatusCode.OK;
+        _mockHttpMessageHandler.Content = "{\"contents\":[{\"id\":\"00000000-0000-0000-0000-000000000000\"}]}";
+
+        (HttpStatusCode _, JsonElement.ArrayEnumerator? services) = await _hsdaApiService.GetServices();
+
+        Assert.NotNull(services);
+
+        _mockHttpMessageHandler.Content = "null";
+
+        (HttpStatusCode httpStatusCode, List<Service> servicesById) =
+            await _hsdaApiService.GetServicesById(services.Value);
 
         Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);
         Assert.Empty(servicesById);
