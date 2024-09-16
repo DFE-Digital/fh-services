@@ -84,7 +84,7 @@ public class WhenUsingTriggerPullServicesWebhook
     }
 
     [Fact]
-    public async Task Then_NoServicesByIdReturned_Should_ResultIn_404_NotFound()
+    public async Task Then_NoServicesByIdReturned_Should_ResultIn_204_NoContent()
     {
         List<Service> servicesById = [];
 
