@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.ClientServices;
 using FamilyHubs.OpenReferral.UnitTests.Helpers;
+using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
@@ -12,6 +13,9 @@ public class WhenUsingHsdaApiService
     private readonly IHsdaApiService _hsdaApiService;
     private readonly MockHttpMessageHandler _mockHttpMessageHandler;
 
+    private readonly Service _service;
+    private readonly string _serviceJson;
+
     public WhenUsingHsdaApiService()
     {
         ILogger<HsdaApiService> loggerApiReceiverMock = Substitute.For<ILogger<HsdaApiService>>();
@@ -21,6 +25,9 @@ public class WhenUsingHsdaApiService
         httpClient.BaseAddress = new Uri("http://localhost:16384");
 
         _hsdaApiService = new HsdaApiService(loggerApiReceiverMock, httpClient);
+
+        _service = MockService.Service;
+        _serviceJson = MockService.ServiceJson;
     }
 
     [Theory]
@@ -74,48 +81,42 @@ public class WhenUsingHsdaApiService
         Assert.Null(services);
     }
 
-    // TODO: Fix Test
-    // [Fact]
-    // public async Task Then_GetServicesById_Returns_CorrectData()
-    // {
-    //     _mockHttpMessageHandler.StatusCode = HttpStatusCode.OK;
-    //     _mockHttpMessageHandler.Content = "{\"contents\":[{\"id\":\"ABC\"}]}";
-    //
-    //     (HttpStatusCode _, JsonElement.ArrayEnumerator? services) = await _hsdaApiService.GetServices();
-    //
-    //     Assert.NotNull(services);
-    //
-    //     _mockHttpMessageHandler.Content = "{\"id\":\"ABC\",\"name\":\"Test\"}";
-    //
-    //     (HttpStatusCode httpStatusCode, List<ServiceJson> servicesById) = await _hsdaApiService.GetServicesById(services.Value);
-    //
-    //     Assert.Equal(HttpStatusCode.OK, httpStatusCode);
-    //
-    //     Assert.Single(servicesById);
-    //     Assert.Equal("ABC", servicesById[0].Id);
-    //
-    //     string serviceName = JsonDocument.Parse(servicesById[0].Json).RootElement.GetProperty("name").ToString();
-    //
-    //     Assert.Equal("Test", serviceName);
-    // }
+    [Fact]
+    public async Task Then_GetServicesById_Returns_CorrectData()
+    {
+        _mockHttpMessageHandler.StatusCode = HttpStatusCode.OK;
+        _mockHttpMessageHandler.Content = "{\"contents\":[{\"id\":\"00000000-0000-0000-0000-000000000000\"}]}";
 
-    // TODO: Fix Test
-    // [Fact]
-    // public async Task Then_GetServicesById_Continues_When_AResultDidNotComeBack()
-    // {
-    //     _mockHttpMessageHandler.StatusCode = HttpStatusCode.OK;
-    //     _mockHttpMessageHandler.Content = "{\"contents\":[{\"id\":\"ABC\"}]}";
-    //
-    //     (HttpStatusCode _, JsonElement.ArrayEnumerator? services) = await _hsdaApiService.GetServices();
-    //
-    //     Assert.NotNull(services);
-    //
-    //     _mockHttpMessageHandler.StatusCode = HttpStatusCode.NotFound;
-    //     _mockHttpMessageHandler.Content = "";
-    //
-    //     (HttpStatusCode httpStatusCode, List<ServiceJson> servicesById) = await _hsdaApiService.GetServicesById(services.Value);
-    //
-    //     Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);
-    //     Assert.Empty(servicesById);
-    // }
+        (HttpStatusCode _, JsonElement.ArrayEnumerator? services) = await _hsdaApiService.GetServices();
+
+        Assert.NotNull(services);
+
+        _mockHttpMessageHandler.Content = _serviceJson;
+
+        (HttpStatusCode httpStatusCode, List<Service> servicesById) =
+            await _hsdaApiService.GetServicesById(services.Value);
+
+        Assert.Equal(HttpStatusCode.OK, httpStatusCode);
+        Assert.Single(servicesById);
+        Assert.Equivalent(_service, servicesById[0]);
+    }
+
+    [Fact]
+    public async Task Then_GetServicesById_Continues_When_AResultDidNotComeBack()
+    {
+        _mockHttpMessageHandler.StatusCode = HttpStatusCode.OK;
+        _mockHttpMessageHandler.Content = "{\"contents\":[{\"id\":\"00000000-0000-0000-0000-000000000000\"}]}";
+
+        (HttpStatusCode _, JsonElement.ArrayEnumerator? services) = await _hsdaApiService.GetServices();
+
+        Assert.NotNull(services);
+
+        _mockHttpMessageHandler.StatusCode = HttpStatusCode.NotFound;
+        _mockHttpMessageHandler.Content = "";
+
+        (HttpStatusCode httpStatusCode, List<Service> servicesById) = await _hsdaApiService.GetServicesById(services.Value);
+
+        Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);
+        Assert.Empty(servicesById);
+    }
 }

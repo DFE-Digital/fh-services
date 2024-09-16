@@ -19,12 +19,10 @@ public class TriggerPullServicesWebhook(
     {
         logger.LogInformation("[ApiReceiver] HTTP Trigger Function Started");
 
-        (HttpStatusCode HttpStatusCode, JsonElement.ArrayEnumerator? Result) services =
-            await hsdaApiService.GetServices();
+        (HttpStatusCode HttpStatusCode, JsonElement.ArrayEnumerator? Result) services = await hsdaApiService.GetServices();
         if (services.HttpStatusCode != HttpStatusCode.OK) return req.CreateResponse(services.HttpStatusCode);
 
-        (HttpStatusCode HttpStatusCode, List<Service> Result) servicesById =
-            await hsdaApiService.GetServicesById(services.Result!.Value);
+        (HttpStatusCode HttpStatusCode, List<Service> Result) servicesById = await hsdaApiService.GetServicesById(services.Result!.Value);
         if (servicesById.HttpStatusCode != HttpStatusCode.OK) return req.CreateResponse(servicesById.HttpStatusCode);
 
         try
