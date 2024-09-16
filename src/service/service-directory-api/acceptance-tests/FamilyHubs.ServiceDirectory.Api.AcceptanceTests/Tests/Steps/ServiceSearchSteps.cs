@@ -28,16 +28,16 @@ public class ServiceSearchSteps
         var serviceSearchTypeIdEntry = int.Parse(serviceSearchTypeId);
         _request = new ServiceSearchRequest
         {
-            searchPostcode = postcodeEntry,
-            searchRadiusMiles = radius,
-            userId = 0,
-            httpResponseCode = postcodeEndpointStatusCode,
-            requestTimestamp = time,
-            responseTimestamp = time,
-            correlationId = "",
-            searchTriggerEventId = searchTriggerEventIdEntry,
-            serviceSearchTypeId = serviceSearchTypeIdEntry,
-            serviceSearchResults = new List<ServiceSearchResults>()
+            SearchPostcode = postcodeEntry,
+            SearchRadiusMiles = radius,
+            UserId = 0,
+            HttpResponseCode = postcodeEndpointStatusCode,
+            RequestTimestamp = time,
+            ResponseTimestamp = time,
+            CorrelationId = "",
+            SearchTriggerEventId = searchTriggerEventIdEntry,
+            ServiceSearchTypeId = serviceSearchTypeIdEntry,
+            ServiceSearchResults = new List<ServiceSearchResults>()
         };
     }
 
