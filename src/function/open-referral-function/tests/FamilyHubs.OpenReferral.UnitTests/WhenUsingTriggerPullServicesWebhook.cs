@@ -21,7 +21,6 @@ public class WhenUsingTriggerPullServicesWebhook
     private readonly HttpRequestData _reqMock;
 
     private readonly Service _service;
-    private readonly string _serviceJson;
 
     public WhenUsingTriggerPullServicesWebhook()
     {
@@ -37,7 +36,6 @@ public class WhenUsingTriggerPullServicesWebhook
         _triggerPullServicesWebhook = new TriggerPullServicesWebhook(loggerApiReceiverMock, _hsdaApiServiceMock, _functionDbContextMock);
 
         _service = MockService.Service;
-        _serviceJson = MockService.ServiceJson;
     }
 
     [Fact]
