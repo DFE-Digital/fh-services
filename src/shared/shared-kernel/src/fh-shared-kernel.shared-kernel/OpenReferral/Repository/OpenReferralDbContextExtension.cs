@@ -1,6 +1,5 @@
 using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Attribute = FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute;
 
 namespace FamilyHubs.SharedKernel.OpenReferral.Repository;
@@ -14,7 +13,7 @@ public static class OpenReferralDbContextExtension
     {
         modelBuilder.Entity<Accessibility>(entity =>
         {
-            entity.ToTable(nameof(Accessibility), schema: Deds);
+            entity.ToTable("Accessibilities", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Url).HasMaxLength(2048);
@@ -22,7 +21,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<Address>(entity =>
         {
-            entity.ToTable(nameof(Address), schema: Deds);
+            entity.ToTable("Addresses", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Attention).HasMaxLength(255);
@@ -38,7 +37,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<Attribute>(entity =>
         {
-            entity.ToTable(nameof(Attribute), schema: Deds);
+            entity.ToTable("Attributes", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.LinkType).HasMaxLength(50);
@@ -48,7 +47,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<Contact>(entity =>
         {
-            entity.ToTable(nameof(Contact), schema: Deds);
+            entity.ToTable("Contacts", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -59,7 +58,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<CostOption>(entity =>
         {
-            entity.ToTable(nameof(CostOption), schema: Deds);
+            entity.ToTable("CostOptions", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.ValidFrom).HasColumnType("date");
@@ -70,14 +69,14 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<Funding>(entity =>
         {
-            entity.ToTable(nameof(Funding), schema: Deds);
+            entity.ToTable("Fundings", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<Language>(entity =>
         {
-            entity.ToTable(nameof(Language), schema: Deds);
+            entity.ToTable("Languages", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -86,7 +85,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<Location>(entity =>
         {
-            entity.ToTable(nameof(Location), schema: Deds);
+            entity.ToTable("Locations", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.LocationType).HasMaxLength(255);
@@ -102,7 +101,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<Metadata>(entity =>
         {
-            entity.ToTable(nameof(Metadata), schema: Deds);
+            entity.ToTable("Metadata", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.ResourceType).HasMaxLength(50);
@@ -114,7 +113,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<MetaTableDescription>(entity =>
         {
-            entity.ToTable(nameof(MetaTableDescription), schema: Deds);
+            entity.ToTable("MetaTableDescriptions", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -124,7 +123,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<Organization>(entity =>
         {
-            entity.ToTable(nameof(Organization), schema: Deds);
+            entity.ToTable("Organizations", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -138,7 +137,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<OrganizationIdentifier>(entity =>
         {
-            entity.ToTable(nameof(OrganizationIdentifier), schema: Deds);
+            entity.ToTable("OrganizationIdentifiers", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.IdentifierScheme).HasMaxLength(50);
@@ -148,7 +147,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<Phone>(entity =>
         {
-            entity.ToTable(nameof(Phone), schema: Deds);
+            entity.ToTable("Phones", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Number).HasMaxLength(50);
@@ -157,7 +156,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<Program>(entity =>
         {
-            RelationalEntityTypeBuilderExtensions.ToTable((EntityTypeBuilder)entity, nameof(Program), schema: Deds);
+            entity.ToTable("Programs", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -166,7 +165,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<RequiredDocument>(entity =>
         {
-            entity.ToTable(nameof(RequiredDocument), schema: Deds);
+            entity.ToTable("RequiredDocuments", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Uri).HasMaxLength(2048);
@@ -174,7 +173,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<Schedule>(entity =>
         {
-            entity.ToTable(nameof(Schedule), schema: Deds);
+            entity.ToTable("Schedules", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.ValidFrom).HasColumnType("date");
@@ -194,7 +193,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<Service>(entity =>
         {
-            entity.ToTable(nameof(Service), schema: Deds);
+            entity.ToTable("Services", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -212,7 +211,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<ServiceArea>(entity =>
         {
-            entity.ToTable(nameof(ServiceArea), schema: Deds);
+            entity.ToTable("ServiceAreas", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -223,14 +222,14 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<ServiceAtLocation>(entity =>
         {
-            entity.ToTable(nameof(ServiceAtLocation), schema: Deds);
+            entity.ToTable("ServiceAtLocations", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<Taxonomy>(entity =>
         {
-            entity.ToTable(nameof(Taxonomy), schema: Deds);
+            entity.ToTable("Taxonomies", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -240,7 +239,7 @@ public static class OpenReferralDbContextExtension
 
         modelBuilder.Entity<TaxonomyTerm>(entity =>
         {
-            entity.ToTable(nameof(TaxonomyTerm), schema: Deds);
+            entity.ToTable("TaxonomyTerms", schema: Deds);
             entity.HasKey(e => e.Id).IsClustered(false);
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Code).HasMaxLength(255);
