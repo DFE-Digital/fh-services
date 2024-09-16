@@ -6,27 +6,15 @@ namespace FamilyHubs.OpenReferral.Function.Repository;
 
 public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : DbContext(options), IFunctionDbContext
 {
-    private DbSet<Service> Services { get; init; } = null!;
-    IQueryable<Service> IFunctionDbContext.Services => Services.AsSplitQuery();
+    private DbSet<Service> ServicesDbSet { get; init; } = null!;
+    public IQueryable<Service> Services() => ServicesDbSet.AsSplitQuery();
 
-    public void AddService(Service service)
-    {
-        ChangeTracker.TrackGraph(service, node =>
-        {
-            if (!node.Entry.IsKeySet)
-            {
-                node.Entry.State = EntityState.Added;
-            }
-        });
-    }
+    public void AddService(Service service) => ServicesDbSet.Add(service);
 
-    // TODO: Update for new schema -> TruncateDEDSSchemaAsync
-    // Just a dummy statement for now since the [staging].[services_temp] no longer exists :)
-    public Task TruncateServicesTempAsync()
-    {
-        return Task.CompletedTask;
-        ////  return Database.ExecuteSqlRawAsync("SELECT TOP (1) [Id] FROM [deds].[Service]");
-    }
+    public void DeleteService(Service service) =>
+        ChangeTracker.TrackGraph(service, node => node.Entry.State = EntityState.Deleted);
+
+    public Task<List<T>> ToListAsync<T>(IQueryable<T> queryable) => queryable.ToListAsync();
 
     public Task<int> SaveChangesAsync() => base.SaveChangesAsync();
 

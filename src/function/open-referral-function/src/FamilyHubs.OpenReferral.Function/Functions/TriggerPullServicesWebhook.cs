@@ -19,14 +19,17 @@ public class TriggerPullServicesWebhook(
     {
         logger.LogInformation("[ApiReceiver] HTTP Trigger Function Started");
 
-        (HttpStatusCode HttpStatusCode, JsonElement.ArrayEnumerator? Result) services = await hsdaApiService.GetServices();
+        (HttpStatusCode HttpStatusCode, JsonElement.ArrayEnumerator? Result) services =
+            await hsdaApiService.GetServices();
         if (services.HttpStatusCode != HttpStatusCode.OK) return req.CreateResponse(services.HttpStatusCode);
 
-        (HttpStatusCode HttpStatusCode, List<Service> Result) servicesById = await hsdaApiService.GetServicesById(services.Result!.Value);
+        (HttpStatusCode HttpStatusCode, List<Service> Result) servicesById =
+            await hsdaApiService.GetServicesById(services.Result!.Value);
         if (servicesById.HttpStatusCode != HttpStatusCode.OK) return req.CreateResponse(servicesById.HttpStatusCode);
 
         try
         {
+            await ClearDatabase();
             await UpdateDatabase(servicesById.Result);
         }
         catch (Exception e)
@@ -38,12 +41,28 @@ public class TriggerPullServicesWebhook(
         return req.CreateResponse(HttpStatusCode.OK);
     }
 
-    private async Task UpdateDatabase(List<Service> serviceList)
+    /*
+     * As clearing the Db is a temporary measure until we implement checking for existing IDs, I think this is OK even
+     * if it's the slower way of doing it.
+     */
+    private async Task ClearDatabase()
     {
-        logger.LogInformation("Truncating database before inserting services");
-        await functionDbContext.TruncateServicesTempAsync();
+        logger.LogInformation("Removing all services from the database");
+        List<Service> serviceListFromDb = await functionDbContext.ToListAsync(functionDbContext.Services());
 
-        foreach (Service service in serviceList)
+        foreach (Service service in serviceListFromDb)
+        {
+            logger.LogInformation("Removing service from the database, Internal ID = {iId} | Open Referral ID = {oId}",
+                service.Id, service.OrId);
+            functionDbContext.DeleteService(service);
+        }
+
+        await functionDbContext.SaveChangesAsync();
+    }
+
+    private async Task UpdateDatabase(List<Service> serviceListFromApi)
+    {
+        foreach (Service service in serviceListFromApi)
         {
             logger.LogInformation("Adding service with ID {serviceId} to the database", service.OrId);
             functionDbContext.AddService(service);

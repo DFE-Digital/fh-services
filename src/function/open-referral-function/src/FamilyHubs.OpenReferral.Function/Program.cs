@@ -6,6 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+// TODO: 2. Unit Test Update
+// TODO: 3. Fix: Plurals for DEDS Db Table Names (Shared Kernel 2.8.1)
+
 IHost host = new HostBuilder()
     .ConfigureHostConfiguration(config =>
     {

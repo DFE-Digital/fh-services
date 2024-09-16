@@ -5,10 +5,10 @@ namespace FamilyHubs.OpenReferral.Function.Repository;
 public interface IFunctionDbContext
 {
     public void AddService(Service service);
-    public IQueryable<Service> Services { get; }
+    public void DeleteService(Service service);
+    public IQueryable<Service> Services();
 
-    // TODO: Update for new schema -> TruncateDEDSSchemaAsync
-    public Task TruncateServicesTempAsync();
+    public Task<List<T>> ToListAsync<T>(IQueryable<T> queryable);
 
     public Task<int> SaveChangesAsync();
 }
