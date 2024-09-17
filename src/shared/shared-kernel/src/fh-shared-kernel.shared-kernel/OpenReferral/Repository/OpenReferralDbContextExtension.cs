@@ -251,344 +251,344 @@ public static class OpenReferralDbContextExtension
         });
     }
 
-private static void CreateEntityAttributeRelationships(ModelBuilder modelBuilder)
-{
-    modelBuilder.Entity<Accessibility>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Accessibility) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+    private static void CreateEntityAttributeRelationships(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Accessibility>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Accessibility) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Address>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Address) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Address>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Address) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Contact>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Contact) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Contact>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Contact) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<CostOption>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(CostOption) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<CostOption>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(CostOption) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Funding>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Funding) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Funding>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Funding) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Language>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Language) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Language>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Language) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Location>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Location) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Location>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Location) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<MetaTableDescription>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(MetaTableDescription) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<MetaTableDescription>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(MetaTableDescription) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Organization>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Organization) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Organization>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Organization) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<OrganizationIdentifier>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(OrganizationIdentifier) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<OrganizationIdentifier>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(OrganizationIdentifier) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Phone>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Phone) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Phone>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Phone) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Program>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Program) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Program>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Program) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<RequiredDocument>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(RequiredDocument) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<RequiredDocument>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(RequiredDocument) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Schedule>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Schedule) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Schedule>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Schedule) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Service>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Service) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Service>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Service) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<ServiceArea>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(ServiceArea) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<ServiceArea>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(ServiceArea) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<ServiceAtLocation>()
-        .HasMany<Attribute>(e => e.Attributes)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(ServiceAtLocation) + nameof(Attribute) + "s");
-                e.Metadata.SetSchema(DedsMeta);
-            });
-}
+        modelBuilder.Entity<ServiceAtLocation>()
+            .HasMany<Attribute>(e => e.Attributes)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(ServiceAtLocation) + nameof(Attribute) + "s");
+                    e.Metadata.SetSchema(DedsMeta);
+                });
+    }
 
-private static void CreateEntityMetadataRelationships(ModelBuilder modelBuilder)
-{
-    modelBuilder.Entity<Accessibility>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Accessibility) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+    private static void CreateEntityMetadataRelationships(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Accessibility>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Accessibility) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Address>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Address) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Address>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Address) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Attribute>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Attribute) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Attribute>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Attribute) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Contact>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Contact) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Contact>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Contact) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<CostOption>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(CostOption) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<CostOption>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(CostOption) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Funding>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Funding) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Funding>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Funding) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Language>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Language) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Language>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Language) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Location>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Location) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Location>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Location) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<MetaTableDescription>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(MetaTableDescription) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<MetaTableDescription>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(MetaTableDescription) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Organization>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Organization) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Organization>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Organization) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<OrganizationIdentifier>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(OrganizationIdentifier) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<OrganizationIdentifier>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(OrganizationIdentifier) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Phone>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Program) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Phone>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Program) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Program>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Program) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Program>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Program) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<RequiredDocument>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(RequiredDocument) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<RequiredDocument>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(RequiredDocument) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Schedule>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Schedule) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Schedule>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Schedule) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Service>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Service) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Service>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Service) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<ServiceArea>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(ServiceArea) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<ServiceArea>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(ServiceArea) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<ServiceAtLocation>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(ServiceAtLocation) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<ServiceAtLocation>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(ServiceAtLocation) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<Taxonomy>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(Taxonomy) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
+        modelBuilder.Entity<Taxonomy>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(Taxonomy) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
 
-    modelBuilder.Entity<TaxonomyTerm>()
-        .HasMany<Metadata>(e => e.Metadata)
-        .WithMany().UsingEntity<Dictionary<string, object>>(
-            e =>
-            {
-                e.Metadata.SetTableName(nameof(TaxonomyTerm) + nameof(Metadata));
-                e.Metadata.SetSchema(DedsMeta);
-            });
-}
+        modelBuilder.Entity<TaxonomyTerm>()
+            .HasMany<Metadata>(e => e.Metadata)
+            .WithMany().UsingEntity<Dictionary<string, object>>(
+                e =>
+                {
+                    e.Metadata.SetTableName(nameof(TaxonomyTerm) + nameof(Metadata));
+                    e.Metadata.SetSchema(DedsMeta);
+                });
+    }
 
     private static void CreateOrganizationRelationships(ModelBuilder modelBuilder)
     {
