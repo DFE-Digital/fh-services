@@ -6,13 +6,12 @@ using Microsoft.Extensions.Configuration;
 
 namespace FamilyHubs.ServiceDirectory.Api.FunctionalTests;
 
-#pragma warning disable S3881
 public abstract class BaseWhenUsingApiUnitTests : IDisposable
 {
     protected readonly HttpClient? Client;
     private readonly CustomWebApplicationFactory? _webAppFactory;
     private readonly bool _initSuccessful;
-    public static string BearerTokenSigningKey;
+    private static string? _bearerTokenSigningKey;
 
     protected BaseWhenUsingApiUnitTests()
     {
@@ -35,7 +34,7 @@ public abstract class BaseWhenUsingApiUnitTests : IDisposable
 
             _initSuccessful = true;
 
-            BearerTokenSigningKey = configuration["GovUkOidcConfiguration:BearerTokenSigningKey"];
+            _bearerTokenSigningKey = configuration["GovUkOidcConfiguration:BearerTokenSigningKey"]!;
         }
         catch
         {
@@ -73,8 +72,10 @@ public abstract class BaseWhenUsingApiUnitTests : IDisposable
     /// <summary>
     /// Creates HttpRequestMessage
     /// </summary>
+    /// <param name="content"></param>
     /// <param name="role">If left blank request will not have bearer Token</param>
-    public HttpRequestMessage CreatePostRequest(string path, object content, string role = "")
+    /// <param name="path"></param>
+    protected HttpRequestMessage CreatePostRequest(string path, object content, string role = "")
     {
         var request = CreateHttpRequestMessage(HttpMethod.Post, path, role);
         request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
@@ -84,8 +85,10 @@ public abstract class BaseWhenUsingApiUnitTests : IDisposable
     /// <summary>
     /// Creates HttpRequestMessage
     /// </summary>
+    /// <param name="content"></param>
     /// <param name="role">If left blank request will not have bearer Token</param>
-    public HttpRequestMessage CreatePutRequest(string path, object content, string role = "")
+    /// <param name="path"></param>
+    protected HttpRequestMessage CreatePutRequest(string path, object content, string role = "")
     {
         var request = CreateHttpRequestMessage(HttpMethod.Put, path, role);
         request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
@@ -95,8 +98,10 @@ public abstract class BaseWhenUsingApiUnitTests : IDisposable
     /// <summary>
     /// Creates HttpRequestMessage
     /// </summary>
+    /// <param name="content"></param>
     /// <param name="role">If left blank request will not have bearer Token</param>
-    public HttpRequestMessage CreateDeleteRequest(string path, object content, string role = "")
+    /// <param name="path"></param>
+    protected HttpRequestMessage CreateDeleteRequest(string path, object content, string role = "")
     {
         var request = CreateHttpRequestMessage(HttpMethod.Delete, path, role);
         request.Content = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
@@ -106,6 +111,7 @@ public abstract class BaseWhenUsingApiUnitTests : IDisposable
     /// <summary>
     /// Creates HttpRequestMessage
     /// </summary>
+    /// <param name="path"></param>
     /// <param name="role">If left blank request will not have bearer Token</param>
     public HttpRequestMessage CreateGetRequest(string path, string role = "")
     {
@@ -123,7 +129,7 @@ public abstract class BaseWhenUsingApiUnitTests : IDisposable
 
         if (!string.IsNullOrEmpty(role))
         {
-            request.Headers.Add("Authorization", $"Bearer {TestDataProvider.CreateBearerToken(role, BearerTokenSigningKey)}");
+            request.Headers.Add("Authorization", $"Bearer {TestDataProvider.CreateBearerToken(role, _bearerTokenSigningKey)}");
         }
 
         return request;

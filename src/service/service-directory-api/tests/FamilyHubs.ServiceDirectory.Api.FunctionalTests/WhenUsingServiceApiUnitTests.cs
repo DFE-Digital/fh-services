@@ -18,7 +18,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
 
         var request = CreatePostRequest("api/services", service, RoleTypes.DfeAdmin);
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -45,7 +45,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + $"api/services-simple{url}")
+            RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
         using var response = await Client.SendAsync(request);
@@ -78,7 +78,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
     {
         var request = CreateDeleteRequest("api/services/1", string.Empty, RoleTypes.DfeAdmin);
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         response.EnsureSuccessStatusCode();
 
@@ -103,7 +103,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + $"api/services-simple{url}")
+            RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
         using var response = await Client.SendAsync(request);
@@ -134,7 +134,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + $"api/services-simple{url}")
+            RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
         using var response = await Client.SendAsync(request);
@@ -164,7 +164,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + $"api/services-simple{url}")
+            RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
         using var response = await Client.SendAsync(request);
@@ -194,7 +194,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + $"api/services-simple{url}")
+            RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
         using var response = await Client.SendAsync(request);
@@ -224,7 +224,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + $"api/services-simple{url}")
+            RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
         using var response = await Client.SendAsync(request);
@@ -253,7 +253,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + $"api/services-simple{url}")
+            RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
         using var response = await Client.SendAsync(request);
@@ -274,7 +274,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/services-simple/1"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/services-simple/1"),
         };
 
         using var response = await Client.SendAsync(request);
@@ -295,7 +295,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/services/1"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/services/1"),
         };
 
         using var response = await Client.SendAsync(request);
@@ -326,7 +326,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + $"api/services-simple{url}")
+            RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
         using var response = await Client.SendAsync(request);
@@ -359,7 +359,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + $"api/services-simple{url}")
+            RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
         using var response = await Client.SendAsync(request);

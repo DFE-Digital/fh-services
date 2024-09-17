@@ -19,7 +19,7 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
 
         var request = CreatePostRequest("api/locations", location, RoleTypes.DfeAdmin);
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -36,7 +36,7 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/locations/1"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/locations/1"),
 
         };
 
@@ -71,7 +71,7 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/locations/1"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/locations/1"),
 
         };
 
@@ -96,7 +96,7 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/organisationlocations/1"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/organisationlocations/1"),
 
         };
 
@@ -121,7 +121,7 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/servicelocations/1"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/servicelocations/1"),
 
         };
 
@@ -146,7 +146,7 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/locations"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/locations"),
         };
 
         using var response = await Client.SendAsync(request);
