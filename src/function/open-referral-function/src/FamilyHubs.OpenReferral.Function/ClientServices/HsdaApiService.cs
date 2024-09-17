@@ -52,7 +52,16 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
             try
             {
                 Service? service = JsonSerializer.Deserialize<Service>(jsonResponse!);
-                servicesById.Add(service ?? throw new InvalidOperationException());
+
+                if (service is null)
+                {
+                    logger.LogWarning(
+                        "After attempting to deserialise the incoming JSON, the Service is null | JSON = {jsonResponse}",
+                        jsonResponse);
+                    continue;
+                }
+
+                servicesById.Add(service);
             }
             catch (Exception e)
             {
