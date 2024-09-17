@@ -58,22 +58,22 @@ public class FindTest : BaseTest
         // Act
         var page = await Navigate("performance-data/Find");
 
-        var searches = page.QuerySelector("[data-testid=\"searches\"] td").TextContent;
+        var searches = page.QuerySelector("[data-testid=\"searches\"] td")?.TextContent;
         Assert.Equal(searchCount.ToString(), searches);
 
-        var searchesLast7Days = page.QuerySelector("[data-testid=\"recent-searches\"] td").TextContent;
+        var searchesLast7Days = page.QuerySelector("[data-testid=\"recent-searches\"] td")?.TextContent;
         Assert.Equal(recentSearchCount.ToString(), searchesLast7Days);
 
         foreach (var (report, idx) in breakdown.WeeklyReports.Reverse().Select((report, idx) => (report, idx)))
         {
-            var heading = page.QuerySelector($"[data-testid=\"searches-week{idx + 1}\"] th").TextContent;
+            var heading = page.QuerySelector($"[data-testid=\"searches-week{idx + 1}\"] th")?.TextContent;
             Assert.Equal(report.Date, heading);
 
-            var text = page.QuerySelector($"[data-testid=\"searches-week{idx + 1}\"] td").TextContent;
+            var text = page.QuerySelector($"[data-testid=\"searches-week{idx + 1}\"] td")?.TextContent;
             Assert.Equal(report.SearchCount.ToString(), text);
         }
 
-        var total = page.QuerySelector($"[data-testid=\"searches-total\"] td").TextContent;
+        var total = page.QuerySelector($"[data-testid=\"searches-total\"] td")?.TextContent;
         Assert.Equal(breakdown.TotalSearchCount.ToString(), total);
     }
 
@@ -121,22 +121,22 @@ public class FindTest : BaseTest
         // Act
         var page = await Navigate("performance-data/Find");
 
-        var searches = page.QuerySelector("[data-testid=\"searches\"] td").TextContent;
+        var searches = page.QuerySelector("[data-testid=\"searches\"] td")?.TextContent;
         Assert.Equal(searchCount.ToString(), searches);
 
-        var searchesLast7Days = page.QuerySelector("[data-testid=\"recent-searches\"] td").TextContent;
+        var searchesLast7Days = page.QuerySelector("[data-testid=\"recent-searches\"] td")?.TextContent;
         Assert.Equal(recentSearchCount.ToString(), searchesLast7Days);
 
         foreach (var (report, idx) in breakdown.WeeklyReports.Reverse().Select((report, idx) => (report, idx)))
         {
-            var heading = page.QuerySelector($"[data-testid=\"searches-week{idx + 1}\"] th").TextContent;
+            var heading = page.QuerySelector($"[data-testid=\"searches-week{idx + 1}\"] th")?.TextContent;
             Assert.Equal(report.Date, heading);
 
-            var text = page.QuerySelector($"[data-testid=\"searches-week{idx + 1}\"] td").TextContent;
+            var text = page.QuerySelector($"[data-testid=\"searches-week{idx + 1}\"] td")?.TextContent;
             Assert.Equal(report.SearchCount.ToString(), text);
         }
 
-        var total = page.QuerySelector($"[data-testid=\"searches-total\"] td").TextContent;
+        var total = page.QuerySelector($"[data-testid=\"searches-total\"] td")?.TextContent;
         Assert.Equal(breakdown.TotalSearchCount.ToString(), total);
     }
 }
