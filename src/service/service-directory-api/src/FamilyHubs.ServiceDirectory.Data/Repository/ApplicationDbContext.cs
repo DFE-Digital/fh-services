@@ -153,7 +153,17 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
                     }
                 );
 
-            OpenReferralDbContextExtension.OnModelCreating(modelBuilder);
+            /*
+             * This needs to be set so the Functional & Integration Tests don't create the [deds] and [dedsmeta] tables.
+             *
+             * This is because SQLite doesn't implement schemas, so there are conflicts with the [dbo] tables as they
+             * have the same names. Since we don't test anything OR related from the Service Directory API anyway, it
+             * can just be disabled.
+             */
+            if (!Database.IsSqlite())
+            {
+                OpenReferralDbContextExtension.OnModelCreating(modelBuilder);
+            }
 
             base.OnModelCreating(modelBuilder);
         }
