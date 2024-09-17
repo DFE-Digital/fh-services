@@ -513,7 +513,7 @@ public static class OpenReferralDbContextExtension
             .WithMany().UsingEntity<Dictionary<string, object>>(
                 e =>
                 {
-                    e.Metadata.SetTableName(nameof(Program) + nameof(Metadata));
+                    e.Metadata.SetTableName(nameof(Phone) + nameof(Metadata));
                     e.Metadata.SetSchema(DedsMeta);
                 });
 
