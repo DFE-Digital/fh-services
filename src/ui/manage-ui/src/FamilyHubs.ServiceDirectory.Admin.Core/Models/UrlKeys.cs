@@ -5,5 +5,5 @@ public enum UrlKeys
     ConnectWeb,
     ManageWeb, 
     FindWeb,
-    ConnectSupportWeb
+    DashboardWeb
 }
