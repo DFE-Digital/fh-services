@@ -245,7 +245,6 @@ public static class OpenReferralDbContextExtension
             entity.Property(e => e.Code).HasMaxLength(255);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Taxonomy).HasMaxLength(255);
-            entity.Property(e => e.Version).HasMaxLength(50);
             entity.Property(e => e.Language).HasMaxLength(50);
             entity.Property(e => e.TermUri).HasMaxLength(2048);
         });

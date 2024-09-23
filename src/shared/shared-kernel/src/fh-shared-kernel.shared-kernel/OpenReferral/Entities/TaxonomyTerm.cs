@@ -19,9 +19,6 @@ public class TaxonomyTerm : BaseHsdsEntity
     [JsonPropertyName("taxonomy")]
     public string? Taxonomy { get; init; }
 
-    [JsonPropertyName("version")]
-    public string? Version { get; init; }
-
     [JsonPropertyName("language")]
     public string? Language { get; init; }
 
