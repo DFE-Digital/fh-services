@@ -1,0 +1,23 @@
+@page
+@using FamilyHubs.SharedKernel.Razor.Urls
+@model FamilyHubs.ServiceDirectory.Admin.Web.Pages.manage_services.DeleteServiceErrorModel
+
+@{
+    ViewData["Title"] = "You cannot delete this service yet";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+
+        <p>@Model.ServiceModel?.Name cannot be deleted because there are outstanding connection requests.</p>
+
+        <ul>
+            <li>manage these request yourself, if you have access, by <a href="@Html.FamilyHubUrl(UrlKeys.ConnectSupportWeb, "/La/Dashboard")" new-tab>going to the ‘My requests’ page on Connect</a></li>
+            <li>find someone who can make and manage requests on Connect, by <a href="/AccountAdmin/ManagePermissions">checking your organisation’s list of users</a></li>
+        </ul>
+
+        <a class="govuk-button" asp-page="/Welcome">Go to homepage</a>
+    </div>
+
+</div>
