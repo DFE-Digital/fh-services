@@ -7,9 +7,9 @@
     Error? error = Model.Error.GetErrorIfTriggered();
 }
 
-@* @section Back { *@
-@* <a asp-page="\Welcome" class="govuk-back-link">Back</a> *@
-@* } *@
+@section Back {
+    <a href="@Model.BackUrl" class="govuk-back-link">Back</a>
+}
 
 <partial name="_ErrorSummaryNext" for="@Model.Error" />
 

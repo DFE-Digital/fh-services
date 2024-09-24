@@ -12,6 +12,8 @@ public class DeleteService : PageModel
     private readonly IServiceDirectoryClient _serviceDirectoryClient;
     private readonly IReferralService _referralServiceClient;
 
+    public string BackUrl => "/manage-services/Service-Detail?flow=edit";
+
     [BindProperty] public long ServiceId { get; set; }
     public string ServiceName { get; set; } = null!;
 
