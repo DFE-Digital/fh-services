@@ -34,6 +34,8 @@ public class DeleteService : PageModel
     private async Task<string> GetServiceName() =>
         (await _serviceDirectoryClient.GetServiceById(ServiceId)).Name;
 
+    private async Task MarkServiceAsDefunct() => await _serviceDirectoryClient.DeleteService(ServiceId);
+
     private bool NeitherRadioButtonIsSelected() => !Yes && !No;
 
     private ImmutableDictionary<int, PossibleError> GetError()
@@ -64,7 +66,7 @@ public class DeleteService : PageModel
             throw new NotImplementedException("\"There are open Connection Requests\" Error Page Required");
         }
 
-        // TODO: Mark Service as Defunct
+        await MarkServiceAsDefunct();
         // TODO: Implement "Yes" Shutter Page
         throw new NotImplementedException("\"Yes\" Shutter Page Required");
     }
