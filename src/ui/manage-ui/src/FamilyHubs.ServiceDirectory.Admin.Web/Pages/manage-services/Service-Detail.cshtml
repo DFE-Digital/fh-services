@@ -256,7 +256,7 @@
         @if (Model.Flow == JourneyFlow.Edit && Model.FamilyHubsUser.Role is RoleTypes.LaManager or RoleTypes.LaDualRole)
         {
             <h2 class="govuk-heading-m">Delete this service</h2>
-            <p class="govuk-!-margin-bottom-9">You can <a href="/manage-services/delete-service">delete this service</a> if you want to permanently remove it from the directory.</p>
+            <p class="govuk-!-margin-bottom-9">You can <a href="/manage-services/delete-service?serviceId=@Model.ServiceModel.Id">delete this service</a> if you want to permanently remove it from the directory.</p>
         }
 
         @if (Model.Flow != JourneyFlow.Edit || Model.ServiceModel!.Updated)

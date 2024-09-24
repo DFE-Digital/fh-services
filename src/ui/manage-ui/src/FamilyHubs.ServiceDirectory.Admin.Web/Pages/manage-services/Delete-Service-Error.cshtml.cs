@@ -1,7 +1,9 @@
+using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.DistributedCache;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models.ServiceJourney;
 using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Pages.manage_services;
@@ -9,18 +11,21 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Pages.manage_services;
 [Authorize(Roles = RoleGroups.LaManagerOrDualRole)]
 public class DeleteServiceErrorModel : PageModel
 {
-    private readonly IRequestDistributedCache _connectionRequestCache;
-    public ServiceModel? ServiceModel { get; set; }
+    private readonly IServiceDirectoryClient _serviceDirectoryClient;
+    
+    public string ServiceName { get; set; } = string.Empty;
 
-    public DeleteServiceErrorModel(IRequestDistributedCache connectionRequestCache)
+    [BindProperty] public long ServiceId { get; set; }
+    
+    public DeleteServiceErrorModel(IServiceDirectoryClient serviceDirectoryClient)
     {
-        _connectionRequestCache = connectionRequestCache;
+        _serviceDirectoryClient = serviceDirectoryClient;
     }
 
-    public async Task OnGetAsync()
+    public async Task OnGetAsync(long serviceId)
     {
-        var user = HttpContext.GetFamilyHubsUser();
-
-        ServiceModel = await _connectionRequestCache.GetAsync<ServiceModel>(user.Email);
+        ServiceId = serviceId;
+        var service = await _serviceDirectoryClient.GetServiceById(ServiceId);
+        ServiceName = service.Name;
     }
 }

@@ -10,7 +10,7 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">@ViewData["Title"]</h1>
 
-        <p>@Model.ServiceModel?.Name cannot be deleted because there are outstanding connection requests.</p>
+        <p>@Model.ServiceName cannot be deleted because there are outstanding connection requests.</p>
 
         <ul>
             <li>manage these request yourself, if you have access, by <a href="@Html.FamilyHubUrl(UrlKeys.DashboardWeb, "/La/Dashboard")" new-tab>going to the ‘My requests’ page on Connect</a></li>
