@@ -19,7 +19,7 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
 
         var request = CreatePostRequest("api/locations", location, RoleTypes.DfeAdmin);
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -27,7 +27,7 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
             Assert.Fail(!string.IsNullOrWhiteSpace(responseContent) ? responseContent : response.ToString());
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        long.Parse(responseContent).Should().Be(10);
+        long.Parse(responseContent).Should().Be(12);
     }
 
     [Fact]
@@ -36,11 +36,11 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/locations/1"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/locations/1"),
 
         };
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -54,7 +54,7 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
 
         var updateRequest = CreatePutRequest("api/locations/1", retVal, RoleTypes.DfeAdmin);
 
-        using var updateResponse = await Client.SendAsync(updateRequest);
+        using var updateResponse = await Client!.SendAsync(updateRequest);
 
         var updateResponseContent = await updateResponse.Content.ReadAsStringAsync();
 
@@ -71,11 +71,11 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/locations/1"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/locations/1"),
 
         };
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -96,11 +96,11 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/organisationlocations/1"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/organisationlocations/1"),
 
         };
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -121,11 +121,11 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/servicelocations/1"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/servicelocations/1"),
 
         };
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -146,10 +146,10 @@ public class WhenUsingLocationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/locations"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/locations"),
         };
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         var responseContent = await response.Content.ReadAsStringAsync();
 

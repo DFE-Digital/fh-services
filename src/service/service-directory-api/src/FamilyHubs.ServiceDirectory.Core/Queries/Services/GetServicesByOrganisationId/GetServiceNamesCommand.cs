@@ -53,7 +53,7 @@ public class GetServiceNamesCommandHandler : IRequestHandler<GetServiceNamesComm
 
         //todo: do we need _context.ServiceNames?
         var servicesQuery = _context.Services
-            .Where(s => s.Status != ServiceStatusType.Deleted);
+            .Where(s => s.Status != ServiceStatusType.Defunct);
 
         if (request.OrganisationId != null)
         {
