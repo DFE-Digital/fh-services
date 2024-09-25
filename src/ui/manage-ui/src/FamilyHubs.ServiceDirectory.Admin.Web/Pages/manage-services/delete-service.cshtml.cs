@@ -57,8 +57,11 @@ public class DeleteService : PageModel
 
         if (No)
         {
-            // TODO: Implement "No" Shutter Page
-            throw new NotImplementedException("\"No\" Shutter Page Required");
+            return RedirectToPage("/manage-services/delete-service-shutter", new
+            {
+                serviceName = await GetServiceName(),
+                isDeleted = false
+            });
         }
 
         if (await IsOpenConnectionRequests())
@@ -67,8 +70,12 @@ public class DeleteService : PageModel
         }
 
         await MarkServiceAsDefunct();
-        // TODO: Implement "Yes" Shutter Page
-        throw new NotImplementedException("\"Yes\" Shutter Page Required");
+
+        return RedirectToPage("/manage-services/delete-service-shutter", new
+        {
+            serviceName = await GetServiceName(),
+            isDeleted = true
+        });
     }
 
     public async Task<IActionResult> OnGetAsync(long serviceId)
