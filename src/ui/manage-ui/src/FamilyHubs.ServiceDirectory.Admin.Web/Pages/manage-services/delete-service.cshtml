@@ -3,7 +3,7 @@
 @model DeleteService
 @{
     ViewData["Title"] = "Deleting a Service";
-    Model.Error.ErrorIdToHtmlElementId = _ => "Model_Yes";
+    Model.Error.ErrorIdToHtmlElementId = _ => "radio-yes";
     Error? error = Model.Error.GetErrorIfTriggered();
 }
 
@@ -28,14 +28,14 @@
                     <partial name="_ErrorMessageNext" model="error"/>
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" asp-for="@Model.Yes" id="Model_Yes" type="radio" value="true">
-                            <label class="govuk-label govuk-radios__label" for="Model_Yes">
+                            <input class="govuk-radios__input" asp-for="@Model.Selected" id="radio-yes" type="radio" value="true">
+                            <label class="govuk-label govuk-radios__label" for="radio-yes">
                                 Yes, I want to delete it
                             </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" asp-for="@Model.No" id="Model_No" type="radio" value="true">
-                            <label class="govuk-label govuk-radios__label" for="Model_No">
+                            <input class="govuk-radios__input" asp-for="@Model.Selected" id="radio-no" type="radio" value="false">
+                            <label class="govuk-label govuk-radios__label" for="radio-no">
                                 No, I want to keep it
                             </label>
                         </div>

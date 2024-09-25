@@ -19,8 +19,7 @@ public class DeleteService : PageModel
     [BindProperty] public long ServiceId { get; set; }
     public string ServiceName { get; set; } = null!;
 
-    [BindProperty] public bool Yes { get; set; }
-    [BindProperty] public bool No { get; set; }
+    [BindProperty] public bool? Selected { get; set; }
 
     public IErrorState Error { get; set; } = ErrorState.Empty;
 
@@ -38,7 +37,7 @@ public class DeleteService : PageModel
 
     private async Task MarkServiceAsDefunct() => await _serviceDirectoryClient.DeleteService(ServiceId);
 
-    private bool NeitherRadioButtonIsSelected() => !Yes && !No;
+    private bool NeitherRadioButtonIsSelected() => Selected is null;
 
     private ImmutableDictionary<int, PossibleError> GetError()
     {
@@ -57,7 +56,7 @@ public class DeleteService : PageModel
             return Page();
         }
 
-        if (No)
+        if (Selected is false)
         {
             return RedirectToPage(ShutterPageUrl, new { serviceName = ServiceName, isDeleted = false });
         }
