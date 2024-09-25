@@ -11,10 +11,11 @@ public class DeleteService : PageModel
 {
     private readonly IServiceDirectoryClient _serviceDirectoryClient;
     private readonly IReferralService _referralServiceClient;
+
     private const string OpenConnectionErrorUrl = "/manage-services/delete-service-error";
+    private const string ShutterPageUrl = "/manage-services/delete-service-shutter";
 
     public string BackUrl => "/manage-services/Service-Detail?flow=edit";
-
     [BindProperty] public long ServiceId { get; set; }
     public string ServiceName { get; set; } = null!;
 
@@ -58,8 +59,7 @@ public class DeleteService : PageModel
 
         if (No)
         {
-            return RedirectToPage("/manage-services/delete-service-shutter",
-                new { serviceName = ServiceName, isDeleted = false });
+            return RedirectToPage(ShutterPageUrl, new { serviceName = ServiceName, isDeleted = false });
         }
 
         if (await IsOpenConnectionRequests())
@@ -69,8 +69,7 @@ public class DeleteService : PageModel
 
         await MarkServiceAsDefunct();
 
-        return RedirectToPage("/manage-services/delete-service-shutter",
-            new { serviceName = ServiceName, isDeleted = true });
+        return RedirectToPage(ShutterPageUrl, new { serviceName = ServiceName, isDeleted = true });
     }
 
     public async Task<IActionResult> OnGetAsync(long serviceId)
