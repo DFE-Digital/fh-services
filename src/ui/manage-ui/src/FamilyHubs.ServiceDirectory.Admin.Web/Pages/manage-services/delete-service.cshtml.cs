@@ -48,20 +48,18 @@ public class DeleteService : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
+        ServiceName = await GetServiceName();
+
         if (NeitherRadioButtonIsSelected())
         {
-            ServiceName = await GetServiceName();
             Error = ErrorState.Create(GetError(), ErrorId.Delete_Service__NeitherRadioButtonIsSelected);
             return Page();
         }
 
         if (No)
         {
-            return RedirectToPage("/manage-services/delete-service-shutter", new
-            {
-                serviceName = await GetServiceName(),
-                isDeleted = false
-            });
+            return RedirectToPage("/manage-services/delete-service-shutter",
+                new { serviceName = ServiceName, isDeleted = false });
         }
 
         if (await IsOpenConnectionRequests())
@@ -71,11 +69,8 @@ public class DeleteService : PageModel
 
         await MarkServiceAsDefunct();
 
-        return RedirectToPage("/manage-services/delete-service-shutter", new
-        {
-            serviceName = await GetServiceName(),
-            isDeleted = true
-        });
+        return RedirectToPage("/manage-services/delete-service-shutter",
+            new { serviceName = ServiceName, isDeleted = true });
     }
 
     public async Task<IActionResult> OnGetAsync(long serviceId)
