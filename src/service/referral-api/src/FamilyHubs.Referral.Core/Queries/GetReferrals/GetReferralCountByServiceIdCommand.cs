@@ -27,6 +27,9 @@ public class GetReferralCountByServiceIdCommandHandler : IRequestHandler<GetRefe
     {
         IQueryable<Data.Entities.Referral> query = _context.Referrals
             .AsNoTracking()
+            .Include(r => r.Status)
+            .Where(r => r.Status.Name == "New" || r.Status.Name == "Opened")
+            .Where(r => r.StatusId == r.Status.Id)
             .Where(r => r.ReferralServiceId == request.ServiceId);
 
         return await query.CountAsync(cancellationToken);
