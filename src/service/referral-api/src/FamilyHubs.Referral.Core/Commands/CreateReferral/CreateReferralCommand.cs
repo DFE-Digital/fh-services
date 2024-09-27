@@ -189,6 +189,7 @@ public class CreateReferralCommandHandler : IRequestHandler<CreateReferralComman
                 Id = sdService.Id,
                 Name = sdService.Name,
                 Description = sdService.Description,
+                OrganizationId = organisation.Id,
                 Organisation = organisation
             };
 
