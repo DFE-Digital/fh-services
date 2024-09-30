@@ -396,7 +396,6 @@ public class WhenUsingReferralCommands : BaseCreateDbUnitTest
         //Check and Assert
         var getresult = await gethandler.Handle(getcommand, new System.Threading.CancellationToken());
         testReferral.ReferralServiceDto.Id = 0;
-        testReferral.ReferralServiceDto.OrganisationDto.ReferralServiceId = 0;
         testReferral.Status.SecondrySortOrder = 1;
         getresult.Should().BeEquivalentTo(testReferral, options => options.Excluding(x => x.Created).Excluding(x => x.LastModified).Excluding(x => x.ReferralUserAccountDto.UserAccountRoles));
 
