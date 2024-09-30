@@ -11,8 +11,6 @@
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.AzureKeyVault" />
     <PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" />
-    <PackageReference Include="FamilyHubs.Notification.Api.Client" />
-    <PackageReference Include="FamilyHubs.Notification.Api.Contracts" />
     <PackageReference Include="FamilyHubs.SharedKernel.Razor" />
 	<PackageReference Include="libphonenumber-csharp" />
 	<PackageReference Include="Microsoft.Extensions.Caching.SqlServer" />
@@ -26,6 +24,8 @@
     <ProjectReference Include="..\..\..\..\shared\referral-shared\src\FamilyHubs.ReferralService.Shared\FamilyHubs.ReferralService.Shared.csproj" />
     <ProjectReference Include="..\..\..\..\shared\service-directory-shared\src\FamilyHubs.ServiceDirectory.Shared\FamilyHubs.ServiceDirectory.Shared.csproj" />
     <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\..\..\service\notification-api\src\FamilyHubs.Notification.Api.Client\FamilyHubs.Notification.Api.Client.csproj" />
+    <ProjectReference Include="..\..\..\..\service\notification-api\shared\FamilyHubs.Notification.Api.Contracts\FamilyHubs.Notification.Api.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

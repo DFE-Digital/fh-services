@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="FamilyHubs.Notification.Api.Client" />
 	<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
 	<!--<PackageReference Include="Microsoft.Extensions.Hosting" />-->
 	<PackageReference Include="Serilog" />
@@ -33,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FamilyHubs.RequestForSupport.Core\FamilyHubs.RequestForSupport.Core.csproj" />
     <ProjectReference Include="..\FamilyHubs.RequestForSupport.Infrastructure\FamilyHubs.RequestForSupport.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\..\service\notification-api\src\FamilyHubs.Notification.Api.Client\FamilyHubs.Notification.Api.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>

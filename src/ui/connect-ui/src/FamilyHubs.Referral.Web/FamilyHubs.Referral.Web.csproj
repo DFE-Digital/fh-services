@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <PackageReference Include="Enums.NET" />
-    <PackageReference Include="FamilyHubs.Notification.Api.Client" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Serilog.AspNetCore" />
@@ -47,6 +46,7 @@
 	  <ProjectReference Include="..\..\..\..\shared\referral-shared\src\FamilyHubs.ReferralService.Shared\FamilyHubs.ReferralService.Shared.csproj" />
 	  <ProjectReference Include="..\FamilyHubs.Referral.Core\FamilyHubs.Referral.Core.csproj" />
 	  <ProjectReference Include="..\FamilyHubs.Referral.Infrastructure\FamilyHubs.Referral.Infrastructure.csproj" />
+	  <ProjectReference Include="..\..\..\..\service\notification-api\src\FamilyHubs.Notification.Api.Client\FamilyHubs.Notification.Api.Client.csproj" />
 	</ItemGroup>
 
 </Project>
