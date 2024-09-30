@@ -218,7 +218,6 @@ public class WhenUsingProcessUserGridEventCommands : BaseCreateDbUnitTest
                     OrganisationDto = new OrganisationDto
                     {
                         Id = 3,
-                        ReferralServiceId = 3,
                         Name = "Test Event Grid Organisation",
                         Description = "Test Event Grid Organisation Description",
                     }

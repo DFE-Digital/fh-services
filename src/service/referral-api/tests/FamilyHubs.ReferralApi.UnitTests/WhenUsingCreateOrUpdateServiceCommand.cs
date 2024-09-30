@@ -81,7 +81,6 @@ public class WhenUsingCreateOrUpdateServiceCommand : BaseCreateDbUnitTest
             OrganisationDto = new OrganisationDto
             {
                 Id = 4,
-                ReferralServiceId = 4,
                 Name = "Test Organisation - Updated",
                 Description = "Test Organisation Description - Updated",
             }
