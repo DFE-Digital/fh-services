@@ -1,35 +1,28 @@
-using Newtonsoft.Json;
 using FluentAssertions;
-using System;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using FamilyHubs.ServiceDirectory.Api.AcceptanceTests.Builders;
 using FamilyHubs.ServiceDirectory.Api.AcceptanceTests.Configuration;
-using FamilyHubs.ServiceDirectory.Api.AcceptanceTests.Models;
 using FamilyHubs.ServiceDirectory.Api.AcceptanceTests.Builders.Http;
 
 namespace FamilyHubs.ServiceDirectory.Api.AcceptanceTests.Tests.Steps;
 
 public class ApiInfoSteps
 {
-    readonly ConfigModel config;
-    readonly string baseUrl;
-    HttpResponseMessage lastResponse;
+    private readonly string _baseUrl;
+    private HttpResponseMessage? _lastResponse;
 
     public ApiInfoSteps()
     {
-        config = ConfigAccessor.GetApplicationConfiguration();
-        baseUrl = config.BaseUrl;
+        var config = ConfigAccessor.GetApplicationConfiguration();
+        _baseUrl = config.BaseUrl;
     }
 
-    public async Task ICheckTheApiInfo()
+    public async Task CheckTheApiInfo()
     {
-        lastResponse = await HttpRequestFactory.Get(baseUrl, "api/info");
+        _lastResponse = await HttpRequestFactory.Get(_baseUrl, "api/info");
     }
 
     public void AnOkStatusCodeIsReturned()
     {
-        lastResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        _lastResponse?.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 }

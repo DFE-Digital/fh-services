@@ -12,42 +12,25 @@ public class UpdateAccountCommand : IRequest
     public required string Email { get; set; }
 }
 
-public class UpdateAccountCommandHandler : IRequestHandler<UpdateAccountCommand>
+public class UpdateAccountCommandHandler(ApplicationDbContext dbContext, ILogger<UpdateAccountCommandHandler> logger)
+    : IRequestHandler<UpdateAccountCommand>
 {
-    private readonly ApplicationDbContext _dbContext;
-    private readonly ILogger<UpdateAccountCommandHandler> _logger;
-
-    public UpdateAccountCommandHandler(ApplicationDbContext dbContext, ILogger<UpdateAccountCommandHandler> logger)
-    {
-        _dbContext = dbContext;
-        _logger = logger;
-    }
-
     public async Task Handle(UpdateAccountCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _dbContext.Accounts
+        var entity = await dbContext.Accounts
             .FirstOrDefaultAsync(r => r.Id == request.AccountId, cancellationToken);
 
         if (entity is null)
         {
-            _logger.LogWarning("Account {accountId} not found", request.AccountId);
             throw new Ardalis.GuardClauses.NotFoundException(nameof(Account), request.AccountId.ToString());
         }
 
-        try
-        {
-            entity.Email = request.Email.ToLower();
+        logger.LogInformation("Updating account {AccountId} in DB", request.AccountId);
 
-            _dbContext.Accounts.Update(entity);
+        entity.Email = request.Email.ToLower();
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
+        dbContext.Accounts.Update(entity);
 
-            _logger.LogInformation("Account {accountId} updated in DB", request.AccountId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred updating account for Id:{Id}", request.AccountId);
-            throw;
-        }
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

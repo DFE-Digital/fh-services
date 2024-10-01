@@ -14,44 +14,28 @@ public class UpdateClaimCommand : IRequest<long>
     public required string Value { get; set; }
 }
 
-public class UpdateClaimCommandHandler : IRequestHandler<UpdateClaimCommand, long>
+public class UpdateClaimCommandHandler(ApplicationDbContext dbContext, ILogger<UpdateClaimCommandHandler> logger)
+    : IRequestHandler<UpdateClaimCommand, long>
 {
-    private readonly ApplicationDbContext _dbContext;
-    private readonly ILogger<UpdateClaimCommandHandler> _logger;
-
-    public UpdateClaimCommandHandler(ApplicationDbContext dbContext, ILogger<UpdateClaimCommandHandler> logger)
-    {
-        _dbContext = dbContext;
-        _logger = logger;
-    }
-
     public async Task<long> Handle(UpdateClaimCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _dbContext.AccountClaims
+        var entity = await dbContext.AccountClaims
             .FirstOrDefaultAsync(r => r.AccountId == request.AccountId, cancellationToken);
 
         if (entity is null)
         {
-            _logger.LogWarning("Account claim {claim} for AccountId:{accountId} not found", request.Name, request.AccountId);
             throw new NotFoundException(nameof(AccountClaim), request.AccountId.ToString());
         }
 
-        try
-        {
-            entity.Name = request.Name;
-            entity.Value = request.Value;
+        logger.LogInformation("Updating account claim {Claim} for Id {Id} in DB", request.Name, request.AccountId);
 
-            _dbContext.AccountClaims.Update(entity);
+        entity.Name = request.Name;
+        entity.Value = request.Value;
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("Account Claim {claim} updated in DB", request.Name);
+        dbContext.AccountClaims.Update(entity);
 
-            return entity.AccountId;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred updating claim for Id:{Id}", request.AccountId);
-            throw;
-        }
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return entity.AccountId;
     }
 }

@@ -8,8 +8,6 @@ using Microsoft.Extensions.Logging;
 
 namespace FamilyHubs.Referral.Core.Commands.CreateOrUpdateService;
 
-
-
 public class CreateOrUpdateServiceCommand : IRequest<long>, ICreateOrUpdateServiceCommand
 {
     public CreateOrUpdateServiceCommand(ReferralServiceDto referralServiceDto)
@@ -35,7 +33,7 @@ public class CreateOrUpdateServiceCommandHandler : IRequestHandler<CreateOrUpdat
 
     public async Task<long> Handle(CreateOrUpdateServiceCommand request, CancellationToken cancellationToken)
     {
-        long result = 0;
+        long result;
         if (_context.Database.IsSqlServer())
         {
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
@@ -44,24 +42,15 @@ public class CreateOrUpdateServiceCommandHandler : IRequestHandler<CreateOrUpdat
                 result = await CreateOrUpdateOrganisation(request, cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                _logger.LogError(ex, "An error occurred creating referral. {exceptionMessage}", ex.Message);
                 throw;
             }
         }
         else
         {
-            try
-            {
-                result = await CreateOrUpdateOrganisation(request, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred creating referral. {exceptionMessage}", ex.Message);
-                throw;
-            }
+            result = await CreateOrUpdateOrganisation(request, cancellationToken);
         }
 
         return result;
@@ -77,7 +66,7 @@ public class CreateOrUpdateServiceCommandHandler : IRequestHandler<CreateOrUpdat
             var mappedService = _mapper.Map<Data.Entities.ReferralService>(request.ReferralServiceDto);
             mappedService = AttachExistingOrganisation(mappedService);
 
-            Data.Entities.ReferralService? service = _context.ReferralServices.Include(x => x.Organisation).FirstOrDefault(x => x.Id == request.ReferralServiceDto.Id);
+            Data.Entities.ReferralService? service = await _context.ReferralServices.Include(x => x.Organisation).FirstOrDefaultAsync(x => x.Id == request.ReferralServiceDto.Id, cancellationToken: cancellationToken);
             if (service != null)
             {
                 _mapper.Map(request.ReferralServiceDto, service);

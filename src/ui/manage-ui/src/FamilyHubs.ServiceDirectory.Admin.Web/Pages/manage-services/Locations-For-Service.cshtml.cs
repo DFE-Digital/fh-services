@@ -45,7 +45,7 @@ public class Locations_For_ServiceModel : ServicePageModel
             && ServiceModel.Locations.Any())
         {
             //todo: this belongs as a method on ServiceModel
-            ServiceModel.CurrentLocation = ServiceModel.Locations.Last();
+            ServiceModel.CurrentLocation = ServiceModel.Locations[^1];
             ServiceModel.Locations.Remove(ServiceModel.CurrentLocation);
             await Cache.SetAsync(FamilyHubsUser.Email, ServiceModel);
         }

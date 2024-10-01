@@ -12,43 +12,26 @@ public class DeleteAccountCommand : IRequest<bool>
     public required long AccountId { get; set; }
 }
 
-public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand, bool>
+public class DeleteAccountCommandHandler(ApplicationDbContext dbContext, ILogger<DeleteAccountCommandHandler> logger)
+    : IRequestHandler<DeleteAccountCommand, bool>
 {
-    private readonly ApplicationDbContext _dbContext;
-    private readonly ILogger<DeleteAccountCommandHandler> _logger;
-
-    public DeleteAccountCommandHandler(ApplicationDbContext dbContext, ILogger<DeleteAccountCommandHandler> logger)
-    {
-        _dbContext = dbContext;
-        _logger = logger;
-    }
-
     public async Task<bool> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
     {
-        try
+        var entity = await dbContext.Accounts
+            .Where(r => r.Id == request.AccountId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (entity is null)
         {
-            var entity = await _dbContext.Accounts
-                .Where(r => r.Id == request.AccountId)
-                .FirstOrDefaultAsync(cancellationToken);
-
-            if (entity is null)
-            {
-                _logger.LogWarning($"No account found for Id: {request.AccountId}");
-                throw new NotFoundException(nameof(Account), request.AccountId.ToString());
-            }                
-
-            _dbContext.Accounts.Remove(entity);
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation($"Account with Id: {request.AccountId} deleted");
-
-            return true;
+            throw new NotFoundException(nameof(Account), request.AccountId.ToString());
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred deleting Account for Id: {AccountId}", request.AccountId);
 
-            throw;
-        }
+        logger.LogInformation("Deleting account with Id: {AccountId}", request.AccountId);
+
+        dbContext.Accounts.Remove(entity);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 }

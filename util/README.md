@@ -8,7 +8,3 @@ Contains a collection of useful utility scripts to make developers' lives easier
 ## Scripts
 
 * `setup-local-nuget-src.ps1` - Sets up a local NuGet source used for local FH package development.
-
-## Documentation
-
-- [HSDS v3.0 entity relationships](/docs/hsds-3_0-er-diagram.md)

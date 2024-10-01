@@ -48,9 +48,9 @@ public class CreateOrganisationCommandHandler : IRequestHandler<CreateOrganisati
 
             if (request.Organisation.AssociatedOrganisationId is not null)
             {
-                var associatedOrganisation = _context.Organisations
+                var associatedOrganisation = await _context.Organisations
                         .IgnoreAutoIncludes()
-                        .SingleOrDefault(o => o.Id == request.Organisation.AssociatedOrganisationId);
+                        .SingleOrDefaultAsync(o => o.Id == request.Organisation.AssociatedOrganisationId, cancellationToken);
                 if (associatedOrganisation is null)
                     throw new InvalidOperationException("Invalid Associated Organisation ID");
                 request.Organisation.AdminAreaCode = associatedOrganisation.AdminAreaCode;

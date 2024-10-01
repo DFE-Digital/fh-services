@@ -62,7 +62,7 @@ public class ViewOrganisationModel : HeaderPageModel
                 return RedirectToPage("UpdateOrganisationResult");
             }
 
-            throw new Exception($"Unexpected result from organisation Update, was expecting Id to be {id} but was {result}");
+            throw new InvalidOperationException($"Unexpected result from organisation Update, was expecting Id to be {id} but was {result}");
         }
 
         return outcome.FailureResult!;

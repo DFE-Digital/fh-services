@@ -11,34 +11,20 @@ public class GetAccountByIdCommand : IRequest<Account?>
     public required long Id { get; set; }
 }
 
-public class GetAccountByIdCommandHandler : IRequestHandler<GetAccountByIdCommand, Account?>
+public class GetAccountByIdCommandHandler(ApplicationDbContext dbContext, ILogger<GetAccountByIdCommandHandler> logger)
+    : IRequestHandler<GetAccountByIdCommand, Account?>
 {
-    private readonly ApplicationDbContext _dbContext;
-    private readonly ILogger<GetAccountByIdCommandHandler> _logger;
-
-    public GetAccountByIdCommandHandler(ApplicationDbContext dbContext, ILogger<GetAccountByIdCommandHandler> logger)
-    {
-        _dbContext = dbContext;
-        _logger = logger;
-    }
-
     public async Task<Account?> Handle(GetAccountByIdCommand request, CancellationToken cancellationToken)
     {
-        try
-        {
-            var account = await _dbContext.Accounts.FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
-            if (account is null)
-            {
-                _logger.LogWarning("No account found for requested email");
-            }
+        logger.LogInformation("Getting account for Id :{Id}", request.Id);
 
-            return account;
-        }
-        catch (Exception ex)
+        var account = await dbContext.Accounts.FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
+        if (account is null)
         {
-            _logger.LogError(ex, "An error occurred Getting Account for Id :{Id}", request.Id);
-            throw;
+            logger.LogWarning("No account found for requested email");
         }
+
+        return account;
     }
 }
 

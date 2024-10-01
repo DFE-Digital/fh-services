@@ -92,7 +92,7 @@ public static class ReferralSeedData
         };
     }
 
-    public static IReadOnlyCollection<Data.Entities.Referral> SeedReferral(bool testing = false)
+    public static IReadOnlyCollection<Entities.Referral> SeedReferral(bool testing = false)
     {
         List<Data.Entities.Referral> listReferrals = new()
         {

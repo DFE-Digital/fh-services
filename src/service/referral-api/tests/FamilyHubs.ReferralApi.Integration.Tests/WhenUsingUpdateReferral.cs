@@ -16,7 +16,7 @@ public class WhenUsingUpdateReferral : DataIntegrationTestBase
         referral.EngageWithFamily = "Unit Test Engage With Family";
 
         UpdateReferralCommand command = new(referral.Id, referral);
-        UpdateReferralCommandHandler handler = new(TestDbContext, Mapper, new Mock<ILogger<UpdateReferralCommandHandler>>().Object);
+        UpdateReferralCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
         var result = await handler.Handle(command, new System.Threading.CancellationToken());
@@ -45,7 +45,7 @@ public class WhenUsingUpdateReferral : DataIntegrationTestBase
         };
 
         UpdateReferralCommand command = new(referral.Id, referral);
-        UpdateReferralCommandHandler handler = new(TestDbContext, Mapper, new Mock<ILogger<UpdateReferralCommandHandler>>().Object);
+        UpdateReferralCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
         var result = await handler.Handle(command, new System.Threading.CancellationToken());
@@ -73,7 +73,7 @@ public class WhenUsingUpdateReferral : DataIntegrationTestBase
         var expected = referral.RecipientDto;
 
         UpdateReferralCommand command = new(referral.Id, referral);
-        UpdateReferralCommandHandler handler = new(TestDbContext, Mapper, new Mock<ILogger<UpdateReferralCommandHandler>>().Object);
+        UpdateReferralCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
         var result = await handler.Handle(command, new System.Threading.CancellationToken());
@@ -95,7 +95,7 @@ public class WhenUsingUpdateReferral : DataIntegrationTestBase
         var expected = referral.ReferralUserAccountDto;
 
         UpdateReferralCommand command = new(referral.Id, referral);
-        UpdateReferralCommandHandler handler = new(TestDbContext, Mapper, new Mock<ILogger<UpdateReferralCommandHandler>>().Object);
+        UpdateReferralCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
         var result = await handler.Handle(command, new System.Threading.CancellationToken());
@@ -120,7 +120,7 @@ public class WhenUsingUpdateReferral : DataIntegrationTestBase
         var expected = referral.ReferralServiceDto;
 
         UpdateReferralCommand command = new(referral.Id, referral);
-        UpdateReferralCommandHandler handler = new(TestDbContext, Mapper, new Mock<ILogger<UpdateReferralCommandHandler>>().Object);
+        UpdateReferralCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
         var result = await handler.Handle(command, new System.Threading.CancellationToken());

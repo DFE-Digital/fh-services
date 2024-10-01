@@ -32,12 +32,13 @@ public class WhenUsingNotifications : BaseWhenUsingOpenReferralApiUnitTests
         }
     }
 
+#if LOCAL_ONLY
     // Uncomment to run locally
-    //[Theory]
-    //[InlineData("ProfessionalAcceptRequest")]
-    //[InlineData("ProfessionalDecineRequest")]
-    //[InlineData("ProfessionalSentRequest")]
-    //[InlineData("VcsNewRequest")]
+    [Theory]
+    [InlineData("ProfessionalAcceptRequest")]
+    [InlineData("ProfessionalDecineRequest")]
+    [InlineData("ProfessionalSentRequest")]
+    [InlineData("VcsNewRequest")]
     public async Task ThenSendEmailNotificationToUser(string key)
     {
         if (!IsRunningLocally() || Client == null)
@@ -89,6 +90,7 @@ public class WhenUsingNotifications : BaseWhenUsingOpenReferralApiUnitTests
         response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         result.Should().BeTrue();
     }
+#endif
 
     [Fact]
     public async Task ThenGetNotificationsList()

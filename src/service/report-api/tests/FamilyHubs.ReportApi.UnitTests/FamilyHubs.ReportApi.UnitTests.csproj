@@ -2,31 +2,30 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net7.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
+	    <NuGetAuditMode>direct</NuGetAuditMode>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+	</PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="coverlet.collector" Version="6.0.2">
+      <PackageReference Include="coverlet.collector">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="FamilyHubs.SharedKernel" Version="2.4.0" />
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-      <PackageReference Include="NSubstitute" Version="5.1.0" />
-      <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.17">
+      <PackageReference Include="Microsoft.NET.Test.Sdk" />
+      <PackageReference Include="NSubstitute" />
+      <PackageReference Include="NSubstitute.Analyzers.CSharp">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="xunit" Version="2.7.1" />
-      <PackageReference Include="xunit.runner.visualstudio" Version="2.5.8">
+      <PackageReference Include="xunit" />
+      <PackageReference Include="xunit.runner.visualstudio">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
       <ProjectReference Include="..\..\src\FamilyHubs.Report.Core\FamilyHubs.Report.Core.csproj" />
       <ProjectReference Include="..\..\src\FamilyHubs.Report.Data\FamilyHubs.Report.Data.csproj" />
     </ItemGroup>

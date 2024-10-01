@@ -5,15 +5,9 @@ using FamilyHubs.SharedKernel.Identity;
 
 namespace FamilyHubs.Idam.Core.Queries.GetAccounts;
 
-internal class UserOrganisationsFilterAdmin : IUserOrganisationsFilter
+internal class UserOrganisationsFilterAdmin(IServiceDirectoryService serviceDirectoryService) : IUserOrganisationsFilter
 {
-    private List<OrganisationDto> _organisationCache = new List<OrganisationDto>();
-    private readonly IServiceDirectoryService _serviceDirectoryService;
-
-    public UserOrganisationsFilterAdmin(IServiceDirectoryService serviceDirectoryService)
-    {
-        _serviceDirectoryService = serviceDirectoryService;
-    }
+    private List<OrganisationDto> _organisationCache = [];
 
     public bool Any => true;
     
@@ -24,7 +18,7 @@ internal class UserOrganisationsFilterAdmin : IUserOrganisationsFilter
             return accountsQuery.Where(acc => acc.Claims.Any(claim => claim.Name == FamilyHubsClaimTypes.OrganisationId && claim.Value != "-1"));
         }
 
-        var orgsByName = await _serviceDirectoryService.GetOrganisationsByName(organisationName);
+        var orgsByName = await serviceDirectoryService.GetOrganisationsByName(organisationName);
         if (orgsByName != null) _organisationCache = orgsByName;
 
         var organisationIds = _organisationCache.Select(x => x.Id.ToString());
@@ -33,7 +27,7 @@ internal class UserOrganisationsFilterAdmin : IUserOrganisationsFilter
 
     public async Task<IUserOrganisationsFilter> Requested(long requestedOrganisationId)
     {
-        var orgsById = await _serviceDirectoryService.GetOrganisationsByIds(new List<long> { requestedOrganisationId });
+        var orgsById = await serviceDirectoryService.GetOrganisationsByIds(new List<long> { requestedOrganisationId });
         return new UserOrganisationsFilterStandard(orgsById);
     }
 
@@ -42,7 +36,7 @@ internal class UserOrganisationsFilterAdmin : IUserOrganisationsFilter
         var unknownIds = orgIds
             .Select(id => long.TryParse(id, out var o) ? o : -1)
             .Except(_organisationCache.Select(o => o.Id));
-        var orgsById = await _serviceDirectoryService.GetOrganisationsByIds(unknownIds) ?? new List<OrganisationDto>();
+        var orgsById = await serviceDirectoryService.GetOrganisationsByIds(unknownIds) ?? new List<OrganisationDto>();
 
         return _organisationCache.Union(orgsById).ToDictionary(o => o.Id.ToString());
     }

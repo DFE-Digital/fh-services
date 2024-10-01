@@ -1,8 +1,6 @@
-﻿using System.Runtime.Serialization;
-
+﻿
 namespace FamilyHubs.Idams.Maintenance.Core.Exceptions;
 
-[Serializable]
 public class IdamsException : Exception
 {
     public string Title { get; set; } = "Server Error";
@@ -10,11 +8,6 @@ public class IdamsException : Exception
     public int HttpStatusCode { get; set; } = 500;
         
     public IdamsException(string message) :base(message)
-    {
-
-    }
-
-    protected IdamsException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
 
     }

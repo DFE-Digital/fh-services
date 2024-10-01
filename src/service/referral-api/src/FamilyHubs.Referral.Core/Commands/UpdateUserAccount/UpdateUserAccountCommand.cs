@@ -6,7 +6,6 @@ using FamilyHubs.Referral.Data.Repository;
 using FamilyHubs.ReferralService.Shared.Dto;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace FamilyHubs.Referral.Core.Commands.UpdateUserAccount;
 
@@ -23,17 +22,9 @@ public class UpdateUserAccountCommand : IRequest<bool>, IUpdateUserAccountComman
     public UserAccountDto UserAccount { get; }
 }
 
-public class UpdateUserAccountCommandHandler : BaseUserAccountHandler, IRequestHandler<UpdateUserAccountCommand, bool>
+public class UpdateUserAccountCommandHandler(ApplicationDbContext context, IMapper mapper)
+    : BaseUserAccountHandler(context), IRequestHandler<UpdateUserAccountCommand, bool>
 {
-    private readonly IMapper _mapper;
-    private readonly ILogger<UpdateUserAccountCommandHandler> _logger;
-    public UpdateUserAccountCommandHandler(ApplicationDbContext context, IMapper mapper, ILogger<UpdateUserAccountCommandHandler> logger)
-        : base(context)
-    {
-        _logger = logger;
-        _mapper = mapper;
-    }
-
     public async Task<bool> Handle(UpdateUserAccountCommand request, CancellationToken cancellationToken)
     {
         bool result;
@@ -45,55 +36,44 @@ public class UpdateUserAccountCommandHandler : BaseUserAccountHandler, IRequestH
                 result = await UpdateAndUpdateUserAccount(request, cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                _logger.LogError(ex, "An error occurred creating referral. {exceptionMessage}", ex.Message);
                 throw;
             }
         }
         else
         {
-            try
-            {
-                result = await UpdateAndUpdateUserAccount(request, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred creating referral. {exceptionMessage}", ex.Message);
-                throw;
-            }
+            result = await UpdateAndUpdateUserAccount(request, cancellationToken);
         }
-
 
         return result;
     }
 
     private async Task<bool> UpdateAndUpdateUserAccount(UpdateUserAccountCommand request, CancellationToken cancellationToken)
     {
-        var entity = _context.UserAccounts
+        var entity = await _context.UserAccounts
             .Include(x => x.OrganisationUserAccounts)
-            .FirstOrDefault(x => x.Id == request.UserAccountId);
+            .FirstOrDefaultAsync(x => x.Id == request.UserAccountId, cancellationToken: cancellationToken);
 
         if (entity == null)
         {
             throw new NotFoundException(nameof(Referral), request.UserAccountId.ToString());
         }
 
-        entity = _mapper.Map<UserAccount>(request.UserAccount);
+        entity = mapper.Map<UserAccount>(request.UserAccount);
         ArgumentNullException.ThrowIfNull(entity);
 
-        entity.OrganisationUserAccounts = _mapper.Map<List<UserAccountOrganisation>>(request.UserAccount.OrganisationUserAccounts);
+        entity.OrganisationUserAccounts = mapper.Map<List<UserAccountOrganisation>>(request.UserAccount.OrganisationUserAccounts);
 
-        entity = await AttatchExistingUserAccountRoles(entity, cancellationToken);
-        entity = await AttatchExistingService(entity, cancellationToken);
-        entity = await AttatchExistingOrgansiation(entity, cancellationToken);
+        entity = await AttachExistingUserAccountRoles(entity, cancellationToken);
+        entity = await AttachExistingService(entity, cancellationToken);
+        entity = await AttachExistingOrgansiation(entity, cancellationToken);
 
         entity.Name = request.UserAccount.Name;
         entity.PhoneNumber = request.UserAccount.PhoneNumber; 
         entity.EmailAddress = request.UserAccount.EmailAddress;
         entity.Team = request.UserAccount.Team;
-        
         
         await _context.SaveChangesAsync(cancellationToken);
 

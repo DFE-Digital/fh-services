@@ -24,10 +24,9 @@ namespace FamilyHubs.SharedKernel.Identity.Authentication.Stub
             IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
-            ISystemClock clock,
             ICustomClaims customClaims,
             IHttpContextAccessor httpContextAccessor,
-            GovUkOidcConfiguration configuration) : base(options, logger, encoder, clock)
+            GovUkOidcConfiguration configuration) : base(options, logger, encoder)
         {
             _customClaims = customClaims;
             _httpContextAccessor = httpContextAccessor;

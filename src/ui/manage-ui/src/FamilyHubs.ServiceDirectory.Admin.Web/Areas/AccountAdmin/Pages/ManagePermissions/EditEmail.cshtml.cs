@@ -79,7 +79,7 @@ public class EditEmailModel : InputPageViewModel
         var account = await _idamClient.GetAccountById(accountId);
         if (account == null)
         {
-            throw new Exception("User Account not found");
+            throw new InvalidOperationException("User Account not found");
         }
 
         string accountRole = GetRole(account);
@@ -99,7 +99,7 @@ public class EditEmailModel : InputPageViewModel
             return id;
         }
 
-        throw new Exception("Invalid AccountId");
+        throw new InvalidOperationException("Invalid AccountId");
     }
 
     private string GetRole(AccountDto? account)
@@ -111,6 +111,6 @@ public class EditEmailModel : InputPageViewModel
             return role;
         }
 
-        throw new Exception("Role not found");
+        throw new InvalidOperationException("Role not found");
     }
 }

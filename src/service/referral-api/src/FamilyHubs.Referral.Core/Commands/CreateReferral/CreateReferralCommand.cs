@@ -17,39 +17,28 @@ namespace FamilyHubs.Referral.Core.Commands.CreateReferral;
 public record CreateReferralCommand(CreateReferralDto CreateReferral, FamilyHubsUser FamilyHubsUser)
     : IRequest<ReferralResponse>, ICreateReferralCommand;
 
-public class CreateReferralCommandHandler : IRequestHandler<CreateReferralCommand, ReferralResponse>
+public class CreateReferralCommandHandler(
+    ApplicationDbContext context,
+    IMapper mapper,
+    IServiceDirectoryService serviceDirectoryService)
+    : IRequestHandler<CreateReferralCommand, ReferralResponse>
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
-    private readonly IServiceDirectoryService _serviceDirectoryService;
-    private readonly ILogger<CreateReferralCommandHandler> _logger;
-
-    public CreateReferralCommandHandler(ApplicationDbContext context, IMapper mapper,
-        IServiceDirectoryService serviceDirectoryService, ILogger<CreateReferralCommandHandler> logger)
-    {
-        _logger = logger;
-        _context = context;
-        _mapper = mapper;
-        _serviceDirectoryService = serviceDirectoryService;
-    }
-
     public async Task<ReferralResponse> Handle(CreateReferralCommand request, CancellationToken cancellationToken)
     {
-        Data.Entities.Referral entity = _mapper.Map<Data.Entities.Referral>(request.CreateReferral.Referral);
+        Data.Entities.Referral entity = mapper.Map<Data.Entities.Referral>(request.CreateReferral.Referral);
 
         //todo: I don't think these explicit transactions are necessary
         ReferralResponse? referralResponse = null;
 
-        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
         try
         {
             referralResponse = await CreateAndUpdateReferral(entity, cancellationToken);
             await transaction.CommitAsync(cancellationToken);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await transaction.RollbackAsync(cancellationToken);
-            _logger.LogError(ex, "An error occurred creating referral. {exceptionMessage}", ex.Message);
             throw;
         }
         finally
@@ -75,8 +64,8 @@ public class CreateReferralCommandHandler : IRequestHandler<CreateReferralComman
             ConnectionRequestReferenceCode = referralResponse?.Id.ToString("X6")
         };
 
-        _context.Add(metrics);
-        await _context.SaveChangesAsync();
+        context.Add(metrics);
+        await context.SaveChangesAsync();
     }
 
     private async Task<ReferralResponse> CreateAndUpdateReferral(Data.Entities.Referral entity, CancellationToken cancellationToken)
@@ -89,9 +78,9 @@ public class CreateReferralCommandHandler : IRequestHandler<CreateReferralComman
         entity = AttachExistingUserAccount(entity);
         entity = await AttachExistingService(entity);
 
-        _context.Referrals.Add(entity);
+        context.Referrals.Add(entity);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
         return new ReferralResponse
         {
@@ -103,7 +92,7 @@ public class CreateReferralCommandHandler : IRequestHandler<CreateReferralComman
 
     private Data.Entities.Referral AttachExistingStatus(Data.Entities.Referral entity)
     {
-        Status? referralStatus = _context.Statuses.SingleOrDefault(x => x.Name == entity.Status.Name);
+        Status? referralStatus = context.Statuses.SingleOrDefault(x => x.Name == entity.Status.Name);
         if (referralStatus != null)
         {
             entity.Status = referralStatus;
@@ -114,7 +103,7 @@ public class CreateReferralCommandHandler : IRequestHandler<CreateReferralComman
 
     private Data.Entities.Referral AttachExistingUserAccount(Data.Entities.Referral entity)
     {
-        UserAccount? professional = _context.UserAccounts.SingleOrDefault(x => x.Id == entity.UserAccount.Id);
+        UserAccount? professional = context.UserAccounts.SingleOrDefault(x => x.Id == entity.UserAccount.Id);
         if (professional != null)
         {
             entity.UserAccount = professional;
@@ -126,10 +115,10 @@ public class CreateReferralCommandHandler : IRequestHandler<CreateReferralComman
                 for (int i = 0; i < entity.UserAccount.UserAccountRoles.Count; i++)
                 {
                     Role? role =
-                        _context.Roles.SingleOrDefault(x => x.Name == entity.UserAccount.UserAccountRoles[i].Role.Name);
+                        context.Roles.SingleOrDefault(x => x.Name == entity.UserAccount.UserAccountRoles[i].Role.Name);
                     if (role != null)
                     {
-                        UserAccountRole? userAccountRole = _context.UserAccountRoles.SingleOrDefault(x =>
+                        UserAccountRole? userAccountRole = context.UserAccountRoles.SingleOrDefault(x =>
                             x.RoleId == role.Id && x.UserAccountId == entity.UserAccount.Id);
                         if (userAccountRole != null)
                         {
@@ -151,11 +140,11 @@ public class CreateReferralCommandHandler : IRequestHandler<CreateReferralComman
     private async Task<Data.Entities.Referral> AttachExistingService(Data.Entities.Referral entity)
     {
         Data.Entities.ReferralService? referralService =
-            _context.ReferralServices.SingleOrDefault(x => x.Id == entity.ReferralService.Id);
+            context.ReferralServices.SingleOrDefault(x => x.Id == entity.ReferralService.Id);
         if (referralService == null)
         {
             ServiceDirectory.Shared.Dto.ServiceDto? sdService =
-                await _serviceDirectoryService.GetServiceById(entity.ReferralService.Id);
+                await serviceDirectoryService.GetServiceById(entity.ReferralService.Id);
             if (sdService == null)
             {
                 throw new ArgumentException(
@@ -164,11 +153,11 @@ public class CreateReferralCommandHandler : IRequestHandler<CreateReferralComman
 
             // check if the organization already exists
             //todo: do we need to update the organisation from the sd, if it already exists?
-            Organisation? organisation = await _context.Organisations.FindAsync(sdService.OrganisationId);
+            Organisation? organisation = await context.Organisations.FindAsync(sdService.OrganisationId);
             if (organisation == null)
             {
                 ServiceDirectory.Shared.Dto.OrganisationDto? sdOrganisation =
-                    await _serviceDirectoryService.GetOrganisationById(sdService.OrganisationId);
+                    await serviceDirectoryService.GetOrganisationById(sdService.OrganisationId);
                 if (sdOrganisation == null)
                 {
                     throw new ArgumentException(
@@ -193,9 +182,9 @@ public class CreateReferralCommandHandler : IRequestHandler<CreateReferralComman
                 Organisation = organisation
             };
 
-            _context.ReferralServices.Add(srv);
-            await _context.SaveChangesAsync();
-            referralService = _context.ReferralServices.SingleOrDefault(x => x.Id == entity.ReferralService.Id);
+            context.ReferralServices.Add(srv);
+            await context.SaveChangesAsync();
+            referralService = context.ReferralServices.SingleOrDefault(x => x.Id == entity.ReferralService.Id);
         }
 
         if (referralService != null)

@@ -1,6 +1,5 @@
 ﻿using FamilyHubs.Referral.Data.Entities;
 using FamilyHubs.Referral.Data.Repository;
-using Microsoft.IdentityModel.Tokens;
 
 namespace FamilyHubs.Referral.Core.Commands;
 
@@ -12,7 +11,8 @@ public abstract class BaseUserAccountHandler
     {
         _context = context;
     }
-    protected async Task<UserAccount> AttatchExistingUserAccountRoles(UserAccount entity, CancellationToken cancellationToken)
+
+    protected async Task<UserAccount> AttachExistingUserAccountRoles(UserAccount entity, CancellationToken cancellationToken)
     {
         if (entity.UserAccountRoles == null)
         {
@@ -33,35 +33,36 @@ public abstract class BaseUserAccountHandler
         return entity;
     }
 
-    protected async Task<UserAccount> AttatchExistingOrgansiation(UserAccount entity, CancellationToken cancellationToken)
+    protected async Task<UserAccount> AttachExistingOrgansiation(UserAccount entity, CancellationToken cancellationToken)
     {
         if (entity.OrganisationUserAccounts == null)
         {
             return entity;
         }
-        for(int i = 0; i < entity.OrganisationUserAccounts.Count; i++)
+
+        var withIndexes = entity.OrganisationUserAccounts.Select((x, i) => (i, x)).ToList();
+        foreach (var (idx, userAccountOrganisation) in withIndexes)
         {
-            Organisation? organisation = _context.Organisations.SingleOrDefault(x => x.Id == entity.OrganisationUserAccounts[i].Organisation.Id);
+            var organisation = _context.Organisations.SingleOrDefault(x => x.Id == userAccountOrganisation.Organisation.Id);
 
             if (organisation == null)
             {
-                if (string.IsNullOrEmpty(entity.OrganisationUserAccounts[i].Organisation.Name))
+                if (string.IsNullOrEmpty(userAccountOrganisation.Organisation.Name))
                 {
-                    entity.OrganisationUserAccounts.RemoveAt(i);
-                    i--;
+                    entity.OrganisationUserAccounts.RemoveAt(idx);
                     continue;
                 }
-                _context.Organisations.Add(entity.OrganisationUserAccounts[i].Organisation);
+                _context.Organisations.Add(userAccountOrganisation.Organisation);
                 await _context.SaveChangesAsync(cancellationToken);
             }
 
-            entity.OrganisationUserAccounts[i].Organisation = _context.Organisations.Single(x => x.Id == entity.OrganisationUserAccounts[i].Organisation.Id);
+            userAccountOrganisation.Organisation = _context.Organisations.Single(x => x.Id == userAccountOrganisation.Organisation.Id);
         }
 
         return entity;
     }
 
-    protected async Task<UserAccount> AttatchExistingService(UserAccount entity, CancellationToken cancellationToken)
+    protected async Task<UserAccount> AttachExistingService(UserAccount entity, CancellationToken cancellationToken)
     {
         if (entity.ServiceUserAccounts == null)
         {

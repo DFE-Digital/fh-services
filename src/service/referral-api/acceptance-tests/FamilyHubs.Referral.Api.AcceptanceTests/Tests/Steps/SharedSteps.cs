@@ -17,7 +17,7 @@ public class SharedSteps
         var config = ConfigAccessor.GetApplicationConfiguration();
     }
 
-    public string bearerToken { get; private set; }
+    public string? bearerToken { get; private set; }
 
     #region Given
 

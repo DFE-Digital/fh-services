@@ -65,7 +65,7 @@ public static class StartupExtensions
         services.AddFamilyHubs(configuration);
     }
 
-    public static void AddWebUiServices(this IServiceCollection services, IConfiguration configuration)
+    private static void AddWebUiServices(this IServiceCollection services, IConfiguration configuration)
     {
         const string dataProtectionAppName = "Connect";
         services.AddFamilyHubsDataProtection(configuration, dataProtectionAppName);
@@ -100,7 +100,7 @@ public static class StartupExtensions
         services.AddTransient<IConnectionRequestDistributedCache, ConnectionRequestDistributedCache>();
     }
 
-    public static void AddHttpClients(this IServiceCollection services, IConfiguration configuration)
+    private static void AddHttpClients(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient<IOrganisationClientService, OrganisationClientService>(client =>
         {

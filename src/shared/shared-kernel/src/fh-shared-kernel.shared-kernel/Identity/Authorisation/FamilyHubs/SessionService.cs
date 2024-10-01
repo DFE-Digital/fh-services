@@ -42,7 +42,7 @@ namespace FamilyHubs.SharedKernel.Identity.Authorisation.FamilyHubs
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogError("Call to Idams to created new session failed with {statusCode}", response.StatusCode);
+                _logger.LogError("Call to Idams to created new session failed with {StatusCode}", response.StatusCode);
             }
 
             response.EnsureSuccessStatusCode();
@@ -62,7 +62,7 @@ namespace FamilyHubs.SharedKernel.Identity.Authorisation.FamilyHubs
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogError("Call to Idams to get session failed with {statusCode}", response.StatusCode);
+                _logger.LogError("Call to Idams to get session failed with {StatusCode}", response.StatusCode);
             }
 
             response.EnsureSuccessStatusCode();
@@ -89,7 +89,7 @@ namespace FamilyHubs.SharedKernel.Identity.Authorisation.FamilyHubs
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogError("Call to Idams to delete session failed with {statusCode}", response.StatusCode);
+                _logger.LogError("Call to Idams to delete session failed with {StatusCode}", response.StatusCode);
             }
 
             response.EnsureSuccessStatusCode();
@@ -110,7 +110,7 @@ namespace FamilyHubs.SharedKernel.Identity.Authorisation.FamilyHubs
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogError("Call to Idams to delete all user sessions failed with {statusCode}", response.StatusCode);
+                _logger.LogError("Call to Idams to delete all user sessions failed with {StatusCode}", response.StatusCode);
             }
 
             response.EnsureSuccessStatusCode();
@@ -130,7 +130,7 @@ namespace FamilyHubs.SharedKernel.Identity.Authorisation.FamilyHubs
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogError("Call to Idams to get session failed with {statusCode}", response.StatusCode);
+                _logger.LogError("Call to Idams to get session failed with {StatusCode}", response.StatusCode);
             }
 
         }

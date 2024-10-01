@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
 	  <PackageId>FamilyHubs.Notification.Api.Client</PackageId>
 	  <VersionPrefix>1.1.1</VersionPrefix>
 	  <PackageReadmeFile>readme.md</PackageReadmeFile>
@@ -11,21 +8,22 @@
 	  <RepositoryUrl>https://github.com/DFE-Digital/fh-notification-api</RepositoryUrl>
 	  <PackageTags>govuk dfe family-hub notification client</PackageTags>
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	  <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	  <NoWarn>S1135</NoWarn>
+	  <NuGetAuditMode>direct</NuGetAuditMode>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FamilyHubs.SharedKernel" Version="2.0.53" />
-		<PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.10" />
-		<PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
-		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.8.0.76515">
+		<PackageReference Include="Microsoft.Extensions.Http.Polly" />
+		<PackageReference Include="Polly.Contrib.WaitAndRetry" />
+		<PackageReference Include="SonarAnalyzer.CSharp">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
 	  <ProjectReference Include="..\..\shared\FamilyHubs.Notification.Api.Contracts\FamilyHubs.Notification.Api.Contracts.csproj" />
 	</ItemGroup>
 

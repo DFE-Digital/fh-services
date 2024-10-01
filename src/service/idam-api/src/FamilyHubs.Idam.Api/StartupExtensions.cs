@@ -155,31 +155,22 @@ public static class StartupExtensions
 
     private static async Task InitialiseDatabase(this WebApplication webApplication)
     {
-        try
+        using var scope = webApplication.Services.CreateScope();
+
+        // Seed Database
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var shouldRestDatabaseOnRestart = webApplication.Configuration.GetValue<bool>("ShouldRestDatabaseOnRestart");
+        
+        if (!webApplication.Environment.IsProduction())
         {
-            using var scope = webApplication.Services.CreateScope();
 
-            // Seed Database
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var shouldRestDatabaseOnRestart = webApplication.Configuration.GetValue<bool>("ShouldRestDatabaseOnRestart");
-            
-            if (!webApplication.Environment.IsProduction())
-            {
+            if (shouldRestDatabaseOnRestart) 
+                await dbContext.Database.EnsureDeletedAsync();
 
-                if (shouldRestDatabaseOnRestart) 
-                    await dbContext.Database.EnsureDeletedAsync();
-
-                if(dbContext.Database.IsSqlServer())
-                    await dbContext.Database.MigrateAsync();
-                else
-                    await dbContext.Database.EnsureCreatedAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "An error occurred while initialising the database");
-            
-            throw;
+            if(dbContext.Database.IsSqlServer())
+                await dbContext.Database.MigrateAsync();
+            else
+                await dbContext.Database.EnsureCreatedAsync();
         }
     }
 }

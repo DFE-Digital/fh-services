@@ -19,7 +19,7 @@ public class WhenUsingTaxonomiesApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/taxonomies?pageNumber=1&pageSize=10&taxonomyType=ServiceCategory"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/taxonomies?pageNumber=1&pageSize=10&taxonomyType=ServiceCategory"),
         };
 
         using var response = await Client.SendAsync(request);
@@ -48,7 +48,7 @@ public class WhenUsingTaxonomiesApiUnitTests : BaseWhenUsingApiUnitTests
 
         var request = CreatePostRequest("api/taxonomies", commandTaxonomy, RoleTypes.DfeAdmin);
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -69,7 +69,7 @@ public class WhenUsingTaxonomiesApiUnitTests : BaseWhenUsingApiUnitTests
 
         var request = CreatePostRequest("api/taxonomies", commandTaxonomy, RoleTypes.DfeAdmin);
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         var responseContent = await response.Content.ReadAsStringAsync();
 

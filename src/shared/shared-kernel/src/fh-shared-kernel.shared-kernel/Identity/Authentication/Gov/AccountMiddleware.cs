@@ -92,7 +92,7 @@ namespace FamilyHubs.SharedKernel.Identity.Authentication.Gov
             if (!httpContext.Request.Path.Value.Contains(AuthenticationConstants.AccountPaths, StringComparison.CurrentCultureIgnoreCase))
                 return;
 
-            _logger.LogInformation("Account Request Path:{path} Headers:{@headers}", httpContext.Request.Path.Value, httpContext.Request.Headers);
+            _logger.LogInformation("Account Request Path:{Path} Headers:{@Headers}", httpContext.Request.Path.Value, httpContext.Request.Headers);
         }
 
         private string GetReturnPath(HttpContext context)
@@ -141,7 +141,7 @@ namespace FamilyHubs.SharedKernel.Identity.Authentication.Gov
             else
             {
                 context.Response.Cookies.Delete(_configuration.CookieName!);
-                _logger.LogInformation("Session Id {sid} not found in IDams", sid);
+                _logger.LogInformation("Session Id {Sid} not found in IDams", sid);
             }
 
             return isSessionActive;

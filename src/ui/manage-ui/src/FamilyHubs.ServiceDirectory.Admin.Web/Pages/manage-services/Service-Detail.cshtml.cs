@@ -90,9 +90,9 @@ public class Service_DetailModel : ServicePageModel
         // we always need the browser to come back to the server
         // when the user comes back to this page, after hitting the browser (or page) back button.
         // so we tell the browser not to cache the page
-        Response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
-        Response.Headers.Add("Pragma", "no-cache");
-        Response.Headers.Add("Expires", "0");
+        Response.Headers.Append("Cache-Control", "no-cache, no-store, must-revalidate");
+        Response.Headers.Append("Pragma", "no-cache");
+        Response.Headers.Append("Expires", "0");
     }
 
     private async Task PopulateTaxonomyIdToName(CancellationToken cancellationToken)

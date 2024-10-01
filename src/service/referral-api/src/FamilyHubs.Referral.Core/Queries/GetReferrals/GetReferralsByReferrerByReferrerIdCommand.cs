@@ -1,5 +1,4 @@
-﻿using Ardalis.GuardClauses;
-using AutoMapper;
+﻿using AutoMapper;
 using FamilyHubs.Referral.Data.Repository;
 using FamilyHubs.ReferralService.Shared.Dto;
 using FamilyHubs.ReferralService.Shared.Enums;
@@ -17,8 +16,8 @@ public class GetReferralsByReferrerByReferrerIdCommand : IRequest<PaginatedList<
         OrderBy = orderBy;
         IsAssending = isAssending;
         IncludeDeclined = includeDeclined;
-        PageNumber = pageNumber != null ? pageNumber.Value : 1;
-        PageSize = pageSize != null ? pageSize.Value : 10;
+        PageNumber = pageNumber ?? 1;
+        PageSize = pageSize ?? 10;
     }
 
     public long Id { get; set; }
@@ -29,13 +28,10 @@ public class GetReferralsByReferrerByReferrerIdCommand : IRequest<PaginatedList<
     public int PageSize { get; set; } = 10;
 }
 
-public class GetReferralsByReferrerByReferrerIdCommandHandler : GetReferralsHandlerBase, IRequestHandler<GetReferralsByReferrerByReferrerIdCommand, PaginatedList<ReferralDto>>
+public class GetReferralsByReferrerByReferrerIdCommandHandler(ApplicationDbContext context, IMapper mapper)
+    : GetReferralsHandlerBase(context, mapper),
+        IRequestHandler<GetReferralsByReferrerByReferrerIdCommand, PaginatedList<ReferralDto>>
 {
-    public GetReferralsByReferrerByReferrerIdCommandHandler(ApplicationDbContext context, IMapper mapper)
-        : base(context, mapper)
-    {
-
-    }
     public async Task<PaginatedList<ReferralDto>> Handle(GetReferralsByReferrerByReferrerIdCommand request, CancellationToken cancellationToken)
     {
         var entities = _context.Referrals.GetAll()
@@ -49,11 +45,6 @@ public class GetReferralsByReferrerByReferrerIdCommandHandler : GetReferralsHand
         else
         {
             entities = entities.Where(x => x.UserAccount.Id == request.Id && x.Status.Name != "Declined");
-        }
-
-        if (entities == null)
-        {
-            throw new NotFoundException(nameof(Referral), request.Id.ToString());
         }
 
         entities = OrderBy(entities, request.OrderBy, request.IsAssending, true);

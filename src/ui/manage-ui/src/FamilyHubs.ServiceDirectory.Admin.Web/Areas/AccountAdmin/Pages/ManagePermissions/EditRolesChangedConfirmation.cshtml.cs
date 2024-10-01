@@ -25,7 +25,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
 
             if (account == null)
             {
-                throw new Exception("User Account not found");
+                throw new InvalidOperationException("User Account not found");
             }
 
             UserName = account.Name;
@@ -38,7 +38,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
                 return id;
             }
 
-            throw new Exception("Invalid AccountId");
+            throw new InvalidOperationException("Invalid AccountId");
         }
     }
 }

@@ -14,7 +14,9 @@
 
 ## Documentation
 
-Specific documentation on each lib, service, API and others can be found within the `src/` folder.
+- [HSDS v3.0 entity relationships](/docs/hsds-3_0-er-diagram.md)
+
+**Note:** Specific documentation on each lib, service, API and others can be found within the `src/` folder.
 
 ## License
 

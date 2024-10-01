@@ -5,7 +5,6 @@ using FamilyHubs.Referral.Data.Repository;
 using FamilyHubs.ReferralService.Shared.Dto;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace FamilyHubs.Referral.Core.Commands.CreateUserAccount;
 
@@ -19,20 +18,12 @@ public class CreateUserAccountCommand : IRequest<long>, ICreateUserAccountComman
     public UserAccountDto UserAccount { get; }
 }
 
-public class CreateUserAccountCommandHandler : BaseUserAccountHandler, IRequestHandler<CreateUserAccountCommand, long>
+public class CreateUserAccountCommandHandler(ApplicationDbContext context, IMapper mapper)
+    : BaseUserAccountHandler(context), IRequestHandler<CreateUserAccountCommand, long>
 {
-    private readonly IMapper _mapper;
-    private readonly ILogger<CreateUserAccountCommandHandler> _logger;
-    public CreateUserAccountCommandHandler(ApplicationDbContext context, IMapper mapper, ILogger<CreateUserAccountCommandHandler> logger)
-        : base(context)
-    {
-        _logger = logger;
-        _mapper = mapper;
-    }
-
     public async Task<long> Handle(CreateUserAccountCommand request, CancellationToken cancellationToken)
     {
-        long result = 0;
+        long result;
         if (_context.Database.IsSqlServer())
         {
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
@@ -41,24 +32,15 @@ public class CreateUserAccountCommandHandler : BaseUserAccountHandler, IRequestH
                 result = await CreateAndUpdateUserAccount(request, cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                _logger.LogError(ex, "An error occurred creating referral. {exceptionMessage}", ex.Message);
                 throw;
             }
         }
         else
         {
-            try
-            {
-                result = await CreateAndUpdateUserAccount(request, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred creating referral. {exceptionMessage}", ex.Message);
-                throw;
-            }
+            result = await CreateAndUpdateUserAccount(request, cancellationToken);
         }
 
         return result;
@@ -66,14 +48,14 @@ public class CreateUserAccountCommandHandler : BaseUserAccountHandler, IRequestH
 
     private async Task<long> CreateAndUpdateUserAccount(CreateUserAccountCommand request, CancellationToken cancellationToken)
     {
-        UserAccount entity = _mapper.Map<UserAccount>(request.UserAccount);
+        UserAccount entity = mapper.Map<UserAccount>(request.UserAccount);
         ArgumentNullException.ThrowIfNull(entity);
 
-        entity.OrganisationUserAccounts = _mapper.Map<List<UserAccountOrganisation>>(request.UserAccount.OrganisationUserAccounts);
+        entity.OrganisationUserAccounts = mapper.Map<List<UserAccountOrganisation>>(request.UserAccount.OrganisationUserAccounts);
 
-        entity = await AttatchExistingUserAccountRoles(entity, cancellationToken);
-        entity = await AttatchExistingService(entity, cancellationToken);
-        entity = await AttatchExistingOrgansiation(entity, cancellationToken);
+        entity = await AttachExistingUserAccountRoles(entity, cancellationToken);
+        entity = await AttachExistingService(entity, cancellationToken);
+        entity = await AttachExistingOrgansiation(entity, cancellationToken);
 
         _context.UserAccounts.Add(entity);
 

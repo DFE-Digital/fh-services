@@ -83,9 +83,10 @@ public class OidcService : IOidcService
 
         var response = await _httpClient.SendAsync(httpRequestMessage);
 
-        if(response == null || !response.IsSuccessStatusCode)
+        if(!response.IsSuccessStatusCode)
         {
-            _logger.LogError($"Failed to retrieve token from OneLogin StatusCode:{response?.StatusCode} Content:{response?.Content.ReadAsStringAsync()}");
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _logger.LogError("Failed to retrieve token from OneLogin StatusCode:{StatusCode} Content:{Content}", response.StatusCode, errorContent);
         }
 
         var valueString = await response!.Content.ReadAsStringAsync();

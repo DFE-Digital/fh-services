@@ -5,7 +5,6 @@ using FamilyHubs.Idams.Maintenance.UI.Pages.Shared;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.SharedKernel.Identity;
 using FamilyHubs.SharedKernel.Identity.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.Idams.Maintenance.UI.Pages;
@@ -79,7 +78,7 @@ public void OnGet()
 
         if (await _cacheService.RetrieveOrganisationWithService() == null)
         {
-            OrganisationWithServicesDto? organisation = null;
+            OrganisationDetailsDto? organisation = null;
 
             if (long.TryParse(FamilyHubsUser.OrganisationId, out var organisationId))
             {

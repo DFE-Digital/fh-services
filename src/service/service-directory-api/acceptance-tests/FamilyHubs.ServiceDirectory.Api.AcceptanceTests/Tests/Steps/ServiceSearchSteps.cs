@@ -11,72 +11,56 @@ namespace FamilyHubs.ServiceDirectory.Api.AcceptanceTests.Tests.Steps;
 /// </summary>
 public class ServiceSearchSteps
 {
-  private readonly string _baseUrl;
-  private ServiceSearchRequest _request;
-  private HttpResponseMessage _lastResponse;
-  private HttpStatusCode _statusCode;
-  private const string serviceSearchPath = "api/metrics/service-search";
-  public ServiceSearchSteps()
-  {
-      _baseUrl = ConfigAccessor.GetApplicationConfiguration().BaseUrl;
-  }
-  private static string ResponseNotExpectedMessage(HttpMethod method, System.Uri requestUri, HttpStatusCode statusCode)
-  {
-      return $"Response from {method} {requestUri} {statusCode} was not as expected";
-  }
-  #region Step Definitions
+    private readonly string _baseUrl = ConfigAccessor.GetApplicationConfiguration().BaseUrl;
+    private ServiceSearchRequest _request = new();
+    private HttpResponseMessage _lastResponse = new();
+    private HttpStatusCode _statusCode;
+    private const string ServiceSearchPath = "api/metrics/service-search";
 
-  #region Given
- 
 
-  public void GivenIHaveASearchServiceRequest(string radiusValue, string postcodeEntry, string postCodeEndpointResponseEntry,string searchTriggerEventId,string serviceSearchTypeId)
-  {
-      DateTime time = DateTime.UtcNow;
-      int radius = int.Parse(radiusValue);
-      int postcodeEndpointStatusCode = int.Parse(postCodeEndpointResponseEntry);
-      int searchTriggerEventIdEntry = int.Parse(searchTriggerEventId);
-      int serviceSearchTypeIdEntry = int.Parse(serviceSearchTypeId);
-      _request = new ServiceSearchRequest()
-      {
-          searchPostcode = postcodeEntry,
-          searchRadiusMiles = radius,
-          userId = 0,
-          httpResponseCode = postcodeEndpointStatusCode,
-          requestTimestamp = time,
-          responseTimestamp = time,
-          correlationId = "",
-          searchTriggerEventId = searchTriggerEventIdEntry,
-          serviceSearchTypeId = serviceSearchTypeIdEntry,
-          serviceSearchResults = new List<ServiceSearchResults>()
-      };
-  }
+    public void GivenIHaveASearchServiceRequest(string radiusValue, string postcodeEntry,
+        string postCodeEndpointResponseEntry, string searchTriggerEventId, string serviceSearchTypeId)
+    {
+        var time = DateTime.UtcNow;
+        var radius = int.Parse(radiusValue);
+        var postcodeEndpointStatusCode = int.Parse(postCodeEndpointResponseEntry);
+        var searchTriggerEventIdEntry = int.Parse(searchTriggerEventId);
+        var serviceSearchTypeIdEntry = int.Parse(serviceSearchTypeId);
+        _request = new ServiceSearchRequest
+        {
+            SearchPostcode = postcodeEntry,
+            SearchRadiusMiles = radius,
+            UserId = 0,
+            HttpResponseCode = postcodeEndpointStatusCode,
+            RequestTimestamp = time,
+            ResponseTimestamp = time,
+            CorrelationId = "",
+            SearchTriggerEventId = searchTriggerEventIdEntry,
+            ServiceSearchTypeId = serviceSearchTypeIdEntry,
+            ServiceSearchResults = new List<ServiceSearchResults>()
+        };
+    }
 
-  #endregion Given
+    public async Task<HttpStatusCode> WhenISendARequest()
+    {
+        _lastResponse = await HttpRequestFactory.Post(_baseUrl, ServiceSearchPath, _request);
+        _statusCode = _lastResponse.StatusCode;
 
-  #region When
+        return _statusCode;
+    }
 
-  public async Task<HttpStatusCode> WhenISendARequest()
-  {
-      _lastResponse = await HttpRequestFactory.Post(_baseUrl, serviceSearchPath, _request);
-      _statusCode = _lastResponse.StatusCode;
-    
-      return _statusCode;
-  }
+    public void ThenExpectedStatusCodeReturned(HttpStatusCode expectedStatusCode)
+    {
+        _statusCode.Should().Be(expectedStatusCode,
+            ResponseNotExpectedMessage(
+                _lastResponse.RequestMessage!.Method,
+                _lastResponse.RequestMessage.RequestUri!,
+                _statusCode));
+    }
 
-  #endregion When
-
-  #region Then
-  
-  public void ThenExpectedStatusCodeReturned(HttpStatusCode expectedStatusCode)
-  {
-      _statusCode.Should().Be(expectedStatusCode,
-          ResponseNotExpectedMessage(
-              _lastResponse.RequestMessage.Method,
-              _lastResponse.RequestMessage.RequestUri,
-              _statusCode));
-  }
-
-  #endregion Then
-
-  #endregion Step Definitions
+    private static string ResponseNotExpectedMessage(HttpMethod method, System.Uri requestUri,
+        HttpStatusCode statusCode)
+    {
+        return $"Response from {method} {requestUri} {statusCode} was not as expected";
+    }
 }

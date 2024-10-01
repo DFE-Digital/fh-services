@@ -121,16 +121,16 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
         private void ConfigureMockServiceClient()
         {
             var la = TestHelper.CreateTestOrganisationWithServices(1, null, OrganisationType.LA, _fixture);
-            var laResponse = Task.FromResult((OrganisationDetailsDto?)la);
+            var laResponse = Task.FromResult(la);
 
             var vcs = TestHelper.CreateTestOrganisationWithServices(2, 1, OrganisationType.VCFS, _fixture);
-            var vcsResponse = Task.FromResult((OrganisationDetailsDto?)vcs);
+            var vcsResponse = Task.FromResult(vcs);
 
             var vcsNoParent = TestHelper.CreateTestOrganisationWithServices(3, null, OrganisationType.VCFS, _fixture);
-            var vcsNoParentResponse = Task.FromResult((OrganisationDetailsDto?)vcsNoParent);
+            var vcsNoParentResponse = Task.FromResult(vcsNoParent);
 
             var vcsUnauthorisedUser = TestHelper.CreateTestOrganisationWithServices(4, 99, OrganisationType.VCFS, _fixture);
-            var vcsUnauthorisedUserResponse = Task.FromResult((OrganisationDetailsDto?)vcsUnauthorisedUser);
+            var vcsUnauthorisedUserResponse = Task.FromResult(vcsUnauthorisedUser);
 
             _mockServiceDirectoryClient.Setup(x => x.GetOrganisationById(It.Is<long>(x => x == 1), It.IsAny<CancellationToken>())).Returns(laResponse);
             _mockServiceDirectoryClient.Setup(x => x.GetOrganisationById(It.Is<long>(x => x == 2), It.IsAny<CancellationToken>())).Returns(vcsResponse);

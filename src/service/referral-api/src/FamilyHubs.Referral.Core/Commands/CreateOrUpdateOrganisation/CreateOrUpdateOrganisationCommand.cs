@@ -33,7 +33,7 @@ public class CreateOrUpdateOrganisationCommandHandler :  IRequestHandler<CreateO
 
     public async Task<long> Handle(CreateOrUpdateOrganisationCommand request, CancellationToken cancellationToken)
     {
-        long result = 0;
+        long result;
         if (_context.Database.IsSqlServer())
         {
             await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
@@ -42,24 +42,15 @@ public class CreateOrUpdateOrganisationCommandHandler :  IRequestHandler<CreateO
                 result = await CreateOrUpdateOrganisation(request, cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                _logger.LogError(ex, "An error occurred creating referral. {exceptionMessage}", ex.Message);
                 throw;
             }
         }
         else
         {
-            try
-            {
-                result = await CreateOrUpdateOrganisation(request, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred creating referral. {exceptionMessage}", ex.Message);
-                throw;
-            }
+            result = await CreateOrUpdateOrganisation(request, cancellationToken);
         }
 
         return result;
@@ -74,7 +65,7 @@ public class CreateOrUpdateOrganisationCommandHandler :  IRequestHandler<CreateO
 
             var mappedOrganisation = _mapper.Map<Organisation>(request.OrganisationDto);
 
-            Organisation? organisation = _context.Organisations.FirstOrDefault(x => x.Id == request.OrganisationDto.Id);
+            Organisation? organisation = await _context.Organisations.FirstOrDefaultAsync(x => x.Id == request.OrganisationDto.Id, cancellationToken: cancellationToken);
             if (organisation != null)
             {
                 _mapper.Map(request.OrganisationDto, organisation);

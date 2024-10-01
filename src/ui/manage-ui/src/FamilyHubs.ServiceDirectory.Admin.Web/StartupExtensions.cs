@@ -43,8 +43,8 @@ public static class StartupExtensions
 
         // Add services to the container.
         services
-        .AddClientServices(configuration)
-            .AddWebUiServices(configuration);
+            .AddClientServices(configuration)
+            .AddWebUiServices();
 
         services.AddNotificationsApiClient(configuration);
 
@@ -132,45 +132,37 @@ public static class StartupExtensions
 
     private static void CheckCreateCacheTable(string tableNam, string cacheConnectionString)
     {
-        try
-        {
-            using var sqlConnection = new SqlConnection(cacheConnectionString);
-            sqlConnection.Open();
+        using var sqlConnection = new SqlConnection(cacheConnectionString);
+        sqlConnection.Open();
 
-            var checkTableExistsCommandText = $"IF EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='{tableNam}') SELECT 1 ELSE SELECT 0";
-            var checkCmd = new SqlCommand(checkTableExistsCommandText, sqlConnection);
+        var checkTableExistsCommandText = $"IF EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='{tableNam}') SELECT 1 ELSE SELECT 0";
+        var checkCmd = new SqlCommand(checkTableExistsCommandText, sqlConnection);
 
-            // IF EXISTS returns the SELECT 1 if the table exists or SELECT 0 if not
-            var tableExists = Convert.ToInt32(checkCmd.ExecuteScalar());
-            if (tableExists == 1) return;
+        // IF EXISTS returns the SELECT 1 if the table exists or SELECT 0 if not
+        var tableExists = Convert.ToInt32(checkCmd.ExecuteScalar());
+        if (tableExists == 1) return;
 
-            var createTableExistsCommandText = @$"
-            CREATE TABLE [dbo].[{tableNam}](
-                [Id] [nvarchar](449) NOT NULL,
-                [Value] [varbinary](max) NOT NULL,
-                [ExpiresAtTime] [datetimeoffset] NOT NULL,
-                [SlidingExpirationInSeconds] [bigint] NULL,
-                [AbsoluteExpiration] [datetimeoffset] NULL,
-                INDEX Ix_{tableNam}_ExpiresAtTime NONCLUSTERED ([ExpiresAtTime]),
-                CONSTRAINT Pk_{tableNam}_Id PRIMARY KEY CLUSTERED ([Id] ASC) WITH 
-                    (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF,
-                     IGNORE_DUP_KEY = OFF,
-                     ALLOW_ROW_LOCKS = ON,
-                     ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-            ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];";
+        var createTableExistsCommandText = @$"
+        CREATE TABLE [dbo].[{tableNam}](
+            [Id] [nvarchar](449) NOT NULL,
+            [Value] [varbinary](max) NOT NULL,
+            [ExpiresAtTime] [datetimeoffset] NOT NULL,
+            [SlidingExpirationInSeconds] [bigint] NULL,
+            [AbsoluteExpiration] [datetimeoffset] NULL,
+            INDEX Ix_{tableNam}_ExpiresAtTime NONCLUSTERED ([ExpiresAtTime]),
+            CONSTRAINT Pk_{tableNam}_Id PRIMARY KEY CLUSTERED ([Id] ASC) WITH 
+                (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF,
+                 IGNORE_DUP_KEY = OFF,
+                 ALLOW_ROW_LOCKS = ON,
+                 ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+        ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];";
 
-            var createCmd = new SqlCommand(createTableExistsCommandText, sqlConnection);
-            createCmd.ExecuteNonQuery();
-            sqlConnection.Close();
-        }
-        catch (Exception e)
-        {
-            Log.Fatal(e, "An unhandled exception occurred during setting up Sql Cache");
-            throw;
-        }
+        var createCmd = new SqlCommand(createTableExistsCommandText, sqlConnection);
+        createCmd.ExecuteNonQuery();
+        sqlConnection.Close();
     }
 
-    public static void AddWebUiServices(this IServiceCollection services, IConfiguration configuration)
+    private static void AddWebUiServices(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
 

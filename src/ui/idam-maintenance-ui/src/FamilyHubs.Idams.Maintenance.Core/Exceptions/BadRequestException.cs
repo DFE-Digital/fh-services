@@ -1,8 +1,6 @@
-﻿using System.Runtime.Serialization;
-
+﻿
 namespace FamilyHubs.Idams.Maintenance.Core.Exceptions;
 
-[Serializable]
 public class BadRequestException : IdamsException
 {
     public BadRequestException(string message) : base(message)
@@ -10,10 +8,5 @@ public class BadRequestException : IdamsException
         Title = "Bad Request";
         HttpStatusCode = 400;
         ErrorCode = ExceptionCodes.BadRequest;
-    }
-
-    protected BadRequestException(SerializationInfo info, StreamingContext context) : base(info, context)
-    {
-
     }
 }

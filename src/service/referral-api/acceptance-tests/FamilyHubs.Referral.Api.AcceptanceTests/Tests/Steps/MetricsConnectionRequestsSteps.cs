@@ -13,7 +13,7 @@ namespace FamilyHubs.Referral.Api.AcceptanceTests.Tests.Steps;
 public class MetricsConnectionRequestsSteps
 {
     private readonly string _baseUrl;
-    private CreateReferralDto _request;
+    private CreateReferralDto? _request;
     private HttpStatusCode _statusCode;
     public HttpResponseMessage lastResponse { get; private set; }
     public MetricsConnectionRequestsSteps()
