@@ -1,24 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	  <NoWarn>S1135</NoWarn>
-	  <NuGetAuditMode>direct</NuGetAuditMode>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-  </PropertyGroup>
+	<PropertyGroup>
+		<NoWarn>S1135</NoWarn>
+		<NuGetAuditMode>direct</NuGetAuditMode>
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+	</PropertyGroup>
 
 	<ItemGroup>
-<<<<<<< HEAD
-		<PackageReference Include="Ardalis.GuardClauses" Version="4.1.1" />
-		<PackageReference Include="AutoMapper.Collection.EntityFrameworkCore" Version="9.0.0" />
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-		<PackageReference Include="FamilyHubs.ReferralService.Shared" Version="1.2.0" />
-		<PackageReference Include="FamilyHubs.SharedKernel" Version="2.3.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.11" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.14" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.14" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.14" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.11">
-=======
 		<PackageReference Include="Ardalis.GuardClauses" />
 		<PackageReference Include="AutoMapper.Collection.EntityFrameworkCore" />
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
@@ -27,43 +15,24 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
->>>>>>> fbdb5677b592010ce0904163ad88c994aad51dfb
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="NETStandard.Library" />
 		<PackageReference Include="SonarAnalyzer.CSharp">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Data.Sqlite" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Migrations\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\shared\referral-shared\src\FamilyHubs.ReferralService.Shared\FamilyHubs.ReferralService.Shared.csproj" />
-    <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
-	  <NuGetAuditMode>direct</NuGetAuditMode>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-		<PackageReference Include="Ardalis.GuardClauses" />
-		<PackageReference Include="AutoMapper.Collection.EntityFrameworkCore" />
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
-		<PackageReference Include="NETStandard.Library" />
-		<PackageReference Include="SonarAnalyzer.CSharp">
-		<PackageReference Include="Microsoft.Data.Sqlite" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\shared\referral-shared\src\FamilyHubs.ReferralService.Shared\FamilyHubs.ReferralService.Shared.csproj" />
-    <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\shared\referral-shared\src\FamilyHubs.ReferralService.Shared\FamilyHubs.ReferralService.Shared.csproj" />
+		<ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
+	</ItemGroup>
 
 </Project>

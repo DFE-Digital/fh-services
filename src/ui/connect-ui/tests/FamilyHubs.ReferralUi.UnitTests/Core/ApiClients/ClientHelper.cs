@@ -172,7 +172,6 @@ public static class ClientHelper
                 OrganisationDto = new FamilyHubs.ReferralService.Shared.Dto.OrganisationDto
                 {
                     Id = 2,
-                    ReferralServiceId = 2,
                     Name = "Organisation",
                     Description = "Organisation Description",
                 }

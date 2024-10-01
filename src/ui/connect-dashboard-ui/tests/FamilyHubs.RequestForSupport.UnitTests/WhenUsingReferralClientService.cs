@@ -170,7 +170,6 @@ public class WhenUsingReferralClientService
                 OrganisationDto = new OrganisationDto
                 {
                     Id = 2,
-                    ReferralServiceId = 2,
                     Name = "Organisation",
                     Description = "Organisation Description",
                 }
