@@ -74,12 +74,6 @@ public class DeleteService : PageModel
     public async Task<IActionResult> OnGetAsync(long serviceId)
     {
         ServiceId = serviceId;
-
-        if (await IsOpenConnectionRequests())
-        {
-            return RedirectToPage(OpenConnectionErrorUrl, new { serviceId = ServiceId });
-        }
-
         ServiceName = await GetServiceName();
 
         return Page();
