@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models;
+using FamilyHubs.SharedKernel.Identity;
 using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,6 +19,7 @@ public class DeleteService : PageModel
     public string BackUrl => "/manage-services/Service-Detail?flow=edit";
     [BindProperty] public long ServiceId { get; set; }
     public string ServiceName { get; set; } = null!;
+    public string UserRole => HttpContext.GetFamilyHubsUser().Role;
 
     [BindProperty] public bool? Selected { get; set; }
 
