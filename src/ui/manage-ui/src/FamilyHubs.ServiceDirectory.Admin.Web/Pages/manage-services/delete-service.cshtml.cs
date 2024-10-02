@@ -19,7 +19,8 @@ public class DeleteService : PageModel
     public string BackUrl => "/manage-services/Service-Detail?flow=edit";
     [BindProperty] public long ServiceId { get; set; }
     public string ServiceName { get; set; } = null!;
-    public string UserRole => HttpContext.GetFamilyHubsUser().Role;
+    public bool UserRoleCanSeeConnectionRequestWarning =>
+        RoleGroups.VcsManagerOrDualRole.Contains(HttpContext.GetFamilyHubsUser().Role);
 
     [BindProperty] public bool? Selected { get; set; }
 
