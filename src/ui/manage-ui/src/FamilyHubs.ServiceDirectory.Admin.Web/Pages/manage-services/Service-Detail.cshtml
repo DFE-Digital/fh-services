@@ -253,7 +253,7 @@
                          action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Service_More_Details, ServiceJourneyChangeFlow.SinglePage)">@service.MoreDetails.GetDisplay()</summary-row>
         </summary-list>
         
-        @if (Model.Flow == JourneyFlow.Edit && Model.FamilyHubsUser.Role is RoleTypes.LaManager or RoleTypes.LaDualRole)
+        @if (Model.Flow == JourneyFlow.Edit && Model.FamilyHubsUser.Role is RoleTypes.LaManager or RoleTypes.LaDualRole or RoleTypes.VcsManager)
         {
             <h2 class="govuk-heading-m">Delete this service</h2>
             <p class="govuk-!-margin-bottom-9">You can <a asp-page="/manage-services/delete-service" asp-route-serviceId="@Model.ServiceModel.Id">delete this service</a> if you want to permanently remove it from the directory.</p>
