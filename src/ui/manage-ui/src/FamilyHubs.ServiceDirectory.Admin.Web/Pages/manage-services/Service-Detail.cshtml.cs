@@ -16,6 +16,8 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Pages.manage_services;
 [Authorize(Roles = RoleGroups.AdminRole)]
 public class Service_DetailModel : ServicePageModel
 {
+    private const string DeleteServiceRoles = $"{RoleGroups.LaManagerOrDualRole},{RoleGroups.VcsManagerOrDualRole}";
+
     public static IReadOnlyDictionary<long, string>? TaxonomyIdToName { get; set; } 
 
     public string? OrganisationName { get; private set; }
@@ -24,7 +26,7 @@ public class Service_DetailModel : ServicePageModel
     private readonly IServiceDirectoryClient _serviceDirectoryClient;
     private readonly ITaxonomyService _taxonomyService;
 
-    public bool UserRoleCanDeleteService => $"{RoleGroups.LaManagerOrDualRole},{RoleGroups.VcsManagerOrDualRole}".Contains(FamilyHubsUser.Role);
+    public bool UserRoleCanDeleteService => DeleteServiceRoles.Contains(FamilyHubsUser.Role);
 
     public Service_DetailModel(
         IRequestDistributedCache connectionRequestCache,
