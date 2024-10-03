@@ -6,7 +6,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Delete;
 public class DeleteOrganisationAccountsCommandTests : DataIntegrationTestBase<DeleteOrganisationAccountsCommandHandler>
 {
     [Fact]
-    public async Task ReturnTrueWhenNoAccountClaimsPrenent()
+    public async Task ReturnTrueWhenNoAccountClaimsPresent()
     {
         //Arrange
         var command = new DeleteOrganisationAccountsCommand
@@ -14,7 +14,7 @@ public class DeleteOrganisationAccountsCommandTests : DataIntegrationTestBase<De
             OrganisationId = 1
         };
 
-        var handler = new DeleteOrganisationAccountsCommandHandler(TestDbContext, MockLogger.Object);
+        var handler = new DeleteOrganisationAccountsCommandHandler(TestDbContext, MockLogger);
 
         //Act
         var results = await handler.Handle(command, new CancellationToken());
@@ -33,7 +33,7 @@ public class DeleteOrganisationAccountsCommandTests : DataIntegrationTestBase<De
             OrganisationId = 1
         };
 
-        var handler = new DeleteOrganisationAccountsCommandHandler(TestDbContext, MockLogger.Object);
+        var handler = new DeleteOrganisationAccountsCommandHandler(TestDbContext, MockLogger);
 
         //Act
         var results = await handler.Handle(command, new CancellationToken());

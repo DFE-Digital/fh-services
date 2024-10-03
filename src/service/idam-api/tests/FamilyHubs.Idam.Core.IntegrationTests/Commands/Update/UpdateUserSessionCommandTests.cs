@@ -1,13 +1,7 @@
 ﻿using AutoFixture;
-using FamilyHubs.Idam.Core.Commands.Add;
 using FamilyHubs.Idam.Core.Commands.Update;
 using FamilyHubs.Idam.Core.Exceptions;
 using FamilyHubs.Idam.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Update
 {
@@ -19,7 +13,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Update
             //  Arrange
             var randomSid = Fixture.Create<string>();
             var command = new UpdateUserSessionCommand { Sid = randomSid };
-            var sut = new UpdateUserSessionCommandHandler(TestDbContext, MockLogger.Object);
+            var sut = new UpdateUserSessionCommandHandler(TestDbContext, MockLogger);
 
             //  Act / Assert
             await Assert.ThrowsAsync<NotFoundException>(async () => await sut.Handle(command, new CancellationToken()));
@@ -34,7 +28,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Update
             TestDbContext.Add(userSession);
             await TestDbContext.SaveChangesAsync();
             var command = new UpdateUserSessionCommand { Sid = userSession.Sid };
-            var sut = new UpdateUserSessionCommandHandler(TestDbContext, MockLogger.Object);
+            var sut = new UpdateUserSessionCommandHandler(TestDbContext, MockLogger);
 
             //  Act
             var result = await sut.Handle(command, new CancellationToken());

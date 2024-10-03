@@ -16,7 +16,7 @@ public class GetAccountClaimsByEmailCommandTests : DataIntegrationTestBase<GetAc
             Email = "Test@test.com"
         };
 
-        var handler = new GetAccountClaimsByEmailCommandHandler(TestDbContext, MockLogger.Object);
+        var handler = new GetAccountClaimsByEmailCommandHandler(TestDbContext, MockLogger);
 
         //Act
         var results = await handler.Handle(command, new CancellationToken());

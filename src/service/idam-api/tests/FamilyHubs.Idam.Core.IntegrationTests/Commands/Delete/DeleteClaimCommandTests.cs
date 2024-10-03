@@ -19,7 +19,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Delete
                 Name = FamilyHubsClaimTypes.OrganisationId
             };
 
-            var handler = new DeleteClaimCommandHandler(TestDbContext, MockLogger.Object);
+            var handler = new DeleteClaimCommandHandler(TestDbContext, MockLogger);
 
             //Act
             var results = await handler.Handle(command, new CancellationToken());
@@ -39,7 +39,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Delete
                 Name = "SingleClaimName"
             };
 
-            var handler = new DeleteClaimCommandHandler(TestDbContext, MockLogger.Object);
+            var handler = new DeleteClaimCommandHandler(TestDbContext, MockLogger);
 
             // Act 
             // Assert

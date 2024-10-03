@@ -13,7 +13,7 @@ public class AddAccountCommandTests : DataIntegrationTestBase<AddAccountCommandH
     {
         //Arrange
         var command = Fixture.Create<AddAccountCommand>();
-        var commandHandler = new AddAccountCommandHandler(TestDbContext, MockLogger.Object);
+        var commandHandler = new AddAccountCommandHandler(TestDbContext, MockLogger);
 
         //Act
         var result = await commandHandler.Handle(command, new CancellationToken());
@@ -38,7 +38,7 @@ public class AddAccountCommandTests : DataIntegrationTestBase<AddAccountCommandH
             Claims = existingAccount.Claims
         };
 
-        var commandHandler = new AddAccountCommandHandler(TestDbContext, MockLogger.Object);
+        var commandHandler = new AddAccountCommandHandler(TestDbContext, MockLogger);
 
         //Act and Assert
         await Assert.ThrowsAsync<AlreadyExistsException>(() => commandHandler.Handle(command, new CancellationToken()));

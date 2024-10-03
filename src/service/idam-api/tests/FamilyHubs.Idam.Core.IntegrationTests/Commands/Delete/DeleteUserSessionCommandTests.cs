@@ -13,7 +13,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Delete
             //  Arrange
             var randomSid = Fixture.Create<string>();
             var command = new DeleteUserSessionCommand { Sid = randomSid };
-            var sut = new DeleteUserSessionCommandHandler(TestDbContext, MockLogger.Object);
+            var sut = new DeleteUserSessionCommandHandler(TestDbContext, MockLogger);
 
             //  Act / Assert
             await Assert.ThrowsAsync<NotFoundException>(async () => await sut.Handle(command, new CancellationToken()));
@@ -28,7 +28,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Delete
             TestDbContext.Add(record);
             await TestDbContext.SaveChangesAsync();
             var command = new DeleteUserSessionCommand { Sid = record.Sid};
-            var sut = new DeleteUserSessionCommandHandler(TestDbContext, MockLogger.Object);
+            var sut = new DeleteUserSessionCommandHandler(TestDbContext, MockLogger);
 
             //  Act
             var result = await sut.Handle(command, new CancellationToken());

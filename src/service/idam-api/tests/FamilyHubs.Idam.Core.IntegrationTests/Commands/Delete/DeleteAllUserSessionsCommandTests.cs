@@ -20,7 +20,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Delete
 
             await TestDbContext.SaveChangesAsync();
             var command = new DeleteAllUserSessionsCommand { Email = email};
-            var sut = new DeleteAllUserSessionsCommandHandler(TestDbContext, MockLogger.Object);
+            var sut = new DeleteAllUserSessionsCommandHandler(TestDbContext, MockLogger);
 
             //  Act
             var exception = await Record.ExceptionAsync(() => sut.Handle(command, new CancellationToken()));

@@ -3,25 +3,25 @@ using FamilyHubs.Idam.Core.Exceptions;
 using FamilyHubs.Idam.Data.Entities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Moq;
 using System.Security.Claims;
+using NSubstitute;
 
 namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Update;
 
 public class UpdateAccountSelfServiceCommandTests : DataIntegrationTestBase<UpdateAccountSelfServiceCommandHandler>
 {
-    private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
+    private readonly IHttpContextAccessor _mockHttpContextAccessor;
 
     public UpdateAccountSelfServiceCommandTests()
     {
-        _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+        _mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
 
         var claims = new[]
         {
             new Claim("AccountId", "1"), // Set the bearer token ID to 1
         };
 
-        _mockHttpContextAccessor.Setup(mock => mock.HttpContext!.User.Claims).Returns(claims);
+        _mockHttpContextAccessor.HttpContext!.User.Claims.Returns(claims);
     }
 
     [Fact]
@@ -39,8 +39,8 @@ public class UpdateAccountSelfServiceCommandTests : DataIntegrationTestBase<Upda
 
         var commandHandler = new UpdateAccountSelfServiceCommandHandler(
             TestDbContext,
-            _mockHttpContextAccessor.Object,
-            MockLogger.Object);
+            _mockHttpContextAccessor,
+            MockLogger);
 
         //Act
         await commandHandler.Handle(command, new CancellationToken());
@@ -74,8 +74,8 @@ public class UpdateAccountSelfServiceCommandTests : DataIntegrationTestBase<Upda
 
         var commandHandler = new UpdateAccountSelfServiceCommandHandler(
             TestDbContext,
-            _mockHttpContextAccessor.Object,
-            MockLogger.Object);
+            _mockHttpContextAccessor,
+            MockLogger);
 
         //Act
         var result = async () => await commandHandler.Handle(command, new CancellationToken());
@@ -96,8 +96,8 @@ public class UpdateAccountSelfServiceCommandTests : DataIntegrationTestBase<Upda
 
         var commandHandler = new UpdateAccountSelfServiceCommandHandler(
             TestDbContext,
-            _mockHttpContextAccessor.Object,
-            MockLogger.Object);
+            _mockHttpContextAccessor,
+            MockLogger);
 
         //Act
         var result = async () => await commandHandler.Handle(command, new CancellationToken());

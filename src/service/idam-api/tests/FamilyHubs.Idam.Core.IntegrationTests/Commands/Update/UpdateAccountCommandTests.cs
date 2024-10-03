@@ -30,7 +30,7 @@ public class UpdateAccountCommandTests : DataIntegrationTestBase<UpdateAccountCo
         };
         var commandHandler = new UpdateAccountCommandHandler(
             TestDbContext,
-            MockLogger.Object
+            MockLogger
             );
 
         //Act
@@ -50,7 +50,7 @@ public class UpdateAccountCommandTests : DataIntegrationTestBase<UpdateAccountCo
             Email = "notused@example.com"
         };
 
-        var commandHandler = new UpdateAccountCommandHandler(TestDbContext, MockLogger.Object);
+        var commandHandler = new UpdateAccountCommandHandler(TestDbContext, MockLogger);
 
         //Act
         var result = async () => await commandHandler.Handle(command, new CancellationToken());

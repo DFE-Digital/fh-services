@@ -3,8 +3,8 @@ using FamilyHubs.Idam.Core.Services;
 using FamilyHubs.Idam.Data.Entities;
 using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Http;
-using Moq;
 using System.Security.Claims;
+using NSubstitute;
 
 namespace FamilyHubs.Idam.Core.IntegrationTests.Queries.GetAccounts;
 
@@ -18,34 +18,33 @@ public class GetAccountsCommandTests : DataIntegrationTestBase<GetAccountsComman
         //Arrange
         await CreateAccountClaim();
 
-        var mockServiceDirectoryService = new Mock<IServiceDirectoryService>();
-        mockServiceDirectoryService.Setup(x => x.GetOrganisationsByAssociatedId(It.IsAny<long>())).Returns(TestDataProvider.GetOrganisations());
-        mockServiceDirectoryService.Setup(x => x.GetOrganisationsByIds(It.IsAny<IEnumerable<long>>())).Returns(TestDataProvider.GetOrganisations());
+        var mockServiceDirectoryService = Substitute.For<IServiceDirectoryService>();
+        mockServiceDirectoryService.GetOrganisationsByAssociatedId(Arg.Any<long>()).Returns(TestDataProvider.GetOrganisations());
+        mockServiceDirectoryService.GetOrganisationsByIds(Arg.Any<IEnumerable<long>>()).Returns(TestDataProvider.GetOrganisations());
 
         var mockHttpContextAccessor = GetMockHttpContextAccessor(organisationId, role);
         var command = new GetAccountsCommand(null, null, null, null, null, null, null, null, null);
 
         var handler = new GetAccountsCommandHandler(
             TestDbContext,
-            mockServiceDirectoryService.Object,
-            mockHttpContextAccessor.Object);
+            mockServiceDirectoryService,
+            mockHttpContextAccessor);
 
         //Act
         await handler.Handle(command, new CancellationToken());
 
         //Assert
-        mockServiceDirectoryService.Verify(x => x.GetAllOrganisations(), Times.Never);
+        await mockServiceDirectoryService.Received(0).GetAllOrganisations();
         if (getMultipleOrganisations)
         {
-            mockServiceDirectoryService.Verify(x => x.GetOrganisationsByIds(It.IsAny<IEnumerable<long>>()), Times.Once);
-            mockServiceDirectoryService.Verify(x => x.GetOrganisationsByAssociatedId(It.IsAny<long>()), Times.Never);
+            await mockServiceDirectoryService.Received(1).GetOrganisationsByIds(Arg.Any<IEnumerable<long>>());
+            await mockServiceDirectoryService.Received(0).GetOrganisationsByAssociatedId(Arg.Any<long>());
         }
         else
         {
-            mockServiceDirectoryService.Verify(x => x.GetOrganisationsByIds(It.IsAny<IEnumerable<long>>()), Times.Never);
-            mockServiceDirectoryService.Verify(x => x.GetOrganisationsByAssociatedId(It.IsAny<long>()), Times.Once);
+            await mockServiceDirectoryService.Received(0).GetOrganisationsByIds(Arg.Any<IEnumerable<long>>());
+            await mockServiceDirectoryService.Received(1).GetOrganisationsByAssociatedId(Arg.Any<long>());
         }
-
     }
 
     [Theory]
@@ -63,13 +62,13 @@ public class GetAccountsCommandTests : DataIntegrationTestBase<GetAccountsComman
         await CreateAccountClaim();
         await AddTestAccount();
 
-        var mockServiceDirectoryService = new Mock<IServiceDirectoryService>();
+        var mockServiceDirectoryService = Substitute.For<IServiceDirectoryService>();
 
-        mockServiceDirectoryService.Setup(x => x.GetAllOrganisations()).Returns(TestDataProvider.GetOrganisations());
-        mockServiceDirectoryService.Setup(x => x.GetOrganisationsByAssociatedId(It.IsAny<long>())).Returns(TestDataProvider.GetOrganisations());
-        mockServiceDirectoryService.Setup(x => x.GetOrganisationsByIds(It.IsAny<IEnumerable<long>>())).Returns(TestDataProvider.GetOrganisations());
-        mockServiceDirectoryService.Setup(x => x.GetOrganisationsByName(It.IsAny<string>())).Returns<string>(async name =>
-            (await TestDataProvider.GetOrganisations())!.Where(x => x.Name.ToLower().Contains(name.ToLower())).ToList());
+        mockServiceDirectoryService.GetAllOrganisations().Returns(TestDataProvider.GetOrganisations());
+        mockServiceDirectoryService.GetOrganisationsByAssociatedId(Arg.Any<long>()).Returns(TestDataProvider.GetOrganisations());
+        mockServiceDirectoryService.GetOrganisationsByIds(Arg.Any<IEnumerable<long>>()).Returns(TestDataProvider.GetOrganisations());
+        mockServiceDirectoryService.GetOrganisationsByName(Arg.Any<string>())!.Returns(async name =>
+                (await TestDataProvider.GetOrganisations())!.Where(oDto => oDto.Name.Contains(name.Arg<string>(), StringComparison.CurrentCultureIgnoreCase)).ToList());
 
         var mockHttpContextAccessor = GetMockHttpContextAccessor(-1, RoleTypes.DfeAdmin);
 
@@ -77,8 +76,8 @@ public class GetAccountsCommandTests : DataIntegrationTestBase<GetAccountsComman
 
         var handler = new GetAccountsCommandHandler(
             TestDbContext,
-            mockServiceDirectoryService.Object,
-            mockHttpContextAccessor.Object);
+            mockServiceDirectoryService,
+            mockHttpContextAccessor);
 
         //Act
         var results = await handler.Handle(command, new CancellationToken());
@@ -96,21 +95,22 @@ public class GetAccountsCommandTests : DataIntegrationTestBase<GetAccountsComman
     }
 
 
-    private Mock<IHttpContextAccessor> GetMockHttpContextAccessor(long organisationId, string userRole)
+    private static IHttpContextAccessor GetMockHttpContextAccessor(long organisationId, string userRole)
     {
-        var mockUser = new Mock<ClaimsPrincipal>();
-        var claims = new List<Claim>();
-        claims.Add(new Claim(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()));
-        claims.Add(new Claim(FamilyHubsClaimTypes.Role, userRole));
+        var mockUser = Substitute.For<ClaimsPrincipal>();
+        var claims = new List<Claim>
+        {
+            new(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()),
+            new(FamilyHubsClaimTypes.Role, userRole)
+        };
 
-        mockUser.SetupGet(x => x.Claims).Returns(claims);
+        mockUser.Claims.Returns(claims);
 
+        var mockHttpContext = Substitute.For<HttpContext>();
+        mockHttpContext.User.Returns(mockUser);
 
-        var mockHttpContext = new Mock<HttpContext>();
-        mockHttpContext.SetupGet(x => x.User).Returns(mockUser.Object);
-
-        var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
-        mockHttpContextAccessor.SetupGet(x => x.HttpContext).Returns(mockHttpContext.Object);
+        var mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+        mockHttpContextAccessor.HttpContext.Returns(mockHttpContext);
 
         return mockHttpContextAccessor;
     }

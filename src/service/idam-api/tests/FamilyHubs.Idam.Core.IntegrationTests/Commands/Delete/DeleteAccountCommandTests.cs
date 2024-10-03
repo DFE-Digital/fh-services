@@ -11,7 +11,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Delete
         {
             //Arrange
             var command = new DeleteAccountCommand { AccountId = 1 };
-            var handler = new DeleteAccountCommandHandler(TestDbContext, MockLogger.Object);
+            var handler = new DeleteAccountCommandHandler(TestDbContext, MockLogger);
 
             //Act
             var results = await handler.Handle(command, new CancellationToken());
@@ -26,7 +26,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Delete
         {
             //Arrange
             var command = new DeleteAccountCommand { AccountId = 2 };
-            var handler = new DeleteAccountCommandHandler(TestDbContext, MockLogger.Object);
+            var handler = new DeleteAccountCommandHandler(TestDbContext, MockLogger);
 
             // Act 
             // Assert
