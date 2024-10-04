@@ -17,7 +17,7 @@ public class WhenUsingGetReferral : DataIntegrationTestBase
         GetReferralByIdCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         //Assert
         result.Should().NotBeNull();
@@ -42,16 +42,16 @@ public class WhenUsingGetReferral : DataIntegrationTestBase
     [InlineData(ReferralOrderBy.ServiceName, true)]
     [InlineData(ReferralOrderBy.ServiceName, false)]
 
-    public async Task ThenGetReferralsByOrganisationIdOnly(ReferralOrderBy referralOrderBy, bool isAssending)
+    public async Task ThenGetReferralsByOrganisationIdOnly(ReferralOrderBy referralOrderBy, bool isAscending)
     {
         await CreateReferral();
         var referral = TestDataProvider.GetReferralDto();
 
-        GetReferralsByOrganisationIdCommand command = new(2, referralOrderBy, isAssending, false,  1,10);
+        GetReferralsByOrganisationIdCommand command = new(2, referralOrderBy, isAscending, false,  1,10);
         GetReferralsByOrganisationIdCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         //Assert
         result.Should().NotBeNull();
@@ -75,16 +75,16 @@ public class WhenUsingGetReferral : DataIntegrationTestBase
     [InlineData(ReferralOrderBy.Team, false)]
     [InlineData(ReferralOrderBy.ServiceName, true)]
     [InlineData(ReferralOrderBy.ServiceName, false)]
-    public async Task ThenGetReferralsByReferrerOnly(ReferralOrderBy referralOrderBy, bool isAssending)
+    public async Task ThenGetReferralsByReferrerOnly(ReferralOrderBy referralOrderBy, bool isAscending)
     {
         await CreateReferral();
         var referral = TestDataProvider.GetReferralDto();
 
-        GetReferralsByReferrerCommand command = new(referral.ReferralUserAccountDto.EmailAddress, referralOrderBy, isAssending, null, 1, 10);
+        GetReferralsByReferrerCommand command = new(referral.ReferralUserAccountDto.EmailAddress, referralOrderBy, isAscending, null, 1, 10);
         GetReferralsByReferrerCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         
 
@@ -131,7 +131,7 @@ public class WhenUsingGetReferral : DataIntegrationTestBase
         GetReferralsByRecipientHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         //Assert
         result.Should().NotBeNull();

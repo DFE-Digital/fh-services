@@ -1,17 +1,9 @@
-﻿using AutoMapper;
-using FamilyHubs.Referral.Core;
-using FamilyHubs.Referral.Core.Commands.CreateOrUpdateService;
-using FamilyHubs.Referral.Core.Commands.UpdateReferral;
+﻿using FamilyHubs.Referral.Core.Commands.CreateOrUpdateService;
 using FamilyHubs.Referral.Data.Entities;
 using FamilyHubs.ReferralService.Shared.Dto;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using NSubstitute;
 
 namespace FamilyHubs.Referral.Integration.Tests;
 
@@ -20,7 +12,6 @@ public class WhenCreateOrUpdateService : DataIntegrationTestBase
     [Fact]
     public async Task ThenCreateServiceWithExistingOrganisation()
     {
-       
         var organisation = await CreateOrganisation();
         organisation.ReferralServiceId = 787;
         
@@ -35,17 +26,14 @@ public class WhenCreateOrUpdateService : DataIntegrationTestBase
         var serviceDto = Mapper.Map<ReferralServiceDto>(service);
 
         CreateOrUpdateServiceCommand createOrUpdateOrganisationCommand = new(serviceDto);
-        CreateOrUpdateServiceCommandHandler handler = new(TestDbContext, Mapper, new Mock<ILogger<CreateOrUpdateServiceCommandHandler>>().Object);
+        CreateOrUpdateServiceCommandHandler handler = new(TestDbContext, Mapper, Substitute.For<ILogger<CreateOrUpdateServiceCommandHandler>>());
 
         //Act
-        var result = await handler.Handle(createOrUpdateOrganisationCommand, new System.Threading.CancellationToken());
+        var result = await handler.Handle(createOrUpdateOrganisationCommand, new CancellationToken());
 
         //Assert
         result.Should().NotBe(0);
         result.Should().Be(787);
-
-
-
     }
 
     private async Task<Organisation> CreateOrganisation()

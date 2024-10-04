@@ -1,7 +1,5 @@
 ﻿using FamilyHubs.Referral.Core.Commands.UpdateReferral;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace FamilyHubs.Referral.Integration.Tests;
 
@@ -19,7 +17,7 @@ public class WhenUsingUpdateReferral : DataIntegrationTestBase
         UpdateReferralCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         //Assert
         result.Should().NotBe(0);
@@ -27,8 +25,8 @@ public class WhenUsingUpdateReferral : DataIntegrationTestBase
         var actualService = TestDbContext.Referrals.SingleOrDefault(s => s.Id == referral.Id);
         actualService.Should().NotBeNull();
         actualService!.ReferrerTelephone.Should().Be(referral.ReferrerTelephone);
-        actualService!.ReasonForSupport.Should().Be(referral.ReasonForSupport);
-        actualService!.EngageWithFamily.Should().Be(referral.EngageWithFamily);
+        actualService.ReasonForSupport.Should().Be(referral.ReasonForSupport);
+        actualService.EngageWithFamily.Should().Be(referral.EngageWithFamily);
 
     }
 
@@ -48,7 +46,7 @@ public class WhenUsingUpdateReferral : DataIntegrationTestBase
         UpdateReferralCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         //Assert
         result.Should().NotBe(0);
@@ -76,7 +74,7 @@ public class WhenUsingUpdateReferral : DataIntegrationTestBase
         UpdateReferralCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         //Assert
         result.Should().NotBe(0);
@@ -98,7 +96,7 @@ public class WhenUsingUpdateReferral : DataIntegrationTestBase
         UpdateReferralCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         //Assert
         result.Should().NotBe(0);
@@ -123,7 +121,7 @@ public class WhenUsingUpdateReferral : DataIntegrationTestBase
         UpdateReferralCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         //Assert
         result.Should().NotBe(0);
@@ -131,9 +129,9 @@ public class WhenUsingUpdateReferral : DataIntegrationTestBase
         var actualService = TestDbContext.Referrals.SingleOrDefault(s => s.Id == referral.Id);
         actualService.Should().NotBeNull();
         actualService!.ReferralService.Name.Should().Be(expected.Name);
-        actualService!.ReferralService.Description.Should().Be(expected.Description);
-        actualService!.ReferralService.Organisation.Name.Should().Be(expected.OrganisationDto.Name);
-        actualService!.ReferralService.Organisation.Description.Should().Be(expected.OrganisationDto.Description);
+        actualService.ReferralService.Description.Should().Be(expected.Description);
+        actualService.ReferralService.Organisation.Name.Should().Be(expected.OrganisationDto.Name);
+        actualService.ReferralService.Organisation.Description.Should().Be(expected.OrganisationDto.Description);
     }
 
 
