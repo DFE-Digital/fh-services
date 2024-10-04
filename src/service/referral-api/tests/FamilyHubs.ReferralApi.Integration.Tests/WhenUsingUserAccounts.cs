@@ -31,7 +31,7 @@ public class WhenUsingUserAccounts : DataIntegrationTestBase
         result.Should().BeGreaterThan(0);
         var actualUserAccount = await TestDbContext.UserAccounts
             .Include(x => x.OrganisationUserAccounts)
-            .FirstAsync(x => x.OrganisationUserAccounts != null && x.OrganisationUserAccounts.Any(uAo => uAo.OrganisationId == userAccountDto.OrganisationUserAccounts[0].Organisation.Id));
+            .FirstAsync(x => x.OrganisationUserAccounts != null && x.OrganisationUserAccounts.Any(uao => uao.OrganisationId == userAccountDto.OrganisationUserAccounts[0].Organisation.Id));
 
         actualUserAccount.EmailAddress.Should().Be(userAccount.EmailAddress);
         actualUserAccount.PhoneNumber.Should().Be(userAccount.PhoneNumber);
@@ -152,7 +152,7 @@ public class WhenUsingUserAccounts : DataIntegrationTestBase
         result.Should().BeTrue();
         var actualUserAccount = await TestDbContext.UserAccounts
             .Include(x => x.OrganisationUserAccounts)
-            .FirstAsync(x => x.OrganisationUserAccounts != null && x.OrganisationUserAccounts.Any(uAo => uAo.OrganisationId == userAccountDto.OrganisationUserAccounts[0].Organisation.Id));
+            .FirstAsync(x => x.OrganisationUserAccounts != null && x.OrganisationUserAccounts.Any(uao => uao.OrganisationId == userAccountDto.OrganisationUserAccounts[0].Organisation.Id));
 
         actualUserAccount.EmailAddress.Should().Be(userAccount.EmailAddress);
         actualUserAccount.PhoneNumber.Should().Be(userAccount.PhoneNumber);
@@ -191,7 +191,7 @@ public class WhenUsingUserAccounts : DataIntegrationTestBase
         result.Should().BeTrue();
         var actualUserAccount = await TestDbContext.UserAccounts
             .Include(x => x.OrganisationUserAccounts)
-            .FirstAsync(x => x.OrganisationUserAccounts != null && x.OrganisationUserAccounts.Any(uAo => uAo.OrganisationId == userAccountDto.OrganisationUserAccounts[0].Organisation.Id));
+            .FirstAsync(x => x.OrganisationUserAccounts != null && x.OrganisationUserAccounts.Any(uao => uao.OrganisationId == userAccountDto.OrganisationUserAccounts[0].Organisation.Id));
 
         actualUserAccount.EmailAddress.Should().Be(userAccount.EmailAddress);
         actualUserAccount.PhoneNumber.Should().Be(userAccount.PhoneNumber);
@@ -229,7 +229,7 @@ public class WhenUsingUserAccounts : DataIntegrationTestBase
         result.Should().BeTrue();
         var actualUserAccount = await TestDbContext.UserAccounts
             .Include(x => x.OrganisationUserAccounts)
-            .FirstAsync(x => x.OrganisationUserAccounts != null && x.OrganisationUserAccounts.Any(uAo => uAo.OrganisationId == userAccountDto.OrganisationUserAccounts[0].Organisation.Id));
+            .FirstAsync(x => x.OrganisationUserAccounts != null && x.OrganisationUserAccounts.Any(uao => uao.OrganisationId == userAccountDto.OrganisationUserAccounts[0].Organisation.Id));
 
         actualUserAccount.EmailAddress.Should().Be(userAccount.EmailAddress);
         actualUserAccount.PhoneNumber.Should().Be(userAccount.PhoneNumber);
@@ -290,7 +290,7 @@ public class WhenUsingUserAccounts : DataIntegrationTestBase
         result.Items.Count.Should().BeGreaterThan(0);
         var actualUserAccount = await TestDbContext.UserAccounts
             .Include(x => x.OrganisationUserAccounts)
-            .FirstAsync(x => x.OrganisationUserAccounts != null && x.OrganisationUserAccounts.Any(uAo => uAo.OrganisationId == userAccountDto.OrganisationUserAccounts[0].Organisation.Id));
+            .FirstAsync(x => x.OrganisationUserAccounts != null && x.OrganisationUserAccounts.Any(uao => uao.OrganisationId == userAccountDto.OrganisationUserAccounts[0].Organisation.Id));
 
         actualUserAccount.EmailAddress.Should().Be(userAccount.EmailAddress);
         actualUserAccount.PhoneNumber.Should().Be(userAccount.PhoneNumber);

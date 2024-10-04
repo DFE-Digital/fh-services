@@ -17,7 +17,7 @@ public class WhenUsingGetReferral : DataIntegrationTestBase
         GetReferralByIdCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
@@ -51,7 +51,7 @@ public class WhenUsingGetReferral : DataIntegrationTestBase
         GetReferralsByOrganisationIdCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
@@ -84,7 +84,7 @@ public class WhenUsingGetReferral : DataIntegrationTestBase
         GetReferralsByReferrerCommandHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         
 
@@ -131,7 +131,7 @@ public class WhenUsingGetReferral : DataIntegrationTestBase
         GetReferralsByRecipientHandler handler = new(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();

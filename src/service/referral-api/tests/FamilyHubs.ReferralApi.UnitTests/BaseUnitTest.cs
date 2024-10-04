@@ -6,7 +6,7 @@ using NSubstitute;
 
 namespace FamilyHubs.Referral.UnitTests;
 
-public class BaseUnitTest<T>
+public abstract class BaseUnitTest<T>
 {
     protected readonly IMapper Mapper;
     protected readonly ILogger<T> Logger;

@@ -13,7 +13,7 @@ using NSubstitute;
 
 namespace FamilyHubs.Referral.UnitTests;
 
-public class BaseCreateDbUnitTest<T> : BaseUnitTest<T>
+public abstract class BaseCreateDbUnitTest<T> : BaseUnitTest<T>
 {
     protected readonly ApplicationDbContext MockApplicationDbContext;
 
