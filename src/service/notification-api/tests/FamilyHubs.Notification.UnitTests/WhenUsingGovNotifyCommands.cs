@@ -3,7 +3,7 @@ using FamilyHubs.Notification.Data.NotificationServices;
 using FamilyHubs.Notification.Api.Contracts;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.Notification.UnitTests;
 
@@ -27,13 +27,13 @@ public class WhenUsingGovNotifyCommands : BaseCreateDbUnitTest
             TemplateTokens = dict
         };
         CreateNotificationCommand command = new CreateNotificationCommand(messageDto);
-        var logger = new Mock<ILogger<CreateNotificationCommandHandler>>();
-        Mock<IGovNotifySender> govNotifySender = new Mock<IGovNotifySender>();
+        var logger = Substitute.For<ILogger<CreateNotificationCommandHandler>>();
+        IGovNotifySender govNotifySender = Substitute.For<IGovNotifySender>();
         int sendEmailCallback = 0;
-        govNotifySender.Setup(x => x.SendEmailAsync(It.IsAny<MessageDto>()))
-            .Callback(() => sendEmailCallback++);
+        govNotifySender.WhenForAnyArgs(x => x.SendEmailAsync(Arg.Any<MessageDto>()))
+            .Do(_ => sendEmailCallback++);
 
-        var handler = new CreateNotificationCommandHandler(GetApplicationDbContext(), govNotifySender.Object, GetMapper(), logger.Object);
+        var handler = new CreateNotificationCommandHandler(GetApplicationDbContext(), govNotifySender, GetMapper(), logger);
 
         //Act
         var result = await handler.Handle(command, new CancellationToken());
@@ -61,13 +61,17 @@ public class WhenUsingGovNotifyCommands : BaseCreateDbUnitTest
             TemplateTokens = dict
         };
         CreateNotificationCommand command = new CreateNotificationCommand(messageDto);
-        var logger = new Mock<ILogger<CreateNotificationCommandHandler>>();
-        Mock<IGovNotifySender> govNotifySender = new Mock<IGovNotifySender>();
+        var logger = Substitute.For<ILogger<CreateNotificationCommandHandler>>();
+        IGovNotifySender govNotifySender = Substitute.For<IGovNotifySender>();
         int sendEmailCallback = 0;
-        govNotifySender.Setup(x => x.SendEmailAsync(It.IsAny<MessageDto>()))
-            .Callback(() => sendEmailCallback++).Throws(new Exception());
+        govNotifySender.WhenForAnyArgs(x => x.SendEmailAsync(Arg.Any<MessageDto>()))
+            .Do(_ =>
+            {
+                sendEmailCallback++;
+                throw new Exception();
+            });
 
-        var handler = new CreateNotificationCommandHandler(GetApplicationDbContext(), govNotifySender.Object, GetMapper(), logger.Object);
+        var handler = new CreateNotificationCommandHandler(GetApplicationDbContext(), govNotifySender, GetMapper(), logger);
 
         //Act
         Func<Task> sutMethod = async () => { await handler.Handle(command, new CancellationToken()); };

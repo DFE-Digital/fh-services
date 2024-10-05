@@ -2,7 +2,7 @@ using FamilyHubs.Notification.Data.NotificationServices;
 using FamilyHubs.Notification.Api.Contracts;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.Notification.UnitTests;
 
@@ -12,17 +12,23 @@ public class WhenUsingGovNotifySender
     public async Task ThenSendConnectNotification()
     {
         //Arrange
-        var mockAsyncNotificationClient = new Mock<IServiceNotificationClient>();
-        var mockLogger = new Mock<ILogger<GovNotifySender>>();
+        var mockAsyncNotificationClient = Substitute.For<IServiceNotificationClient>();
+        var mockLogger = Substitute.For<ILogger<GovNotifySender>>();
         int sendEmailCallback = 0;
-        mockAsyncNotificationClient.Setup(c => c.ApiKeyType).Returns(ApiKeyType.ConnectKey);
-        mockAsyncNotificationClient.Setup(x => x.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .Callback(() => sendEmailCallback++);
+        mockAsyncNotificationClient.ApiKeyType.Returns(ApiKeyType.ConnectKey);
+        mockAsyncNotificationClient.WhenForAnyArgs(x => x.SendEmailAsync(
+            Arg.Any<string>(),
+            Arg.Any<string>(),
+            Arg.Any<Dictionary<string, dynamic>>(),
+            Arg.Any<string>(),
+            Arg.Any<string>(),
+            Arg.Any<string>()))
+            .Do(_ => sendEmailCallback++);
 
         IEnumerable<IServiceNotificationClient> notificationClients = new List<IServiceNotificationClient>
-            { mockAsyncNotificationClient.Object };
+            { mockAsyncNotificationClient };
 
-        var govNotifySender = new GovNotifySender(notificationClients, mockLogger.Object);
+        var govNotifySender = new GovNotifySender(notificationClients, mockLogger);
         var dict = new Dictionary<string, string>
         {
             {"Key1", "Value1"},
@@ -48,16 +54,22 @@ public class WhenUsingGovNotifySender
     public async Task ThenSendManageNotification()
     {
         //Arrange
-        var mockAsyncNotificationClient = new Mock<IServiceNotificationClient>();
-        var mockLogger = new Mock<ILogger<GovNotifySender>>();
+        var mockAsyncNotificationClient = Substitute.For<IServiceNotificationClient>();
+        var mockLogger = Substitute.For<ILogger<GovNotifySender>>();
         int sendEmailCallback = 0;
-        mockAsyncNotificationClient.Setup(c => c.ApiKeyType).Returns(ApiKeyType.ManageKey);
-        mockAsyncNotificationClient.Setup(x => x.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .Callback(() => sendEmailCallback++);
+        mockAsyncNotificationClient.ApiKeyType.Returns(ApiKeyType.ManageKey);
+        mockAsyncNotificationClient.WhenForAnyArgs(x => x.SendEmailAsync(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<Dictionary<string, dynamic>>(),
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<string>()))
+            .Do(_ => sendEmailCallback++);
 
-        IEnumerable<IServiceNotificationClient> notificationClients = new List<IServiceNotificationClient>() { mockAsyncNotificationClient.Object };
+        IEnumerable<IServiceNotificationClient> notificationClients = new List<IServiceNotificationClient>() { mockAsyncNotificationClient };
 
-        var govNotifySender = new GovNotifySender(notificationClients, mockLogger.Object);
+        var govNotifySender = new GovNotifySender(notificationClients, mockLogger);
         var dict = new Dictionary<string, string>
         {
             {"Key1", "Value1"},

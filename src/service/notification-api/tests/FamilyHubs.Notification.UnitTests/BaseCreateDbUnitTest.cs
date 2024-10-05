@@ -7,36 +7,33 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using System.Security.Claims;
+using NSubstitute;
 
 namespace FamilyHubs.Notification.UnitTests;
 
-public class BaseCreateDbUnitTest
+public abstract class BaseCreateDbUnitTest
 {
-    protected BaseCreateDbUnitTest()
-    {
-    }
     protected static ApplicationDbContext GetApplicationDbContext()
     {
         var options = CreateNewContextOptions();
-        var mockIHttpContextAccessor = new Mock<IHttpContextAccessor>();
-        var context = new DefaultHttpContext();
-
-        context.User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        var mockIHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+        var context = new DefaultHttpContext
         {
-            new Claim(ClaimTypes.Name, "John Doe"),
-            new Claim("OrganisationId", "1"),
-            new Claim("AccountId", "2"),
-            new Claim("AccountStatus", "Active"),
-            new Claim("Name", "John Doe"),
-            new Claim("ClaimsValidTillTime", "2023-09-11T12:00:00Z"),
-            new Claim("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress", "john@example.com"),
-            new Claim("PhoneNumber", "123456789")
-        }, "test"));
+            User = new ClaimsPrincipal(new ClaimsIdentity([
+                new(ClaimTypes.Name, "John Doe"),
+                new("OrganisationId", "1"),
+                new("AccountId", "2"),
+                new("AccountStatus", "Active"),
+                new("Name", "John Doe"),
+                new("ClaimsValidTillTime", "2023-09-11T12:00:00Z"),
+                new("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress", "john@example.com"),
+                new("PhoneNumber", "123456789")
+            ], "test"))
+        };
 
-        mockIHttpContextAccessor.Setup(h => h.HttpContext).Returns(context);
-        var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(mockIHttpContextAccessor.Object);
+        mockIHttpContextAccessor.HttpContext.Returns(context);
+        var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(mockIHttpContextAccessor);
 
         var inMemorySettings = new Dictionary<string, string?> {
             {"Crypto:UseKeyVault", "False"},
@@ -55,7 +52,7 @@ public class BaseCreateDbUnitTest
         return mockApplicationDbContext;
     }
 
-    protected static DbContextOptions<ApplicationDbContext> CreateNewContextOptions()
+    private static DbContextOptions<ApplicationDbContext> CreateNewContextOptions()
     {
         // Create a fresh service provider, and therefore a fresh
         // InMemory database instance.
@@ -72,7 +69,7 @@ public class BaseCreateDbUnitTest
         return builder.Options;
     }
 
-    protected IMapper GetMapper()
+    protected static IMapper GetMapper()
     {
         var myProfile = new AutoMappingProfiles();
         var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
