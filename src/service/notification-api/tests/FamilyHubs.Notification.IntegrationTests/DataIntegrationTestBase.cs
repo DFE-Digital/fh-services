@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.Notification.IntegrationTests;
 
@@ -34,7 +34,7 @@ public class DataIntegrationTestBase
     {
         var serviceDirectoryConnection = $"Data Source=sd-{Random.Shared.Next().ToString()}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
 
-        var mockIHttpContextAccessor = Mock.Of<IHttpContextAccessor>();
+        var mockIHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
         var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(mockIHttpContextAccessor);
 
         var inMemorySettings = new Dictionary<string, string?> {

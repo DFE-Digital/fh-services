@@ -3,7 +3,7 @@ using FamilyHubs.Notification.Core.Commands.CreateNotification;
 using FamilyHubs.Notification.Data.NotificationServices;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.Notification.IntegrationTests;
 
@@ -28,13 +28,13 @@ public class WhenCreatingNotifications : DataIntegrationTestBase
 
         });
 
-        var logger = new Mock<ILogger<CreateNotificationCommandHandler>>();
-        Mock<IGovNotifySender> govNotifySender = new Mock<IGovNotifySender>();
+        var logger = Substitute.For<ILogger<CreateNotificationCommandHandler>>();
+        IGovNotifySender govNotifySender = Substitute.For<IGovNotifySender>();
         int sendEmailCallback = 0;
-        govNotifySender.Setup(x => x.SendEmailAsync(It.IsAny<MessageDto>()))
-            .Callback(() => sendEmailCallback++);
+        govNotifySender.WhenForAnyArgs(x => x.SendEmailAsync(Arg.Any<MessageDto>()))
+            .Do(_ => sendEmailCallback++);
 
-        var handler = new CreateNotificationCommandHandler(TestDbContext, govNotifySender.Object, Mapper, logger.Object);
+        var handler = new CreateNotificationCommandHandler(TestDbContext, govNotifySender, Mapper, logger);
 
         //Act
         var result = await handler.Handle(createNotificationCommand, new CancellationToken());
