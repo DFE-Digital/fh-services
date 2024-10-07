@@ -14,7 +14,7 @@ public class WhenValidatingNotificationCommands
         var testModel = new CreateNotificationCommand(new MessageDto
         {
             ApiKeyType = ApiKeyType.ConnectKey,
-            NotificationEmails = new List<string> { "someone@email.com "},
+            NotificationEmails = ["someone@email.com"],
             TemplateId = "12e7463d-dbb5-4beb-a321-3ea5b55bb642",
             TemplateTokens = new Dictionary<string, string>
             {
@@ -27,6 +27,7 @@ public class WhenValidatingNotificationCommands
 
         //Assert
         result.Errors.Any().Should().BeFalse();
+        result.Errors.Count.Should().Be(0);
     }
 
     [Fact]
@@ -37,7 +38,7 @@ public class WhenValidatingNotificationCommands
         var testModel = new CreateNotificationCommand(new MessageDto
         {
             ApiKeyType = ApiKeyType.ConnectKey,
-            NotificationEmails = default!,
+            NotificationEmails = [],
             TemplateId = "12e7463d-dbb5-4beb-a321-3ea5b55bb642",
             TemplateTokens = new Dictionary<string, string>
             {
@@ -49,7 +50,7 @@ public class WhenValidatingNotificationCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeTrue();
+        result.Errors.Count.Should().BeGreaterThan(0);
     }
 
     [Fact]
@@ -60,7 +61,7 @@ public class WhenValidatingNotificationCommands
         var testModel = new CreateNotificationCommand(new MessageDto
         {
             ApiKeyType = ApiKeyType.ConnectKey,
-            NotificationEmails = new List<string> { "someone@email.com " },
+            NotificationEmails = ["someone@email.com"],
             TemplateId = string.Empty,
             TemplateTokens = new Dictionary<string, string>
             {
@@ -72,6 +73,6 @@ public class WhenValidatingNotificationCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeTrue();
+        result.Errors.Count.Should().BeGreaterThan(0);
     }
 }
