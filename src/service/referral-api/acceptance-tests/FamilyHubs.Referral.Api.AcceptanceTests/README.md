@@ -1,4 +1,4 @@
-# Acceptance Tests How To
+dot# Acceptance Tests How To
 
 ## Use
 These tests are to verify the API endpoints in the referral API. They should test a few scenarios to verify the endpoint happy path and few unhappy paths if applicable.
