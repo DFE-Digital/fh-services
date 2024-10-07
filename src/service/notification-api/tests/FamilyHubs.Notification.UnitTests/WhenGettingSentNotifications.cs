@@ -48,10 +48,10 @@ public class WhenGettingSentNotifications : BaseCreateDbUnitTest
 
     
     [Theory]
-    [InlineData(null)]
-    [InlineData(ApiKeyType.ConnectKey)]
-    [InlineData(ApiKeyType.ManageKey)]
-    public async Task ThenGetSentNotificationsByApiKeyType(ApiKeyType? apiKeyType)
+    [InlineData(null, 2)]
+    [InlineData(ApiKeyType.ConnectKey, 1)]
+    [InlineData(ApiKeyType.ManageKey, 1)]
+    public async Task ThenGetSentNotificationsByApiKeyType(ApiKeyType? apiKeyType, int expectedItemCount)
     {
         //Arrange
         Setup(false);
@@ -63,7 +63,7 @@ public class WhenGettingSentNotifications : BaseCreateDbUnitTest
 
         //Assert
         result.Should().NotBeNull();
-        result.Items.Count.Should().Be(apiKeyType is not null ? 1 : 2);
+        result.Items.Count.Should().Be(expectedItemCount);
         result.Items[0].Created.Should().NotBeNull();
     }
 
