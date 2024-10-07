@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
+using FamilyHubs.Notification.Api.Contracts;
+using FamilyHubs.Notification.Data.Entities;
 using NSubstitute;
 
 namespace FamilyHubs.Notification.UnitTests;
@@ -21,14 +23,14 @@ public abstract class BaseCreateDbUnitTest
         var context = new DefaultHttpContext
         {
             User = new ClaimsPrincipal(new ClaimsIdentity([
-                new(ClaimTypes.Name, "John Doe"),
-                new("OrganisationId", "1"),
-                new("AccountId", "2"),
-                new("AccountStatus", "Active"),
-                new("Name", "John Doe"),
-                new("ClaimsValidTillTime", "2023-09-11T12:00:00Z"),
-                new("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress", "john@example.com"),
-                new("PhoneNumber", "123456789")
+                new Claim(ClaimTypes.Name, "John Doe"),
+                new Claim("OrganisationId", "1"),
+                new Claim("AccountId", "2"),
+                new Claim("AccountStatus", "Active"),
+                new Claim("Name", "John Doe"),
+                new Claim("ClaimsValidTillTime", "2023-09-11T12:00:00Z"),
+                new Claim("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress", "john@example.com"),
+                new Claim("PhoneNumber", "123456789")
             ], "test"))
         };
 
@@ -76,4 +78,58 @@ public abstract class BaseCreateDbUnitTest
         IMapper mapper = new Mapper(configuration);
         return mapper;
     }
+
+    protected static readonly List<SentNotification> NotificationList =
+    [
+        new()
+        {
+            Id = 1,
+            ApiKeyType = ApiKeyType.ManageKey,
+            Notified = new List<Notified>
+            {
+                new()
+                {
+                    Id = 1,
+                    NotificationId = 1,
+                    Value = "Firstperson@email.com"
+                }
+            },
+            TemplateId = "11111",
+            TokenValues = new List<TokenValue>
+            {
+                new()
+                {
+                    Id = 1,
+                    NotificationId = 1,
+                    Key = "Key1",
+                    Value = "Value1"
+                }
+            }
+        },
+        new()
+        {
+            Id = 2,
+            ApiKeyType = ApiKeyType.ConnectKey,
+            Notified = new List<Notified>
+            {
+                new()
+                {
+                    Id = 2,
+                    NotificationId = 2,
+                    Value = "Secondperson@email.com"
+                }
+            },
+            TemplateId = "2222",
+            TokenValues = new List<TokenValue>
+            {
+                new()
+                {
+                    Id = 2,
+                    NotificationId = 2,
+                    Key = "Key2",
+                    Value = "Value2"
+                }
+            }
+        }
+    ];
 }
