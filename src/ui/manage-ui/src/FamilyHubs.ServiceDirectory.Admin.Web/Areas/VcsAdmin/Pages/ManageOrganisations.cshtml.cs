@@ -1,3 +1,4 @@
+using System.Text;
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
 using FamilyHubs.ServiceDirectory.Admin.Web.Pages.Shared;
@@ -18,7 +19,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
 
         public string OrganisationColumn { get; } = "Organisation";
         public string LaColumn { get; } = "LocalAuthority";
-        public bool IsDfeAdmin { get; set; } = false;
+        public bool IsDfeAdmin { get; set; }
         public IPagination Pagination { get; set; }
         public PaginatedList<OrganisationModel> PaginatedOrganisations { get; set; }
 
@@ -125,17 +126,16 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
             if (SortBy == $"{LaColumn}_{SortOrder.Descending.ToString()}")
                 return organisations.OrderByDescending(x => x.LocalAuthority);
 
-            throw new Exception("SortBy not recognised");
+            throw new InvalidOperationException("SortBy not recognised");
         }
 
         private object CreateQueryParameters()
         {
-            var routeValues = new Dictionary<string, object>();
-
-            routeValues.Add("pageNumber", PageNum);
-            routeValues.Add("sortBy", SortBy);
-
-            return routeValues;
+            return new Dictionary<string, object>
+            {
+                { "pageNumber", PageNum },
+                { "sortBy", SortBy }
+            };
         }
 
         /// <summary>
@@ -145,16 +145,16 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
         private async Task CacheParametersToBackButton()
         {
             var queryDictionary = (Dictionary<string, object>)CreateQueryParameters();
-            var backButtonPath = "/VcsAdmin/ManageOrganisations?";
+            StringBuilder backButtonPath = new("/VcsAdmin/ManageOrganisations?");
 
             foreach (var parameter in queryDictionary)
             {
-                backButtonPath += $"{parameter.Key}={parameter.Value}&";
+                backButtonPath.Append($"{parameter.Key}={parameter.Value}&");
             }
 
             backButtonPath = backButtonPath.Remove(backButtonPath.Length - 1, 1);//Remove unwanted '&' or '?'
 
-            await _cacheService.StoreCurrentPageName(backButtonPath);
+            await _cacheService.StoreCurrentPageName(backButtonPath.ToString());
         }
 
         public class OrganisationModel

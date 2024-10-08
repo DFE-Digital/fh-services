@@ -1,20 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+	<NuGetAuditMode>direct</NuGetAuditMode>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <NoWarn>1701;1702;S1135</NoWarn>
+	<NoWarn>1701;1702;S1135</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-      <PackageReference Include="AspNetCore.HealthChecks.AzureKeyVault" Version="7.0.0" />
-      <PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" Version="7.0.0" />
-      <PackageReference Include="FamilyHubs.Notification.Api.Client" Version="1.1.1" />
-      <PackageReference Include="FamilyHubs.Notification.Api.Contracts" Version="1.0.3" />
-      <PackageReference Include="FamilyHubs.SharedKernel.Razor" Version="9.3.4" />
-      <PackageReference Include="SonarAnalyzer.CSharp" Version="9.28.0.94264">
+      <PackageReference Include="AspNetCore.HealthChecks.AzureKeyVault" />
+      <PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" />
+      <PackageReference Include="FamilyHubs.SharedKernel.Razor" />
+      <PackageReference Include="SonarAnalyzer.CSharp">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -22,6 +18,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FamilyHubs.Referral.Core\FamilyHubs.Referral.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\service\notification-api\src\FamilyHubs.Notification.Api.Client\FamilyHubs.Notification.Api.Client.csproj" />
+    <ProjectReference Include="..\..\..\..\service\notification-api\shared\FamilyHubs.Notification.Api.Contracts\FamilyHubs.Notification.Api.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

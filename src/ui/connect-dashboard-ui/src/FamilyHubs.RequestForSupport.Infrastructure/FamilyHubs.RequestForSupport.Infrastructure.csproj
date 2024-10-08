@@ -1,18 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <NoWarn>S1135</NoWarn>
+	<NuGetAuditMode>direct</NuGetAuditMode>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FamilyHubs.SharedKernel.Razor" Version="9.3.4" />
-		<PackageReference Include="AspNetCore.HealthChecks.AzureKeyVault" Version="7.0.0" />
-		<PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" Version="7.0.0" />
-		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.23.0.88079">
+		<PackageReference Include="FamilyHubs.SharedKernel.Razor" />
+		<PackageReference Include="AspNetCore.HealthChecks.AzureKeyVault" />
+		<PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" />
+		<PackageReference Include="SonarAnalyzer.CSharp">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

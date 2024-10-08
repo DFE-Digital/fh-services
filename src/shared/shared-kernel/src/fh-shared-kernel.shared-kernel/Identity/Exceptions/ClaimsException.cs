@@ -1,18 +1,9 @@
-﻿using System.Runtime.Serialization;
+﻿namespace FamilyHubs.SharedKernel.Identity.Exceptions;
 
-namespace FamilyHubs.SharedKernel.Identity.Exceptions
+public class ClaimsException : Exception
 {
-    [Serializable]
-    public class ClaimsException : Exception
+    public ClaimsException(string message) : base(message)
     {
-        public ClaimsException(string message) : base(message)
-        {
 
-        }
-
-        protected ClaimsException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-
-        }
     }
 }

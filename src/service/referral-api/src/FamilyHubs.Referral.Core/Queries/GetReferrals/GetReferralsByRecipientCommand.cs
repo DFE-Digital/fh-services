@@ -48,8 +48,7 @@ public class GetReferralsByRecipientHandler : IRequestHandler<GetReferralsByReci
             string.IsNullOrEmpty(request.Telephone) &&
             string.IsNullOrEmpty(request.Textphone) &&
             string.IsNullOrEmpty(request.Name) &&
-            string.IsNullOrEmpty(request.Postcode)
-            ) 
+            string.IsNullOrEmpty(request.Postcode)) 
         {
             throw new NotFoundException(nameof(Referral), "Name");
         }
@@ -113,7 +112,6 @@ public class GetReferralsByRecipientHandler : IRequestHandler<GetReferralsByReci
                     results.AddRange(mappedList);
                 }
             }
-
         }
 
         return results;

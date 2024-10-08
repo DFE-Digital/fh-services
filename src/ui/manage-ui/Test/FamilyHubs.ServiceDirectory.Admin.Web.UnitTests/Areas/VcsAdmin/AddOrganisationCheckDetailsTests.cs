@@ -30,9 +30,8 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
             _fixture = new Fixture();
 
             _httpContext = new DefaultHttpContext();
-            _httpContext.Request.Headers.Add("Host", "localhost:7216");
-            _httpContext.Request.Headers.Add("Referer", "https://localhost:7216/Welcome");
-
+            _httpContext.Request.Headers.Append("Host", "localhost:7216");
+            _httpContext.Request.Headers.Append("Referer", "https://localhost:7216/Welcome");
         }
 
         [Fact]

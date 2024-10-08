@@ -16,8 +16,8 @@ public class GetReferralsByOrganisationIdCommand : IRequest<PaginatedList<Referr
         OrganisationId = organisationId;
         OrderBy = orderBy;
         IsAssending = isAssending;
-        PageNumber = pageNumber != null ? pageNumber.Value : 1;
-        PageSize = pageSize != null ? pageSize.Value : 10;
+        PageNumber = pageNumber ?? 1;
+        PageSize = pageSize ?? 10;
         IncludeDeclined = includeDeclined;
     }
 
@@ -29,21 +29,17 @@ public class GetReferralsByOrganisationIdCommand : IRequest<PaginatedList<Referr
     public int PageSize { get; set; } = 10;
 }
 
-public class GetReferralsByOrganisationIdCommandHandler : GetReferralsHandlerBase, IRequestHandler<GetReferralsByOrganisationIdCommand, PaginatedList<ReferralDto>>
+public class GetReferralsByOrganisationIdCommandHandler(ApplicationDbContext context, IMapper mapper)
+    : GetReferralsHandlerBase(context, mapper),
+        IRequestHandler<GetReferralsByOrganisationIdCommand, PaginatedList<ReferralDto>>
 {
-    public GetReferralsByOrganisationIdCommandHandler(ApplicationDbContext context, IMapper mapper)
-         : base(context, mapper)
-    {
-
-    }
-    
     public async Task<PaginatedList<ReferralDto>> Handle(GetReferralsByOrganisationIdCommand request, CancellationToken cancellationToken)
     {
         var entities = _context.Referrals.GetAll()
             .AsNoTracking()
             .Where(x => x.ReferralService.Organisation.Id == request.OrganisationId);
 
-        if (request.IncludeDeclined != null && request.IncludeDeclined == true)
+        if (request.IncludeDeclined is true)
         {
             entities = entities.Where(x => x.ReferralService.Organisation.Id == request.OrganisationId);
         }
@@ -52,14 +48,8 @@ public class GetReferralsByOrganisationIdCommandHandler : GetReferralsHandlerBas
             entities = entities.Where(x => x.ReferralService.Organisation.Id == request.OrganisationId && x.Status.Name != "Declined");
         }
 
-        if (entities == null)
-        {
-            throw new NotFoundException(nameof(Referral), request.OrganisationId.ToString());
-        }
-
         entities = OrderBy(entities, request.OrderBy, request.IsAssending);
 
         return await GetPaginatedList(request == null, entities, request?.PageNumber ?? 1, request?.PageSize ?? 10);
-        
     }
 }

@@ -11,40 +11,26 @@ public class DeleteUserSessionCommand : IRequest<bool>
     public required string Sid { get; set; }
 }
 
-public class DeleteUserSessionCommandHandler : IRequestHandler<DeleteUserSessionCommand, bool>
+public class DeleteUserSessionCommandHandler(
+    ApplicationDbContext dbContext,
+    ILogger<DeleteUserSessionCommandHandler> logger)
+    : IRequestHandler<DeleteUserSessionCommand, bool>
 {
-    private readonly ApplicationDbContext _dbContext;
-    private readonly ILogger<DeleteUserSessionCommandHandler> _logger;
-
-    public DeleteUserSessionCommandHandler(ApplicationDbContext dbContext, ILogger<DeleteUserSessionCommandHandler> logger)
-    {
-        _dbContext = dbContext;
-        _logger = logger;
-    }
-
     public async Task<bool> Handle(DeleteUserSessionCommand request, CancellationToken cancellationToken)
     {
-        try
+        logger.LogInformation("Deleting session for Sid: {Sid}", request.Sid);
+
+        var entity = await dbContext.UserSessions.FirstOrDefaultAsync(r => r.Sid == request.Sid, cancellationToken);
+
+        if (entity is null)
         {
-            var entity = await _dbContext.UserSessions.FirstOrDefaultAsync(r => r.Sid == request.Sid, cancellationToken);
-
-            if (entity is null)
-            {
-                _logger.LogWarning($"No session found for Sid: {request.Sid}");
-                throw new NotFoundException($"No session found for Sid: {request.Sid}");
-            }
-
-            _dbContext.UserSessions.Remove(entity);
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation($"UserSession with Sid: {request.Sid} deleted");
-
-            return true;
+            throw new NotFoundException($"No session found for Sid: {request.Sid}");
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred deleting UserSession for Sid: {Sid}", request.Sid);
-            throw;
-        }
+
+        dbContext.UserSessions.Remove(entity);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 }

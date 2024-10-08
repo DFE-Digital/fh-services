@@ -29,8 +29,8 @@ public class LocalOfferResultsModel : HeaderPageModel
     public Dictionary<int, string> DictServiceDelivery { get; private set; }
     public List<KeyValuePair<TaxonomyDto, List<TaxonomyDto>>> NestedCategories { get; set; } = default!;
     public List<TaxonomyDto> Categories { get; set; } = default!;
-    public double CurrentLatitude { get; set; }
-    public double CurrentLongitude { get; set; }
+    public double? CurrentLatitude { get; set; }
+    public double? CurrentLongitude { get; set; }
     public PaginatedList<ServiceDto> SearchResults { get; set; } = new();
     public string SelectedDistance { get; set; } = "212892";
 
@@ -250,9 +250,8 @@ public class LocalOfferResultsModel : HeaderPageModel
             PageNumber = PageNum,
             Text = SearchText ?? null,
             DistrictCode = DistrictCode ?? null,
-            //todo: we need to fix this. can we use null instead? does postcodes.io return exact 0's? do we need to use abs & epsilon?
-            Latitude = CurrentLatitude != 0.0D ? CurrentLatitude : null,
-            Longitude = CurrentLongitude != 0.0D ? CurrentLongitude : null,
+            Latitude = CurrentLatitude,
+            Longitude = CurrentLongitude,
             AllChildrenYoungPeople = allChildrenYoungPeople,
             GivenAge = givenAge,
             Proximity = double.TryParse(SelectedDistance, out var distanceParsed) && distanceParsed > 0.00d ? distanceParsed : null,
@@ -381,8 +380,8 @@ public class LocalOfferResultsModel : HeaderPageModel
         //todo: what we should really do is pass this info on from the postcode search page
         if (postcodeError == PostcodeError.None)
         {
-            CurrentLatitude = postcodeInfo!.Latitude!.Value;
-            CurrentLongitude = postcodeInfo.Longitude!.Value;
+            CurrentLatitude = postcodeInfo!.Latitude;
+            CurrentLongitude = postcodeInfo.Longitude;
             DistrictCode = postcodeInfo.AdminArea;
         }
     }

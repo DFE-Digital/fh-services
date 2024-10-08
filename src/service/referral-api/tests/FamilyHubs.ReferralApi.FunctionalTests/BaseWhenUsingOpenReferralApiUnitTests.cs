@@ -17,7 +17,7 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
     protected readonly CustomWebApplicationFactory? _webAppFactory;
     private bool _disposed;
     protected readonly JwtSecurityToken? _token;
-    protected readonly JwtSecurityToken _tokenLaManager;
+    protected readonly JwtSecurityToken? _tokenLaManager;
     protected readonly JwtSecurityToken? _token_forOrganisation1;
     protected readonly JwtSecurityToken? _vcstoken;
     protected readonly JwtSecurityToken? _forbiddentoken;

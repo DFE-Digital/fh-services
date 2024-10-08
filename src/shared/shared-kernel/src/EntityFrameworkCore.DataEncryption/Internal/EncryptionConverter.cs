@@ -21,7 +21,7 @@ internal sealed class EncryptionConverter<TModel, TProvider> : ValueConverter<TM
     public EncryptionConverter(IEncryptionProvider encryptionProvider, StorageFormat storageFormat, ConverterMappingHints mappingHints = null)
         : base(
             x => Encrypt<TModel, TProvider>(x, encryptionProvider, storageFormat),
-            x => Decrypt<TModel, TProvider>(x, encryptionProvider, storageFormat), 
+            x => Decrypt(x, encryptionProvider, storageFormat), 
             mappingHints)
     {
     }
@@ -51,7 +51,7 @@ internal sealed class EncryptionConverter<TModel, TProvider> : ValueConverter<TM
         return (TOutput)Convert.ChangeType(encryptedData, typeof(TOutput));
     }
 
-    private static TModel Decrypt<TInput, TOupout>(TProvider input, IEncryptionProvider encryptionProvider, StorageFormat storageFormat)
+    private static TModel Decrypt(TProvider input, IEncryptionProvider encryptionProvider, StorageFormat storageFormat)
     {
         Type destinationType = typeof(TModel);
         byte[] inputData = storageFormat switch

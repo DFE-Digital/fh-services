@@ -1,63 +1,45 @@
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 
 namespace FamilyHubs.ServiceDirectory.Api.AcceptanceTests.Builders.Http;
-public class HttpRequestBuilder
-{
-    private HttpMethod method;
-    private string path;
-    private string baseUrl;
-    private HttpContent content;
-    private string bearerToken;
-    private string acceptHeader;
-    private Dictionary<string, string> parameters = null;
-    private Dictionary<string, string> headers = null;
 
-    public HttpRequestBuilder AddMethod(HttpMethod method)
-    {
-        this.method = method;
-        return this;
-    }
+public class HttpRequestBuilder(HttpMethod method)
+{
+    private string? _path;
+    private string? _baseUrl;
+    private HttpContent? _content;
+    private string? _bearerToken;
+    private Dictionary<string, string>? _parameters = null;
+    private Dictionary<string, string>? _headers = null;
 
     public HttpRequestBuilder AddRequestUri(string baseUrl, string requestUri)
     {
-        this.baseUrl = baseUrl;
-        this.path = requestUri;
+        _baseUrl = baseUrl;
+        _path = requestUri;
 
         return this;
     }
 
     public HttpRequestBuilder AddParameters(Dictionary<string, string> parameters)
     {
-        this.parameters = parameters;
+        _parameters = parameters;
         return this;
     }
 
     public HttpRequestBuilder AddContent(HttpContent content)
     {
-        this.content = content;
+        _content = content;
         return this;
     }
 
     public HttpRequestBuilder AddCustomHeaders(Dictionary<string, string> headers)
     {
-        this.headers = headers;
+        _headers = headers;
         return this;
     }
 
     public HttpRequestBuilder AddBearerToken(string bearerToken)
     {
-        this.bearerToken = bearerToken;
-        return this;
-    }
-
-    public HttpRequestBuilder AddAcceptHeader(string acceptHeader)
-    {
-        this.acceptHeader = acceptHeader;
+        _bearerToken = bearerToken;
         return this;
     }
 
@@ -66,46 +48,41 @@ public class HttpRequestBuilder
         //Create the request message based on the request in the builder
         var request = new HttpRequestMessage
         {
-            Method = this.method,
-            RequestUri = new Uri($"{this.baseUrl}{this.path}")
+            Method = method,
+            RequestUri = new Uri($"{_baseUrl}{_path}")
         };
 
         //Add parameters to Uri
-        if(parameters != null)
+        if (_parameters is not null)
         {
-            request.RequestUri = new Uri($"{this.baseUrl}{this.path}?{CreateQueryString(parameters)}");
+            request.RequestUri = new Uri($"{_baseUrl}{_path}?{CreateQueryString(_parameters)}");
         }
 
+
         //Add any custom headers
-        if(headers != null)
+        if (_headers != null)
         {
-            foreach(KeyValuePair<string, string> header in this.headers)
+            foreach (var header in _headers)
             {
                 request.Headers.Add(header.Key, header.Value);
             }
         }
 
+
         //Add content if present in the request
-        if (this.content != null)
+        if (_content != null)
         {
-            request.Content = this.content;
+            request.Content = _content;
         }
 
         //Add bearer token if present in the request
-        if (!string.IsNullOrEmpty(this.bearerToken))
+        if (!string.IsNullOrEmpty(_bearerToken))
         {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", this.bearerToken);
-        }
-
-        //Clear then add the Accept header if if exists in the request
-        request.Headers.Accept.Clear();
-        if (!string.IsNullOrEmpty(this.acceptHeader))
-        {
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(this.acceptHeader));
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
         }
 
         //Creates or Gets an existing HttpClient for the BaseUrl being used
-        var httpClient = HttpClientFactory.GetHttpClientInstance(baseUrl);
+        var httpClient = HttpClientFactory.GetHttpClientInstance(_baseUrl ?? "");
 
         return await httpClient.SendAsync(request);
     }
@@ -118,6 +95,7 @@ public class HttpRequestBuilder
         {
             list.Add($"{item.Key}={item.Value}");
         }
+
         return string.Join("&", list);
     }
 }

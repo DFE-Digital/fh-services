@@ -1,27 +1,25 @@
-using System.Collections;
-
 namespace FamilyHubs.ServiceDirectory.Api.AcceptanceTests.Models;
 
 public class ServiceSearchRequest
 {
-    public string searchPostcode { get; set; }
+    public string SearchPostcode { get; set; } = string.Empty;
 
-    public int searchRadiusMiles { get; set;}
+    public int SearchRadiusMiles { get; set;}
 
-    public int userId { get; set;}
+    public int UserId { get; set;}
 
-    public int httpResponseCode { get; set;}
+    public int HttpResponseCode { get; set;}
 
-    public DateTime requestTimestamp { get; set;}
+    public DateTime RequestTimestamp { get; set;}
 
-    public DateTime responseTimestamp { get; set;}
+    public DateTime ResponseTimestamp { get; set;}
 
-    public string correlationId { get; set;}
+    public string? CorrelationId { get; set;}
 
-    public int searchTriggerEventId { get; set;}
+    public int SearchTriggerEventId { get; set;}
 
-    public int serviceSearchTypeId { get; set;}
+    public int ServiceSearchTypeId { get; set;}
 
-    public List<ServiceSearchResults> serviceSearchResults { get; set;}
+    public List<ServiceSearchResults> ServiceSearchResults { get; set;} = [];
 
 }

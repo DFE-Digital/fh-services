@@ -1,4 +1,5 @@
-﻿using FamilyHubs.ServiceDirectory.Data.Entities;
+﻿using System.Diagnostics;
+using FamilyHubs.ServiceDirectory.Data.Entities;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using Microsoft.IdentityModel.Tokens;
@@ -1289,8 +1290,9 @@ public static class TestDataProvider
         };
     }
 
-    public static string CreateBearerToken(string role, string bearerTokenSigningKey)
+    public static string CreateBearerToken(string role, string? bearerTokenSigningKey)
     {
+        Debug.Assert(bearerTokenSigningKey != null, nameof(bearerTokenSigningKey) + " != null");
         var claims = new List<Claim> { new Claim("role", role) };
         var identity = new ClaimsIdentity(claims, "Test");
         var user = new ClaimsPrincipal(identity);

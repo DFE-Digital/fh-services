@@ -1,6 +1,6 @@
 ﻿using FamilyHubs.ServiceDirectory.Admin.Web.Pages.Shared;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Primitives;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.ViewModel
 {
@@ -28,12 +28,12 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.ViewModel
             var host = GetHost();
             var path = HttpContext.Request.Headers.Referer;
 
-            if(path.IsNullOrEmpty())
+            if(StringValues.IsNullOrEmpty(path))
             {
-                throw new Exception("Request does not contain a path");
+                throw new InvalidOperationException("Request does not contain a path");
             }
 
-            BackButtonPath = path.ToString().Substring(path.ToString().IndexOf(host) + host.Length);
+            BackButtonPath = path.ToString()[(path.ToString().IndexOf(host) + host.Length)..];
         }
 
         private string GetHost()
@@ -43,7 +43,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.ViewModel
             if (HttpContext.Request.Headers.ContainsKey("X-Forwarded-Host"))
             {
                 var xforwardedhost = HttpContext.Request.Headers["X-Forwarded-Host"];
-                if (!xforwardedhost.IsNullOrEmpty())
+                if (!StringValues.IsNullOrEmpty(xforwardedhost))
                 {
                     host = xforwardedhost.ToString();
                 }

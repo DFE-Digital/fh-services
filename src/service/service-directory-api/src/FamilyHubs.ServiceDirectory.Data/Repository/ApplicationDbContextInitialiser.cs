@@ -37,10 +37,10 @@ public class ApplicationDbContextInitialiser
     {
         var organisationSeedData = new OrganisationSeedData(_context);
 
-        if (!_context.Taxonomies.Any())
+        if (!await _context.Taxonomies.AnyAsync())
             await organisationSeedData.SeedTaxonomies();
 
-        if (!_context.Organisations.Any())
+        if (!await _context.Organisations.AnyAsync())
             await organisationSeedData.SeedOrganisations();
     }
 }

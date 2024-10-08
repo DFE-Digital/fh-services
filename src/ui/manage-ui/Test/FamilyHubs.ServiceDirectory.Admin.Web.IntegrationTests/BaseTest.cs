@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading;
-using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Html.Dom;
 using AngleSharp.Io;
@@ -80,7 +75,7 @@ public abstract class BaseTest : IDisposable
         void ResponseFactory(VirtualResponse htmlResponse)
         {
             htmlResponse
-                .Address(response.RequestMessage.RequestUri)
+                .Address(response.RequestMessage!.RequestUri)
                 .Status(response.StatusCode);
 
             MapHeaders(response.Headers);

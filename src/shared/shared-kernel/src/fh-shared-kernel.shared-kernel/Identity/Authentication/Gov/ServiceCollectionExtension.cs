@@ -52,6 +52,7 @@ namespace FamilyHubs.SharedKernel.Identity.Authentication.Gov
             options.CallbackPath = "/Account/login-callback";
             options.ResponseMode = string.Empty;
             options.SaveTokens = true;
+            
 
             var scopes = "openid email phone".Split(' ');
             options.Scope.Clear();
@@ -122,7 +123,8 @@ namespace FamilyHubs.SharedKernel.Identity.Authentication.Gov
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 SaveSigninToken = true,
-                ValidateLifetime = true
+                ValidateLifetime = true,
+                ValidIssuer = $"{config.Oidc.BaseUrl}/"
             };
             options.Events.OnAuthorizationCodeReceived = async (ctx) =>
             {

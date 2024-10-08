@@ -13,51 +13,34 @@ public class AddUserSessionCommand : IRequest<string>
     public required string Email { get; set; }
 }
 
-public class AddUserSessionCommandHandler : IRequestHandler<AddUserSessionCommand, string>
+public class AddUserSessionCommandHandler(
+    ApplicationDbContext dbContext,
+    ILogger<AddUserSessionCommandHandler> logger)
+    : IRequestHandler<AddUserSessionCommand, string>
 {
-    private readonly ApplicationDbContext _dbContext;
-    private readonly ILogger<AddUserSessionCommandHandler> _logger;
-
-    public AddUserSessionCommandHandler(
-        ApplicationDbContext dbContext,
-        ILogger<AddUserSessionCommandHandler> logger)
-    {
-        _dbContext = dbContext;
-        _logger = logger;
-    }
-
     public async Task<string> Handle(AddUserSessionCommand request, CancellationToken cancellationToken)
     {
-        var userSession = await _dbContext.UserSessions
+        var userSession = await dbContext.UserSessions
             .FirstOrDefaultAsync(r => r.Sid.ToLower() == request.Sid.ToLower(), cancellationToken);
 
         if (userSession is not null)
         {
-            var msg = $"UserSession for sid:{request.Sid} already exists";
-            _logger.LogError(msg);
-            throw new AlreadyExistsException(msg);
+            throw new AlreadyExistsException($"UserSession for sid:{request.Sid} already exists");
         }
 
-        try
+        logger.LogInformation("Saving UserSession {Sid} to DB", request.Sid);
+
+        var entity = new UserSession
         {
-            var entity = new UserSession
-            {
-                Sid = request.Sid,
-                Email = request.Email,
-                LastActive = DateTime.UtcNow
-            };
+            Sid = request.Sid,
+            Email = request.Email,
+            LastActive = DateTime.UtcNow
+        };
 
-            await _dbContext.UserSessions.AddAsync(entity, cancellationToken);
+        await dbContext.UserSessions.AddAsync(entity, cancellationToken);
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("UserSession {Sid} saved to DB", request.Sid);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
-            return request.Sid;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred creating UserSession for Sid:{Sid}", request.Sid);
-            throw;
-        }
+        return request.Sid;
     }
 }

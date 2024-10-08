@@ -8,9 +8,6 @@ using FamilyHubs.ServiceDirectory.Shared.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
@@ -30,19 +27,20 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
             _fixture = new Fixture();
 
             _httpContext = new DefaultHttpContext();
-            _httpContext.Request.Headers.Add("Host", "localhost:7216");
-            _httpContext.Request.Headers.Add("Referer", "https://localhost:7216/Welcome");
+            _httpContext.Request.Headers.Append("Host", "localhost:7216");
+            _httpContext.Request.Headers.Append("Referer", "https://localhost:7216/Welcome");
 
             _mockServiceDirectoryClient.Setup(x => x.GetCachedVcsOrganisations(It.IsAny<long>(), CancellationToken.None))
-                .ReturnsAsync(new List<OrganisationDto>(new[] { new OrganisationDto
-                    {
-                        OrganisationType = OrganisationType.LA,
-                        Name = "Any",
-                        Description = "Test",
-                        AdminAreaCode = "Test",
-                        Id = 1
-                    }
-                }));
+                .ReturnsAsync([
+                        new OrganisationDto
+                        {
+                            OrganisationType = OrganisationType.LA,
+                            Name = "Any",
+                            Description = "Test",
+                            AdminAreaCode = "Test",
+                            Id = 1
+                        }
+                ]);
 
             _mockCacheService.Setup(m => m.RetrieveString(CacheKeyNames.LaOrganisationId)).ReturnsAsync("1");
         }
@@ -50,17 +48,17 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
         [Fact]
         public async Task OnPost_ModelStateInvalid_ReturnsPageWithError()
         {
-            //  Arrange
+            // Arrange
             var sut = new AddOrganisationModel(_mockCacheService.Object, _mockServiceDirectoryClient.Object) 
             { 
                 PageContext = { HttpContext = _httpContext } 
             };
             sut.ModelState.AddModelError("SomeError", "SomeErrorMessage");
 
-            //  Act
+            // Act
             await sut.OnPost();
 
-            //  Assert
+            // Assert
             Assert.True(sut.HasValidationError);
         }
 
@@ -121,8 +119,6 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
 
             //  Assert
             _mockCacheService.Verify(m => m.StoreString(It.IsAny<string>(), It.Is<string>(arg => arg == "Some Name")));
-
         }
     }
-
 }

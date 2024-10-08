@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Pages.manage_services;
 
-[Authorize(Roles = RoleGroups.LaManagerOrDualRole)]
+[Authorize(Roles = RoleGroups.AdminRole)]
 public class DeleteServiceErrorModel : PageModel
 {
     private readonly IServiceDirectoryClient _serviceDirectoryClient;

@@ -1,10 +1,8 @@
 ﻿using AutoFixture;
-using FamilyHubs.Idam.Core.Commands;
 using FamilyHubs.Idam.Data.Entities;
 using FamilyHubs.Idam.Data.Interceptors;
 using FamilyHubs.Idam.Data.Repository;
 using FamilyHubs.SharedKernel.Security;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -110,26 +108,6 @@ public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         await TestDbContext.Database.EnsureDeletedAsync();
-    }
-
-    public Mock<ISender> GetMockEventGridSender(object response, Action callback)
-    {
-        Mock<ISender> mockSender = new Mock<ISender>();
-
-        if(response is string responseString)
-        {
-            mockSender.Setup(x => x.Send(It.IsAny<SendEventGridMessageCommand>(), It.IsAny<CancellationToken>()))
-                .Callback(() => callback()).ReturnsAsync(responseString);
-        }
-
-        if(response is Exception responseException)
-        {
-
-            mockSender.Setup(x => x.Send(It.IsAny<SendEventGridMessageCommand>(), It.IsAny<CancellationToken>()))
-                .Callback(() => callback()).Throws(responseException);
-        }
-
-        return mockSender;
     }
 }
 #pragma warning restore S3881

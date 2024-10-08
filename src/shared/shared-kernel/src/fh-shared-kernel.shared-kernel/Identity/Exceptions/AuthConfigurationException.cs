@@ -1,18 +1,8 @@
-﻿using System.Runtime.Serialization;
+﻿namespace FamilyHubs.SharedKernel.Identity.Exceptions;
 
-namespace FamilyHubs.SharedKernel.Identity.Exceptions
+public class AuthConfigurationException : Exception
 {
-    [Serializable]
-    public class AuthConfigurationException : Exception
+    public AuthConfigurationException(string message):base(message) 
     {
-        public AuthConfigurationException(string message):base(message) 
-        {
-
-        }
-
-        protected AuthConfigurationException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-
-        }
     }
 }

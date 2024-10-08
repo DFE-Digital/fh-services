@@ -508,7 +508,7 @@ public class WhenUsingReferralsApiUnitTests : BaseWhenUsingOpenReferralApiUnitTe
         };
 
         request.Headers.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue($"Bearer", $"{new JwtSecurityTokenHandler().WriteToken(_tokenLaManager)}");
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", $"{new JwtSecurityTokenHandler().WriteToken(_tokenLaManager!)}");
 
         using var response = await Client.SendAsync(request);
 
@@ -520,11 +520,11 @@ public class WhenUsingReferralsApiUnitTests : BaseWhenUsingOpenReferralApiUnitTe
     }
 
     [Theory]
-    [InlineData("TestUser@email.com", default!, "Email")]
-    [InlineData("078873456", default!, "Telephone")]
-    [InlineData("078873456", default!, "Textphone")]
+    [InlineData("TestUser@email.com", default, "Email")]
+    [InlineData("078873456", default, "Telephone")]
+    [InlineData("078873456", default, "Textphone")]
     [InlineData("Test User", "B30 2TV", "Name")]
-    public async Task ThenReferralsByRecipientAreRetrieved(string value1, string value2, string paraType)
+    public async Task ThenReferralsByRecipientAreRetrieved(string value1, string? value2, string paraType)
     {
         if (!IsRunningLocally() || Client == null)
         {

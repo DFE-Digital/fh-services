@@ -103,7 +103,7 @@ public class MinimalReferralEndPoints
         }).WithMetadata(new SwaggerOperationAttribute("Get Referrals", "Get Referral By Composite Keys") { Tags = new[] { "Referrals" } });
 
         app.MapGet("api/referral/count",
-            [Authorize(Roles = RoleGroups.LaManagerOrDualRole + "," + RoleTypes.DfeAdmin)]
+            [Authorize(Roles = RoleGroups.AdminRole)]
             async (long serviceId, CancellationToken cancellationToken, ISender mediator) =>
         {
             GetReferralCountByServiceIdCommand request = new(serviceId);

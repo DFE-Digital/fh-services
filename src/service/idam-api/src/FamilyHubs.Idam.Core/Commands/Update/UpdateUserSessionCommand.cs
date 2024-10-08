@@ -11,43 +11,28 @@ public class UpdateUserSessionCommand : IRequest<string>
     public required string Sid { get; set; }
 }
 
-public class UpdateUserSessionCommandHandler : IRequestHandler<UpdateUserSessionCommand, string>
+public class UpdateUserSessionCommandHandler(
+    ApplicationDbContext dbContext,
+    ILogger<UpdateUserSessionCommandHandler> logger)
+    : IRequestHandler<UpdateUserSessionCommand, string>
 {
-    private readonly ApplicationDbContext _dbContext;
-    private readonly ILogger<UpdateUserSessionCommandHandler> _logger;
-
-    public UpdateUserSessionCommandHandler(ApplicationDbContext dbContext, ILogger<UpdateUserSessionCommandHandler> logger)
-    {
-        _dbContext = dbContext;
-        _logger = logger;
-    }
-
     public async Task<string> Handle(UpdateUserSessionCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _dbContext.UserSessions
+        var entity = await dbContext.UserSessions
             .FirstOrDefaultAsync(r => r.Sid == request.Sid, cancellationToken);
 
         if (entity is null)
         {
-            _logger.LogWarning("UserSession {Sid} not found", request.Sid);
             throw new NotFoundException($"UserSession {request.Sid} not found");
         }
 
-        try
-        {
-            entity.LastActive = DateTime.UtcNow;
-            _dbContext.UserSessions.Update(entity);
+        logger.LogInformation("Updating UserSession {Sid} in DB", request.Sid);
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
+        entity.LastActive = DateTime.UtcNow;
+        dbContext.UserSessions.Update(entity);
 
-            _logger.LogInformation("UserSession {Sid} updated in DB", request.Sid);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
-            return entity.Sid;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred updating UserSession for Sid:{Sid}", request.Sid);
-            throw;
-        }
+        return entity.Sid;
     }
 }

@@ -22,6 +22,16 @@
                 </h1>
             </legend>
             <p class="govuk-body">By deleting this service you will completely remove it from both the directory and Manage family support services and accounts.</p>
+            @if (Model.UserRoleCanSeeConnectionRequestWarning)
+            {
+                <div class="govuk-warning-text">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">
+                        <span class="govuk-visually-hidden">Warning</span>
+                        You cannot delete a service if it has connection requests that have not been actioned.
+                    </strong>
+                </div>
+            }
             <form method="post" novalidate>
                 <div class="govuk-form-group @error?.FormGroupClass">
                     <h2 class="govuk-heading-m govuk-!-margin-top-6">Do you want to delete @Model.ServiceName?</h2>

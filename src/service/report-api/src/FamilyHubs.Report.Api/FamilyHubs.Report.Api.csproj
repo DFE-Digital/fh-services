@@ -1,24 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <UserSecretsId>b0c58548-8d78-4457-a01d-c54c8cd7c582</UserSecretsId>
-    </PropertyGroup>
+	    <NuGetAuditMode>direct</NuGetAuditMode>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+	</PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FamilyHubs.SharedKernel.Razor" Version="9.3.1" />
-        <PackageReference Include="EFCoreSecondLevelCacheInterceptor" Version="4.4.1" />
-        <PackageReference Include="FamilyHubs.SharedKernel" Version="2.4.0" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.17" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.19" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.19">
+        <PackageReference Include="FamilyHubs.SharedKernel.Razor" />
+        <PackageReference Include="EFCoreSecondLevelCacheInterceptor" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" />
     </ItemGroup>
 
     <ItemGroup>
@@ -28,6 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
         <ProjectReference Include="..\FamilyHubs.Report.Core\FamilyHubs.Report.Core.csproj" />
         <ProjectReference Include="..\FamilyHubs.Report.Data\FamilyHubs.Report.Data.csproj" />
     </ItemGroup>

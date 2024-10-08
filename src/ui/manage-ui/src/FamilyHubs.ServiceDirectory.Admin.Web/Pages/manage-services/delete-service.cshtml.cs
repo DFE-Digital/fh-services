@@ -1,12 +1,15 @@
 using System.Collections.Immutable;
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models;
+using FamilyHubs.SharedKernel.Identity;
 using FamilyHubs.SharedKernel.Razor.ErrorNext;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Pages.manage_services;
 
+[Authorize(Roles = RoleGroups.AdminRole)]
 public class DeleteService : PageModel
 {
     private readonly IServiceDirectoryClient _serviceDirectoryClient;
@@ -18,6 +21,8 @@ public class DeleteService : PageModel
     public string BackUrl => "/manage-services/Service-Detail?flow=edit";
     [BindProperty] public long ServiceId { get; set; }
     public string ServiceName { get; set; } = null!;
+    public bool UserRoleCanSeeConnectionRequestWarning =>
+        RoleGroups.VcsManagerOrDualRole.Contains(HttpContext.GetFamilyHubsUser().Role);
 
     [BindProperty] public bool? Selected { get; set; }
 
@@ -74,12 +79,6 @@ public class DeleteService : PageModel
     public async Task<IActionResult> OnGetAsync(long serviceId)
     {
         ServiceId = serviceId;
-
-        if (await IsOpenConnectionRequests())
-        {
-            return RedirectToPage(OpenConnectionErrorUrl, new { serviceId = ServiceId });
-        }
-
         ServiceName = await GetServiceName();
 
         return Page();

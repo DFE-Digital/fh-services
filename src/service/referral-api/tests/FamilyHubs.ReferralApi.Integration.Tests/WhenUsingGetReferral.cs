@@ -113,11 +113,11 @@ public class WhenUsingGetReferral : DataIntegrationTestBase
     }
 
     [Theory]
-    [InlineData("JoeBlog@email.com", default!, "Email")]
-    [InlineData("078123456", default!, "Telephone")]
-    [InlineData("078123456", default!, "Textphone")]
+    [InlineData("JoeBlog@email.com", default, "Email")]
+    [InlineData("078123456", default, "Telephone")]
+    [InlineData("078123456", default, "Textphone")]
     [InlineData("Joe Blogs", "B30 2TV", "Name")]
-    public async Task ThenGetReferralByRecipient(string value1, string value2, string paraType)
+    public async Task ThenGetReferralByRecipient(string value1, string? value2, string paraType)
     {
         await CreateReferral();
         var referral = TestDataProvider.GetReferralDto();
@@ -148,15 +148,12 @@ public class WhenUsingGetReferral : DataIntegrationTestBase
         //Act
         var result = await handler.Handle(command, new System.Threading.CancellationToken());
 
-
-
         //Assert
         result.Should().NotBeNull();
         result[0].Should().BeEquivalentTo(referral,
             options => options.Excluding(x => x.Created).Excluding(x => x.LastModified).Excluding(x => x.Status.SecondrySortOrder));
         var actualService = TestDbContext.Referrals.SingleOrDefault(s => s.Id == referral.Id);
         actualService.Should().NotBeNull();
-
     }
 
     [Fact]
@@ -172,6 +169,5 @@ public class WhenUsingGetReferral : DataIntegrationTestBase
 
         // Assert
         await act.Should().ThrowAsync<NotFoundException>();
-
     }
 }

@@ -13,42 +13,25 @@ public class DeleteClaimCommand : IRequest<bool>
     public required string Name { get; set; }
 }
 
-public class DeleteClaimCommandHandler : IRequestHandler<DeleteClaimCommand, bool>
+public class DeleteClaimCommandHandler(ApplicationDbContext dbContext, ILogger<DeleteClaimCommandHandler> logger)
+    : IRequestHandler<DeleteClaimCommand, bool>
 {
-    private readonly ApplicationDbContext _dbContext;
-    private readonly ILogger<DeleteClaimCommandHandler> _logger;
-
-    public DeleteClaimCommandHandler(ApplicationDbContext dbContext, ILogger<DeleteClaimCommandHandler> logger)
-    {
-        _dbContext = dbContext;
-        _logger = logger;
-    }
-
     public async Task<bool> Handle(DeleteClaimCommand request, CancellationToken cancellationToken)
     {
-        try
+        var entity = await dbContext.AccountClaims
+            .FirstOrDefaultAsync(r => r.AccountId == request.AccountId && r.Name == request.Name, cancellationToken);
+
+        if (entity is null)
         {
-            var entity = await _dbContext.AccountClaims
-                .FirstOrDefaultAsync(r => r.AccountId == request.AccountId && r.Name == request.Name, cancellationToken);
-
-            if (entity is null)
-            {
-                _logger.LogWarning("Account claim {claim} for AccountId:{accountId} not found", request.Name, request.AccountId);
-                throw new NotFoundException(nameof(AccountClaim), request.AccountId.ToString());
-            }
-
-            _dbContext.AccountClaims.Remove(entity);
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("Account Claim {claim} removed from DB", request.Name);
-
-            return true;
+            throw new NotFoundException(nameof(AccountClaim), request.AccountId.ToString());
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred deleting Claim for Id: {AccountId}", request.AccountId);
 
-            throw;
-        }
+        logger.LogInformation("Removing account claim {Claim} from DB", request.Name);
+
+        dbContext.AccountClaims.Remove(entity);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 }

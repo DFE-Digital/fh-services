@@ -14,57 +14,40 @@ public class UpdateAccountSelfServiceCommand : IRequest
     public required string Name { get; set; }
 }
 
-public class UpdateAccountSelfServiceCommandHandler : IRequestHandler<UpdateAccountSelfServiceCommand>
+public class UpdateAccountSelfServiceCommandHandler(
+    ApplicationDbContext dbContext,
+    IHttpContextAccessor httpContextAccessor,
+    ILogger<UpdateAccountSelfServiceCommandHandler> logger)
+    : IRequestHandler<UpdateAccountSelfServiceCommand>
 {
-    private readonly ApplicationDbContext _dbContext;
-    private readonly ILogger<UpdateAccountSelfServiceCommandHandler> _logger;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public UpdateAccountSelfServiceCommandHandler(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor, ILogger<UpdateAccountSelfServiceCommandHandler> logger)
-    {
-        _dbContext = dbContext;
-        _logger = logger;
-        _httpContextAccessor = httpContextAccessor;
-    }
-
     public async Task Handle(UpdateAccountSelfServiceCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _dbContext.Accounts
+        var entity = await dbContext.Accounts
             .FirstOrDefaultAsync(r => r.Id == request.AccountId, cancellationToken);
 
         if (entity is null)
         {
-            _logger.LogWarning("Account {accountId} not found", request.AccountId);
             throw new Ardalis.GuardClauses.NotFoundException(nameof(Account), request.AccountId.ToString());
         }
 
         if (!IsValidRequest(request))
         {
-            _logger.LogWarning("Current User is not authorised to update another user");
             throw new AuthorisationException("Current User is not authorised to update another user");
         }
 
-        try
-        {
-            entity.Name = request.Name;
+        logger.LogInformation("Updating account {AccountId} in DB", request.AccountId);
 
-            _dbContext.Accounts.Update(entity);
+        entity.Name = request.Name;
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
+        dbContext.Accounts.Update(entity);
 
-            _logger.LogInformation("Account {accountId} updated in DB", request.AccountId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred updating account for Id:{Id}", request.AccountId);
-            throw;
-        }
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 
     private bool IsValidRequest(UpdateAccountSelfServiceCommand request)
     {
-        //  Does account ID match bearer token ID
-        var bearerAccountId = _httpContextAccessor.HttpContext?.User.Claims.First(x => x.Type == "AccountId").Value;
+        // does account ID match bearer token ID
+        var bearerAccountId = httpContextAccessor.HttpContext?.User.Claims.First(x => x.Type == "AccountId").Value;
         return request.AccountId.ToString() == bearerAccountId;
     }
 }

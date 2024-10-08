@@ -66,8 +66,7 @@ public class WhenUsingCreateReferralCommand : DataIntegrationTestBase
             });
 
         CreateReferralCommand createCommand = new(newReferral, FamilyHubsUser);
-        CreateReferralCommandHandler createHandler = new(TestDbContext, Mapper, mockServiceDirectory.Object,
-            new Mock<ILogger<CreateReferralCommandHandler>>().Object);
+        CreateReferralCommandHandler createHandler = new(TestDbContext, Mapper, mockServiceDirectory.Object);
 
         //Act
         var result = await createHandler.Handle(createCommand, new CancellationToken());
@@ -124,8 +123,7 @@ public class WhenUsingCreateReferralCommand : DataIntegrationTestBase
             });
 
         CreateReferralCommand createCommand = new(newReferral, FamilyHubsUser);
-        CreateReferralCommandHandler createHandler = new(TestDbContext, Mapper, mockServiceDirectory.Object,
-            new Mock<ILogger<CreateReferralCommandHandler>>().Object);
+        CreateReferralCommandHandler createHandler = new(TestDbContext, Mapper, mockServiceDirectory.Object);
 
         //Act
         var result = await createHandler.Handle(createCommand, new CancellationToken());

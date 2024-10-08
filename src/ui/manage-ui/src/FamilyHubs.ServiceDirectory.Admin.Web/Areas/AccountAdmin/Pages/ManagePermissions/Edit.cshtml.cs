@@ -64,11 +64,6 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
             var organisationId = long.Parse(organisationClaim.Value);
             var organisation = await _serviceDirectoryClient.GetOrganisationById(organisationId);
 
-            if (organisation == null)
-            {
-                throw new Exception("No organisation matches organisationId in claim");
-            }
-
             return organisation.Name;
         }
 
@@ -98,7 +93,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
                     return $"{RoleDescription.VcsManager}, {RoleDescription.VcsProfessional}";
             }
 
-            throw new Exception("Role type not Valid");
+            throw new InvalidOperationException("Role type not Valid");
         }
 
         private async Task SetBackButton()

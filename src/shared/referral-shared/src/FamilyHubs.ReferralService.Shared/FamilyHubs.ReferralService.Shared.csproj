@@ -1,17 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	  <VersionPrefix>1.1.4</VersionPrefix>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>FamilyHubs.ReferralService.Shared</Title>
-    <Description>FamilyHubs.ReferralService.Shared holds code that is shared between the API and UI</Description>
-  </PropertyGroup>
-
+  
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
   </ItemGroup>
 
 </Project>

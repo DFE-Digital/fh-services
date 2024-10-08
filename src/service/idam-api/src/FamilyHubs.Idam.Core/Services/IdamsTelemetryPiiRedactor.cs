@@ -95,13 +95,11 @@ public class IdamsTelemetryPiiRedactor : ITelemetryInitializer
                     {
                         foreach (var key in emailList.Select(x => x.Key))
                         {
-                            if (traceTelemetry.Properties.TryGetValue(key, out string? value))
+                            if (traceTelemetry.Properties.TryGetValue(key, out string? value)
+                                && value.IndexOf("DeleteAllUserSessions") > -1)
                             {
-                                if (value.IndexOf("DeleteAllUserSessions") > -1)
-                                {
-                                    var temp = value.Substring(0, value.IndexOf("DeleteAllUserSessions/") + "DeleteAllUserSessions/".Length) + "REDACTED";
-                                    traceTelemetry.Properties[key] = temp;
-                                }
+                                var temp = value.Substring(0, value.IndexOf("DeleteAllUserSessions/") + "DeleteAllUserSessions/".Length) + "REDACTED";
+                                traceTelemetry.Properties[key] = temp;
                             }
                         }
                     }
@@ -131,13 +129,11 @@ public class IdamsTelemetryPiiRedactor : ITelemetryInitializer
                     {
                         foreach (var key in emailList.Select(x => x.Key))
                         {
-                            if (requestTelemetry.Properties.TryGetValue(key, out string? value))
+                            if (requestTelemetry.Properties.TryGetValue(key, out string? value)
+                                && value.IndexOf("DeleteAllUserSessions") > -1)
                             {
-                                if (value.IndexOf("DeleteAllUserSessions") > -1)
-                                {
-                                    var temp = value.Substring(0, value.IndexOf("DeleteAllUserSessions/") + "DeleteAllUserSessions/".Length) + "REDACTED";
-                                    requestTelemetry.Properties[key] = temp;
-                                }
+                                var temp = value.Substring(0, value.IndexOf("DeleteAllUserSessions/") + "DeleteAllUserSessions/".Length) + "REDACTED";
+                                requestTelemetry.Properties[key] = temp;
                             }
                         }
                     }
@@ -235,13 +231,5 @@ public class IdamsTelemetryPiiRedactor : ITelemetryInitializer
         {
             Debugger.Break();
         }
-
-        //if (value.Contains("email=")
-        //    && !value.Contains("email=REDACTED"))
-        //{
-        //    Debugger.Break();
-        //}
-
-       
     }
 }

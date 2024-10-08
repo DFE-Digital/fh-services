@@ -16,7 +16,7 @@ public class WhenUsingGovNotifySender
         var mockLogger = new Mock<ILogger<GovNotifySender>>();
         int sendEmailCallback = 0;
         mockAsyncNotificationClient.Setup(c => c.ApiKeyType).Returns(ApiKeyType.ConnectKey);
-        mockAsyncNotificationClient.Setup(x => x.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>(), It.IsAny<string>(), It.IsAny<string>()))
+        mockAsyncNotificationClient.Setup(x => x.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Callback(() => sendEmailCallback++);
 
         IEnumerable<IServiceNotificationClient> notificationClients = new List<IServiceNotificationClient>
@@ -52,7 +52,7 @@ public class WhenUsingGovNotifySender
         var mockLogger = new Mock<ILogger<GovNotifySender>>();
         int sendEmailCallback = 0;
         mockAsyncNotificationClient.Setup(c => c.ApiKeyType).Returns(ApiKeyType.ManageKey);
-        mockAsyncNotificationClient.Setup(x => x.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>(), It.IsAny<string>(), It.IsAny<string>()))
+        mockAsyncNotificationClient.Setup(x => x.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Callback(() => sendEmailCallback++);
 
         IEnumerable<IServiceNotificationClient> notificationClients = new List<IServiceNotificationClient>() { mockAsyncNotificationClient.Object };

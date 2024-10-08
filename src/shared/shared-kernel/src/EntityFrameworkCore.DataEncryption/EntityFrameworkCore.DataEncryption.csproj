@@ -1,26 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<AssemblyName>EntityFrameworkCore.DataEncryption</AssemblyName>
 		<RootNamespace>Microsoft.EntityFrameworkCore.DataEncryption</RootNamespace>
-		<IsPackable>true</IsPackable>
-		<Version>4.0.1</Version>
-		<Authors>Filipe GOMES PEIXOTO</Authors>
-		<PackageId>EntityFrameworkCore.DataEncryption</PackageId>
-		<PackageProjectUrl>https://github.com/Eastrall/EntityFrameworkCore.DataEncryption</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/Eastrall/EntityFrameworkCore.DataEncryption.git</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<PackageTags>entity-framework-core, extensions, dotnet-core, dotnet, encryption, fluent-api</PackageTags>
-		<PackageIcon>icon.png</PackageIcon>
-		<Copyright>Filipe GOMES PEIXOTO © 2019 - 2023</Copyright>
-		<Description>A plugin for Microsoft.EntityFrameworkCore to add support of encrypted fields using built-in or custom encryption providers.</Description>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<PackageReleaseNotes>https://github.com/Eastrall/EntityFrameworkCore.DataEncryption/releases/tag/v4.0.1</PackageReleaseNotes>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Nullable>disable</Nullable>
+		<NoWarn>S1168</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -42,8 +27,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.14" />
-	  <PackageReference Include="SonarAnalyzer.CSharp" Version="9.18.0.83559">
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+	  <PackageReference Include="SonarAnalyzer.CSharp">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>

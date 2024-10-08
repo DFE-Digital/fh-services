@@ -24,17 +24,9 @@ public class UpdateServiceCommand : IRequest<long>
     public long Id { get; }
 }
 
-public class UpdateServiceCommandHandler : IRequestHandler<UpdateServiceCommand, long>
+public class UpdateServiceCommandHandler(ApplicationDbContext context, IMapper mapper)
+    : IRequestHandler<UpdateServiceCommand, long>
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
-
-    public UpdateServiceCommandHandler(ApplicationDbContext context, IMapper mapper)
-    {
-        _context = context;
-        _mapper = mapper;
-    }
-
     public async Task<long> Handle(UpdateServiceCommand request, CancellationToken cancellationToken)
     {
         cancellationToken = default;
@@ -42,7 +34,7 @@ public class UpdateServiceCommandHandler : IRequestHandler<UpdateServiceCommand,
         ArgumentNullException.ThrowIfNull(request);
 
         //Many to Many needs to be included otherwise EF core does not know how to perform merge on navigation tables
-        var service = await _context.Services
+        var service = await context.Services
             .Include(s => s.Taxonomies)
             .Include(s => s.Locations)
             .Include(s => s.ServiceAtLocations)
@@ -52,7 +44,7 @@ public class UpdateServiceCommandHandler : IRequestHandler<UpdateServiceCommand,
         if (service is null)
             throw new NotFoundException(nameof(Service), request.Id.ToString());
 
-        service = _mapper.Map(request.Service, service);
+        service = mapper.Map(request.Service, service);
 
         foreach (var serviceAtLocation in service.ServiceAtLocations)
         {
@@ -64,20 +56,20 @@ public class UpdateServiceCommandHandler : IRequestHandler<UpdateServiceCommand,
             }
         }
 
-        service.Taxonomies = await request.Service.TaxonomyIds.GetEntities(_context.Taxonomies);
+        service.Taxonomies = await request.Service.TaxonomyIds.GetEntities(context.Taxonomies);
 
-        _context.Services.Update(service);
+        context.Services.Update(service);
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
 
         // ensure that schedules (which can be referenced by location, service and serviceatlocations) are deleted when they're no longer referenced
         // we need to do this, as we can't specify cascade delete on the ServiceAtLocation schedules relationship as it would cause a cyclic reference
-        var schedulesToRemove = _context.Schedules
+        var schedulesToRemove = await context.Schedules
             .Where(s => s.ServiceId == null && s.LocationId == null && s.ServiceAtLocationId == null)
-            .ToList();
+            .ToListAsync(cancellationToken);
 
-        _context.Schedules.RemoveRange(schedulesToRemove);
-        await _context.SaveChangesAsync(cancellationToken);
+        context.Schedules.RemoveRange(schedulesToRemove);
+        await context.SaveChangesAsync(cancellationToken);
 
         return service.Id;
     }

@@ -7,81 +7,73 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace FamilyHubs.Idam.Api.Controllers
+namespace FamilyHubs.Idam.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class UserSessionController(IMediator mediator) : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UserSessionController : Controller
+    [HttpPost]
+    public async Task<string> Create([FromBody] AddUserSessionCommand request, CancellationToken cancellationToken)
     {
-        private readonly IMediator _mediator;
+        var result = await mediator.Send(request, cancellationToken);
+        _ = await mediator.Send(new DeleteExpiredUserSessionsCommand(), cancellationToken).ConfigureAwait(false);
+        HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+        HttpContext.Response.Headers.Append("Location", $"Api/UserSession/{result}");
+        return result;
+    }
 
-        public UserSessionController(IMediator mediator)
+    [HttpGet("{sid}")]
+    public async Task<UserSessionDto?> GetById(string sid, CancellationToken cancellationToken)
+    {
+        var command = new GetUserSessionCommand { Sid = sid };
+        var result = await mediator.Send(command, cancellationToken);
+        if (result == null)
         {
-            _mediator = mediator;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
         }
+        return result;
+    }
 
-        [HttpPost]
-        public async Task<string> Create([FromBody] AddUserSessionCommand request, CancellationToken cancellationToken)
+    [HttpGet]
+    public async Task<UserSessionDto?> GetByEmail(string? email, CancellationToken cancellationToken)
+    {
+        var command = new GetUserSessionCommand { Email = email };
+        var result = await mediator.Send(command, cancellationToken);
+        if (result == null)
         {
-            var result = await _mediator.Send(request, cancellationToken);
-            _ = await _mediator.Send(new DeleteExpiredUserSessionsCommand(), cancellationToken).ConfigureAwait(false);
-            HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-            HttpContext.Response.Headers.Add("Location", $"Api/UserSession/{result}");
-            return result;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
         }
+        return result;
+    }
 
-        [HttpGet("{sid}")]
-        public async Task<UserSessionDto?> GetById(string sid, CancellationToken cancellationToken)
-        {
-            var command = new GetUserSessionCommand { Sid = sid };
-            var result = await _mediator.Send(command, cancellationToken);
-            if (result == null)
-            {
-                HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
-            }
-            return result;
-        }
+    [HttpDelete("{sid}")]
+    public async Task<bool> Delete(string sid, CancellationToken cancellationToken)
+    {
+        var command = new DeleteUserSessionCommand { Sid = sid };
+        var result = await mediator.Send(command, cancellationToken);
+        return result;
+    }
 
-        [HttpGet]
-        public async Task<UserSessionDto?> GetByEmail(string? email, CancellationToken cancellationToken)
-        {
-            var command = new GetUserSessionCommand { Email = email };
-            var result = await _mediator.Send(command, cancellationToken);
-            if (result == null)
-            {
-                HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
-            }
-            return result;
-        }
+    [HttpDelete]
+    [Route("DeleteAllUserSessions/{email}")]
+    public async Task DeleteAllUserSessions(string email, CancellationToken cancellationToken)
+    {
+        var command = new DeleteAllUserSessionsCommand { Email = email };
+        await mediator.Send(command, cancellationToken);
+    }
 
-        [HttpDelete("{sid}")]
-        public async Task<bool> Delete(string sid, CancellationToken cancellationToken)
-        {
-            var command = new DeleteUserSessionCommand { Sid = sid };
-            var result = await _mediator.Send(command, cancellationToken);
-            return result;
-        }
+    [HttpDelete("DeleteAllUserSessions")]
+    public async Task DeleteAllUserSessionsByEmail(string email, CancellationToken cancellationToken)
+    {
+        await DeleteAllUserSessions(email, cancellationToken);
+    }
 
-        [HttpDelete]
-        [Route("DeleteAllUserSessions/{email}")]
-        public async Task DeleteAllUserSessions(string email, CancellationToken cancellationToken)
-        {
-            var command = new DeleteAllUserSessionsCommand { Email = email };
-            await _mediator.Send(command, cancellationToken);
-        }
-
-        [HttpDelete("DeleteAllUserSessions")]
-        public async Task DeleteAllUserSessionsByEmail(string email, CancellationToken cancellationToken)
-        {
-            await DeleteAllUserSessions(email, cancellationToken);
-        }
-
-        [HttpPut("{sid}")]
-        public async Task<string> Refresh(string sid, CancellationToken cancellationToken)
-        {
-            var command = new UpdateUserSessionCommand { Sid = sid };
-            var result = await _mediator.Send(command, cancellationToken);
-            return result;
-        }
+    [HttpPut("{sid}")]
+    public async Task<string> Refresh(string sid, CancellationToken cancellationToken)
+    {
+        var command = new UpdateUserSessionCommand { Sid = sid };
+        var result = await mediator.Send(command, cancellationToken);
+        return result;
     }
 }

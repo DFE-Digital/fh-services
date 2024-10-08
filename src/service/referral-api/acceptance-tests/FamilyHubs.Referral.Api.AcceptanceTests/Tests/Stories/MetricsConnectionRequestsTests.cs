@@ -33,7 +33,7 @@ public class MetricsConnectionRequestsTests
     {
         this.Given(s => _sharedSteps.GenerateBearerToken(role))
             .And(s => _steps.GivenIHaveAReferralsRequest())
-            .When(s => _steps.WhenISendARequest(_sharedSteps.bearerToken))
+            .When(s => _steps.WhenISendARequest(_sharedSteps.bearerToken!))
             .Then(s => _sharedSteps.VerifyStatusCode(_steps.lastResponse, expectedStatusCode))
             .BDDfy();
     }
@@ -44,7 +44,7 @@ public class MetricsConnectionRequestsTests
     {
         this.Given(s => _sharedSteps.HaveAnInvalidBearerToken())
             .And(s => _steps.GivenIHaveAReferralsRequest())
-            .When(s => _steps.WhenISendARequest(_sharedSteps.bearerToken))
+            .When(s => _steps.WhenISendARequest(_sharedSteps.bearerToken!))
             .Then(s => _sharedSteps.VerifyStatusCode(_steps.lastResponse, expectedStatusCode))
             .BDDfy();
     }

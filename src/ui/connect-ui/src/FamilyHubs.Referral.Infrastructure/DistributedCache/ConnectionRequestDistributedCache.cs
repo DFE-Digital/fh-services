@@ -5,31 +5,23 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace FamilyHubs.Referral.Infrastructure.DistributedCache;
 
-public class ConnectionRequestDistributedCache : IConnectionRequestDistributedCache
+public class ConnectionRequestDistributedCache(
+    IDistributedCache distributedCache,
+    DistributedCacheEntryOptions distributedCacheEntryOptions)
+    : IConnectionRequestDistributedCache
 {
-    private readonly IDistributedCache _distributedCache;
-    private readonly DistributedCacheEntryOptions _distributedCacheEntryOptions;
-
-    public ConnectionRequestDistributedCache(
-        IDistributedCache distributedCache,
-        DistributedCacheEntryOptions distributedCacheEntryOptions)
-    {
-        _distributedCache = distributedCache;
-        _distributedCacheEntryOptions = distributedCacheEntryOptions;
-    }
-
     public async Task<ConnectionRequestModel?> GetAsync(string professionalsEmail)
     {
-        return await _distributedCache.GetAsync<ConnectionRequestModel>(professionalsEmail);
+        return await distributedCache.GetAsync<ConnectionRequestModel>(professionalsEmail);
     }
 
     public async Task SetAsync(string professionalsEmail, ConnectionRequestModel model)
     {
-        await _distributedCache.SetAsync(professionalsEmail, model, _distributedCacheEntryOptions);
+        await distributedCache.SetAsync(professionalsEmail, model, distributedCacheEntryOptions);
     }
 
     public async Task RemoveAsync(string professionalsEmail)
     {
-        await _distributedCache.RemoveAsync(professionalsEmail);
+        await distributedCache.RemoveAsync(professionalsEmail);
     }
 }

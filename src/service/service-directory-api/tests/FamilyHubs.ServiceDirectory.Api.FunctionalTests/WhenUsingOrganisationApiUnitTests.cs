@@ -17,7 +17,7 @@ public class WhenUsingOrganisationApiUnitTests : BaseWhenUsingApiUnitTests
 
         var request = CreatePostRequest("api/organisations", command, RoleTypes.DfeAdmin);
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -34,7 +34,7 @@ public class WhenUsingOrganisationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/organisations/1")
+            RequestUri = new Uri(Client!.BaseAddress + "api/organisations/1")
         };
 
         using var response = await Client.SendAsync(request);
@@ -78,7 +78,7 @@ public class WhenUsingOrganisationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/organisations/1"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/organisations/1"),
 
         };
 
@@ -103,7 +103,7 @@ public class WhenUsingOrganisationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/organisations"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/organisations"),
 
         };
 
@@ -128,7 +128,7 @@ public class WhenUsingOrganisationApiUnitTests : BaseWhenUsingApiUnitTests
         var request = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri(Client.BaseAddress + "api/organisationAdminCode/1"),
+            RequestUri = new Uri(Client!.BaseAddress + "api/organisationAdminCode/1"),
         };
 
         using var response = await Client.SendAsync(request);

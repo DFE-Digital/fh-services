@@ -14,11 +14,12 @@ namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Services;
 
 public class WhenValidatingServiceCommands
 {
-    protected IHttpContextAccessor _httpContextAccessor;
-    public IMapper Mapper { get; }
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private IMapper Mapper { get; }
 
     public WhenValidatingServiceCommands()
     {
+        _httpContextAccessor = new HttpContextAccessor();
         var serviceProvider = CreateNewServiceProvider();
 
         Mapper = serviceProvider.GetRequiredService<IMapper>();

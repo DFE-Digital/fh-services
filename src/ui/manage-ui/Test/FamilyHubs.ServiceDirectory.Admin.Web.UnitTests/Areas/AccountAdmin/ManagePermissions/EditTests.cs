@@ -77,13 +77,14 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
 
             _mockCacheService.Setup(m => m.RetrieveLastPageName()).Returns(Task.FromResult(_expectedBackPath));
 
-            var sut = new EditModel(_mockIdamClient.Object, _mockServiceDirectoryClient.Object, _mockCacheService.Object);
-            sut.AccountId = _expectedAccountId.ToString();
+            var sut = new EditModel(_mockIdamClient.Object, _mockServiceDirectoryClient.Object, _mockCacheService.Object)
+                {
+                    AccountId = _expectedAccountId.ToString()
+                };
 
-            //  Act/Assert
-            var exception = await Assert.ThrowsAsync<Exception>((Func<Task>)(async()=> await sut.OnGet()));
+            // Act/Assert
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(async()=> await sut.OnGet());
             Assert.Equal("Role type not Valid", exception.Message);
-
         }
 
         private Task<AccountDto?> GetAccountDto(long id, string email, string name, string role, long organisationId)
@@ -102,18 +103,16 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
             return Task.FromResult((AccountDto?)account);
         }
 
-        private Task<OrganisationDetailsDto?> GetOrganisationDto(long organisationId, string organisationName)
+        private Task<OrganisationDetailsDto> GetOrganisationDto(long organisationId, string organisationName)
         {
-            var organisation = new OrganisationDetailsDto 
+            return Task.FromResult(new OrganisationDetailsDto 
             { 
                 AdminAreaCode = "Any",
                 Description = "Any",
                 Name= organisationName,
                 OrganisationType = Shared.Enums.OrganisationType.NotSet,
                 Id= organisationId
-            };
-
-            return Task.FromResult((OrganisationDetailsDto?)organisation);
+            });
         }
     }
 }

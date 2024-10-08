@@ -64,13 +64,13 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
                 return RedirectToPage("/AddOrganisationResult");
             }
 
-            if (outcome.FailureResult?.ApiErrorResponse.ErrorCode.ParseToErrorCode() == Core.Exceptions.ErrorCodes.AlreadyExistsException)
+            if (outcome.FailureResult?.ApiErrorResponse.ErrorCode.ParseToErrorCode() == ErrorCodes.AlreadyExistsException)
             {
-                await _cacheService.StoreCurrentPageName($"/VcsAdmin/AddOrganisationCheckDetails");
+                await _cacheService.StoreCurrentPageName("/VcsAdmin/AddOrganisationCheckDetails");
                 return RedirectToPage("AddOrganisationAlreadyExists");
             }
 
-            throw new Exception("Unknown response from API ServiceDirectory CreateOrganisation");
+            throw new InvalidOperationException("Unknown response from API ServiceDirectory CreateOrganisation");
         }
 
         private async Task SetLocalAuthority()
@@ -80,7 +80,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
 
             if (string.IsNullOrEmpty(laOrganisationId))
             {
-                throw new Exception("laOrganisationId missing");
+                throw new InvalidOperationException("laOrganisationId missing");
             }
 
             var laOrganisation = localAuthorities.First(x => x.Id.ToString() == laOrganisationId);

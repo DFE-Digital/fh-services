@@ -26,10 +26,10 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Setup .NET ${{ vars.DOTNET_VERSION }}
+      - name: Setup .NET ${{ vars.DOTNET_VERSION_V8 }}
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ vars.DOTNET_VERSION }}
+          dotnet-version: ${{ vars.DOTNET_VERSION_V8 }}
 
       - name: Package Cache
         uses: actions/cache@v4

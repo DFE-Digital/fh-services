@@ -5,7 +5,6 @@ using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Security.Claims;
-using FamilyHubs.ServiceDirectory.Shared.Dto;
 
 namespace FamilyHubs.Idam.Core.IntegrationTests.Queries.GetAccounts;
 
@@ -29,8 +28,7 @@ public class GetAccountsCommandTests : DataIntegrationTestBase<GetAccountsComman
         var handler = new GetAccountsCommandHandler(
             TestDbContext,
             mockServiceDirectoryService.Object,
-            mockHttpContextAccessor.Object,
-            MockLogger.Object);
+            mockHttpContextAccessor.Object);
 
         //Act
         await handler.Handle(command, new CancellationToken());
@@ -80,8 +78,7 @@ public class GetAccountsCommandTests : DataIntegrationTestBase<GetAccountsComman
         var handler = new GetAccountsCommandHandler(
             TestDbContext,
             mockServiceDirectoryService.Object,
-            mockHttpContextAccessor.Object,
-            MockLogger.Object);
+            mockHttpContextAccessor.Object);
 
         //Act
         var results = await handler.Handle(command, new CancellationToken());
