@@ -1,4 +1,4 @@
-dot# Acceptance Tests How To
+# Acceptance Tests How To
 
 ## Use
 These tests are to verify the API endpoints in the referral API. They should test a few scenarios to verify the endpoint happy path and few unhappy paths if applicable.
@@ -10,7 +10,7 @@ The test use the builder pattern and HTTPClient to send requests to the API endp
 ## Prerequistes
 
 1. Install VSCode or your favourite IDE
-2. Install .NET7 SDK and Runtime
+2. Install .NET8 SDK and Runtime
 
 ## Run tests locally
 1. Clone ServiceDirectory API and open the FamilyHubs.Referral.Api.AcceptanceTests folder in VS Code
@@ -18,5 +18,5 @@ The test use the builder pattern and HTTPClient to send requests to the API endp
 3. To run tests via terminal run dotnet test
 4. To run tests via extension: install C# Dev Kit or .NET Core Test Explorer, navigate to testing tab and run tests.
 
-## Run tests in Azure pipeline
-To be setup
+## Run tests in Github
+The tests run in Github flow after deployment of fh-services to test1 or test2 env. At the moment the pipeline does not stop us from deploying to production if there is a failure.
