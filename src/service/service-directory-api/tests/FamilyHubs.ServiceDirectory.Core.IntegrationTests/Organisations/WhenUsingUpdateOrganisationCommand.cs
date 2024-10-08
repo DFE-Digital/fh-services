@@ -34,7 +34,7 @@ public class WhenUsingUpdateOrganisationCommand : DataIntegrationTestBase
         var updateHandler = new UpdateOrganisationCommandHandler(MockHttpContextAccessor, TestDbContext, Mapper, UpdateLogger);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -60,7 +60,7 @@ public class WhenUsingUpdateOrganisationCommand : DataIntegrationTestBase
         var updateHandler = new UpdateOrganisationCommandHandler(mockHttpContextAccessor, TestDbContext, Mapper, UpdateLogger);
 
         //Act / Assert
-        await Assert.ThrowsAsync<ForbiddenException>(async () => await updateHandler.Handle(updateCommand, new CancellationToken()));
+        await Assert.ThrowsAsync<ForbiddenException>(async () => await updateHandler.Handle(updateCommand, CancellationToken.None));
     }
 
     private IHttpContextAccessor GetMockHttpContextAccessor(long organisationId, string userRole)

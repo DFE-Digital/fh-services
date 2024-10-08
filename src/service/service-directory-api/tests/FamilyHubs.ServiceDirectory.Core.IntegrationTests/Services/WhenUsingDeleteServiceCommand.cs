@@ -18,7 +18,7 @@ public class WhenUsingDeleteServiceCommand : DataIntegrationTestBase
         var handler = new DeleteServiceByIdCommandHandler(TestDbContext, Substitute.For<ILogger<DeleteServiceByIdCommandHandler>>());
 
         //Act
-        var results = await handler.Handle(command, new CancellationToken());
+        var results = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         results.Should().Be(true);
@@ -34,7 +34,7 @@ public class WhenUsingDeleteServiceCommand : DataIntegrationTestBase
 
         // Act 
         // Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, new CancellationToken()));
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None));
 
     }
 }

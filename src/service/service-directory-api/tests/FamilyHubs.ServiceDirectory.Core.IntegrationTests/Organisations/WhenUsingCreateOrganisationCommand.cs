@@ -18,7 +18,7 @@ public class WhenUsingCreateOrganisationCommand : DataIntegrationTestBase
         var handler = new CreateOrganisationCommandHandler(TestDbContext, Mapper, GetLogger<CreateOrganisationCommandHandler>());
 
         //Act
-        var result = await handler.Handle(createOrganisationCommand, new CancellationToken());
+        var result = await handler.Handle(createOrganisationCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -52,7 +52,7 @@ public class WhenUsingCreateOrganisationCommand : DataIntegrationTestBase
         var handler = new CreateOrganisationCommandHandler(TestDbContext, Mapper, GetLogger<CreateOrganisationCommandHandler>());
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -73,6 +73,6 @@ public class WhenUsingCreateOrganisationCommand : DataIntegrationTestBase
 
         // Act 
         // Assert
-        await Assert.ThrowsAsync<AlreadyExistsException>(() => handler.Handle(command, new CancellationToken()));
+        await Assert.ThrowsAsync<AlreadyExistsException>(() => handler.Handle(command, CancellationToken.None));
     }
 }

@@ -24,7 +24,7 @@ public class WhenUsingCreateServiceCommand : DataIntegrationTestBase
         var handler = new CreateServiceCommandHandler(TestDbContext, Mapper, Substitute.For<ILogger<CreateServiceCommandHandler>>());
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -66,7 +66,7 @@ public class WhenUsingCreateServiceCommand : DataIntegrationTestBase
         var handler = new CreateServiceCommandHandler(TestDbContext, Mapper, Substitute.For<ILogger<CreateServiceCommandHandler>>());
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -113,7 +113,7 @@ public class WhenUsingCreateServiceCommand : DataIntegrationTestBase
     //    var handler = new CreateServiceCommandHandler(TestDbContext, Mapper, GetLogger<CreateServiceCommandHandler>());
 
     //    //Act
-    //    var serviceId = await handler.Handle(command, new CancellationToken());
+    //    var serviceId = await handler.Handle(command, CancellationToken.None);
 
     //    //Assert
     //    serviceId.Should().NotBe(0);
@@ -146,7 +146,7 @@ public class WhenUsingCreateServiceCommand : DataIntegrationTestBase
         var handler = new CreateServiceCommandHandler(TestDbContext, Mapper, GetLogger<CreateServiceCommandHandler>());
 
         //Act
-        var result = await handler.Handle(createServiceCommand, new CancellationToken());
+        var result = await handler.Handle(createServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -168,6 +168,6 @@ public class WhenUsingCreateServiceCommand : DataIntegrationTestBase
 
         // Act 
         // Assert
-        await Assert.ThrowsAsync<AlreadyExistsException>(() => handler.Handle(command, new CancellationToken()));
+        await Assert.ThrowsAsync<AlreadyExistsException>(() => handler.Handle(command, CancellationToken.None));
     }
 }

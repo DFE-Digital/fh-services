@@ -15,13 +15,13 @@ public class WhenUsingGetLocationCommands : DataIntegrationTestBase
     {
         //Arrange
         var testLocation = GetTestLocation();
-        testLocation.Id = await CreateLocation(testLocation);
+        testLocation.Id = CreateLocation(testLocation);
 
         var getCommand = new GetLocationByIdCommand { Id = testLocation.Id };
         var getHandler = new GetLocationByIdCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
@@ -43,7 +43,7 @@ public class WhenUsingGetLocationCommands : DataIntegrationTestBase
         var getHandler = new GetLocationsByServiceIdCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
@@ -59,11 +59,10 @@ public class WhenUsingGetLocationCommands : DataIntegrationTestBase
         await CreateOrganisationDetails();
 
         var getCommand = new GetLocationsByOrganisationIdCommand(TestOrganisation.Id, null, null, null, null, null,null);
-
         var getHandler = new GetLocationsByOrganisationIdCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
@@ -80,7 +79,7 @@ public class WhenUsingGetLocationCommands : DataIntegrationTestBase
         var getHandler = new ListLocationCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
@@ -98,7 +97,7 @@ public class WhenUsingGetLocationCommands : DataIntegrationTestBase
 
         // Act 
         // Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => getHandler.Handle(getCommand, new CancellationToken()));
+        await Assert.ThrowsAsync<NotFoundException>(() => getHandler.Handle(getCommand, CancellationToken.None));
     }
 
     [Fact]
@@ -110,6 +109,6 @@ public class WhenUsingGetLocationCommands : DataIntegrationTestBase
 
         // Act 
         // Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => getHandler.Handle(getCommand, new CancellationToken()));
+        await Assert.ThrowsAsync<NotFoundException>(() => getHandler.Handle(getCommand, CancellationToken.None));
     }
 }

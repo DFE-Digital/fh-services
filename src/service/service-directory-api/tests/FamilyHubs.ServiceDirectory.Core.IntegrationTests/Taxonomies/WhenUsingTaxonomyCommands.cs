@@ -23,7 +23,7 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
         var handler = new CreateTaxonomyCommandHandler(TestDbContext, Mapper, logger);
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -47,7 +47,7 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
         var handler = new UpdateTaxonomyCommandHandler(TestDbContext, logger);
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -106,7 +106,7 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
         var handler = new GetTaxonomiesCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
@@ -128,7 +128,7 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
         var handler = new GetTaxonomiesCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(new GetTaxonomiesCommand(TaxonomyType.NotSet, null, null, null), new CancellationToken());
+        var result = await handler.Handle(new GetTaxonomiesCommand(TaxonomyType.NotSet, null, null, null), CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();

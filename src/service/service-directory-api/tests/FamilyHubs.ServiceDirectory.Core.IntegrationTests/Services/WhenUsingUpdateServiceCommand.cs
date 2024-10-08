@@ -26,7 +26,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -61,7 +61,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -98,7 +98,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -134,7 +134,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -170,7 +170,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -201,7 +201,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -230,7 +230,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -267,7 +267,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -303,7 +303,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -343,7 +343,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -380,7 +380,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -417,7 +417,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -454,7 +454,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -493,7 +493,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -529,7 +529,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -568,7 +568,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
             Longitude = 0,
             LocationType = LocationType.Postal
         };
-        var existingLocationId = await CreateLocation(expected);
+        var existingLocationId = CreateLocation(expected);
 
         serviceChange.ServiceAtLocations.Clear();
         serviceChange.ServiceAtLocations.Add(new ServiceAtLocationDto
@@ -580,7 +580,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -635,7 +635,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
             Longitude = 0,
             LocationType = LocationType.Postal
         };
-        var existingLocationId = await CreateLocation(expected);
+        var existingLocationId = CreateLocation(expected);
 
         var expectedSchedule = new ScheduleDto()
         {
@@ -660,7 +660,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -714,7 +714,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);

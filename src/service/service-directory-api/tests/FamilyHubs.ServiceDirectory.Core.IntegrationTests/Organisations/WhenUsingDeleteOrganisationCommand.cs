@@ -31,7 +31,7 @@ public class WhenUsingDeleteOrganisationCommand : DataIntegrationTestBase
         var handler = new DeleteOrganisationCommandHandler(TestDbContext, _mockHttpContextAccessor, DeleteLogger);
 
         //Act
-        var results = await handler.Handle(command, new CancellationToken());
+        var results = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         results.Should().Be(true);
@@ -47,7 +47,7 @@ public class WhenUsingDeleteOrganisationCommand : DataIntegrationTestBase
 
         // Act 
         // Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, new CancellationToken()));
+        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None));
 
     }
 
