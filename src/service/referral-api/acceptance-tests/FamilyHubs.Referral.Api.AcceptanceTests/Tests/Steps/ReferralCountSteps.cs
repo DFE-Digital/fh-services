@@ -4,6 +4,7 @@ using FamilyHubs.Referral.Api.AcceptanceTests.Builders.Http;
 using FamilyHubs.Referral.Api.AcceptanceTests.Configuration;
 using FamilyHubs.ReferralService.Shared.Dto.CreateUpdate;
 using FamilyHubs.ReferralService.Shared.Dto.Metrics;
+using FluentAssertions;
 
 namespace FamilyHubs.Referral.Api.AcceptanceTests.Tests.Steps;
 
@@ -14,17 +15,11 @@ public class ReferralCountSteps
 {
     private readonly string _baseUrl;
     private HttpStatusCode _statusCode;
-    public HttpResponseMessage lastResponse { get; private set; }
+    public HttpResponseMessage LastResponse { get; private set; }
     public ReferralCountSteps()
     {
         _baseUrl = ConfigAccessor.GetApplicationConfiguration().BaseUrl;
-        lastResponse = new HttpResponseMessage();
-    }
-
-    private static string ResponseNotExpectedMessage(HttpMethod method, System.Uri requestUri,
-        HttpStatusCode statusCode)
-    {
-        return $"Response from {method} {requestUri} {statusCode} was not as expected";
+        LastResponse = new HttpResponseMessage();
     }
 
     #region Step Definitions
@@ -36,14 +31,23 @@ public class ReferralCountSteps
         Dictionary<string, string> headers = new Dictionary<string, string>() { };
         headers.Add("traceparent", new Guid().ToString());
         
-        lastResponse = await HttpRequestFactory.Get(_baseUrl, $"api/referral/count?serviceId={serviceId}", bearerToken,
+        LastResponse = await HttpRequestFactory.Get(_baseUrl, $"api/referral/count?serviceId={serviceId}", bearerToken,
             headers, null);
-        _statusCode = lastResponse.StatusCode;
+        _statusCode = LastResponse.StatusCode;
 
         return _statusCode;
     }
 
     #endregion When
+
+    #region Then
+    
+    public void ResponseBodyContainsValue()
+    {
+        LastResponse.Content.Should().NotBeNull();
+    }
+
+    #endregion Then
 
     #endregion Step Definitions
 }

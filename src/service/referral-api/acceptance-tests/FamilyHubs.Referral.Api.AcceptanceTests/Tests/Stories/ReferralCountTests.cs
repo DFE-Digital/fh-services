@@ -28,9 +28,9 @@ public class ReferralCountTests
     public void Referral_Count_Returns_Expected_Status_Code(string role, string serviceId, HttpStatusCode expectedStatusCode)
     {
         this.Given(s => _sharedSteps.GenerateBearerToken(role))
-            .When(s => _steps.WhenISendARequest(_sharedSteps.bearerToken, serviceId))
-            .Then(s => _sharedSteps.VerifyStatusCode(_steps.lastResponse, expectedStatusCode))
-            .And(s => _sharedSteps.ResponseBodyContainsValue(_steps.lastResponse))
+            .When(s => _steps.WhenISendARequest(_sharedSteps.BearerToken!, serviceId))
+            .Then(s => _sharedSteps.VerifyStatusCode(_steps.LastResponse, expectedStatusCode))
+            .And(s => _steps.ResponseBodyContainsValue())
             .BDDfy();
     }
 
@@ -39,8 +39,8 @@ public class ReferralCountTests
     public void Referral_Count_Endpoint_Errors_Invalid_Bearer_Token(string serviceId, HttpStatusCode expectedStatusCode)
     {
         this.Given(s => _sharedSteps.HaveAnInvalidBearerToken())
-            .When(s => _steps.WhenISendARequest(_sharedSteps.bearerToken,serviceId))
-            .Then(s => _sharedSteps.VerifyStatusCode(_steps.lastResponse, expectedStatusCode))
+            .When(s => _steps.WhenISendARequest(_sharedSteps.BearerToken!,serviceId))
+            .Then(s => _sharedSteps.VerifyStatusCode(_steps.LastResponse, expectedStatusCode))
             .BDDfy();
     }
 }
