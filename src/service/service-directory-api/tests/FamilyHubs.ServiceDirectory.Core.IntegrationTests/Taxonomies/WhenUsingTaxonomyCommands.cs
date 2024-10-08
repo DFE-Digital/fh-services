@@ -7,7 +7,7 @@ using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Taxonomies;
 
@@ -17,10 +17,10 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
     public async Task ThenCreateTaxonomy()
     {
         //Arrange
-        var logger = new Mock<ILogger<CreateTaxonomyCommandHandler>>();
+        var logger = Substitute.For<ILogger<CreateTaxonomyCommandHandler>>();
         var testTaxonomy = GetTestTaxonomyDto();
         var command = new CreateTaxonomyCommand(testTaxonomy);
-        var handler = new CreateTaxonomyCommandHandler(TestDbContext, Mapper, logger.Object);
+        var handler = new CreateTaxonomyCommandHandler(TestDbContext, Mapper, logger);
 
         //Act
         var result = await handler.Handle(command, new CancellationToken());
@@ -41,10 +41,10 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
         TestDbContext.Taxonomies.Add(dbTaxonomy);
         await TestDbContext.SaveChangesAsync();
         var testTaxonomy = GetTestTaxonomyDto();
-        var logger = new Mock<ILogger<UpdateTaxonomyCommandHandler>>();
+        var logger = Substitute.For<ILogger<UpdateTaxonomyCommandHandler>>();
 
         var command = new UpdateTaxonomyCommand(dbTaxonomy.Id, testTaxonomy);
-        var handler = new UpdateTaxonomyCommandHandler(TestDbContext, logger.Object);
+        var handler = new UpdateTaxonomyCommandHandler(TestDbContext, logger);
 
         //Act
         var result = await handler.Handle(command, new CancellationToken());
@@ -65,8 +65,8 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
         };
         TestDbContext.Taxonomies.Add(dbTaxonomy);
         await TestDbContext.SaveChangesAsync();
-        var logger = new Mock<ILogger<UpdateTaxonomyCommandHandler>>();
-        var handler = new UpdateTaxonomyCommandHandler(TestDbContext, logger.Object);
+        var logger = Substitute.For<ILogger<UpdateTaxonomyCommandHandler>>();
+        var handler = new UpdateTaxonomyCommandHandler(TestDbContext, logger);
         var command = new UpdateTaxonomyCommand(dbTaxonomy.Id, default!);
 
         // Act
@@ -79,8 +79,8 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
     public async Task ThenHandle_ThrowsNotFoundException_WhenTaxonomyIdNotFound()
     {
         // Arrange
-        var logger = new Mock<ILogger<UpdateTaxonomyCommandHandler>>();
-        var handler = new UpdateTaxonomyCommandHandler(TestDbContext, logger.Object);
+        var logger = Substitute.For<ILogger<UpdateTaxonomyCommandHandler>>();
+        var handler = new UpdateTaxonomyCommandHandler(TestDbContext, logger);
         var command = new UpdateTaxonomyCommand(Random.Shared.Next(), default!);
 
         // Act

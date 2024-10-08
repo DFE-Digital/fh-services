@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests;
 
@@ -44,7 +44,7 @@ public class DataIntegrationTestBase : IDisposable, IAsyncDisposable
         Mapper = serviceProvider.GetRequiredService<IMapper>();
         Configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
-        HttpContextAccessor = Mock.Of<IHttpContextAccessor>();
+        HttpContextAccessor = Substitute.For<IHttpContextAccessor>();
 
         InitialiseDatabase();
     }

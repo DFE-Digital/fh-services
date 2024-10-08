@@ -1,13 +1,12 @@
 ﻿using FamilyHubs.ServiceDirectory.Core.Commands.Organisations.CreateOrganisation;
 using FamilyHubs.ServiceDirectory.Core.Commands.Services.CreateService;
 using FamilyHubs.ServiceDirectory.Core.Exceptions;
-using FamilyHubs.ServiceDirectory.Shared.CreateUpdateDto;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Services;
 
@@ -22,7 +21,7 @@ public class WhenUsingCreateServiceCommand : DataIntegrationTestBase
 
         var command = new CreateServiceCommand(newService);
 
-        var handler = new CreateServiceCommandHandler(TestDbContext, Mapper, new Mock<ILogger<CreateServiceCommandHandler>>().Object);
+        var handler = new CreateServiceCommandHandler(TestDbContext, Mapper, Substitute.For<ILogger<CreateServiceCommandHandler>>());
 
         //Act
         var result = await handler.Handle(command, new CancellationToken());
@@ -64,7 +63,7 @@ public class WhenUsingCreateServiceCommand : DataIntegrationTestBase
 
         var command = new CreateServiceCommand(newService);
 
-        var handler = new CreateServiceCommandHandler(TestDbContext, Mapper, new Mock<ILogger<CreateServiceCommandHandler>>().Object);
+        var handler = new CreateServiceCommandHandler(TestDbContext, Mapper, Substitute.For<ILogger<CreateServiceCommandHandler>>());
 
         //Act
         var result = await handler.Handle(command, new CancellationToken());

@@ -3,13 +3,13 @@ using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Locations;
 
 public class WhenUsingUpdateLocationCommand : DataIntegrationTestBase
 {
-    public readonly Mock<ILogger<UpdateLocationCommandHandler>> UpdateLogger = new Mock<ILogger<UpdateLocationCommandHandler>>();
+    public readonly ILogger<UpdateLocationCommandHandler> UpdateLogger = Substitute.For<ILogger<UpdateLocationCommandHandler>>();
 
     [Fact]
     public async Task ThenUpdateLocationOnly()
@@ -21,7 +21,7 @@ public class WhenUsingUpdateLocationCommand : DataIntegrationTestBase
         testLocation.Description = "Unit Test Update Service Name";
 
         var updateCommand = new UpdateLocationCommand(testLocation.Id, testLocation);
-        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger.Object);
+        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger);
 
         //Act
         var result = await updateHandler.Handle(updateCommand, new CancellationToken());
@@ -52,7 +52,7 @@ public class WhenUsingUpdateLocationCommand : DataIntegrationTestBase
         testLocation.Contacts.Add(contact);
 
         var updateCommand = new UpdateLocationCommand(testLocation.Id, testLocation);
-        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger.Object);
+        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger);
 
         //Act
         var result = await updateHandler.Handle(updateCommand, new CancellationToken());
@@ -87,7 +87,7 @@ public class WhenUsingUpdateLocationCommand : DataIntegrationTestBase
         contact.Telephone = "Updated Telephone";
 
         var updateCommand = new UpdateLocationCommand(testLocation.Id, testLocation);
-        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger.Object);
+        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger);
 
         //Act
         var result = await updateHandler.Handle(updateCommand, new CancellationToken());
@@ -125,7 +125,7 @@ public class WhenUsingUpdateLocationCommand : DataIntegrationTestBase
         testLocation.Schedules.Add(expected);
 
         var updateCommand = new UpdateLocationCommand(testLocation.Id, testLocation);
-        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger.Object);
+        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger);
 
         //Act
         var result = await updateHandler.Handle(updateCommand, new CancellationToken());
@@ -160,7 +160,7 @@ public class WhenUsingUpdateLocationCommand : DataIntegrationTestBase
         expected.ByMonthDay = "Updated ByMonthDay";
 
         var updateCommand = new UpdateLocationCommand(testLocation.Id, testLocation);
-        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger.Object);
+        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger);
 
         //Act
         var result = await updateHandler.Handle(updateCommand, new CancellationToken());

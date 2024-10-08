@@ -4,16 +4,17 @@ using FamilyHubs.SharedKernel.Identity;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Moq;
 using System.Security.Claims;
+using NSubstitute;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Organisations;
 
 public class WhenUsingDeleteOrganisationCommand : DataIntegrationTestBase
 {
+    public readonly IHttpContextAccessor _mockHttpContextAccessor;
 
-    public readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
-    public readonly Mock<ILogger<DeleteOrganisationCommandHandler>> DeleteLogger = new Mock<ILogger<DeleteOrganisationCommandHandler>>();
+    public readonly ILogger<DeleteOrganisationCommandHandler> DeleteLogger =
+        Substitute.For<ILogger<DeleteOrganisationCommandHandler>>();
 
     public WhenUsingDeleteOrganisationCommand()
     {
@@ -27,7 +28,7 @@ public class WhenUsingDeleteOrganisationCommand : DataIntegrationTestBase
         await CreateOrganisationDetails();
 
         var command = new DeleteOrganisationCommand(1);
-        var handler = new DeleteOrganisationCommandHandler(TestDbContext, _mockHttpContextAccessor.Object, DeleteLogger.Object);
+        var handler = new DeleteOrganisationCommandHandler(TestDbContext, _mockHttpContextAccessor, DeleteLogger);
 
         //Act
         var results = await handler.Handle(command, new CancellationToken());
@@ -42,7 +43,7 @@ public class WhenUsingDeleteOrganisationCommand : DataIntegrationTestBase
     {
         //Arrange
         var command = new DeleteOrganisationCommand(Random.Shared.Next());
-        var handler = new DeleteOrganisationCommandHandler(TestDbContext, _mockHttpContextAccessor.Object, DeleteLogger.Object);
+        var handler = new DeleteOrganisationCommandHandler(TestDbContext, _mockHttpContextAccessor, DeleteLogger);
 
         // Act 
         // Assert
@@ -50,21 +51,20 @@ public class WhenUsingDeleteOrganisationCommand : DataIntegrationTestBase
 
     }
 
-    private Mock<IHttpContextAccessor> GetMockHttpContextAccessor(long organisationId, string userRole)
+    private IHttpContextAccessor GetMockHttpContextAccessor(long organisationId, string userRole)
     {
-        var mockUser = new Mock<ClaimsPrincipal>();
+        var mockUser = Substitute.For<ClaimsPrincipal>();
         var claims = new List<Claim>();
         claims.Add(new Claim(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()));
         claims.Add(new Claim(FamilyHubsClaimTypes.Role, userRole));
 
-        mockUser.SetupGet(x => x.Claims).Returns(claims);
+        mockUser.Claims.Returns(claims);
 
+        var mockHttpContext = Substitute.For<HttpContext>();
+        mockHttpContext.User.Returns(mockUser);
 
-        var mockHttpContext = new Mock<HttpContext>();
-        mockHttpContext.SetupGet(x => x.User).Returns(mockUser.Object);
-
-        var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
-        mockHttpContextAccessor.SetupGet(x => x.HttpContext).Returns(mockHttpContext.Object);
+        var mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+        mockHttpContextAccessor.HttpContext.Returns(mockHttpContext);
 
         return mockHttpContextAccessor;
     }
