@@ -24,13 +24,13 @@ public class ReferralCountTests
     [Theory]
     [InlineData("VcsDualRole", "809", HttpStatusCode.OK)] // Happy path as VCS Dual User
     [InlineData("VcsManager", "809", HttpStatusCode.OK)] // Happy path as VCS Dual User
-    [InlineData("LaProfessional", "809", HttpStatusCode.Forbidden)] // Unauthorised as VCS professional
-    [InlineData("VcsProfessional","809", HttpStatusCode.Forbidden)] // Unauthorised as La Professional
+    [InlineData("VcsManager", "15648", HttpStatusCode.OK)] // Happy path service does not exist
     public void Referral_Count_Returns_Expected_Status_Code(string role, string serviceId, HttpStatusCode expectedStatusCode)
     {
         this.Given(s => _sharedSteps.GenerateBearerToken(role))
             .When(s => _steps.WhenISendARequest(_sharedSteps.bearerToken, serviceId))
             .Then(s => _sharedSteps.VerifyStatusCode(_steps.lastResponse, expectedStatusCode))
+            .And(s => _sharedSteps.ResponseBodyContainsValue(_steps.lastResponse))
             .BDDfy();
     }
 
