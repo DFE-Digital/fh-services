@@ -3,55 +3,21 @@ using AutoMapper.EquivalencyExpression;
 using FamilyHubs.ServiceDirectory.Core.Commands.Services.CreateService;
 using FamilyHubs.ServiceDirectory.Core.Commands.Services.DeleteService;
 using FamilyHubs.ServiceDirectory.Core.Commands.Services.UpdateService;
-using FamilyHubs.ServiceDirectory.Data.Interceptors;
-using FamilyHubs.ServiceDirectory.Data.Repository;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Services;
 
 public class WhenValidatingServiceCommands
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private IMapper Mapper { get; }
+    private static readonly string[] ConfigAction = ["CreatedBy", "Created", "LastModified", "LastModified"];
 
-    public WhenValidatingServiceCommands()
+    private IMapper Mapper { get; } = new Mapper(new MapperConfiguration(cfg =>
     {
-        _httpContextAccessor = new HttpContextAccessor();
-        var serviceProvider = CreateNewServiceProvider();
-
-        Mapper = serviceProvider.GetRequiredService<IMapper>();
-    }
-
-    private ServiceProvider CreateNewServiceProvider()
-    {
-        var serviceDirectoryConnection = $"Data Source=sd-{Random.Shared.Next().ToString()}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
-
-        //todo: do we need a (mock) _httpContextAccessor?
-        var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(_httpContextAccessor);
-
-        return new ServiceCollection().AddEntityFrameworkSqlite()
-            .AddDbContext<ApplicationDbContext>(dbContextOptionsBuilder =>
-            {
-                //dbContextOptionsBuilder.UseLoggerFactory(TestLoggerFactory);
-                dbContextOptionsBuilder.UseSqlite(serviceDirectoryConnection, opt =>
-                {
-                    opt.UseNetTopologySuite().MigrationsAssembly(typeof(ApplicationDbContext).Assembly.ToString());
-                });
-            })
-            .AddSingleton(auditableEntitySaveChangesInterceptor)
-            .AddAutoMapper((serviceProvider, cfg) =>
-            {
-                var auditProperties = new[] { "CreatedBy", "Created", "LastModified", "LastModified" };
-                cfg.AddProfile<AutoMappingProfiles>();
-                cfg.AddCollectionMappers();
-                cfg.UseEntityFrameworkCoreModel<ApplicationDbContext>(serviceProvider);
-                cfg.ShouldMapProperty = pi => !auditProperties.Contains(pi.Name);
-            }, typeof(AutoMappingProfiles))
-            .BuildServiceProvider();
-    }
+        var auditProperties = ConfigAction;
+        cfg.AddProfile<AutoMappingProfiles>();
+        cfg.AddCollectionMappers();
+        cfg.ShouldMapProperty = propertyInfo => !auditProperties.Contains(propertyInfo.Name);
+    }));
 
     [Fact]
     public void ThenShouldCreateServiceCommandNotErrorWhenModelIsValid()
@@ -65,7 +31,7 @@ public class WhenValidatingServiceCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeFalse();
+        result.Errors.Count.Should().Be(0);
     }
 
     [Fact]
@@ -81,7 +47,7 @@ public class WhenValidatingServiceCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeFalse();
+        result.Errors.Count.Should().Be(0);
     }
 
     [Fact]
@@ -97,14 +63,14 @@ public class WhenValidatingServiceCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeFalse();
+        result.Errors.Count.Should().Be(0);
     }
 
     [Fact]
     public void ThenShouldUpdateServiceCommandNotErrorWhenNameIsLessThen255Char()
     {
         //Arrange
-        var testService = TestDataProvider.GetTestCountyCouncilServicesChangeDto2(Mapper,Random.Shared.Next());
+        var testService = TestDataProvider.GetTestCountyCouncilServicesChangeDto2(Mapper, Random.Shared.Next());
         testService.Id = Random.Shared.Next();
         testService.Name = string.Join(string.Empty, Enumerable.Range(0, 254).Select(_ => "a"));
         var validator = new UpdateServiceCommandValidator();
@@ -114,7 +80,7 @@ public class WhenValidatingServiceCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeFalse();
+        result.Errors.Count.Should().Be(0);
     }
 
     [Fact]
@@ -130,7 +96,7 @@ public class WhenValidatingServiceCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeTrue();
+        result.Errors.Count.Should().BeGreaterThan(0);
     }
 
     [Fact]
@@ -146,7 +112,7 @@ public class WhenValidatingServiceCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeTrue();
+        result.Errors.Count.Should().BeGreaterThan(0);
     }
 
     [Fact]
@@ -160,7 +126,7 @@ public class WhenValidatingServiceCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeFalse();
+        result.Errors.Count.Should().Be(0);
     }
 
     [Theory]
@@ -185,7 +151,7 @@ public class WhenValidatingServiceCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeFalse();
+        result.Errors.Count.Should().Be(0);
     }
 
     [Theory]
@@ -210,7 +176,7 @@ public class WhenValidatingServiceCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeTrue();
+        result.Errors.Count.Should().BeGreaterThan(0);
     }
 
     [Theory]
@@ -235,7 +201,7 @@ public class WhenValidatingServiceCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeFalse();
+        result.Errors.Count.Should().Be(0);
     }
 
     [Theory]
@@ -260,6 +226,6 @@ public class WhenValidatingServiceCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeTrue();
+        result.Errors.Count.Should().BeGreaterThan(0);
     }
 }
