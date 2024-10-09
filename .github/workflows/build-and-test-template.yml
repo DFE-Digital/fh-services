@@ -16,12 +16,18 @@ on:
 jobs:
   build_and_test:
     name: Build Project & Run Tests
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: ubuntu-22.04
     defaults:
       run:
         working-directory: src/${{ inputs.working_directory }}
 
     steps:
+      - name: Install SpatiaLite
+        if: ${{ inputs.working_directory == 'service/service-directory-api' }}
+        run: |
+          sudo apt update && sudo apt install spatialite-bin libsqlite3-mod-spatialite
+          export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/mod_spatialite.so
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
