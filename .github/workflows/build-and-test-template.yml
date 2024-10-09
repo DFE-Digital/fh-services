@@ -27,13 +27,6 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Install SpatiaLite
-        if: ${{ inputs.working_directory == 'service/service-directory-api' }}
-        shell: bash
-        run: |-
-          sudo apt update && sudo apt install spatialite-bin libsqlite3-mod-spatialite
-          export DYLD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/mod_spatialite.so
-
       - name: Setup .NET ${{ inputs.dotnet_version }}
         uses: actions/setup-dotnet@v4
         with:
