@@ -28,8 +28,10 @@ public class ReferralCountSteps
 
     public async Task<HttpStatusCode> WhenISendARequest(string bearerToken, string serviceId)
     {
-        Dictionary<string, string> headers = new Dictionary<string, string>() { };
-        headers.Add("traceparent", new Guid().ToString());
+        Dictionary<string, string> headers = new Dictionary<string, string>
+        {
+            { "traceparent", new Guid().ToString() }
+        };
         
         LastResponse = await HttpRequestFactory.Get(_baseUrl, $"api/referral/count?serviceId={serviceId}", bearerToken,
             headers, null);

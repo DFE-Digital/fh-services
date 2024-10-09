@@ -23,7 +23,7 @@ public class ReferralCountTests
 
     [Theory]
     [InlineData("VcsDualRole", "809", HttpStatusCode.OK)] // Happy path as VCS Dual User
-    [InlineData("VcsManager", "809", HttpStatusCode.OK)] // Happy path as VCS Dual User
+    [InlineData("VcsManager", "809", HttpStatusCode.OK)] // Happy path as VCS Account Manager User
     [InlineData("VcsManager", "15648", HttpStatusCode.OK)] // Happy path service does not exist
     public void Referral_Count_Returns_Expected_Status_Code(string role, string serviceId, HttpStatusCode expectedStatusCode)
     {
