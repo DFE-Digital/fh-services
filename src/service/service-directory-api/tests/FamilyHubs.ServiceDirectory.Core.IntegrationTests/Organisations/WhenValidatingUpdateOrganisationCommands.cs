@@ -19,7 +19,7 @@ public class WhenValidatingUpdateOrganisationCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeFalse();
+        result.Errors.Count.Should().Be(0);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class WhenValidatingUpdateOrganisationCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeFalse();
+        result.Errors.Count.Should().Be(0);
     }
 
     [Fact]
@@ -84,6 +84,6 @@ public class WhenValidatingUpdateOrganisationCommands
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeTrue();
+        result.Errors.Count.Should().BeGreaterThan(0);
     }
 }

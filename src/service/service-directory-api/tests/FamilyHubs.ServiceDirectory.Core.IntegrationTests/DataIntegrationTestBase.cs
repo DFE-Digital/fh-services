@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using System.Security.Claims;
+using AutoFixture;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
 using FamilyHubs.ServiceDirectory.Core.Helper;
@@ -6,6 +7,7 @@ using FamilyHubs.ServiceDirectory.Data.Entities;
 using FamilyHubs.ServiceDirectory.Data.Interceptors;
 using FamilyHubs.ServiceDirectory.Data.Repository;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
+using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -191,6 +193,26 @@ public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
         };
 
         return child;
+    }
+
+    protected static IHttpContextAccessor GetMockHttpContextAccessor(long organisationId, string userRole)
+    {
+        var mockUser = Substitute.For<ClaimsPrincipal>();
+        var claims = new List<Claim>
+        {
+            new(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()),
+            new(FamilyHubsClaimTypes.Role, userRole)
+        };
+
+        mockUser.Claims.Returns(claims);
+
+        var mockHttpContext = Substitute.For<HttpContext>();
+        mockHttpContext.User.Returns(mockUser);
+
+        var mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+        mockHttpContextAccessor.HttpContext.Returns(mockHttpContext);
+
+        return mockHttpContextAccessor;
     }
 
     public void Dispose()

@@ -4,22 +4,14 @@ using FamilyHubs.SharedKernel.Identity;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Security.Claims;
-using NSubstitute;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Organisations;
 
 public class WhenUsingDeleteOrganisationCommand : DataIntegrationTestBase
 {
-    public readonly IHttpContextAccessor _mockHttpContextAccessor;
+    private readonly IHttpContextAccessor _mockHttpContextAccessor = GetMockHttpContextAccessor(-1, RoleTypes.DfeAdmin);
 
-    public readonly ILogger<DeleteOrganisationCommandHandler> DeleteLogger =
-        Substitute.For<ILogger<DeleteOrganisationCommandHandler>>();
-
-    public WhenUsingDeleteOrganisationCommand()
-    {
-        _mockHttpContextAccessor = GetMockHttpContextAccessor(-1, RoleTypes.DfeAdmin);
-    }
+    private readonly ILogger<DeleteOrganisationCommandHandler> _deleteLogger = GetLogger<DeleteOrganisationCommandHandler>();
 
     [Fact]
     public async Task ThenDeleteOrganisation()
@@ -28,7 +20,7 @@ public class WhenUsingDeleteOrganisationCommand : DataIntegrationTestBase
         await CreateOrganisationDetails();
 
         var command = new DeleteOrganisationCommand(1);
-        var handler = new DeleteOrganisationCommandHandler(TestDbContext, _mockHttpContextAccessor, DeleteLogger);
+        var handler = new DeleteOrganisationCommandHandler(TestDbContext, _mockHttpContextAccessor, _deleteLogger);
 
         //Act
         var results = await handler.Handle(command, CancellationToken.None);
@@ -43,29 +35,14 @@ public class WhenUsingDeleteOrganisationCommand : DataIntegrationTestBase
     {
         //Arrange
         var command = new DeleteOrganisationCommand(Random.Shared.Next());
-        var handler = new DeleteOrganisationCommandHandler(TestDbContext, _mockHttpContextAccessor, DeleteLogger);
+        var handler = new DeleteOrganisationCommandHandler(TestDbContext, _mockHttpContextAccessor, _deleteLogger);
 
         // Act 
         // Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None));
+        await handler
+            .Invoking(x => x.Handle(command, CancellationToken.None))
+            .Should()
+            .ThrowAsync<NotFoundException>();
 
-    }
-
-    private IHttpContextAccessor GetMockHttpContextAccessor(long organisationId, string userRole)
-    {
-        var mockUser = Substitute.For<ClaimsPrincipal>();
-        var claims = new List<Claim>();
-        claims.Add(new Claim(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()));
-        claims.Add(new Claim(FamilyHubsClaimTypes.Role, userRole));
-
-        mockUser.Claims.Returns(claims);
-
-        var mockHttpContext = Substitute.For<HttpContext>();
-        mockHttpContext.User.Returns(mockUser);
-
-        var mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
-        mockHttpContextAccessor.HttpContext.Returns(mockHttpContext);
-
-        return mockHttpContextAccessor;
     }
 }
