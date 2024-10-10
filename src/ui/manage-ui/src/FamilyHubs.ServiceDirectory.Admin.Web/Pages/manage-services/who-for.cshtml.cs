@@ -2,6 +2,7 @@ using FamilyHubs.ServiceDirectory.Admin.Core.DistributedCache;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models.ServiceJourney;
 using FamilyHubs.ServiceDirectory.Admin.Web.Pages.Shared;
+using FamilyHubs.ServiceDirectory.Shared.Display;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -60,7 +61,7 @@ public class who_forModel : ServicePageModel<WhoForViewModel>
     private static SelectListItem[] ExtraMaximumAgeOptions { get; set; } =
     {
         //todo: do we need the 25 as well as the 25+?
-        new() { Value = "127", Text = "25+ years old" }
+        new() { Value = AgeDisplayExtensions.TwentyFivePlus.ToString(), Text = "25+ years old" }
     };
 
     public who_forModel(IRequestDistributedCache connectionRequestCache)

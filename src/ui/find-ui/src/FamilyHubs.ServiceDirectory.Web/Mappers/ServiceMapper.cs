@@ -44,7 +44,7 @@ public static class ServiceMapper
 
     private static string? GetAgeRange(EligibilityDto? eligibility)
     {
-        return eligibility == null ? null : $"{AgeToString(eligibility.MinimumAge)} to {AgeToString(eligibility.MaximumAge)}";
+        return eligibility == null ? null : $"{AgeDisplayExtensions.AgeToString(eligibility.MinimumAge)} to {AgeDisplayExtensions.AgeToString(eligibility.MaximumAge)}";
     }
 
     private static bool IsFamilyHub(LocationDto location)
@@ -78,10 +78,5 @@ public static class ServiceMapper
             return new[] { free };
         }
         return new[] { "Yes, it costs money to use. " + service.CostOptions.First().AmountDescription };
-    }
-
-    private static string AgeToString(int age)
-    {
-        return age == 127 ? "25+" : age.ToString();
     }
 }

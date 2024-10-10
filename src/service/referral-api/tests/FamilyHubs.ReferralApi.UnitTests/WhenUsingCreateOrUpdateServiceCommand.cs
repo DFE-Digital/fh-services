@@ -50,10 +50,10 @@ public class WhenUsingCreateOrUpdateServiceCommand : BaseCreateDbUnitTest<Create
             Id = 4,
             Name = "Test Service",
             Description = "Test Service Description",
+            OrganizationId = 1,
             Organisation = new Organisation
             {
                 Id = 4,
-                ReferralServiceId = 4,
                 Name = "Test Organisation",
                 Description = "Test Organisation Description",
             }
@@ -69,7 +69,6 @@ public class WhenUsingCreateOrUpdateServiceCommand : BaseCreateDbUnitTest<Create
             OrganisationDto = new OrganisationDto
             {
                 Id = 4,
-                ReferralServiceId = 4,
                 Name = "Test Organisation - Updated",
                 Description = "Test Organisation Description - Updated",
             }

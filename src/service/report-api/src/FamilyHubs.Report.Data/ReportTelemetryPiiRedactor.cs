@@ -27,8 +27,7 @@ namespace FamilyHubs.Report.Data;
 /// </remarks>>
 public class ReportTelemetryPiiRedactor : ITelemetryInitializer
 {
-    // longtitude is due to the spelling error in the API. at some point, we should fix that (and all the consumers)
-    private static readonly Regex SiteQueryStringRegex = new(@"(?<=(postcode|latitude|longitude|longtitude)=)[^&]+", RegexOptions.Compiled);
+    private static readonly Regex SiteQueryStringRegex = new(@"(?<=(postcode|latitude|longitude)=)[^&]+", RegexOptions.Compiled);
     private static readonly Regex PathRegex = new(@"(?<=postcodes\/)[\w% ]+", RegexOptions.Compiled);
     private static readonly string[] TracePropertiesToRedact = { "Uri", "Scope", "QueryString", "HostingRequestStartingLog", "HostingRequestFinishedLog" };
 
@@ -160,12 +159,6 @@ public class ReportTelemetryPiiRedactor : ITelemetryInitializer
 
         if (value.Contains("longitude=")
             && !value.Contains("longitude=REDACTED"))
-        {
-            Debugger.Break();
-        }
-
-        if (value.Contains("longtitude=")
-            && !value.Contains("longtitude=REDACTED"))
         {
             Debugger.Break();
         }

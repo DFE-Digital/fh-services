@@ -27,7 +27,6 @@ namespace FamilyHubs.ServiceDirectory.Admin.Core.Services;
 /// </remarks>>
 public class TelemetryPiiRedactor : ITelemetryInitializer
 {
-    // longtitude is due to the spelling error in the API. at some point, we should fix that (and all the consumers)
     private static readonly Regex SiteQueryStringRegex = new(@"(?<=(email|name)=)[^&]+", RegexOptions.Compiled);
     private static readonly Regex ApiQueryStringRegex = new(@"(?<=email=)([-+]?[0-9]*\.?[0-9]+)(?=&)|(?<=name=)([-+]?[0-9]*\.?[0-9]+)(?=&)");
     private static readonly Regex EmailRegex = new(@"(?<=email\/)[\w% ]+", RegexOptions.Compiled);

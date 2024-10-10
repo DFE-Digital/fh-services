@@ -9,6 +9,7 @@ namespace FamilyHubs.Referral.Core.ValidationAttributes;
 /// GDS advises that we allow different formats:
 /// Let users enter telephone numbers in whatever format is familiar to them. Allow for additional spaces, hyphens, dashes and brackets, and be able to accommodate country and area codes.
 /// </summary>
+[AttributeUsage(AttributeTargets.Property)]
 public class UkGdsTelephoneNumberAttribute : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

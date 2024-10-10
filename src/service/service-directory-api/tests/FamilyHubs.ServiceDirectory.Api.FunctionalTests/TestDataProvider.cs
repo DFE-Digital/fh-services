@@ -281,7 +281,7 @@ public static class TestDataProvider
                                 new Schedule
                                 {
                                     Description = "Friday 1.30pm - 2.30pm",
-                                    ByDay = "1.30pm - 2.30pm"
+                                    ByDay = "FR"
                                 }
                             },
                             Contacts = new List<Contact>
@@ -295,6 +295,14 @@ public static class TestDataProvider
                                     Url = "https://www.gov.uk",
                                     Email = "help@gov.uk"
                                 }
+                            }
+                        },
+                        Schedules = new List<Schedule>
+                        {
+                            new Schedule
+                            {
+                                Description = "Friday 1.30pm - 2.30pm",
+                                ByDay = "SU"
                             }
                         }
                     }
@@ -639,7 +647,7 @@ public static class TestDataProvider
                         Description = "Schedule",
                         OpensAt = new DateTime(2023, 1, 1).ToUniversalTime(),
                         ClosesAt = new DateTime(2023, 1, 1).ToUniversalTime(),
-                        ByDay = "byDay",
+                        ByDay = "MO,TU",
                         ByMonthDay = "byMonth",
                         DtStart = "dtStart",
                         Freq = null,
@@ -685,7 +693,7 @@ public static class TestDataProvider
                                     Description = "Schedule",
                                     OpensAt = new DateTime(2023, 1, 1).ToUniversalTime(),
                                     ClosesAt = new DateTime(2023, 1, 1).ToUniversalTime(),
-                                    ByDay = "byDay",
+                                    ByDay = "WE",
                                     ByMonthDay = "byMonth",
                                     DtStart = "dtStart",
                                     Freq = null,
@@ -704,6 +712,21 @@ public static class TestDataProvider
                                     Url = "https://www.gov.uk",
                                     Email = "help@gov.uk"
                                 }
+                            }
+                        },
+                        Schedules = new List<Schedule>
+                        {
+                            new Schedule
+                            {
+                                Description = "Schedule",
+                                OpensAt = new DateTime(2023, 1, 1).ToUniversalTime(),
+                                ClosesAt = new DateTime(2023, 1, 1).ToUniversalTime(),
+                                ByDay = "TH",
+                                ByMonthDay = "byMonth",
+                                DtStart = "dtStart",
+                                Freq = null,
+                                ValidFrom = new DateTime(2023, 1, 1).ToUniversalTime(),
+                                ValidTo = new DateTime(2023, 1, 1).ToUniversalTime(),
                             }
                         }
                     }
@@ -751,6 +774,13 @@ public static class TestDataProvider
                     new ServiceDelivery
                     {
                         Name = AttendingType.Online,
+                    }
+                },
+                Schedules = new List<Schedule>
+                {
+                    new Schedule
+                    {
+                        AttendingType = AttendingType.Online.ToString()
                     }
                 },
                 Eligibilities = new List<Eligibility>

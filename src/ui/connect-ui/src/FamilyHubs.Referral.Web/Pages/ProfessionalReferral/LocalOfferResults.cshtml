@@ -1,7 +1,13 @@
 ﻿@page
 @using FamilyHubs.Referral.Core.Helper
+@using FamilyHubs.Referral.Web.Pages.ProfessionalReferral
+@using FamilyHubs.ServiceDirectory.Shared.Display
+@using FamilyHubs.ServiceDirectory.Shared.Enums
 @using FamilyHubs.ServiceDirectory.Shared.ReferenceData
-@model LocalOfferResultsModel
+@using FamilyHubs.ServiceDirectory.Shared.ReferenceData.ICalendar
+@using FamilyHubs.SharedKernel.Enums
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model FamilyHubs.Referral.Web.Pages.ProfessionalReferral.LocalOfferResultsModel
 @{
     //todo: if paginated results, should have (page x of n) appended
     //todo: if no results, should be "No results found"
@@ -95,6 +101,23 @@ else
                 </ul>
             }
 
+            <!-- Remove filter - days available -->
+            @if (Model.DaysAvailable?.Count > 0)
+            {
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Days available</h3>
+            <ul class="moj-filter-tags">
+                @foreach (var day in Model.DaysAvailable)
+                {
+                <li>
+                    <button type="submit" class="moj-filter__tag fh-icon-cross" asp-route-removeFilter=true name="removeDaysAvailable" value="@day" data-testid="@day-remove">
+                        <span class="govuk-visually-hidden">Remove this filter</span>
+                        @(Calendar.DayCodeToName[day])
+                    </button>
+                </li>
+                }
+            </ul>
+            }
+
             <!-- Remove filter - ServiceDeliverySelection -->
             @if (Model.ServiceDeliverySelection?.Count > 0)
             {
@@ -102,33 +125,15 @@ else
                 <ul class="moj-filter-tags">
                 @foreach (var serviceDeliverySelectionSelected in Model.ServiceDeliverySelection)
                 {
-                    @if (serviceDeliverySelectionSelected == "1")
-                    {
-                        <li>
-                            <button type="submit" class="moj-filter__tag fh-icon-cross" asp-route-removeFilter=true name="removeServiceDeliverySelection" value="@serviceDeliverySelectionSelected" data-testid="@serviceDeliverySelectionSelected-remove-delivery">
-                                <span class="govuk-visually-hidden">Remove this filter</span>
-                                In Person
-                            </button>
-                        </li>
-                    }
-                    @if (serviceDeliverySelectionSelected == "2")
-                    {
-                        <li>
-                            <button type="submit" class="moj-filter__tag fh-icon-cross" asp-route-removeFilter=true name="removeServiceDeliverySelection" value="@serviceDeliverySelectionSelected" data-testid="@serviceDeliverySelectionSelected-remove-delivery">
-                                <span class="govuk-visually-hidden">Remove this filter</span>
-                                Online
-                            </button>
-                        </li>
-                    }
-                    @if (serviceDeliverySelectionSelected == "3")
-                    {
-                        <li>
-                            <button type="submit" class="moj-filter__tag fh-icon-cross" asp-route-removeFilter=true name="removeServiceDeliverySelection" value="@serviceDeliverySelectionSelected" data-testid="@serviceDeliverySelectionSelected-remove-delivery">
-                                <span class="govuk-visually-hidden">Remove this filter</span>
-                                Telephone
-                            </button>
-                        </li>
-                    }
+                    // Should already be checked
+                    if (!Enum.TryParse(serviceDeliverySelectionSelected, out AttendingType sdEnum)) continue;
+
+                    <li>
+                        <button type="submit" class="moj-filter__tag fh-icon-cross" asp-route-removeFilter=true name="removeServiceDeliverySelection" value="@serviceDeliverySelectionSelected" data-testid=@($"{(int)sdEnum}-remove-delivery")>
+                            <span class="govuk-visually-hidden">Remove this filter</span>
+                            @sdEnum.ToDescription().ToSentenceCase()
+                        </button>
+                    </li>
                 }
                 </ul>
             }
@@ -257,6 +262,31 @@ else
         <div class="govuk-form-group fh-filter-group">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    Days service is available
+                </legend>
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                    @foreach (DayCode dayOfWeek in Enum.GetValues(typeof(DayCode)))
+                    {
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input"
+                                   id=@($"days-{dayOfWeek}")
+                                   name="DaysAvailable"
+                                   type="checkbox"
+                                   value=@(dayOfWeek)
+                                   @(Model.DaysAvailable?.Any(x => x == dayOfWeek.ToString()) == true ? "checked" : "")
+                                   data-testid=@($"checkbox-days-{dayOfWeek}")>
+                            <label class="govuk-label govuk-checkboxes__label" for=@($"days-{dayOfWeek}")>
+                                @(Calendar.DayCodeToName[dayOfWeek.ToString()])
+                            </label>
+                        </div>
+                    }
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="govuk-form-group fh-filter-group">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                     Children and young people
                 </legend>
                 <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
@@ -296,19 +326,20 @@ else
                     Delivery method
                 </legend>
                 <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
-                    @foreach (var item in Model.DictServiceDelivery)
+                    @foreach (AttendingType item in Enum.GetValues(typeof(AttendingType)))
                     {
+                        var id = item.ToString().ToLower();
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input"
                                    role="checkbox"
-                                   id="@item.Value.ToLower().Replace(" ", "")"
+                                   id="@id"
                                    name="ServiceDeliverySelection"
-                                   data-testid=@($"checkbox-{item.Value.ToLower().Replace(" ", "")}")
+                                   data-testid=@($"checkbox-{id}")
                                    type="checkbox"
-                                   value="@item.Key"
-                                   @(Model.ServiceDeliverySelection != null && Model.ServiceDeliverySelection.Any(x => x == item.Key.ToString()) ? "checked" : "")>
-                            <label class="govuk-label govuk-checkboxes__label" for="@item.Value.ToLower().Replace(" ", "")">
-                                @item.Value.ToSentenceCase()
+                                   value="@item.ToString()"
+                                   @(Model.ServiceDeliverySelection?.Any(x => x == item.ToString()) == true ? "checked" : "")>
+                            <label class="govuk-label govuk-checkboxes__label" for="@id">
+                                @item.ToDescription().ToSentenceCase()
                             </label>
                         </div>
                     }
@@ -321,7 +352,7 @@ else
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                     <label for="SelectedLanguage">Language</label>
                 </legend>
-                <select asp-for="SelectedLanguage" id="SelectedLanguage" asp-items="Model.LanguageOptions" class="govuk-select" data-testid="select-language">
+                    <select asp-for="SelectedLanguage" id="SelectedLanguage" asp-items="LocalOfferResultsModel.LanguageOptions" class="govuk-select" data-testid="select-language">
                     <option value="" selected disabled>Select language</option>
                 </select>
             </fieldset>
@@ -343,19 +374,18 @@ else
             <ul class="search-results" role="list">
                 @foreach (var item in Model.SearchResults.Items)
                 {
+                    var eligibility = item.Eligibilities.FirstOrDefault();
+
                     <li role="listitem" tab-index="0">
-                        <h2 class="govuk-heading-m govuk-!-margin-bottom-0">
+                        <h2 class="govuk-heading-s govuk-!-margin-bottom-3">
                             <a class="govuk-link" asp-page="/ProfessionalReferral/LocalOfferDetail" asp-route-serviceid="@item.Id" data-testid=@item.Name.ToLower().Replace(" ", "")>@item.Name</a>
                         </h2>
-                        <p class="govuk-caption-m">
-                            @string.Join(", ", item.Locations.FirstOrDefault()?.GetAddress() ?? Enumerable.Empty<string>())
-                        </p>
                         @if(item.Taxonomies.Any())
                         {
-                            <dl class="govuk-body-s dtmargins">
+                            <dl class="govuk-body-s">
                                 <dt class="govuk-!-font-weight-bold">Category</dt>
                                 <dd>
-                                    <ul class="govuk-list govuk-list--bullet govuk-body-s">
+                                    <ul class="govuk-list govuk-body-s">
                                         @foreach (var serviceTaxonomy in item.Taxonomies)
                                         {
                                             <li>@serviceTaxonomy.Name</li>
@@ -364,32 +394,36 @@ else
                                 </dd>
                             </dl>
                         }
-                        <dl class="govuk-body-s dtmargins">
-                            <dt class="govuk-!-font-weight-bold">Cost</dt>
-                            @if (item.CostOptions.Count > 0)
-                            {
-                                <dd>Yes, it costs money to use. @item.CostOptions.FirstOrDefault()?.AmountDescription</dd>
-                            }
-                            else
-                            {
-                                <dd>Free</dd>
-                            }
+                        @if (eligibility != null) {
+                            <dl class="govuk-body-s">
+                                <dt class="govuk-!-font-weight-bold">Age range</dt>
+                                <dd>@(AgeDisplayExtensions.AgeToString(eligibility.MinimumAge)) to @(AgeDisplayExtensions.AgeToString(eligibility.MaximumAge)) years old</dd>
+                            </dl>
+                        }
+
+                        <dl class="govuk-body-s">
+                            <dt class="govuk-!-font-weight-bold">Where</dt>
+                            <dd class="fh-pre-wrap">@if (item.Locations.Any()) { @(LocalOfferResultsModel.GetAddressAsString(item)) }</dd>
                         </dl>
 
                         @if (item.ServiceDeliveries.Count > 0)
                         {
-                            <dl class="govuk-body-s dtmargins">
+                            <dl class="govuk-body-s">
                                 <dt class="govuk-!-font-weight-bold">Delivery method</dt>
-                                <dd>@Model.GetDeliveryMethodsAsString(item.ServiceDeliveries)</dd>
+                                <dd class="fh-pre-wrap">@LocalOfferResultsModel.GetDeliveryMethodsAsString(item.ServiceDeliveries)</dd>
                             </dl>
                         }
-                        @if (item.Languages.Any(l => !string.IsNullOrWhiteSpace(l.Name)))
-                        {
-                            <dl class="govuk-body-s dtmargins">
-                                <dt class="govuk-!-font-weight-bold">Language</dt>
-                                <dd>@Model.GetLanguagesAsString(item.Languages)</dd>
-                            </dl>
-                        }
+                        <dl class="govuk-body-s">
+                            <dt class="govuk-!-font-weight-bold">Cost</dt>
+                            @if (item.CostOptions.Count > 0)
+                            {
+                            <dd>Yes, there is a cost for this service. @item.CostOptions.FirstOrDefault()?.AmountDescription</dd>
+                            }
+                            else
+                            {
+                            <dd>Free</dd>
+                            }
+                        </dl>
                     </li>
                 }
             </ul>

@@ -76,7 +76,7 @@ public class AddAnotherAutocompleteErrorCheckerTests
         AssertNestedCollectionsAreEqual(expectedDuplicateIndexes, result.DuplicateIndexes);
     }
 
-    private void AssertNestedCollectionsAreEqual(
+    private static void AssertNestedCollectionsAreEqual(
         IEnumerable<IEnumerable<int>> expected,
         IEnumerable<IEnumerable<int>> actual)
     {

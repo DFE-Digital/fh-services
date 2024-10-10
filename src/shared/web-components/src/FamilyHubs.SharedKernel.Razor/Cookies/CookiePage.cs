@@ -67,7 +67,7 @@ public class CookiePage : ICookiePage
         return cookie;
     }
 
-    private void ResetAnalyticCookies(HttpRequest request, HttpResponse response)
+    private static void ResetAnalyticCookies(HttpRequest request, HttpResponse response)
     {
         foreach (var uaCookie in request.Cookies.Where(c => c.Key.StartsWith("_ga")))
         {
@@ -83,7 +83,7 @@ public class CookiePage : ICookiePage
     /// <summary>
     /// Asks the browser to deletes the supplied cookies.
     /// </summary>
-    private void DeleteCookies(HttpResponse response, params string[] cookies)
+    private static void DeleteCookies(HttpResponse response, params string[] cookies)
     {
         foreach (var cookie in cookies)
         {

@@ -2,9 +2,9 @@
 
     <PropertyGroup>
         <RootNamespace>FamilyHubs.ServiceDirectory.Core</RootNamespace>
-	    <NoWarn>S1135;S125;S2139;S6678</NoWarn>
-	    <NuGetAuditMode>direct</NuGetAuditMode>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+            <NoWarn>S1135;S125;S2139;S6678</NoWarn>
+            <NuGetAuditMode>direct</NuGetAuditMode>
+            <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 
     <ItemGroup>

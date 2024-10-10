@@ -18,4 +18,5 @@ public record LocalOfferFilter
     public string? TaxonomyIds { get; init; }
     public string? LanguageCode { get; init; }
     public bool? CanFamilyChooseLocation { get; init; }
+    public string? DaysAvailable { get; init; }
 }

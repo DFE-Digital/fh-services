@@ -1,6 +1,6 @@
 {
   "name": "familyhubs-frontend",
-  "version": "9.3.4",
+  "version": "9.5.1",
   "description": "FamilyHubs Frontend contains the code you need to start building a Family Hubs website on top of the GOVUK Design System",
   "main": "index.js",
   "scripts": {
@@ -27,16 +27,15 @@
   },
   "homepage": "https://github.com/DFE-Digital/fh-service-directory-shared#readme",
   "dependencies": {
-    "accessible-autocomplete": "^2.0.4",
     "@ministryofjustice/frontend": "^2.1.1",
     "@types/gtag.js": "^0.0.12",
     "@types/jquery": "^3.5.17",
+    "accessible-autocomplete": "^2.0.4",
     "del": "^5.1.0",
     "dfe-frontend-alpha": "^1.0.0",
     "govuk-frontend": "5.2.0",
     "gulp": "^4.0.2",
     "gulp-better-rollup": "^4.0.1",
-    "rollup": "^1.32.1",
     "gulp-concat": "^2.6.1",
     "gulp-csso": "^4.0.1",
     "gulp-rename": "^2.0.0",
@@ -44,6 +43,7 @@
     "gulp-sourcemaps": "^3.0.0",
     "gulp-terser": "^2.1.0",
     "gulp-typescript": "^6.0.0-alpha.1",
+    "rollup": "^1.32.1",
     "sass": "~1.60",
     "typescript": "^5.2.2"
   }

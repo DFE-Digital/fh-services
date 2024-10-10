@@ -108,7 +108,7 @@ public class WhenUsingOrganisationClientService
         var url = new StringBuilder();
 
         //Act 
-        organisationClientService.AddAgeToUrl(url, 18);
+        OrganisationClientService.AddAgeToUrl(url, 18);
         var result = url.ToString();
 
         //Assert
@@ -124,7 +124,7 @@ public class WhenUsingOrganisationClientService
         var url = new StringBuilder();
 
         //Act 
-        organisationClientService.AddTextToUrl(url,"Test");
+        OrganisationClientService.AddTextToUrl(url,"Test");
         var result = url.ToString();
 
         //Assert

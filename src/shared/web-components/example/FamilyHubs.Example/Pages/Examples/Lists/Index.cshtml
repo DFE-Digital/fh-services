@@ -1,0 +1,81 @@
+﻿@page
+@model FamilyHubs.Example.Pages.Examples.Lists.UnorderedListModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">Lists</h1>
+
+        <p>
+            Use <a href="https://design-system.service.gov.uk/styles/lists/" new-tab>lists</a> to make blocks of text easier to read, and to break information into manageable chunks.
+        </p>
+
+        @{
+            var listItems = new List<string> { "Item 1", "Item 2", "Item 3" };
+        }
+
+        <govuk-ul items="@listItems"></govuk-ul>
+
+        <govuk-ul class="govuk-!-margin-bottom-6">
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </govuk-ul>
+
+        <h2 class="govuk-heading-m">Bulleted lists</h2>
+        
+        <p>Introduce bulleted lists with a lead-in line ending in a colon. Start each item with a lowercase letter, and do not use a full stop at the end.</p>
+        
+        @* todo: have lead in line as an optional attribute? *@
+        @* todo: have a spaced attribute *@
+
+        <p class="govuk-body">You can buy:</p>
+        <govuk-ul items="@listItems" bulleted></govuk-ul>
+        
+        <p class="govuk-body">You can buy:</p>
+        <govuk-ul bulleted>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </govuk-ul>
+
+        <h2 class="govuk-heading-m">Numbered lists</h2>
+        
+        <p>
+            Use numbered lists instead of bulleted lists when the order of the items is relevant.
+        </p>
+        <p>
+            You do not need to use a lead-in line for numbered lists. Items in a numbered list should end in a full stop because each should be a complete sentence.
+        </p>
+
+        <govuk-ol>
+            <li>Delivery address.</li>
+            <li>Payment.</li>
+            <li>Confirmation.</li>
+        </govuk-ol>
+        
+        <h2 class="govuk-heading-m">Adding extra spacing between list items</h2>
+
+        <p>
+            If a list is hard to read because the items run across multiple lines you can add extra spacing.
+        </p>
+        
+        <govuk-ul spaced>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </govuk-ul>
+
+        <govuk-ul bulleted spaced>
+            <li>extra</li>
+            <li>space</li>
+            <li>between</li>
+        </govuk-ul>
+        
+        <govuk-ol spaced>
+            <li>Delivery address.</li>
+            <li>Payment.</li>
+            <li>Confirmation.</li>
+        </govuk-ol>
+    </div>
+</div>

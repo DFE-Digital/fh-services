@@ -12,6 +12,7 @@ public class SummaryRowTagHelper : TagHelper
     public string? Action2Href { get; set; }
     public bool ShowEmpty { get; set; } = false;
     public string? Class { get; set; }
+    public string? TestId { get; set; }
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
@@ -31,7 +32,7 @@ public class SummaryRowTagHelper : TagHelper
 
             output.Content.SetHtmlContent(
                 $@"<dt class='govuk-summary-list__key'>{Key}</dt>
-                <dd class='govuk-summary-list__value {Class}'>{finalValue}</dd>");
+                <dd class='govuk-summary-list__value {Class}' data-test-id='{TestId??Sluggify(Key)}'>{finalValue}</dd>");
 
             string divClass = "govuk-summary-list__row";
             if (string.IsNullOrWhiteSpace(Action1))
@@ -55,12 +56,35 @@ public class SummaryRowTagHelper : TagHelper
         }
     }
 
-    private string ActionLink(string action, string? href, string key)
+    //todo: string extension?
+    private static string Sluggify(string input)
+    {
+        ReadOnlySpan<char> lowerInput = input.ToLowerInvariant();
+
+        Span<char> result = stackalloc char[lowerInput.Length];
+        int resultIndex = 0;
+
+        foreach (var c in lowerInput)
+        {
+            if (char.IsLetterOrDigit(c))
+            {
+                result[resultIndex++] = c;
+            }
+            else if (c == ' ')
+            {
+                result[resultIndex++] = '-';
+            }
+        }
+
+        return new string(result[..resultIndex]).Trim('-');
+    }
+
+    private static string ActionLink(string action, string? href, string key)
     {
         return $"<a href='{href}'>{action}<span class='govuk-visually-hidden'> {key.ToLower(CultureInfo.CurrentCulture)}</span></a>";
     }
 
-    private string ActionListItem(string actionLink)
+    private static string ActionListItem(string actionLink)
     {
         return $"<li class='govuk-summary-list__actions-list-item'>{actionLink}</li>";
     }

@@ -2,21 +2,21 @@
 
   <PropertyGroup>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-	<NuGetAuditMode>direct</NuGetAuditMode>
+    <NuGetAuditMode>direct</NuGetAuditMode>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-	<NoWarn>S1135,S125</NoWarn>
-	<UserSecretsId>13e65d9e-5b5e-422b-b79b-3f2093f5f01c</UserSecretsId>
+    <NoWarn>S1135,S125</NoWarn>
+    <UserSecretsId>13e65d9e-5b5e-422b-b79b-3f2093f5f01c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.AzureKeyVault" />
     <PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" />
     <PackageReference Include="FamilyHubs.SharedKernel.Razor" />
-	<PackageReference Include="libphonenumber-csharp" />
-	<PackageReference Include="Microsoft.Extensions.Caching.SqlServer" />
+    <PackageReference Include="libphonenumber-csharp" />
+    <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" />
     <PackageReference Include="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 

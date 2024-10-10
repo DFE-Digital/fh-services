@@ -2,15 +2,18 @@ namespace FamilyHubs.ServiceDirectory.Core.Queries.Dsl.Condition;
 
 public class OrCondition : FhQueryCondition
 {
-    private readonly FhQueryCondition _first;
-    private readonly FhQueryCondition _second;
+    private readonly FhQueryCondition[] _conditions;
 
-    public OrCondition(FhQueryCondition first, FhQueryCondition second)
+    public OrCondition(params FhQueryCondition[] conditions)
     {
-        _first = first;
-        _second = second;
+        _conditions = conditions;
     }
 
-    public override FhParameter[] AllParameters() => _first.AllParameters().Concat(_second.AllParameters()).ToArray();
-    public override string Format() => $"({_first.Format()} OR {_second.Format()})";
+    public override FhParameter[] AllParameters() =>
+        _conditions.Aggregate(
+            (IEnumerable<FhParameter>) Array.Empty<FhParameter>(),
+            (acc, next) => acc.Concat(next.AllParameters())
+        ).ToArray();
+
+    public override string Format() => $"({string.Join(" OR ", _conditions.Select(cond => cond.Format()))})";
 }

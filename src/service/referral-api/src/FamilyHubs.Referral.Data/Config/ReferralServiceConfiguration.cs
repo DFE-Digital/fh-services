@@ -10,10 +10,10 @@ public class ReferralServiceConfiguration : IEntityTypeConfiguration<Entities.Re
     {
         builder.Navigation(e => e.Organisation).AutoInclude();
 
-        builder.HasOne(s => s.Organisation)
-           .WithOne()
-           .HasForeignKey<Organisation>(lc => lc.ReferralServiceId)
-           .IsRequired(false);
+        builder.HasOne<Organisation>(e => e.Organisation)
+            .WithMany()
+            .HasForeignKey(e => e.OrganizationId)
+            .IsRequired();
 
         builder.Property(t => t.Name)
             .IsRequired()

@@ -380,7 +380,6 @@ public class WhenUsingReferralCommands : BaseCreateDbUnitTest<CreateReferralComm
         var getResult = await getHandler.Handle(getCommand, new CancellationToken());
 
         testReferral.ReferralServiceDto.Id = 0;
-        testReferral.ReferralServiceDto.OrganisationDto.ReferralServiceId = 0;
         testReferral.Status.SecondrySortOrder = 1;
         getResult.Should().BeEquivalentTo(testReferral, options => options.Excluding(x => x.Created).Excluding(x => x.LastModified).Excluding(x => x.ReferralUserAccountDto.UserAccountRoles));
 

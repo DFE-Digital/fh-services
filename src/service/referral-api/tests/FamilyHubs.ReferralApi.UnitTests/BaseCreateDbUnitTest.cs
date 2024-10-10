@@ -101,10 +101,10 @@ public abstract class BaseCreateDbUnitTest<T> : BaseUnitTest<T>
                 Id = 1,
                 Name = "Test Service",
                 Description = "Test Service Description",
+                OrganizationId = 1,
                 Organisation = new Organisation
                 {
                     Id = 1,
-                    ReferralServiceId = 1,
                     Name = "Test Organisation",
                     Description = "Test Organisation Description",
                 }

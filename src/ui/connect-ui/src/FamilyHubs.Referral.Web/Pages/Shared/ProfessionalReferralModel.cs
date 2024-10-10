@@ -70,7 +70,7 @@ public class ProfessionalReferralModel : HeaderPageModel
         return await OnSafeGetAsync();
     }
 
-    protected JourneyFlow GetFlow(string? changing)
+    protected static JourneyFlow GetFlow(string? changing)
     {
         return changing switch
         {
@@ -80,7 +80,7 @@ public class ProfessionalReferralModel : HeaderPageModel
         };
     }
 
-    protected string? GetChanging(JourneyFlow flow)
+    protected static string? GetChanging(JourneyFlow flow)
     {
         return flow switch
         {

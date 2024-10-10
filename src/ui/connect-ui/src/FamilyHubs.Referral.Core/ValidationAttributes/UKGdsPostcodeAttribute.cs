@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace FamilyHubs.Referral.Core.ValidationAttributes;
 
+[AttributeUsage(AttributeTargets.Property)]
 public class UkGdsPostcodeAttribute : ValidationAttribute
 {
     // This is a simple 'does it look like a postcode' check.

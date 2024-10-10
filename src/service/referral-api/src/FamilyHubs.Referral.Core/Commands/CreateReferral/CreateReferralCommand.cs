@@ -178,6 +178,7 @@ public class CreateReferralCommandHandler(
                 Id = sdService.Id,
                 Name = sdService.Name,
                 Description = sdService.Description,
+                OrganizationId = organisation.Id,
                 Organisation = organisation
             };
 

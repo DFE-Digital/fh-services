@@ -134,10 +134,10 @@ public static class ReferralSeedData
                     Name = "Test Service",
                     Description = "Test Service Description",
                     Url = "www.TestService.com",
+                    OrganizationId = 1,
                     Organisation = new Organisation
                     {
                         Id = 1,
-                        ReferralServiceId = 1,
                         Name = "Test Organisation",
                         Description = "Test Organisation Description",
                     }
@@ -181,10 +181,10 @@ public static class ReferralSeedData
                     Id = 1,
                     Name = "Test Service",
                     Description = "Test Service Description",
+                    OrganizationId = 1,
                     Organisation = new Organisation
                     {
                         Id = 1,
-                        ReferralServiceId = 1,
                         Name = "Test Organisation",
                         Description = "Test Organisation Description",
                     }
