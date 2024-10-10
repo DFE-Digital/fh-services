@@ -37,6 +37,8 @@ public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
 
     private static readonly string[] ConfigAction = ["CreatedBy", "Created", "LastModified", "LastModified"];
 
+    private static int _dbSuffix;
+
     protected DataIntegrationTestBase()
     {
         _fixtureObjectGenerator = new Fixture();
@@ -149,7 +151,7 @@ public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
 
     private ServiceProvider CreateNewServiceProvider()
     {
-        var serviceDirectoryConnection = $"Data Source=sd-{Random.Shared.Next().ToString()}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
+        var serviceDirectoryConnection = $"Data Source=sd-{Interlocked.Increment(ref _dbSuffix)}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
 
         var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(_httpContextAccessor);
 
