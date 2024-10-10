@@ -11,7 +11,7 @@ public class WhenValidatingUpdateTaxonomy
     public void ThenShouldNotErrorWhenModelIsValid()
     {
         //Arrange
-        var id = Random.Shared.Next();
+        const int id = 0;
         var validator = new UpdateTaxonomyCommandValidator();
         var testModel = new UpdateTaxonomyCommand(id, new TaxonomyDto
         {
@@ -25,7 +25,7 @@ public class WhenValidatingUpdateTaxonomy
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeFalse();
+        result.Errors.Count.Should().Be(0);
     }
 
     [Fact]
