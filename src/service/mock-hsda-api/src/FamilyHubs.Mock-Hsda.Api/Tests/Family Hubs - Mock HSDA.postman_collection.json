@@ -1,0 +1,358 @@
+{
+	"info": {
+		"_postman_id": "bd9b8668-3bbf-4a68-8ab2-f49cb171fa93",
+		"name": "Family Hubs - Mock HSDA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33715240"
+	},
+	"item": [
+		{
+			"name": "Get Services List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Service Id is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.contents[0].id).to.eql(\"ac148810-d857-441c-9679-408f346de14b\");",
+							"});",
+							"",
+							"pm.test(\"Pagination is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.total_items).to.eql(1);",
+							"    pm.expect(jsonData.total_pages).to.eql(1);",
+							"    pm.expect(jsonData.page_number).to.eql(1);",
+							"    pm.expect(jsonData.size).to.eql(1);",
+							"    pm.expect(jsonData.first_page).to.eql(true);",
+							"    pm.expect(jsonData.last_page).to.eql(false);",
+							"});",
+							"",
+							"pm.test(\"Contents are returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.contents).to.not.be.empty;",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"service_id\", jsonData.contents[0].id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://s181t02-as-fh-open-referral-mock-api.azurewebsites.net/services",
+					"protocol": "https",
+					"host": [
+						"s181t02-as-fh-open-referral-mock-api",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"services"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Services List - 404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://s181t02-as-fh-open-referral-mock-api.azurewebsites.net/services/non-existent",
+					"protocol": "https",
+					"host": [
+						"s181t02-as-fh-open-referral-mock-api",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"services",
+						"non-existent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Services List - 500",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 500\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Mock-Response-Id",
+						"value": "500",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://s181t02-as-fh-open-referral-mock-api.azurewebsites.net/services",
+					"protocol": "https",
+					"host": [
+						"s181t02-as-fh-open-referral-mock-api",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"services"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Services List - Multiple Services/Pagination",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Service Id is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.contents[0].id).to.eql(\"ac148810-d857-441c-9679-408f346de14b\");",
+							"});",
+							"",
+							"pm.test(\"Pagination is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.total_items).to.eql(35);",
+							"    pm.expect(jsonData.total_pages).to.eql(4);",
+							"    pm.expect(jsonData.page_number).to.eql(4);",
+							"    pm.expect(jsonData.size).to.eql(5);",
+							"    pm.expect(jsonData.first_page).to.eql(false);",
+							"    pm.expect(jsonData.last_page).to.eql(true);",
+							"});",
+							"",
+							"pm.test(\"Contents are returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.contents).to.not.be.empty;",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Mock-Response-Id",
+						"value": "Pagination",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://s181t02-as-fh-open-referral-mock-api.azurewebsites.net/services?page=4&per_page=10",
+					"protocol": "https",
+					"host": [
+						"s181t02-as-fh-open-referral-mock-api",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"services"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "4"
+						},
+						{
+							"key": "per_page",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Services List - Empty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Pagination is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.total_items).to.eql(0);",
+							"    pm.expect(jsonData.total_pages).to.eql(0);",
+							"    pm.expect(jsonData.page_number).to.eql(1);",
+							"    pm.expect(jsonData.size).to.eql(0);",
+							"    pm.expect(jsonData.first_page).to.eql(true);",
+							"    pm.expect(jsonData.last_page).to.eql(true);",
+							"});",
+							"",
+							"pm.test(\"Contents are returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.contents).to.be.empty;",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Mock-Response-Id",
+						"value": "Empty",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://s181t02-as-fh-open-referral-mock-api.azurewebsites.net/services?page=1&per_page=50",
+					"protocol": "https",
+					"host": [
+						"s181t02-as-fh-open-referral-mock-api",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"services"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "per_page",
+							"value": "50"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Service Detail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"service id is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"ac148810-d857-441c-9679-408f346de14b\");",
+							"});",
+							"",
+							"pm.test(\"name is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.name).to.eql(\"Community Counselling\");",
+							"});",
+							"",
+							"pm.test(\"phone collection is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.phones).to.not.be.empty;",
+							"});",
+							"",
+							"pm.test(\"schedules collection is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.schedules).to.not.be.empty;",
+							"});",
+							"",
+							"pm.test(\"service_areas collection is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.service_areas).to.not.be.empty;",
+							"});",
+							"",
+							"pm.test(\"service_at_locations collection is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.service_at_locations).to.not.be.empty;",
+							"});",
+							"",
+							"pm.test(\"languages collection is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.languages).to.not.be.empty;",
+							"});",
+							"",
+							"pm.test(\"organization collection is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.organization).to.not.be.empty;",
+							"});",
+							"",
+							"pm.test(\"metadata collection is returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.metadata).to.not.be.empty;",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://s181t02-as-fh-open-referral-mock-api.azurewebsites.net/services/{{service_id}}",
+					"protocol": "https",
+					"host": [
+						"s181t02-as-fh-open-referral-mock-api",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"services",
+						"{{service_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

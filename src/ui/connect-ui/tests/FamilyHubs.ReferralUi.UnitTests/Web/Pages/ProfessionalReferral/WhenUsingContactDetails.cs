@@ -11,7 +11,7 @@ public class WhenUsingContactDetails : BaseProfessionalReferralPage
 
     public WhenUsingContactDetails()
     {
-        _contactDetailsModel = new ContactDetailsModel(ReferralDistributedCache.Object);
+        _contactDetailsModel = new ContactDetailsModel(ReferralDistributedCache);
     }
 
     [Theory]
@@ -33,9 +33,9 @@ public class WhenUsingContactDetails : BaseProfessionalReferralPage
 
         Assert.Equal(_contactDetailsModel.SelectedValues.Count(), ConnectionRequestModel.ContactMethodsSelected.Count(selected => selected));
 
-        string[] selectedValues = _contactDetailsModel.SelectedValues.ToArray();
+        var selectedValues = _contactDetailsModel.SelectedValues.ToArray();
 
-        foreach (string selectedValue in selectedValues)
+        foreach (var selectedValue in selectedValues)
         {
             Assert.True(Enum.TryParse(selectedValue, out ConnectContactDetailsJourneyPage result));
             Assert.True(ConnectionRequestModel.ContactMethodsSelected[(int)result]);
@@ -52,7 +52,7 @@ public class WhenUsingContactDetails : BaseProfessionalReferralPage
     [InlineData("/ProfessionalReferral/Text", false, false, true, true)]
     public async Task ThenOnPostSupportDetails(string expectedNextPage, bool email, bool telephone, bool textphone, bool letter)
     {
-        List<string> selectedValues = new();
+        List<string> selectedValues = [];
 
         if (email) selectedValues.Add(ConnectContactDetailsJourneyPage.Email.ToString());
         if (telephone) selectedValues.Add(ConnectContactDetailsJourneyPage.Telephone.ToString());

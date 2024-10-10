@@ -8,33 +8,30 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.Notification.IntegrationTests;
 
-public class DataIntegrationTestBase
+public abstract class DataIntegrationTestBase
 {
-    public IMapper Mapper { get; }
-    public ApplicationDbContext TestDbContext { get; }
-    public static NullLogger<T> GetLogger<T>() => new NullLogger<T>();
+    protected IMapper Mapper { get; }
+    protected ApplicationDbContext TestDbContext { get; }
 
-    public DataIntegrationTestBase()
+    protected DataIntegrationTestBase()
     {
         var serviceProvider = CreateNewServiceProvider();
 
         TestDbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-
         Mapper = serviceProvider.GetRequiredService<IMapper>();
 
         InitialiseDatabase();
     }
 
-    protected static ServiceProvider CreateNewServiceProvider()
+    private static ServiceProvider CreateNewServiceProvider()
     {
         var serviceDirectoryConnection = $"Data Source=sd-{Random.Shared.Next().ToString()}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
 
-        var mockIHttpContextAccessor = Mock.Of<IHttpContextAccessor>();
+        var mockIHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
         var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(mockIHttpContextAccessor);
 
         var inMemorySettings = new Dictionary<string, string?> {

@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Net;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
-using Moq;
-using Moq.Protected;
-
-// ReSharper disable StringLiteralTypo
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Services;
 
@@ -17,21 +8,15 @@ public class BaseClientService
 {
     protected const long OrganisationId = 1;
     private const long ServiceId = 1;
-    private const string OwnerServiceId = "1";
 
-    protected HttpClient GetMockClient(string content)
+    protected static HttpClient GetMockClient(string content)
     {
-        var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        mockHttpMessageHandler.Protected()
-            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                Content = new StringContent(content),
-                StatusCode = HttpStatusCode.OK
-            });
+        var mockHttpMessageHandler = new CustomHttpMessageHandler(content);
 
-        var client = new HttpClient(mockHttpMessageHandler.Object);
-        client.BaseAddress = new Uri("Https://Localhost");
+        var client = new HttpClient(mockHttpMessageHandler)
+        {
+            BaseAddress = new Uri("https://localhost")
+        };
         return client;
     }
 
@@ -121,5 +106,21 @@ public class BaseClientService
         };
 
         return service;
+    }
+    
+    /// <summary>
+    /// Custom HttpMessageHandler to return a response message with the content
+    /// </summary>
+    private class CustomHttpMessageHandler(string content) : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var responseMessage = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(content)
+            };
+        
+            return Task.FromResult(responseMessage);
+        }
     }
 }

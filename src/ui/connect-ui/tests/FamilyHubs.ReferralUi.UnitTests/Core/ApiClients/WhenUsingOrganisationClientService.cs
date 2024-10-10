@@ -6,6 +6,7 @@ using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FluentAssertions;
 using System.Text;
 using System.Text.Json;
+using FamilyHubs.ReferralUi.UnitTests.Helpers;
 
 namespace FamilyHubs.ReferralUi.UnitTests.Core.ApiClients;
 
@@ -16,15 +17,12 @@ public class WhenUsingOrganisationClientService
     {
         //Arrange
         var listTaxonomies = ClientHelper.GetTaxonomies();
-        PaginatedList<TaxonomyDto> expectedPaginatedList = new PaginatedList<TaxonomyDto>(listTaxonomies, listTaxonomies.Count, 1, listTaxonomies.Count);
+        var expectedPaginatedList = new PaginatedList<TaxonomyDto>(listTaxonomies, listTaxonomies.Count, 1, listTaxonomies.Count);
         var jsonString = JsonSerializer.Serialize(expectedPaginatedList);
         
-        HttpClient httpClient = ClientHelper.GetMockClient<string>(jsonString);
-        httpClient.DefaultRequestHeaders.Clear();
-        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer token");
-        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        var httpClient = TestHelpers.GetMockClient(jsonString);
 
-        IOrganisationClientService organisationClientService = new OrganisationClientService(httpClient);
+        var organisationClientService = new OrganisationClientService(httpClient);
 
         //Act
         var result = await organisationClientService.GetCategories();
@@ -38,17 +36,14 @@ public class WhenUsingOrganisationClientService
     public async Task ThenGetLocalOffers()
     {
         //Arrange
-        var listServices = new List<ServiceDto>() { ClientHelper.GetTestCountyCouncilServicesDto() };
-        PaginatedList<ServiceDto> expectedPaginatedList = new PaginatedList<ServiceDto>(listServices, listServices.Count, 1, listServices.Count);
+        var listServices = new List<ServiceDto> { ClientHelper.GetTestCountyCouncilServicesDto() };
+        var expectedPaginatedList = new PaginatedList<ServiceDto>(listServices, listServices.Count, 1, listServices.Count);
         var jsonString = JsonSerializer.Serialize(expectedPaginatedList);
-        HttpClient httpClient = ClientHelper.GetMockClient<string>(jsonString);
-        httpClient.DefaultRequestHeaders.Clear();
-        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer token");
-        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        var httpClient = TestHelpers.GetMockClient(jsonString);
 
-        IOrganisationClientService organisationClientService = new OrganisationClientService(httpClient);
+        var organisationClientService = new OrganisationClientService(httpClient);
 
-        LocalOfferFilter filter = new LocalOfferFilter()
+        var filter = new LocalOfferFilter
         { 
             Status = "active",
             ServiceDeliveries = AttendingType.Online.ToString(),
@@ -60,7 +55,7 @@ public class WhenUsingOrganisationClientService
         };
 
         //Act
-        (var result, var response) = await organisationClientService.GetLocalOffers(filter);
+        var (result, response) = await organisationClientService.GetLocalOffers(filter);
 
         //Assert
         result.Items.Count.Should().Be(1);
@@ -74,12 +69,9 @@ public class WhenUsingOrganisationClientService
         //Arrange
         var expectedService = ClientHelper.GetTestCountyCouncilServicesDto();
         var jsonString = JsonSerializer.Serialize(expectedService);
-        HttpClient httpClient = ClientHelper.GetMockClient<string>(jsonString);
-        httpClient.DefaultRequestHeaders.Clear();
-        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer token");
-        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        var httpClient = TestHelpers.GetMockClient(jsonString);
 
-        IOrganisationClientService organisationClientService = new OrganisationClientService(httpClient);
+        var organisationClientService = new OrganisationClientService(httpClient);
 
         //Act
         var result = await organisationClientService.GetLocalOfferById(expectedService.Id.ToString());
@@ -95,12 +87,9 @@ public class WhenUsingOrganisationClientService
         //Arrange
         var expectedOrganisation = ClientHelper.GetTestCountyCouncilWithoutAnyServices();
         var jsonString = JsonSerializer.Serialize(expectedOrganisation);
-        HttpClient httpClient = ClientHelper.GetMockClient<string>(jsonString);
-        httpClient.DefaultRequestHeaders.Clear();
-        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer token");
-        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        var httpClient = TestHelpers.GetMockClient(jsonString);
 
-        IOrganisationClientService organisationClientService = new OrganisationClientService(httpClient);
+        var organisationClientService = new OrganisationClientService(httpClient);
 
         //Act
         var result = await organisationClientService.GetOrganisationDtoByIdAsync(expectedOrganisation.Id);
@@ -114,9 +103,9 @@ public class WhenUsingOrganisationClientService
     public void ThenCreateAddAgeToUrl()
     {
         //Arrange
-        string expected = "&givenAge=18";
-        OrganisationClientService organisationClientService = new OrganisationClientService(new HttpClient());
-        StringBuilder url = new StringBuilder();
+        const string expected = "&givenAge=18";
+        var organisationClientService = new OrganisationClientService(new HttpClient());
+        var url = new StringBuilder();
 
         //Act 
         organisationClientService.AddAgeToUrl(url, 18);
@@ -130,9 +119,9 @@ public class WhenUsingOrganisationClientService
     public void ThenAddTextToUrl()
     {
         //Arrange
-        string expected = "&text=Test";
-        OrganisationClientService organisationClientService = new OrganisationClientService(new HttpClient());
-        StringBuilder url = new StringBuilder();
+        const string expected = "&text=Test";
+        var organisationClientService = new OrganisationClientService(new HttpClient());
+        var url = new StringBuilder();
 
         //Act 
         organisationClientService.AddTextToUrl(url,"Test");

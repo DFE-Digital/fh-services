@@ -4,7 +4,7 @@ namespace FamilyHubs.Referral.Integration.Tests;
 
 public static class TestDataProvider
 {
-    public const long UserId = 1337L;
+    private const long UserId = 1337L;
 
     public static ReferralDto GetReferralDto()
     {
@@ -75,7 +75,7 @@ public static class TestDataProvider
 
         userAccountDto.OrganisationUserAccounts = new List<UserAccountOrganisationDto>
         {
-            new UserAccountOrganisationDto
+            new()
             {
                 UserAccount = new UserAccountDto
                 {

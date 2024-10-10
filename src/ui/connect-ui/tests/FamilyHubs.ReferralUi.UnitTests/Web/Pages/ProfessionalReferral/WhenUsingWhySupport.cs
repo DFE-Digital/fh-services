@@ -2,7 +2,7 @@
 using FamilyHubs.Referral.Web.Pages.ProfessionalReferral;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.ReferralUi.UnitTests.Web.Pages.ProfessionalReferral;
 
@@ -12,7 +12,7 @@ public class WhenUsingWhySupport : BaseProfessionalReferralPage
 
     public WhenUsingWhySupport()
     {
-        _whySupportModel = new WhySupportModel(ReferralDistributedCache.Object);
+        _whySupportModel = new WhySupportModel(ReferralDistributedCache);
     }
 
     [Fact]
@@ -34,10 +34,9 @@ public class WhenUsingWhySupport : BaseProfessionalReferralPage
         var result = await _whySupportModel.OnPostAsync("1") as RedirectToPageResult;
 
         //Assert
-        ReferralDistributedCache.Verify(x =>
-            x.SetAsync(It.IsAny<string>(),It.IsAny<ConnectionRequestModel>()), Times.Once);
+        await ReferralDistributedCache.Received(1).SetAsync(Arg.Any<string>(), Arg.Any<ConnectionRequestModel>());
 
-        var model = await ReferralDistributedCache.Object.GetAsync(ProfessionalEmail);
+        var model = await ReferralDistributedCache.GetAsync(ProfessionalEmail);
         ArgumentNullException.ThrowIfNull(model);
         model.Reason.Should().Be(_whySupportModel.TextAreaValue);
         ArgumentNullException.ThrowIfNull(result);

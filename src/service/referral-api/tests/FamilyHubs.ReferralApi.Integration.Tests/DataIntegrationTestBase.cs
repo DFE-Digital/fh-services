@@ -9,16 +9,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.Referral.Integration.Tests;
 
 #pragma warning disable S3881
 public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
 {
-    public IMapper Mapper { get; }
-    public ApplicationDbContext TestDbContext { get; }
+    protected IMapper Mapper { get; }
+    protected ApplicationDbContext TestDbContext { get; }
 
     protected DataIntegrationTestBase()
     {
@@ -31,11 +30,11 @@ public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
         InitialiseDatabase();
     }
 
-    protected static ServiceProvider CreateNewReferralProvider()
+    private static ServiceProvider CreateNewReferralProvider()
     {
         var serviceDirectoryConnection = $"Data Source=sd-{Random.Shared.Next().ToString()}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
 
-        var mockIHttpContextAccessor = Mock.Of<IHttpContextAccessor>();
+        var mockIHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
         var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(mockIHttpContextAccessor);
 
         var inMemorySettings = new Dictionary<string, string?> {

@@ -7,17 +7,15 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
-using Moq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.La;
 
 public class SubjectAccessResultDetailsTests
 {
-    private readonly Mock<IRequestDistributedCache> _mockRequestDistributedCache;
-    private readonly Mock<IReferralService> _mockReferralService;
+    private readonly IRequestDistributedCache _mockRequestDistributedCache;
+    private readonly IReferralService _mockReferralService;
     private readonly SubjectAccessResultDetailsModel _subjectAccessResultDetailsModel;
 
     public SubjectAccessResultDetailsTests()
@@ -28,34 +26,37 @@ public class SubjectAccessResultDetailsTests
             };
         IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection((IEnumerable<KeyValuePair<string, string?>>)settings).Build();
 
-        _mockRequestDistributedCache = new Mock<IRequestDistributedCache>();
-        _mockReferralService = new Mock<IReferralService>();
-        DefaultHttpContext httpContext = new DefaultHttpContext();
-        _subjectAccessResultDetailsModel = new SubjectAccessResultDetailsModel(_mockRequestDistributedCache.Object, _mockReferralService.Object, configuration);
-        _subjectAccessResultDetailsModel.PageContext.HttpContext = httpContext;
-        CompiledPageActionDescriptor compiledPageActionDescriptor = new();
-        _subjectAccessResultDetailsModel.PageContext.ActionDescriptor = compiledPageActionDescriptor;
-        _subjectAccessResultDetailsModel.PageContext.ActionDescriptor.DisplayName = "/La/SubjectAccessResultDetails";
+        _mockRequestDistributedCache = Substitute.For<IRequestDistributedCache>();
+        _mockReferralService = Substitute.For<IReferralService>();
+        var httpContext = new DefaultHttpContext();
+        CompiledPageActionDescriptor compiledPageActionDescriptor = new() { DisplayName = "/La/SubjectAccessResultDetails" };
+        _subjectAccessResultDetailsModel = new SubjectAccessResultDetailsModel(_mockRequestDistributedCache, _mockReferralService, configuration)
+            {
+                PageContext =
+                {
+                    HttpContext = httpContext,
+                    ActionDescriptor = compiledPageActionDescriptor
+                }
+            };
     }
 
     [Fact]
     public async Task ThenSubjectAccessResultDetailsOnGetIsSuccessfull()
     {
         //Arrange
-        int callback = 0;
-        _mockRequestDistributedCache.Setup(x => x.GetAsync<SubjectAccessRequestViewModel>(It.IsAny<string>()))
-            .Callback(() => callback++)
-            .ReturnsAsync(new SubjectAccessRequestViewModel
+        _mockRequestDistributedCache.GetAsync<SubjectAccessRequestViewModel>(Arg.Any<string>())
+            .Returns(_ => Task.FromResult<SubjectAccessRequestViewModel?>(new SubjectAccessRequestViewModel
             {
                 SelectionType = "email", Value1 = "TestUser@email.com"
-            });
-        _mockReferralService.Setup(x => x.GetReferralsByRecipient(It.IsAny<Core.Models.SubjectAccessRequestViewModel>())).ReturnsAsync(GetReferralList());
+            }));
 
+        _mockReferralService.GetReferralsByRecipient(Arg.Any<SubjectAccessRequestViewModel>())
+            .Returns(GetReferralList());
         //Act
         await _subjectAccessResultDetailsModel.OnGet("", SharedKernel.Razor.Dashboard.SortOrder.none);
 
         // Assert
-        callback.Should().Be(1);
+        await _mockRequestDistributedCache.Received(1).GetAsync<SubjectAccessRequestViewModel>(Arg.Any<string>());
         _subjectAccessResultDetailsModel.ReferralDtos.Should().BeEquivalentTo(GetReferralList());
     }
 
@@ -63,23 +64,22 @@ public class SubjectAccessResultDetailsTests
     public async Task ThenSubjectAccessResultDetailsOnGetJustRetruns()
     {
         //Arrange
-        int callback = 0;
-        _mockRequestDistributedCache.Setup(x => x.GetAsync<SubjectAccessRequestViewModel>(It.IsAny<string>()))
-            .Callback(() => callback++);
+        _mockRequestDistributedCache.GetAsync<SubjectAccessRequestViewModel>(Arg.Any<string>())
+            .Returns(_ => Task.FromResult<SubjectAccessRequestViewModel?>(null));
 
         //Act
         await _subjectAccessResultDetailsModel.OnGet("", SharedKernel.Razor.Dashboard.SortOrder.none);
 
         // Assert
-        callback.Should().Be(1);
+        await _mockRequestDistributedCache.Received(1).GetAsync<SubjectAccessRequestViewModel>(Arg.Any<string>());
         _subjectAccessResultDetailsModel.ReferralDtos.Should().BeEquivalentTo(new List<ReferralDto>());
     }
 
-    public static List<ReferralDto> GetReferralList()
+    private static List<ReferralDto> GetReferralList()
     {
-        List<ReferralDto> listReferrals = new()
-        {
-            new ReferralDto
+        List<ReferralDto> listReferrals =
+        [
+            new()
             {
                 ReferrerTelephone = "0121 555 7777",
                 ReasonForSupport = "Reason For Support",
@@ -125,8 +125,9 @@ public class SubjectAccessResultDetailsTests
                         Description = "Test Organisation Description",
                     }
                 }
-            },
-        };
+            }
+
+        ];
 
         return listReferrals;
     }

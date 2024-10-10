@@ -1,0 +1,61 @@
+name: Deploy Function
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      artifact_name:
+        required: true
+        type: string
+      keyvault_prefix:
+        required: true
+        type: string
+      azure_app_name:
+        required: true
+        type: string
+
+jobs:
+  deploy-function:
+    name: Download Artifact & Deploy Project
+    runs-on: ubuntu-22.04
+    environment: ${{ inputs.environment }}
+    env:
+      KEYVAULT: ${{ vars.AZURE_RESOURCE_PREFIX }}-kv-fh-general
+      APP_NAME: ${{ vars.AZURE_RESOURCE_PREFIX }}-${{ inputs.azure_app_name }}
+      RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: ./out
+
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: App Settings Variable Substitution
+        id: substitution
+        uses: ./.github/actions/variable-substitution
+        with:
+          keyvault_name: ${{ env.KEYVAULT }}
+          keyvault_prefix: ${{ inputs.keyvault_prefix }}
+          files: "./out/appsettings.json"
+          configure: 'Functions'
+
+      - name: Deploy Artifact to Azure
+        uses: azure/functions-action@v1
+        with:
+          app-name: ${{ env.APP_NAME }}
+          publish-profile: ${{ steps.substitution.outputs.publish_profile }}
+          package: ./out

@@ -9,26 +9,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.Idam.Core.IntegrationTests;
 
 public abstract class DataIntegrationTestBase<T> : DataIntegrationTestBase
 {
-    protected Mock<ILogger<T>> MockLogger { get; set; }
-
-    protected DataIntegrationTestBase():base()
-    {
-        MockLogger = new Mock<ILogger<T>>();
-    }
+    protected ILogger<T> MockLogger { get; } = Substitute.For<ILogger<T>>();
 }
 
 #pragma warning disable S3881
 public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
 {
-    protected AccountClaim TestSingleAccountClaim { get; set; }
+    protected AccountClaim TestSingleAccountClaim { get; }
     protected ApplicationDbContext TestDbContext { get; }
-    protected static NullLogger<T> GetLogger<T>() => new NullLogger<T>();
+    protected static NullLogger<T> GetLogger<T>() => new();
     protected Fixture Fixture { get; private set; }
 
     protected DataIntegrationTestBase()
@@ -74,7 +69,7 @@ public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
     private static ServiceProvider CreateNewServiceProvider()
     {
         var serviceDirectoryConnection = $"Data Source=idam-{Random.Shared.Next().ToString()}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
-        var mockIHttpContextAccessor = Mock.Of<IHttpContextAccessor>();
+        var mockIHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
         var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(mockIHttpContextAccessor);
 
         var inMemorySettings = new Dictionary<string, string?> {

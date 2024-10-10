@@ -3,66 +3,70 @@ using FamilyHubs.Referral.Infrastructure.DistributedCache;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
-using Moq;
 using System.Text;
+using NSubstitute;
 
 namespace FamilyHubs.ReferralUi.UnitTests.Infrastructure.DistributedCache;
 
 public class ReferralDistributedCacheTests
 {
-    public const string ProfessionalsEmail = "pro@example.com";
-    public Mock<IDistributedCache> MockDistributedCache;
-    public Mock<DistributedCacheEntryOptions> MockDistributedCacheEntryOptions;
-    public ConnectionRequestDistributedCache ConnectionRequestDistributedCache;
-    public ConnectionRequestModel ConnectionRequestModel;
-    public byte[] ProfessionalReferralModelSerializedBytes;
+    private const string ProfessionalsEmail = "pro@example.com";
+    private readonly IDistributedCache _mockDistributedCache;
+    private readonly ConnectionRequestDistributedCache _connectionRequestDistributedCache;
+    private readonly ConnectionRequestModel _connectionRequestModel;
+    private readonly byte[] _professionalReferralModelSerializedBytes;
 
     public ReferralDistributedCacheTests()
     {
-        MockDistributedCache = new Mock<IDistributedCache>();
+        _mockDistributedCache = Substitute.For<IDistributedCache>();
 
-        MockDistributedCacheEntryOptions = new Mock<DistributedCacheEntryOptions>();
-        ConnectionRequestDistributedCache = new ConnectionRequestDistributedCache(
-            MockDistributedCache.Object,
-            MockDistributedCacheEntryOptions.Object);
-        ConnectionRequestModel = new ConnectionRequestModel
+        var mockDistributedCacheEntryOptions = Substitute.For<DistributedCacheEntryOptions>();
+        _connectionRequestDistributedCache = new ConnectionRequestDistributedCache(
+            _mockDistributedCache,
+            mockDistributedCacheEntryOptions);
+        _connectionRequestModel = new ConnectionRequestModel
         {
             FamilyContactFullName = "FamilyContactFullName",
             ServiceId = "1"
         };
 
-        ProfessionalReferralModelSerializedBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(ConnectionRequestModel));
+        _professionalReferralModelSerializedBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(_connectionRequestModel));
     }
 
     [Fact]
     public async Task GetProfessionalReferralAsync_WhenCalled_ReturnsProfessionalReferral()
     {
-        // Moq doesn't support mocking extension methods, so we have to mock internals of the extension method *ugh*
-        MockDistributedCache.Setup(x => x.GetAsync(ProfessionalsEmail, default))
-            .ReturnsAsync(ProfessionalReferralModelSerializedBytes);
+        // Arrange
+        _mockDistributedCache.GetAsync(ProfessionalsEmail, default)
+            .Returns(_professionalReferralModelSerializedBytes);
 
-        // act
-        ConnectionRequestModel? result = await ConnectionRequestDistributedCache.GetAsync(ProfessionalsEmail);
+        // Act
+        var result = await _connectionRequestDistributedCache.GetAsync(ProfessionalsEmail);
 
-        result.Should().BeEquivalentTo(ConnectionRequestModel);
+        // Assert
+        result.Should().BeEquivalentTo(_connectionRequestModel);
     }
 
     [Fact]
     public async Task SetProfessionalReferralAsync_WhenCalled_SetsProfessionalReferral()
     {
         // act
-        await ConnectionRequestDistributedCache.SetAsync(ProfessionalsEmail, ConnectionRequestModel);
-
-        MockDistributedCache.Verify(
-            x => x.SetAsync(ProfessionalsEmail, ProfessionalReferralModelSerializedBytes, It.IsAny<DistributedCacheEntryOptions>(), default),
-            Times.Once);
+        await _connectionRequestDistributedCache.SetAsync(ProfessionalsEmail, _connectionRequestModel);
+        
+        await _mockDistributedCache.Received(1).SetAsync(
+            ProfessionalsEmail,
+            Arg.Is<byte[]>(bytes => bytes.SequenceEqual(_professionalReferralModelSerializedBytes)),
+            Arg.Any<DistributedCacheEntryOptions>(),
+            default);
     }
 
     [Fact]
     public async Task RemoveProfessionalReferralAsync_WhenCalled_RemovesProfessionalReferral()
     {
-        // act
-        await ConnectionRequestDistributedCache.RemoveAsync(ProfessionalsEmail);
-        MockDistributedCache.Verify(x => x.RemoveAsync(ProfessionalsEmail, default), Times.Once);
+        // Act
+        await _connectionRequestDistributedCache.RemoveAsync(ProfessionalsEmail);
+        
+        // Assert
+        await _mockDistributedCache.Received(1).RemoveAsync(ProfessionalsEmail, default);
     }
 }

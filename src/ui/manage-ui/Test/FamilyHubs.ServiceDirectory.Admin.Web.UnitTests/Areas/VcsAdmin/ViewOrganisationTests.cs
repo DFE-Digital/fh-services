@@ -4,165 +4,136 @@ using FamilyHubs.ServiceDirectory.Admin.Core.Services;
 using FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
-using FamilyHubs.ServiceDirectory.Shared.Models;
 using FamilyHubs.SharedKernel.Identity;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
-namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
+namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin;
+
+public class ViewOrganisationTests
 {
-    public class ViewOrganisationTests
+    private readonly IServiceDirectoryClient _mockServiceDirectoryClient;
+    private readonly ICacheService _mockCacheService;
+    private readonly ILogger<ViewOrganisationModel> _mockLogger;
+    private readonly Fixture _fixture;
+        
+    private const int OrganisationId = 2;
+
+    public ViewOrganisationTests()
     {
-        private readonly Mock<IServiceDirectoryClient> _mockServiceDirectoryClient;
-        private readonly Mock<ICacheService> _mockCacheService;
-        private readonly Mock<ILogger<ViewOrganisationModel>> _mockLogger;
-        private readonly Fixture _fixture;
+        _mockServiceDirectoryClient = Substitute.For<IServiceDirectoryClient>();
+        _mockCacheService = Substitute.For<ICacheService>();
+        _mockLogger = Substitute.For<ILogger<ViewOrganisationModel>>();
+        _fixture = new Fixture();
+        ConfigureMockServiceClient();
+    }
 
-        public ViewOrganisationTests()
+    [Fact]
+    public async Task OnGet_ReturnsPage()
+    {
+        //  Arrange
+        var mockHttpContext = GetHttpContext(RoleTypes.DfeAdmin, -1);
+        var sut = new ViewOrganisationModel(_mockServiceDirectoryClient, _mockCacheService, _mockLogger)
         {
-            _mockServiceDirectoryClient = new Mock<IServiceDirectoryClient>();
-            _mockCacheService= new Mock<ICacheService>();
-            _mockLogger = new Mock<ILogger<ViewOrganisationModel>>();
-            _fixture = new Fixture();
-            ConfigureMockServiceClient();
-        }
+            PageContext = { HttpContext = mockHttpContext },
+            OrganisationId = OrganisationId.ToString()
+        };
 
-        [Fact]
-        public async Task OnGet_ReturnsPage()
+        //  Act
+        var response = await sut.OnGet();
+
+        //  Assert
+        Assert.IsType<PageResult>(response);
+    }
+
+    [Theory]
+    [InlineData("5", "Organisation 5 not found")]
+    [InlineData("1", "Organisation 1 is not a VCS organisation")]
+    [InlineData("3", "Organisation 3 has no parent")]
+    [InlineData("4", "User testuser@test.com cannot view 4")]
+    public async Task OnGet_InvalidOrganisation_RedirectsToError(string organisationId, string expectedLogMessage)
+    {
+        //  Arrange
+        var mockHttpContext = GetHttpContext(RoleTypes.LaManager, 1);
+        var sut = new ViewOrganisationModel(_mockServiceDirectoryClient, _mockCacheService, _mockLogger)
         {
-            //  Arrange
-            var mockHttpContext = GetHttpContext(RoleTypes.DfeAdmin, -1);
-            var sut = new ViewOrganisationModel(_mockServiceDirectoryClient.Object, _mockCacheService.Object, _mockLogger.Object)
-            {
-                PageContext = { HttpContext = mockHttpContext.Object },
-                OrganisationId = "2"
-            };
+            PageContext = { HttpContext = mockHttpContext },
+            OrganisationId = organisationId
+        };
 
-            //  Act
-            var response = await sut.OnGet();
+        //  Act
+        var response = await sut.OnGet();
 
-            //  Assert
-            Assert.IsType<PageResult>(response);
-        }
+        //  Assert
+        Assert.IsType<RedirectToPageResult>(response);
+        _mockLogger.Received(1).Log(
+            LogLevel.Warning,
+            Arg.Any<EventId>(),
+            Arg.Is<object>(o => o.ToString() == expectedLogMessage && o.GetType().Name == "FormattedLogValues"),
+            Arg.Any<Exception>(),
+            Arg.Any<Func<object, Exception?, string>>());
+    }
 
-        [Theory]
-        [InlineData("5", "Organisation 5 not found")]
-        [InlineData("1", "Organisation 1 is not a VCS organisation")]
-        [InlineData("3", "Organisation 3 has no parent")]
-        [InlineData("4", "User testuser@test.com cannot view 4")]
-        public async Task OnGet_InvalidOrganisation_RedirectsToError(string organisationId, string expectedLogMessage)
+    [Fact]
+    public async Task OnPost_UpdatesOrganisation()
+    {
+        //  Arrange
+        const string updatedName = "updatedName";
+        _mockCacheService.RetrieveString(CacheKeyNames.UpdateOrganisationName).Returns(Task.FromResult(updatedName));
+        _mockServiceDirectoryClient.UpdateOrganisation(Arg.Any<OrganisationDetailsDto>()).Returns(OrganisationId);
+        var mockHttpContext = GetHttpContext(RoleTypes.DfeAdmin, -1);
+        var sut = new ViewOrganisationModel(_mockServiceDirectoryClient, _mockCacheService, _mockLogger)
         {
-            //  Arrange
-            var mockHttpContext = GetHttpContext(RoleTypes.LaManager, 1);
-            var sut = new ViewOrganisationModel(_mockServiceDirectoryClient.Object, _mockCacheService.Object, _mockLogger.Object)
-            {
-                PageContext = { HttpContext = mockHttpContext.Object },
-                OrganisationId = organisationId
-            };
+            PageContext = { HttpContext = mockHttpContext },
+            OrganisationId = OrganisationId.ToString()
+        };
 
-            //  Act
-            var response = await sut.OnGet();
+        //  Act
+        await sut.OnPost();
 
-            //  Assert
-            Assert.IsType<RedirectToPageResult>(response);
-            AssertLoggerWarning(expectedLogMessage);
-        }
+        //  Assert
+        var arg = new TestHelper.ArgumentCaptor<OrganisationDetailsDto>();
+        await _mockServiceDirectoryClient.Received().UpdateOrganisation(arg.Capture());
+        ArgumentNullException.ThrowIfNull(arg.Value);
+        arg.Value.Name.Should().Be(updatedName);
+    }
 
-        [Fact]
-        public async Task OnPost_UpdatesOrganisation()
-        {
-            //  Arrange
-            const long organisationId = 2;
-            const string updatedName = "updatedName";
-            _mockCacheService.Setup(x => x.RetrieveString(CacheKeyNames.UpdateOrganisationName)).Returns(Task.FromResult(updatedName));
-            _mockServiceDirectoryClient.Setup(x => x.UpdateOrganisation(It.IsAny<OrganisationDetailsDto>())).ReturnsAsync(organisationId);
-            var mockHttpContext = GetHttpContext(RoleTypes.DfeAdmin, -1);
-            var sut = new ViewOrganisationModel(_mockServiceDirectoryClient.Object, _mockCacheService.Object, _mockLogger.Object)
-            {
-                PageContext = { HttpContext = mockHttpContext.Object },
-                OrganisationId = organisationId.ToString()
-            };
+    private static HttpContext GetHttpContext(string role, long organisationId)
+    {
+        var claims = new List<Claim> {
+            new(ClaimTypes.Email, "testuser@test.com") ,
+            new(FamilyHubsClaimTypes.FullName, "any") ,
+            new(FamilyHubsClaimTypes.AccountId, "1"),
+            new(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()),
+            new(FamilyHubsClaimTypes.Role, role),
+        };
 
-            //  Act
-            await sut.OnPost();
+        return TestHelper.GetHttpContext(claims);
+    }
 
-            //  Assert
-            var arg = new ArgumentCaptor<OrganisationDetailsDto>();
-            _mockServiceDirectoryClient.Verify(x=>x.UpdateOrganisation(arg!.Capture()));
-            ArgumentNullException.ThrowIfNull(arg.Value);
-            arg.Value.Name.Should().Be(updatedName);
-        }
+    private void ConfigureMockServiceClient()
+    {
+        var la = TestHelper.CreateTestOrganisationWithServices(1, null, OrganisationType.LA, _fixture);
+        var laResponse = Task.FromResult(la);
 
-        private Mock<HttpContext> GetHttpContext(string role, long organisationId)
-        {
-            var claims = new List<Claim> {
-                new Claim(ClaimTypes.Email, "testuser@test.com") ,
-                new Claim(FamilyHubsClaimTypes.FullName, "any") ,
-                new Claim(FamilyHubsClaimTypes.AccountId, "1"),
-                new Claim(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()),
-                new Claim(FamilyHubsClaimTypes.Role, role),
-            };
+        var vcs = TestHelper.CreateTestOrganisationWithServices(2, 1, OrganisationType.VCFS, _fixture);
+        var vcsResponse = Task.FromResult(vcs);
 
-            return TestHelper.GetHttpContext(claims);
-        }
+        var vcsNoParent = TestHelper.CreateTestOrganisationWithServices(3, null, OrganisationType.VCFS, _fixture);
+        var vcsNoParentResponse = Task.FromResult(vcsNoParent);
 
-        private void ConfigureMockServiceClient()
-        {
-            var la = TestHelper.CreateTestOrganisationWithServices(1, null, OrganisationType.LA, _fixture);
-            var laResponse = Task.FromResult(la);
+        var vcsUnauthorisedUser = TestHelper.CreateTestOrganisationWithServices(4, 99, OrganisationType.VCFS, _fixture);
+        var vcsUnauthorisedUserResponse = Task.FromResult(vcsUnauthorisedUser);
 
-            var vcs = TestHelper.CreateTestOrganisationWithServices(2, 1, OrganisationType.VCFS, _fixture);
-            var vcsResponse = Task.FromResult(vcs);
-
-            var vcsNoParent = TestHelper.CreateTestOrganisationWithServices(3, null, OrganisationType.VCFS, _fixture);
-            var vcsNoParentResponse = Task.FromResult(vcsNoParent);
-
-            var vcsUnauthorisedUser = TestHelper.CreateTestOrganisationWithServices(4, 99, OrganisationType.VCFS, _fixture);
-            var vcsUnauthorisedUserResponse = Task.FromResult(vcsUnauthorisedUser);
-
-            _mockServiceDirectoryClient.Setup(x => x.GetOrganisationById(It.Is<long>(x => x == 1), It.IsAny<CancellationToken>())).Returns(laResponse);
-            _mockServiceDirectoryClient.Setup(x => x.GetOrganisationById(It.Is<long>(x => x == 2), It.IsAny<CancellationToken>())).Returns(vcsResponse);
-            _mockServiceDirectoryClient.Setup(x => x.GetOrganisationById(It.Is<long>(x => x == 3), It.IsAny<CancellationToken>())).Returns(vcsNoParentResponse);
-            _mockServiceDirectoryClient.Setup(x => x.GetOrganisationById(It.Is<long>(x => x == 4), It.IsAny<CancellationToken>())).Returns(vcsUnauthorisedUserResponse);
-        }
-
-        private void AssertLoggerWarning(string message)
-        {
-            _mockLogger.Verify(logger => logger.Log(
-                It.Is<LogLevel>(logLevel => logLevel == LogLevel.Warning),
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((@object, @type) => @object.ToString() == message && @type.Name == "FormattedLogValues"),
-                It.IsAny<Exception>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
-        }
-
-        public class ArgumentCaptor<T>
-        {
-            public T Capture()
-            {
-                return It.Is<T>(t => SaveValue(t));
-            }
-
-            private bool SaveValue(T t)
-            {
-                Value = t;
-                return true;
-            }
-
-            public T? Value { get; private set; }
-        }
+        _mockServiceDirectoryClient.GetOrganisationById(Arg.Is<long>(x => x == 1), Arg.Any<CancellationToken>()).Returns(laResponse);
+        _mockServiceDirectoryClient.GetOrganisationById(Arg.Is<long>(x => x == 2), Arg.Any<CancellationToken>()).Returns(vcsResponse);
+        _mockServiceDirectoryClient.GetOrganisationById(Arg.Is<long>(x => x == 3), Arg.Any<CancellationToken>()).Returns(vcsNoParentResponse);
+        _mockServiceDirectoryClient.GetOrganisationById(Arg.Is<long>(x => x == 4), Arg.Any<CancellationToken>()).Returns(vcsUnauthorisedUserResponse);
     }
 }

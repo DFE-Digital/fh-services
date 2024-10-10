@@ -1,25 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
+﻿using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Models;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Newtonsoft.Json;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Services;
 
 public class WhenUsingLocalOfferClientService : BaseClientService
 {
-    private readonly Mock<ILogger<ServiceDirectoryClient>> _mockLogger;
+    private readonly ILogger<ServiceDirectoryClient> _mockLogger;
 
     public WhenUsingLocalOfferClientService()
     {
-        _mockLogger = new Mock<ILogger<ServiceDirectoryClient>>();
+        _mockLogger = Substitute.For<ILogger<ServiceDirectoryClient>>();
     }
 
     [Fact]
@@ -29,7 +26,7 @@ public class WhenUsingLocalOfferClientService : BaseClientService
         var service = GetTestCountyCouncilServicesDto(OrganisationId);
         var json = JsonConvert.SerializeObject(service);
         var mockClient = GetMockClient(json);
-        var localOfferClientService = new ServiceDirectoryClient(mockClient, Mock.Of<ICacheService>(), _mockLogger.Object);
+        var localOfferClientService = new ServiceDirectoryClient(mockClient, Substitute.For<ICacheService>(), _mockLogger);
 
         //Act
         var result = await localOfferClientService.GetServiceById(service.Id);
@@ -53,7 +50,7 @@ public class WhenUsingLocalOfferClientService : BaseClientService
 
         var json = JsonConvert.SerializeObject(paginatedList);
         var mockClient = GetMockClient(json);
-        var localOfferClientService = new ServiceDirectoryClient(mockClient, Mock.Of<ICacheService>(), _mockLogger.Object);
+        var localOfferClientService = new ServiceDirectoryClient(mockClient, Substitute.For<ICacheService>(), _mockLogger);
 
         //Act
         var result = await localOfferClientService.GetServiceSummaries(123);

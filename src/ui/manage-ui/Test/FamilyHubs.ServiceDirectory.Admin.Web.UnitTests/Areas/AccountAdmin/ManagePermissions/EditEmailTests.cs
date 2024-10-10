@@ -5,52 +5,49 @@ using FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManagePermi
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Moq;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.ManagePermissions
 {
     public class EditEmailTests
     {
-        private readonly Mock<IIdamClient> _mockIdamClient;
-        private readonly Mock<IEmailService> _mockEmailService;
-        private readonly Mock<ILogger<EditEmailModel>> _logger;
+        private readonly IIdamClient _mockIdamClient;
+        private readonly IEmailService _mockEmailService;
+        private readonly ILogger<EditEmailModel> _logger;
+        
+        private const int AccountId = 1234;
 
         public EditEmailTests()
         {
-            _mockIdamClient = new Mock<IIdamClient>();
-            _mockEmailService = new Mock<IEmailService>();
-            _logger = new Mock<ILogger<EditEmailModel>>();
+            _mockIdamClient = Substitute.For<IIdamClient>();
+            _mockEmailService = Substitute.For<IEmailService>();
+            _logger = Substitute.For<ILogger<EditEmailModel>>();
         }
 
         [Fact]
         public void OnGet_BackPathSet()
         {
             //  Arrange
-            const string accountId = "1234";
-            var sut = new EditEmailModel(_mockIdamClient.Object, _mockEmailService.Object, _logger.Object)
+            var sut = new EditEmailModel(_mockIdamClient, _mockEmailService, _logger)
             {
-                EmailAddress = string.Empty, AccountId = accountId
+                EmailAddress = string.Empty, AccountId = AccountId.ToString()
             };
 
             //  Act
             sut.OnGet();
 
             //  Assert
-            Assert.Equal($"/AccountAdmin/ManagePermissions/{accountId}", sut.BackButtonPath);
+            Assert.Equal($"/AccountAdmin/ManagePermissions/{AccountId}", sut.BackButtonPath);
         }
 
         [Fact]
         public async Task OnPost_InvalidEmail_ReturnsPage()
         {
             //  Arrange
-            const string accountId = "1234";
-            var sut = new EditEmailModel(_mockIdamClient.Object, _mockEmailService.Object, _logger.Object)
+            var sut = new EditEmailModel(_mockIdamClient, _mockEmailService, _logger)
             {
-                EmailAddress = string.Empty, AccountId = accountId
+                EmailAddress = string.Empty, AccountId = AccountId.ToString()
             };
 
             //  Act
@@ -65,15 +62,15 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
         public async Task OnPost_InvokesUpdateMethod()
         {
             //  Arrange
-            const string accountId = "1234";
             const string email = "some.guy@test.com";
-            var account = new AccountDto { Id = 1234, Email = "oldEmail", Name = "name" , 
-                Claims = new List<AccountClaimDto>() { new AccountClaimDto() { Name = "role", Value = "LaManager" } } };
-            _mockIdamClient.Setup(m => m.GetAccountById(1234)).Returns(Task.FromResult((AccountDto?)account));
+            var account = new AccountDto { Id = AccountId, Email = "oldEmail", Name = "name" , 
+                Claims = [new AccountClaimDto { Name = "role", Value = "LaManager" }]
+            };
+            _mockIdamClient.GetAccountById(AccountId).Returns(Task.FromResult<AccountDto?>(account));
 
-            var sut = new EditEmailModel(_mockIdamClient.Object, _mockEmailService.Object, _logger.Object)
+            var sut = new EditEmailModel(_mockIdamClient, _mockEmailService, _logger)
             {
-                EmailAddress = email, AccountId = accountId
+                EmailAddress = email, AccountId = AccountId.ToString()
             };
 
             //  Act
@@ -82,7 +79,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
             //  Assert
             Assert.IsType<RedirectToPageResult>(result);
             Assert.False(sut.HasValidationError);
-            _mockIdamClient.Verify(m => m.UpdateAccount(It.IsAny<UpdateAccountDto>(), It.IsAny<CancellationToken>()), Times.Once);
+            await _mockIdamClient.Received(1).UpdateAccount(Arg.Any<UpdateAccountDto>(), Arg.Any<CancellationToken>());
         }
 
 
@@ -90,29 +87,30 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
         public async Task OnPost_EmailNotificationIsSent()
         {
             //  Arrange
-            const string accountId = "1234";
             const string email = "some.guy@test.com";
             var account = new AccountDto
             {
-                Id = 1234,
+                Id = AccountId,
                 Email = "oldEmail",
                 Name = "name",
-                Claims = new List<AccountClaimDto>() { new () { Name = "role", Value = "LaManager" } }
+                Claims = [new AccountClaimDto { Name = "role", Value = "LaManager" }]
             };
-            _mockIdamClient.Setup(m => m.GetAccountById(1234)).Returns(Task.FromResult((AccountDto?)account));
-            _mockEmailService.Setup(x => x.SendAccountEmailUpdatedEmail(It.IsAny<EmailChangeNotificationModel>()));
+            _mockIdamClient.GetAccountById(1234).Returns(Task.FromResult<AccountDto?>(account));
+            await _mockEmailService.SendAccountEmailUpdatedEmail(Arg.Any<EmailChangeNotificationModel>());
 
-            var sut = new EditEmailModel(_mockIdamClient.Object, _mockEmailService.Object, _logger.Object)
+            var sut = new EditEmailModel(_mockIdamClient, _mockEmailService, _logger)
             {
-                EmailAddress = email, AccountId = accountId
+                EmailAddress = email, AccountId = AccountId.ToString()
             };            
 
             //  Act
-            var result = await sut.OnPost();
+            await sut.OnPost();
 
             //  Assert            
-            _mockEmailService.Verify(m => m.SendAccountEmailUpdatedEmail(
-                It.Is<EmailChangeNotificationModel>(x => x.EmailAddress == email && x.Role == "LaManager")), Times.Once);
+            await _mockEmailService
+                .Received(1)
+                .SendAccountEmailUpdatedEmail(Arg.Is<EmailChangeNotificationModel>(x => 
+                    x.EmailAddress == email && x.Role == "LaManager"));
         }
     }
 }

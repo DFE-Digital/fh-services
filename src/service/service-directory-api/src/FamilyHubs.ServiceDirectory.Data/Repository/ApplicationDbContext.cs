@@ -2,8 +2,9 @@
 using FamilyHubs.ServiceDirectory.Data.Entities;
 using FamilyHubs.ServiceDirectory.Data.Entities.ManyToMany;
 using FamilyHubs.ServiceDirectory.Data.Interceptors;
-using Enums = FamilyHubs.ServiceDirectory.Shared.Enums;
+using FamilyHubs.SharedKernel.OpenReferral.Repository;
 using Microsoft.EntityFrameworkCore;
+using Enums = FamilyHubs.ServiceDirectory.Shared.Enums;
 
 namespace FamilyHubs.ServiceDirectory.Data.Repository
 {
@@ -71,7 +72,7 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
                 .HasOne(e => e.ServiceSearchType)
                 .WithMany(e => e.ServiceSearches)
                 .HasForeignKey(e => e.ServiceSearchTypeId)
-                .IsRequired(true);
+                .IsRequired();
             
             modelBuilder.Entity<ServiceSearch>()
                 .Property(e => e.CorrelationId)
@@ -151,6 +152,18 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
                         Description = "Connect"
                     }
                 );
+
+            /*
+             * This needs to be set so the Functional & Integration Tests don't create the [deds] and [dedsmeta] tables.
+             *
+             * This is because SQLite doesn't implement schemas, so there are conflicts with the [dbo] tables as they
+             * have the same names. Since we don't test anything OR related from the Service Directory API anyway, it
+             * can just be disabled.
+             */
+            if (!Database.IsSqlite())
+            {
+                OpenReferralDbContextExtension.OnModelCreating(modelBuilder);
+            }
 
             base.OnModelCreating(modelBuilder);
         }

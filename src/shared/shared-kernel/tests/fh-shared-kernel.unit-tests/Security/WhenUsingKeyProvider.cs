@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Azure;
+﻿using Azure;
 using Azure.Security.KeyVault.Secrets;
 using FamilyHubs.SharedKernel.Security;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.SharedKernel.UnitTests.Security;
 
@@ -232,9 +228,9 @@ public class WhenUsingKeyProvider
 
         _keyProvider = new KeyProvider(_configuration);
 
-        var clientMock = new Mock<SecretClient>();
-        clientMock.Setup(c => c.GetSecretAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(
-            Response.FromValue(new KeyVaultSecret("name", "secret_value"), default!));
+        var clientMock = Substitute.For<SecretClient>();
+        clientMock.GetSecretAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(Response.FromValue(new KeyVaultSecret("name", "secret_value"), default!));
 
         var result = await _keyProvider.GetPublicKey();
 
@@ -258,9 +254,9 @@ public class WhenUsingKeyProvider
 
         _keyProvider = new KeyProvider(_configuration);
 
-        var clientMock = new Mock<SecretClient>();
-        clientMock.Setup(c => c.GetSecretAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(
-            Response.FromValue(new KeyVaultSecret("name", "secret_value"), default!));
+        var clientMock = Substitute.For<SecretClient>();
+        clientMock.GetSecretAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(Response.FromValue(new KeyVaultSecret("name", "secret_value"), default!));
 
         var result = await _keyProvider.GetPrivateKey();
 

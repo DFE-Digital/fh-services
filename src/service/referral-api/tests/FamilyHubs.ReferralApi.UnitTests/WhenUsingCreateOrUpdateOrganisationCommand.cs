@@ -1,36 +1,27 @@
-﻿using AutoMapper;
-using FamilyHubs.Referral.Core;
-using FamilyHubs.Referral.Core.Commands.CreateOrUpdateOrganisation;
-using FamilyHubs.Referral.Data.Repository;
+﻿using FamilyHubs.Referral.Core.Commands.CreateOrUpdateOrganisation;
 using FamilyHubs.ReferralService.Shared.Dto;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace FamilyHubs.Referral.UnitTests;
 
-public class WhenUsingCreateOrUpdateOrganisationCommand : BaseCreateDbUnitTest
+public class WhenUsingCreateOrUpdateOrganisationCommand : BaseCreateDbUnitTest<CreateOrUpdateOrganisationCommandHandler>
 {
     [Fact]
     public async Task ThenCreateNewOrganisation()
     {
-        //Arange
-        var myProfile = new AutoMappingProfiles();
-        var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
-        IMapper mapper = new Mapper(configuration);
-        var logger = new Mock<ILogger<CreateOrUpdateOrganisationCommandHandler>>();
-        var mockApplicationDbContext = GetApplicationDbContext();
-        var organisation = new OrganisationDto
+        //Arrange
+        var organisation = new OrganisationDto()
         {
             Id = 4,
             Name = "Test Organisation",
             Description = "Test Organisation Description",
         };
+
         CreateOrUpdateOrganisationCommand command = new(organisation);
-        CreateOrUpdateOrganisationCommandHandler handler = new(mockApplicationDbContext, mapper, logger.Object);
+        CreateOrUpdateOrganisationCommandHandler handler = new(MockApplicationDbContext, Mapper, Logger);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
+        var result = await handler.Handle(command, new CancellationToken());
 
         //Assert
         result.Should().BeGreaterThan(0);
@@ -40,31 +31,29 @@ public class WhenUsingCreateOrUpdateOrganisationCommand : BaseCreateDbUnitTest
     [Fact]
     public async Task ThenUpdateOrganisation()
     {
-        //Arange
-        var myProfile = new AutoMappingProfiles();
-        var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
-        IMapper mapper = new Mapper(configuration);
-        var logger = new Mock<ILogger<CreateOrUpdateOrganisationCommandHandler>>();
-        var mockApplicationDbContext = GetApplicationDbContext();
-        mockApplicationDbContext.Organisations.Add(new Data.Entities.Organisation
+        //Arrange
+        MockApplicationDbContext.Organisations.Add(new Data.Entities.Organisation
         {
             Id = 4,
             Name = "Test Organisation",
             Description = "Test Organisation Description",
         });
-        mockApplicationDbContext.SaveChanges();
+
+        await MockApplicationDbContext.SaveChangesAsync();
+
         var expected = new OrganisationDto
         {
             Id = 4,
             Name = "Test Organisation - Updated",
             Description = "Test Organisation Description - Updated",
         };
+
         CreateOrUpdateOrganisationCommand command = new(expected);
-        CreateOrUpdateOrganisationCommandHandler handler = new(mockApplicationDbContext, mapper, logger.Object);
+        CreateOrUpdateOrganisationCommandHandler handler = new(MockApplicationDbContext, Mapper, Logger);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
-        var dbOrganisation = mockApplicationDbContext.Organisations.FirstOrDefault(x => x.Id == 4);
+        var result = await handler.Handle(command, new CancellationToken());
+        var dbOrganisation = MockApplicationDbContext.Organisations.FirstOrDefault(x => x.Id == 4);
 
         //Assert
         result.Should().BeGreaterThan(0);

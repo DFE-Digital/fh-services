@@ -2,78 +2,53 @@ using FamilyHubs.Notification.Data.NotificationServices;
 using FamilyHubs.Notification.Api.Contracts;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.Notification.UnitTests;
 
 public class WhenUsingGovNotifySender
 {
-    [Fact]
-    public async Task ThenSendConnectNotification()
+    private readonly IServiceNotificationClient _serviceNotificationClient;
+    private readonly GovNotifySender _govNotifySender;
+
+    public WhenUsingGovNotifySender()
     {
-        //Arrange
-        var mockAsyncNotificationClient = new Mock<IServiceNotificationClient>();
-        var mockLogger = new Mock<ILogger<GovNotifySender>>();
-        int sendEmailCallback = 0;
-        mockAsyncNotificationClient.Setup(c => c.ApiKeyType).Returns(ApiKeyType.ConnectKey);
-        mockAsyncNotificationClient.Setup(x => x.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .Callback(() => sendEmailCallback++);
-
-        IEnumerable<IServiceNotificationClient> notificationClients = new List<IServiceNotificationClient>
-            { mockAsyncNotificationClient.Object };
-
-        var govNotifySender = new GovNotifySender(notificationClients, mockLogger.Object);
-        var dict = new Dictionary<string, string>
-        {
-            {"Key1", "Value1"},
-            {"Key2", "Value2"}
-        };
-
-        MessageDto messageDto = new MessageDto
-        {
-            ApiKeyType = ApiKeyType.ConnectKey,
-            NotificationEmails = new List<string> { "someone@email.com" },
-            TemplateId = Guid.NewGuid().ToString(),
-            TemplateTokens = dict
-        };
-
-        //Act
-        await govNotifySender.SendEmailAsync(messageDto);
-
-        //Assert
-        sendEmailCallback.Should().Be(1);
+        _serviceNotificationClient = Substitute.For<IServiceNotificationClient>();
+        _govNotifySender = new GovNotifySender([_serviceNotificationClient],
+            Substitute.For<ILogger<GovNotifySender>>());
     }
 
-    [Fact]
-    public async Task ThenSendManageNotification()
+    [Theory]
+    [InlineData(ApiKeyType.ConnectKey)]
+    [InlineData(ApiKeyType.ManageKey)]
+    public async Task ThenSendNotification(ApiKeyType apiKeyType)
     {
         //Arrange
-        var mockAsyncNotificationClient = new Mock<IServiceNotificationClient>();
-        var mockLogger = new Mock<ILogger<GovNotifySender>>();
         int sendEmailCallback = 0;
-        mockAsyncNotificationClient.Setup(c => c.ApiKeyType).Returns(ApiKeyType.ManageKey);
-        mockAsyncNotificationClient.Setup(x => x.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-            .Callback(() => sendEmailCallback++);
-
-        IEnumerable<IServiceNotificationClient> notificationClients = new List<IServiceNotificationClient>() { mockAsyncNotificationClient.Object };
-
-        var govNotifySender = new GovNotifySender(notificationClients, mockLogger.Object);
-        var dict = new Dictionary<string, string>
-        {
-            {"Key1", "Value1"},
-            {"Key2", "Value2"}
-        };
+        _serviceNotificationClient.ApiKeyType.Returns(apiKeyType);
+        _serviceNotificationClient.WhenForAnyArgs(x => x.SendEmailAsync(
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<Dictionary<string, object>>(),
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<string>()))
+            .Do(_ => sendEmailCallback++);
 
         MessageDto messageDto = new MessageDto
         {
-            ApiKeyType = ApiKeyType.ManageKey,
-            NotificationEmails = new List<string> { "someone@email.com" },
+            ApiKeyType = apiKeyType,
+            NotificationEmails = ["someone@email.com"],
             TemplateId = Guid.NewGuid().ToString(),
-            TemplateTokens = dict
+            TemplateTokens = new Dictionary<string, string>
+            {
+                {"Key1", "Value1"},
+                {"Key2", "Value2"}
+            }
         };
 
         //Act
-        await govNotifySender.SendEmailAsync(messageDto);
+        await _govNotifySender.SendEmailAsync(messageDto);
 
         //Assert
         sendEmailCallback.Should().Be(1);

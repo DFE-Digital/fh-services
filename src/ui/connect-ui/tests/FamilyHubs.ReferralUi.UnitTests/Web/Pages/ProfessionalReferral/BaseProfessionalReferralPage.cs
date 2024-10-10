@@ -6,40 +6,40 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using System.Security.Claims;
 using System.Security.Principal;
 using Microsoft.AspNetCore.Routing;
+using NSubstitute;
 
 namespace FamilyHubs.ReferralUi.UnitTests.Web.Pages.ProfessionalReferral;
 
 public class BaseProfessionalReferralPage
 {
-    public Mock<IConnectionRequestDistributedCache> ReferralDistributedCache;
-    public readonly ConnectionRequestModel ConnectionRequestModel;
+    protected readonly IConnectionRequestDistributedCache ReferralDistributedCache;
+    protected readonly ConnectionRequestModel ConnectionRequestModel;
 
-    public const long ServiceId = 123;
-    public const string Reason = "Reason";
-    public const string EmailAddress = "example.com";
-    public const string Telephone = "07700 900000";
-    public const string Text = "07700 900001";
-    public const string AddressLine1 = "AddressLine1";
-    public const string AddressLine2 = "AddressLine2";
-    public const string TownOrCity = "TownOrCity";
-    public const string County = "County";
-    public const string Postcode = "Postcode";
-    public const string EngageReason = "EngageReason";
+    private const long ServiceId = 123;
+    protected const string Reason = "Reason";
+    protected const string EmailAddress = "example.com";
+    protected const string Telephone = "07700 900000";
+    protected const string Text = "07700 900001";
+    protected const string AddressLine1 = "AddressLine1";
+    protected const string AddressLine2 = "AddressLine2";
+    protected const string TownOrCity = "TownOrCity";
+    protected const string County = "County";
+    protected const string Postcode = "Postcode";
+    protected const string EngageReason = "EngageReason";
 
-    public const string ProfessionalEmail = "Joe.Professional@email.com";
+    protected const string ProfessionalEmail = "Joe.Professional@email.com";
 
-    public BaseProfessionalReferralPage()
+    protected BaseProfessionalReferralPage()
     {
         ConnectionRequestModel = new ConnectionRequestModel
         {
             ServiceId = ServiceId.ToString(),
             FamilyContactFullName = "FamilyContactFullName",
             Reason = Reason,
-            ContactMethodsSelected = new[] { true, true, true, true },
+            ContactMethodsSelected = [true, true, true, true],
             EmailAddress = EmailAddress,
             TelephoneNumber = Telephone,
             TextphoneNumber = Text,
@@ -51,11 +51,11 @@ public class BaseProfessionalReferralPage
             EngageReason = EngageReason
         };
 
-        ReferralDistributedCache = new Mock<IConnectionRequestDistributedCache>(MockBehavior.Strict);
+        ReferralDistributedCache = Substitute.For<IConnectionRequestDistributedCache>();
         //todo: add pro's email to class and check key, rather than It.IsAny<string>()
-        ReferralDistributedCache.Setup(x => x.SetAsync(It.IsAny<string>(),It.IsAny<ConnectionRequestModel>())).Returns(Task.CompletedTask);
-        ReferralDistributedCache.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(ConnectionRequestModel);
-        ReferralDistributedCache.Setup(x => x.RemoveAsync(It.IsAny<string>())).Returns(Task.CompletedTask);
+        ReferralDistributedCache.SetAsync(Arg.Any<string>(), Arg.Any<ConnectionRequestModel>()).Returns(Task.CompletedTask);
+        ReferralDistributedCache.GetAsync(Arg.Any<string>()).Returns(Task.FromResult<ConnectionRequestModel?>(ConnectionRequestModel));
+        ReferralDistributedCache.RemoveAsync(Arg.Any<string>()).Returns(Task.CompletedTask);
     }
 
     protected PageContext GetPageContextWithUserClaims()

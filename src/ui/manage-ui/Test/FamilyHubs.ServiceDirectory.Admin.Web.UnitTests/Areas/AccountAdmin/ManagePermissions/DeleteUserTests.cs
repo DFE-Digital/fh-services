@@ -4,23 +4,22 @@ using FamilyHubs.ServiceDirectory.Admin.Core.Services;
 using FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManagePermissions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.ManagePermissions
 {
     public class DeleteUserTests
     {
-        private readonly Mock<IIdamClient> _mockIdamClient;
-        private readonly Mock<ICacheService> _mockCacheService;
-        private readonly Mock<IEmailService> _mockEmailService;
+        private readonly IIdamClient _mockIdamClient;
+        private readonly ICacheService _mockCacheService;
+        private readonly IEmailService _mockEmailService;
+
         public DeleteUserTests()
         {
-            _mockIdamClient = new Mock<IIdamClient>();
-            _mockCacheService = new Mock<ICacheService>();
-            _mockEmailService = new Mock<IEmailService>();
+            _mockIdamClient = Substitute.For<IIdamClient>();
+            _mockCacheService = Substitute.For<ICacheService>();
+            _mockEmailService = Substitute.For<IEmailService>();
         }
 
         [Fact]
@@ -32,10 +31,10 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
             {
                 Name = "TestUser"
             };
-            _mockIdamClient.Setup(x => x.GetAccountById(It.IsAny<long>())).ReturnsAsync(account);
-            _mockCacheService.Setup(x => x.RetrieveLastPageName()).Returns(Task.FromResult("testurl"));
-            
-            var sut = new DeleteUserModel(_mockIdamClient.Object, _mockCacheService.Object, _mockEmailService.Object);
+            _mockIdamClient.GetAccountById(Arg.Any<long>()).Returns(account);
+            _mockCacheService.RetrieveLastPageName().Returns(Task.FromResult("testurl"));
+
+            var sut = new DeleteUserModel(_mockIdamClient, _mockCacheService, _mockEmailService);
 
             //  Act
             await sut.OnGet(accountId);
@@ -51,17 +50,17 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
             const long accountId = 1;
             var account = new AccountDto
             {
-                Name = "TestUser"                
+                Name = "TestUser"
             };
-            _mockIdamClient.Setup(x => x.GetAccountById(It.IsAny<long>())).ReturnsAsync(account);
+            _mockIdamClient.GetAccountById(Arg.Any<long>()).Returns(account);
 
-            var sut = new DeleteUserModel(_mockIdamClient.Object, _mockCacheService.Object, _mockEmailService.Object);
+            var sut = new DeleteUserModel(_mockIdamClient, _mockCacheService, _mockEmailService);
 
             //  Act
             await sut.OnGet(accountId);
 
             //  Assert
-            _mockIdamClient.Verify(x=>x.GetAccountById(accountId), Times.Once());
+            await _mockIdamClient.Received().GetAccountById(accountId);
         }
 
         [Fact]
@@ -72,27 +71,27 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
             const string userName = "TestUser";
             var account = new AccountDto
             {
-                Name = userName                
+                Name = userName
             };
-            _mockIdamClient.Setup(x => x.GetAccountById(It.IsAny<long>())).ReturnsAsync(account);
-            
-            var sut = new DeleteUserModel(_mockIdamClient.Object, _mockCacheService.Object, _mockEmailService.Object);
+            _mockIdamClient.GetAccountById(Arg.Any<long>()).Returns(account);
+
+            var sut = new DeleteUserModel(_mockIdamClient, _mockCacheService, _mockEmailService);
 
             //  Act
             await sut.OnGet(accountId);
 
             //  Assert
-            _mockCacheService.Verify(x => x.StoreString("DeleteUserName", userName), Times.Once());
-        }        
+            await _mockCacheService.Received(1).StoreString("DeleteUserName", userName);
+        }
 
         [Fact]
         public async Task OnPost_NoActionSelected_ReturnsPage()
         {
             //  Arrange
-            const long accountId = 1;                        
-            var sut = new DeleteUserModel(_mockIdamClient.Object, _mockCacheService.Object, _mockEmailService.Object) ;
+            const long accountId = 1;
+            var sut = new DeleteUserModel(_mockIdamClient, _mockCacheService, _mockEmailService);
             sut.ModelState.AddModelError("test", "test");
-            
+
             //  Act
             var result = await sut.OnPost(accountId);
 
@@ -110,38 +109,42 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
             var account = new AccountDto
             {
                 Email = "test@test.com",
-                Claims = new List<AccountClaimDto>() { new AccountClaimDto() { Name = "role", Value = "VcsManager" } }
+                Claims = [new AccountClaimDto() { Name = "role", Value = "VcsManager" }]
             };
-            _mockIdamClient.Setup(x => x.GetAccountById(It.IsAny<long>())).ReturnsAsync(account);
+            _mockIdamClient.GetAccountById(Arg.Any<long>()).Returns(account);
 
-            _mockIdamClient.Setup(x => x.DeleteAccount(It.IsAny<long>()));
-            var sut = new DeleteUserModel(_mockIdamClient.Object, _mockCacheService.Object , _mockEmailService.Object) ;
-            sut.DeleteUser = true;
-           
+            await _mockIdamClient.DeleteAccount(Arg.Any<long>());
+            var sut = new DeleteUserModel(_mockIdamClient, _mockCacheService, _mockEmailService)
+            {
+                DeleteUser = true
+            };
+
             //  Act
             var result = await sut.OnPost(accountId);
 
             //  Assert
             Assert.IsType<RedirectToPageResult>(result);
             Assert.False(sut.Errors.HasErrors);
-            _mockIdamClient.Verify(m => m.DeleteAccount(accountId), Times.Once);
+            await _mockIdamClient.Received(1).DeleteAccount(accountId);
         }
 
         [Fact]
         public async Task OnPost_NotInvokesDeleteAccountMethodWhenNoSelected()
         {
             //  Arrange
-            const long accountId = 1;            
-            var sut = new DeleteUserModel(_mockIdamClient.Object, _mockCacheService.Object, _mockEmailService.Object);
-            sut.DeleteUser = false;
-            
+            const long accountId = 1;
+            var sut = new DeleteUserModel(_mockIdamClient, _mockCacheService, _mockEmailService)
+            {
+                DeleteUser = false
+            };
+
             //  Act
             var result = await sut.OnPost(accountId);
 
             //  Assert
             Assert.IsType<RedirectToPageResult>(result);
             Assert.False(sut.Errors.HasErrors);
-            _mockIdamClient.Verify(m => m.DeleteAccount(It.IsAny<long>()), Times.Never);
+            await _mockIdamClient.Received(0).DeleteAccount(accountId);
         }
 
         [Fact]
@@ -149,23 +152,26 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
         {
             //  Arrange
             const long accountId = 1;
-            _mockEmailService.Setup(x => x.SendAccountDeletedEmail(It.IsAny<AccountDeletedNotificationModel>()));
+            await _mockEmailService.SendAccountDeletedEmail(Arg.Any<AccountDeletedNotificationModel>());
 
             var account = new AccountDto
             {
                 Email = "test@test.com",
-                Claims = new List<AccountClaimDto>() {  new AccountClaimDto() { Name="role", Value= "VcsManager" } }
+                Claims = [new AccountClaimDto() { Name = "role", Value = "VcsManager" }]
             };
-            _mockIdamClient.Setup(x => x.GetAccountById(It.IsAny<long>())).ReturnsAsync(account);
+            _mockIdamClient.GetAccountById(Arg.Any<long>()).Returns(account);
 
-            var sut = new DeleteUserModel(_mockIdamClient.Object, _mockCacheService.Object, _mockEmailService.Object);
-            sut.DeleteUser = true;
+            var sut = new DeleteUserModel(_mockIdamClient, _mockCacheService, _mockEmailService)
+            {
+                DeleteUser = true
+            };
 
             //  Act
             await sut.OnPost(accountId);
 
             //  Assert            
-            _mockEmailService.Verify(m => m.SendAccountDeletedEmail(It.Is<AccountDeletedNotificationModel>(x=>x.EmailAddress == account.Email && x.Role == "VcsManager")), Times.Once);
+            await _mockEmailService.Received(1).SendAccountDeletedEmail(Arg.Is<AccountDeletedNotificationModel>(x =>
+                x.EmailAddress == account.Email && x.Role == "VcsManager"));
         }
     }
 }

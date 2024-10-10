@@ -7,15 +7,12 @@ namespace FamilyHubs.Report.Api.AcceptanceTests.Tests.Steps;
 
 public class SharedSteps
 {
-    private readonly BearerTokenGenerator _bearerTokenGenerator;
+    private readonly BearerTokenGenerator _bearerTokenGenerator = new();
     public string BearerToken { get; private set; } = null!;
     public static readonly JsonSerializerOptions JsonOptions = new()
-        { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-
-    public SharedSteps()
     {
-        _bearerTokenGenerator = new BearerTokenGenerator();
-    }
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 
     #region Given
 

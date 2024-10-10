@@ -1,24 +1,24 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using AutoFixture;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
 using FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
 {
     public class TypeOfUserVcsTests
     {
-        private readonly Mock<ICacheService> _mockCacheService;
-        private readonly Fixture _fixture;
+        private readonly ICacheService _mockCacheService;
+        private readonly PermissionModel _permissionModel;
 
         public TypeOfUserVcsTests()
         {
-            _mockCacheService = new Mock<ICacheService>();
-            _fixture = new Fixture();
+            _mockCacheService = Substitute.For<ICacheService>();
+            var fixture = new Fixture();
+            _permissionModel = fixture.Create<PermissionModel>();
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(_permissionModel);
         }
 
         [Theory]
@@ -28,12 +28,11 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         public async Task OnGet_ExpectedValuesSet(bool isVcsManager, bool isVcsProfessional)
         {
             //  Arrange
-            var permissionModel = _fixture.Create<PermissionModel>();
-            permissionModel.VcsManager = isVcsManager;
-            permissionModel.VcsProfessional = isVcsProfessional;
+            _permissionModel.VcsManager = isVcsManager;
+            _permissionModel.VcsProfessional = isVcsProfessional;
 
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new TypeOfUserVcs(_mockCacheService.Object);
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(_permissionModel);
+            var sut = new TypeOfUserVcs(_mockCacheService);
 
             //  Act
             await sut.OnGet();
@@ -47,10 +46,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         public async Task OnPost_ModelStateInvalid_ReturnsPageWithError()
         {
             //  Arrange
-            var permissionModel = _fixture.Create<PermissionModel>();
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            
-            var sut = new TypeOfUserVcs(_mockCacheService.Object);
+            var sut = new TypeOfUserVcs(_mockCacheService);
             sut.ModelState.AddModelError("SomeError", "SomeErrorMessage");
 
             //  Act
@@ -64,9 +60,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         public async Task OnPost_Valid_RedirectsToExpectedPage()
         {
             //  Arrange
-            var permissionModel = _fixture.Create<PermissionModel>();
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new TypeOfUserVcs(_mockCacheService.Object) { SelectedValues = new[]{ nameof(TypeOfUserVcs.VcsManager) } };
+            var sut = new TypeOfUserVcs(_mockCacheService) { SelectedValues = new[]{ nameof(TypeOfUserVcs.VcsManager) } };
 
             //  Act
             var result = await sut.OnPost();
@@ -83,18 +77,19 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         public async Task OnPost_Valid_SetsValueInCache(bool isVcsManager, bool isVcsProfessional)
         {
             //  Arrange
-            var permissionModel = _fixture.Create<PermissionModel>();
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new TypeOfUserVcs(_mockCacheService.Object) 
+            var sut = new TypeOfUserVcs(_mockCacheService) 
                 { SelectedValues = new[] {isVcsManager ? nameof(TypeOfUserVcs.VcsManager) : null, isVcsProfessional ? nameof(TypeOfUserVcs.VcsProfessional) : null}.OfType<string>() };
 
             //  Act
             _ = await sut.OnPost();
 
             //  Assert
-            _mockCacheService.Verify(m => m.StorePermissionModel(
-                It.Is<PermissionModel>(arg => arg.VcsManager == isVcsManager && arg.VcsProfessional == isVcsProfessional), It.IsAny<string>()));
-
+            await _mockCacheService
+                .Received()
+                .StorePermissionModel(
+                Arg.Is<PermissionModel>(arg => arg.VcsManager == isVcsManager 
+                                               && arg.VcsProfessional == isVcsProfessional), 
+                Arg.Any<string>());
         }
     }
 }

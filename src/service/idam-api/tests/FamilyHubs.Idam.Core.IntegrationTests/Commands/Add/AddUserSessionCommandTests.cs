@@ -15,7 +15,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Add
             TestDbContext.Add(existingUserSession);
             await TestDbContext.SaveChangesAsync();
             var command = new AddUserSessionCommand { Sid = existingUserSession.Sid, Email = existingUserSession.Email };
-            var sut = new AddUserSessionCommandHandler(TestDbContext, MockLogger.Object);
+            var sut = new AddUserSessionCommandHandler(TestDbContext, MockLogger);
 
             //  Act / Assert
             await Assert.ThrowsAsync<AlreadyExistsException>(async() => await sut.Handle(command, new CancellationToken()));
@@ -28,7 +28,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Add
             //  Arrange
             var newUserSession = Fixture.Create<UserSession>();
             var command = new AddUserSessionCommand { Sid = newUserSession.Sid, Email = newUserSession.Email };
-            var sut = new AddUserSessionCommandHandler(TestDbContext, MockLogger.Object);
+            var sut = new AddUserSessionCommandHandler(TestDbContext, MockLogger);
 
             //  Act
             var result = await sut.Handle(command, new CancellationToken());

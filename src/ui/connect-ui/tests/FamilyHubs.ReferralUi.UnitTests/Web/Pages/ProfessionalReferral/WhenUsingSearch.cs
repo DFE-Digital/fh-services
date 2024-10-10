@@ -2,21 +2,25 @@
 using FamilyHubs.SharedKernel.Services.Postcode.Interfaces;
 using FamilyHubs.SharedKernel.Services.Postcode.Model;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.ReferralUi.UnitTests.Web.Pages.ProfessionalReferral;
 
 public class WhenUsingSearch
 {
+    private readonly IPostcodeLookup _postcodeLookup;
+    public WhenUsingSearch()
+    {
+        _postcodeLookup = Substitute.For<IPostcodeLookup>();
+    }
     [Fact]
     public async Task OnPost_WhenPostcodeIsValid_ThenValidationShouldBeTrue()
     {
         //Arrange
-        var postcodeLookup = new Mock<IPostcodeLookup>();
-        postcodeLookup
-            .Setup(action => action.Get(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((PostcodeError.None, null));
-        var searchModel = new SearchModel(postcodeLookup.Object);
+        _postcodeLookup
+            .Get(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns((PostcodeError.None, null));
+        var searchModel = new SearchModel(_postcodeLookup);
 
         //Act
         _ = await searchModel.OnPostAsync() as PageResult;
@@ -29,13 +33,13 @@ public class WhenUsingSearch
     public async Task OnPost_WhenPostcodeIsNotValid_ThenValidationShouldBeFalse()
     {
         //Arrange
-        var postcodeService = new Mock<IPostcodeLookup>();
-        postcodeService
-            .Setup(action => action.Get(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((PostcodeError.InvalidPostcode, null));
-        var searchModel = new SearchModel(postcodeService.Object)
+        const string postcode = "aaa";
+        _postcodeLookup
+            .Get(postcode, Arg.Any<CancellationToken>())
+            .Returns((PostcodeError.InvalidPostcode, null));
+        var searchModel = new SearchModel(_postcodeLookup)
         {
-            Postcode = "aaa"
+            Postcode = postcode
         };
 
         _ = await searchModel.OnPostAsync() as PageResult;

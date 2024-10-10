@@ -6,43 +6,41 @@ using FamilyHubs.ReferralService.Shared.Dto.CreateUpdate;
 using FamilyHubs.ReferralService.Shared.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.ReferralUi.UnitTests.Web.Pages.ProfessionalReferral;
 
 public class WhenUsingCheckDetails : BaseProfessionalReferralPage
 {
-    public CheckDetailsModel CheckDetailsModel { get; set; }
+    private CheckDetailsModel CheckDetailsModel { get; }
 
-    public Mock<IReferralClientService> ReferralClientService;
-    public Mock<IReferralNotificationService> ReferralNotificationService;
-    public ReferralResponse ReferralResponse;
+    private readonly IReferralNotificationService _referralNotificationService;
 
-    public const long CreatedRequestNumber = 6789;
-    public const long OrganisationId = 12345;
-    public const string ServiceName = "No shoes, no shirt, and I still get service";
+    private const long CreatedRequestNumber = 6789;
+    private const long OrganisationId = 12345;
+    private const string ServiceName = "No shoes, no shirt, and I still get service";
 
     public WhenUsingCheckDetails()
     {
-        ReferralClientService = new Mock<IReferralClientService>();
+        var referralClientService = Substitute.For<IReferralClientService>();
 
-        ReferralResponse = new ReferralResponse
+        var referralResponse = new ReferralResponse
         {
             Id = CreatedRequestNumber,
             OrganisationId = OrganisationId,
             ServiceName = ServiceName
         };
 
-        ReferralClientService
-            .Setup(s => s.CreateReferral(It.IsAny<CreateReferralDto>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(ReferralResponse);
+        referralClientService
+            .CreateReferral(Arg.Any<CreateReferralDto>(), Arg.Any<CancellationToken>())
+            .Returns(referralResponse);
 
-        ReferralNotificationService = new Mock<IReferralNotificationService>();
+        _referralNotificationService = Substitute.For<IReferralNotificationService>();
 
         CheckDetailsModel = new CheckDetailsModel(
-            ReferralDistributedCache.Object,
-            ReferralClientService.Object,
-            ReferralNotificationService.Object)
+            ReferralDistributedCache,
+            referralClientService,
+            _referralNotificationService)
         {
             PageContext = GetPageContextWithUserClaims()
         };
@@ -136,12 +134,10 @@ public class WhenUsingCheckDetails : BaseProfessionalReferralPage
     {
         await CheckDetailsModel.OnPostAsync("1");
 
-        ReferralNotificationService.Verify(x =>
-                x.OnCreateReferral(
-                    ProfessionalEmail,
-                    OrganisationId,
-                    ServiceName,
-                    CreatedRequestNumber),
-            Times.Once);
+        await _referralNotificationService.Received(1).OnCreateReferral(
+            ProfessionalEmail,
+            OrganisationId,
+            ServiceName,
+            CreatedRequestNumber);
     }
 }

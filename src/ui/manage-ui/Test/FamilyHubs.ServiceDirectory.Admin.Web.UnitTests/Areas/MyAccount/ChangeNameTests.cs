@@ -3,22 +3,19 @@ using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Web.Areas.MyAccount.Pages;
 using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.MyAccount
 {
     public class ChangeNameTests
     {
-        private readonly Mock<IIdamClient> _mockIdamClient;
+        private readonly IIdamClient _mockIdamClient;
         
         public ChangeNameTests()
         {
-            _mockIdamClient = new Mock<IIdamClient>();
+            _mockIdamClient = Substitute.For<IIdamClient>();
         }
 
         [Fact]
@@ -30,9 +27,9 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.MyAccount
             var claims = new List<Claim> { new(FamilyHubsClaimTypes.FullName, expectedName) };
             var mockHttpContext = TestHelper.GetHttpContext(claims);
 
-            var sut = new ChangeNameModel(_mockIdamClient.Object)
+            var sut = new ChangeNameModel(_mockIdamClient)
             {
-                PageContext = { HttpContext = mockHttpContext.Object }
+                PageContext = { HttpContext = mockHttpContext }
             };
 
             //  Act
@@ -52,10 +49,10 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.MyAccount
             };
             var mockHttpContext = TestHelper.GetHttpContext(claims);
 
-            _mockIdamClient.Setup(x => x.UpdateAccountSelfService(It.IsAny<UpdateAccountSelfServiceDto>(), It.IsAny<CancellationToken>()));
-            var sut = new ChangeNameModel(_mockIdamClient.Object)
+            await _mockIdamClient.UpdateAccountSelfService(Arg.Any<UpdateAccountSelfServiceDto>(), Arg.Any<CancellationToken>());
+            var sut = new ChangeNameModel(_mockIdamClient)
             {
-                PageContext = { HttpContext = mockHttpContext.Object },
+                PageContext = { HttpContext = mockHttpContext },
                 FullName = "newName"
             };
 
@@ -63,7 +60,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.MyAccount
             var result = await sut.OnPost(CancellationToken.None);
 
             //  Assert
-            _mockIdamClient.Verify(x=>x.UpdateAccountSelfService(It.IsAny<UpdateAccountSelfServiceDto>(), It.IsAny<CancellationToken>()), Times.Once);
+            await _mockIdamClient.Received(1).UpdateAccountSelfService(Arg.Any<UpdateAccountSelfServiceDto>(), Arg.Any<CancellationToken>());
             Assert.Equal("ChangeNameConfirmation", ((RedirectToPageResult)result).PageName);
         }
 
@@ -77,14 +74,14 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.MyAccount
             };
             var mockHttpContext = TestHelper.GetHttpContext(claims);
 
-            _mockIdamClient.Setup(x => x.UpdateAccount(It.IsAny<UpdateAccountDto>(), It.IsAny<CancellationToken>()));
-            var sut = new ChangeNameModel(_mockIdamClient.Object)
+            await _mockIdamClient.UpdateAccount(Arg.Any<UpdateAccountDto>(), Arg.Any<CancellationToken>());
+            var sut = new ChangeNameModel(_mockIdamClient)
             {
-                PageContext = { HttpContext = mockHttpContext.Object },                
+                PageContext = { HttpContext = mockHttpContext },                
             };
 
             //  Act
-            var result = await sut.OnPost(CancellationToken.None);
+            await sut.OnPost(CancellationToken.None);
 
             //  Assert
             Assert.True(sut.Errors.HasErrors);            

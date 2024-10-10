@@ -12,7 +12,7 @@ namespace FamilyHubs.Idam.Core.IntegrationTests.Commands.Add
         {
             //Arrange
             var command = Fixture.Build<AddClaimCommand>().With(x => x.AccountId, TestSingleAccountClaim.AccountId).Create();
-            var handler = new AddClaimCommandHandler(TestDbContext, MockLogger.Object);
+            var handler = new AddClaimCommandHandler(TestDbContext, MockLogger);
 
             //Act
             var result = await handler.Handle(command, new CancellationToken());

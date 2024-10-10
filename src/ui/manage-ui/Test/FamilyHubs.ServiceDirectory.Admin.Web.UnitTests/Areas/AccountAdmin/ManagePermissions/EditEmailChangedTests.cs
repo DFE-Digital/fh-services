@@ -1,31 +1,30 @@
 ﻿using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManagePermissions;
-using Moq;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.ManagePermissions
 {
     public class EditEmailChangedTests
     {
-        private readonly Mock<IIdamClient> _mockIdamClient;
+        private readonly IIdamClient _mockIdamClient;
 
         public EditEmailChangedTests()
         {
-            _mockIdamClient = new Mock<IIdamClient>();
+            _mockIdamClient = Substitute.For<IIdamClient>();
         }
 
         [Fact]
-        public async Task OnGet_BackPathSet()
+        public async Task OnGet_ReturnsUpdatedUserName()
         {
             //  Arrange
-            const string accountId = "1234";
+            const int accountId = 1234;
             const string userName = "UsersName";
-            var account = new AccountDto { Id = 1234, Email = "email", Name = userName };
-            _mockIdamClient.Setup(m => m.GetAccountById(1234)).Returns(Task.FromResult((AccountDto?)account));
+            var account = new AccountDto { Id = accountId, Email = "email", Name = userName };
+            _mockIdamClient.GetAccountById(1234).Returns(Task.FromResult<AccountDto?>(account));
 
-            var sut = new EditEmailChangedConfirmationModel(_mockIdamClient.Object) { AccountId = accountId };
+            var sut = new EditEmailChangedConfirmationModel(_mockIdamClient) { AccountId = accountId.ToString() };
 
             //  Act
             await sut.OnGet();
@@ -33,6 +32,5 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
             //  Assert
             Assert.Equal(userName, sut.UserName);
         }
-
     }
 }

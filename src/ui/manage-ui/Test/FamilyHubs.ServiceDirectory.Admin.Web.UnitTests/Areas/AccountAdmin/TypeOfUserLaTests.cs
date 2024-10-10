@@ -1,23 +1,21 @@
-﻿using System.Linq;
-using AutoFixture;
+﻿using AutoFixture;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
 using FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
 {
     public class TypeOfUserLaTests
     {
-        private readonly Mock<ICacheService> _mockCacheService;
+        private readonly ICacheService _mockCacheService;
         private readonly Fixture _fixture;
 
         public TypeOfUserLaTests()
         {
-            _mockCacheService = new Mock<ICacheService>();
+            _mockCacheService = Substitute.For<ICacheService>();
             _fixture = new Fixture();
         }
 
@@ -32,8 +30,8 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
             permissionModel.LaManager = isLaManager;
             permissionModel.LaProfessional = isLaProfessional;
 
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new TypeOfUserLa(_mockCacheService.Object);
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(permissionModel);
+            var sut = new TypeOfUserLa(_mockCacheService);
 
             //  Act
             await sut.OnGet();
@@ -48,9 +46,9 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         {
             //  Arrange
             var permissionModel = _fixture.Create<PermissionModel>();
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(permissionModel);
             
-            var sut = new TypeOfUserLa(_mockCacheService.Object);
+            var sut = new TypeOfUserLa(_mockCacheService);
             sut.ModelState.AddModelError("SomeError", "SomeErrorMessage");
 
             //  Act
@@ -65,8 +63,8 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         {
             //  Arrange
             var permissionModel = _fixture.Create<PermissionModel>();
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new TypeOfUserLa(_mockCacheService.Object) { SelectedValues = new []{ nameof(TypeOfUserLa.LaManager) } };
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(permissionModel);
+            var sut = new TypeOfUserLa(_mockCacheService) { SelectedValues = [nameof(TypeOfUserLa.LaManager)] };
 
             //  Act
             var result = await sut.OnPost();
@@ -84,18 +82,18 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         {
             //  Arrange
             var permissionModel = _fixture.Create<PermissionModel>();
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new TypeOfUserLa(_mockCacheService.Object)
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(permissionModel);
+            var sut = new TypeOfUserLa(_mockCacheService)
                 { SelectedValues = new[] {expectedManager ? nameof(TypeOfUserLa.LaManager) : null, expectedProfessional ? nameof(TypeOfUserLa.LaProfessional) : null}.OfType<string>() };
 
             //  Act
             _ = await sut.OnPost();
 
             //  Assert
-            _mockCacheService.Verify(m => m.StorePermissionModel(
-                It.Is<PermissionModel>(arg =>
+            await _mockCacheService.Received().StorePermissionModel(
+                Arg.Is<PermissionModel>(arg =>
                     arg.LaManager == expectedManager && arg.LaProfessional == expectedProfessional &&
-                    arg.LaManager == expectedManager), It.IsAny<string>()));
+                    arg.LaManager == expectedManager), Arg.Any<string>());
         }
     }
 }

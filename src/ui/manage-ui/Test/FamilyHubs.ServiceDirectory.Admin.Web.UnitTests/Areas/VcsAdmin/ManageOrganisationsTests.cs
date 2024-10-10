@@ -6,26 +6,23 @@ using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Http;
-using Moq;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
 {
     public class ManageOrganisationsTests
     {
-        private readonly Mock<IServiceDirectoryClient> _mockServiceDirectoryClient;
-        private readonly Mock<ICacheService> _mockCacheService;
+        private readonly IServiceDirectoryClient _mockServiceDirectoryClient;
+        private readonly ICacheService _mockCacheService;
         private readonly Fixture _fixture;
 
 
         public ManageOrganisationsTests()
         {
-            _mockServiceDirectoryClient = new Mock<IServiceDirectoryClient>();
-            _mockCacheService = new Mock<ICacheService>();
+            _mockServiceDirectoryClient = Substitute.For<IServiceDirectoryClient>();
+            _mockCacheService = Substitute.For<ICacheService>();
             _fixture = new Fixture();
         }
 
@@ -36,11 +33,11 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
             var mockHttpContext = GetHttpContext(RoleTypes.DfeAdmin, -1);
             var organisations = GetTestOrganisations();
 
-            _mockServiceDirectoryClient.Setup(x => x.GetOrganisations(It.IsAny<CancellationToken>(), null, null)).Returns(Task.FromResult(organisations));
+            _mockServiceDirectoryClient.GetOrganisations(Arg.Any<CancellationToken>(), null, null).Returns(Task.FromResult(organisations));
 
-            var sut = new ManageOrganisationsModel(_mockServiceDirectoryClient.Object, _mockCacheService.Object)
+            var sut = new ManageOrganisationsModel(_mockServiceDirectoryClient, _mockCacheService)
             {
-                PageContext = { HttpContext = mockHttpContext.Object }
+                PageContext = { HttpContext = mockHttpContext }
             };
 
             //  Act
@@ -58,11 +55,11 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
             var mockHttpContext = GetHttpContext(RoleTypes.LaManager, organisationId);
             var organisations = GetTestOrganisations();
 
-            _mockServiceDirectoryClient.Setup(x => x.GetOrganisationByAssociatedOrganisation(organisationId)).Returns(Task.FromResult(organisations));
+            _mockServiceDirectoryClient.GetOrganisationByAssociatedOrganisation(organisationId).Returns(Task.FromResult(organisations));
 
-            var sut = new ManageOrganisationsModel(_mockServiceDirectoryClient.Object, _mockCacheService.Object)
+            var sut = new ManageOrganisationsModel(_mockServiceDirectoryClient, _mockCacheService)
             {
-                PageContext = { HttpContext = mockHttpContext.Object }
+                PageContext = { HttpContext = mockHttpContext }
             };
 
             //  Act
@@ -72,13 +69,13 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
             Assert.Equal(3, sut.PaginatedOrganisations.Items.Count);
         }
 
-        private Mock<HttpContext> GetHttpContext(string role, long organisationId)
+        private static HttpContext GetHttpContext(string role, long organisationId)
         {
             var claims = new List<Claim> {
-                new Claim(FamilyHubsClaimTypes.FullName, "any") ,
-                new Claim(FamilyHubsClaimTypes.AccountId, "1"),
-                new Claim(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()),
-                new Claim(FamilyHubsClaimTypes.Role, role),
+                new(FamilyHubsClaimTypes.FullName, "any") ,
+                new(FamilyHubsClaimTypes.AccountId, "1"),
+                new(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()),
+                new(FamilyHubsClaimTypes.Role, role),
             };
 
             return TestHelper.GetHttpContext(claims);
@@ -86,12 +83,13 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
 
         private List<OrganisationDto> GetTestOrganisations()
         {
-            var organisations = new List<OrganisationDto>();
-
-            organisations.Add(TestHelper.CreateTestOrganisation(1, null, OrganisationType.LA, _fixture));
-            organisations.Add(TestHelper.CreateTestOrganisation(2, 1, OrganisationType.VCFS, _fixture));
-            organisations.Add(TestHelper.CreateTestOrganisation(3, 1, OrganisationType.VCFS, _fixture));
-            organisations.Add(TestHelper.CreateTestOrganisation(4, 1, OrganisationType.VCFS, _fixture));
+            var organisations = new List<OrganisationDto>
+            {
+                TestHelper.CreateTestOrganisation(1, null, OrganisationType.LA, _fixture),
+                TestHelper.CreateTestOrganisation(2, 1, OrganisationType.VCFS, _fixture),
+                TestHelper.CreateTestOrganisation(3, 1, OrganisationType.VCFS, _fixture),
+                TestHelper.CreateTestOrganisation(4, 1, OrganisationType.VCFS, _fixture)
+            };
 
             return organisations;
         }

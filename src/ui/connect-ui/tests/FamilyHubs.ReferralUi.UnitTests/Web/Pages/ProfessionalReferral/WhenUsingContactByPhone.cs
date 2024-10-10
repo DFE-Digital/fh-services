@@ -9,7 +9,7 @@ public class WhenUsingContactByPhone : BaseProfessionalReferralPage
 
     public WhenUsingContactByPhone()
     {
-        _contactByPhoneModel = new ContactByPhoneModel(ReferralDistributedCache.Object);
+        _contactByPhoneModel = new ContactByPhoneModel(ReferralDistributedCache);
     }
 
     [Fact]

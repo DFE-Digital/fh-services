@@ -1,7 +1,6 @@
 ﻿using FamilyHubs.ServiceDirectory.Admin.Core.Services;
 using FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManagePermissions;
-using Moq;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.ManagePermissions
@@ -9,26 +8,24 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
     public class DeleteUserConfirmationTests
     {
         
-        private readonly Mock<ICacheService> _mockCacheService;
+        private readonly ICacheService _mockCacheService;
         public DeleteUserConfirmationTests()
-        {            
-            _mockCacheService = new Mock<ICacheService>();
+        {
+            _mockCacheService = Substitute.For<ICacheService>();
         }
             
         [Fact]
-        public async Task OnGet_UserNameRetrivedFromCache()
+        public async Task OnGet_UserNameRetrievedFromCache()
         {
             //  Arrange            
             const string userName = "TestUser";
-            const bool isDeleted = true;
-            _mockCacheService.Setup(x=>x.RetrieveString(It.IsAny<string>())).Returns(Task.FromResult(userName));
-            var sut = new DeleteUserConfirmationModel( _mockCacheService.Object);
+            _mockCacheService.RetrieveString("DeleteUserName").Returns(Task.FromResult(userName));
+            var sut = new DeleteUserConfirmationModel( _mockCacheService);
 
             //  Act
-            await sut.OnGet(isDeleted);
+            await sut.OnGet(isDeleted:true);
 
             //  Assert
-            _mockCacheService.Verify(x => x.RetrieveString("DeleteUserName"), Times.Once());
             Assert.Equal(userName, sut.UserName);
         }               
     }

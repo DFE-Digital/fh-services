@@ -11,7 +11,7 @@ public class WhenUsingEmail : BaseProfessionalReferralPage
 
     public WhenUsingEmail()
     {
-        _emailModel = new EmailModel(ReferralDistributedCache.Object);
+        _emailModel = new EmailModel(ReferralDistributedCache);
     }
 
     [Fact]

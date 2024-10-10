@@ -4,24 +4,21 @@ using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
 using FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
 {
     public class WhichVcsOrganisationTests
     {
-        private readonly Mock<ICacheService> _mockCacheService;
-        private readonly Mock<IServiceDirectoryClient> _serviceDirectoryClient;
+        private readonly ICacheService _mockCacheService;
+        private readonly IServiceDirectoryClient _serviceDirectoryClient;
         private readonly Fixture _fixture;
         private const string ValidVcsOrganisation = "ValidLocalAuthority";
         private const long ValidVcsOrganisationId = 1234;
-        private const string TooLong = "TooLongStringMoreThan255Characters12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+        private readonly PermissionModel permissionModel;
 
         public WhichVcsOrganisationTests()
         {
@@ -36,12 +33,16 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
             }
             
 
-            _mockCacheService = new Mock<ICacheService>();
-            _mockCacheService.Setup(m => m.GetOrganisations()).ReturnsAsync(organisations);
+            _mockCacheService = Substitute.For<ICacheService>();
+            _mockCacheService.GetOrganisations().Returns(organisations);
+            
+            permissionModel = _fixture.Create<PermissionModel>();
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(permissionModel);
 
-            _serviceDirectoryClient = new Mock<IServiceDirectoryClient>();
-            _serviceDirectoryClient.Setup(x => x.GetCachedVcsOrganisations(It.IsAny<long>(), CancellationToken.None))
-                .ReturnsAsync(new List<OrganisationDto>(new [] { new OrganisationDto
+            _serviceDirectoryClient = Substitute.For<IServiceDirectoryClient>();
+            _serviceDirectoryClient.GetCachedVcsOrganisations(Arg.Any<long>(), Arg.Any<CancellationToken>())
+                .Returns([
+                    new OrganisationDto()
                     {
                         OrganisationType = OrganisationType.LA,
                         Name = ValidVcsOrganisation,
@@ -49,19 +50,18 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
                         AdminAreaCode = "Test",
                         Id = ValidVcsOrganisationId
                     }
-                }));
+                ]);
         }
 
         [Fact]
         public async Task OnGet_VcsOrganisationName_Set()
         {
             //  Arrange
-            var permissionModel = _fixture.Create<PermissionModel>();
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new WhichVcsOrganisation(_mockCacheService.Object, _serviceDirectoryClient.Object) 
+            
+            var sut = new WhichVcsOrganisation(_mockCacheService, _serviceDirectoryClient) 
             { 
                 VcsOrganisationName = string.Empty, 
-                VcsOrganisations = new List<string>() 
+                VcsOrganisations = []
             };
 
             //  Act
@@ -76,14 +76,13 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         public async Task OnGet_BackLink_Set()
         {
             //  Arrange
-            var permissionModel = _fixture.Create<PermissionModel>();
             permissionModel.VcsManager = true;
             permissionModel.VcsProfessional = true;
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new WhichVcsOrganisation(_mockCacheService.Object, _serviceDirectoryClient.Object)
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(permissionModel);
+            var sut = new WhichVcsOrganisation(_mockCacheService, _serviceDirectoryClient)
             {
                 VcsOrganisationName = string.Empty,
-                VcsOrganisations = new List<string>()
+                VcsOrganisations = []
             };
 
             //  Act
@@ -98,10 +97,9 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         public async Task OnGet_PageHeading_Set()
         {
             //  Arrange
-            var permissionModel = _fixture.Create<PermissionModel>();
             permissionModel.VcsManager = true;
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new WhichVcsOrganisation(_mockCacheService.Object, _serviceDirectoryClient.Object)
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(permissionModel);
+            var sut = new WhichVcsOrganisation(_mockCacheService, _serviceDirectoryClient)
             {
                 VcsOrganisationName = string.Empty,
                 VcsOrganisations = new List<string>()
@@ -119,11 +117,10 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         public async Task OnPost_ModelStateInvalid_ReturnsPageWithError()
         {
             //  Arrange
-            var permissionModel = _fixture.Create<PermissionModel>();
             permissionModel.VcsManager = true;
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(permissionModel);
             
-            var sut = new WhichVcsOrganisation(_mockCacheService.Object, _serviceDirectoryClient.Object)
+            var sut = new WhichVcsOrganisation(_mockCacheService, _serviceDirectoryClient)
             {
                 VcsOrganisationName = string.Empty,
                 VcsOrganisations = new List<string>()
@@ -141,16 +138,14 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         [Theory]
         [InlineData("")]
         [InlineData(" ")]
-        [InlineData(TooLong)]
+        [InlineData(Constants.TooLongGreaterThan255)]
         public async Task OnPost_InvalidName_ReturnsPageWithError(string authorityName)
         {
             //  Arrange
-            var permissionModel = _fixture.Create<PermissionModel>();
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new WhichVcsOrganisation(_mockCacheService.Object, _serviceDirectoryClient.Object)
+            var sut = new WhichVcsOrganisation(_mockCacheService, _serviceDirectoryClient)
             {
                 VcsOrganisationName = authorityName,
-                VcsOrganisations = new List<string>()
+                VcsOrganisations = []
             };
             
             //  Act
@@ -164,14 +159,13 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         public async Task OnPost_Valid_RedirectsToExpectedPage()
         {
             //  Arrange
-            var permissionModel = _fixture.Create<PermissionModel>();
             permissionModel.VcsManager = true;
             permissionModel.VcsProfessional = true;
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new WhichVcsOrganisation(_mockCacheService.Object, _serviceDirectoryClient.Object)
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(permissionModel);
+            var sut = new WhichVcsOrganisation(_mockCacheService, _serviceDirectoryClient)
             {
                 VcsOrganisationName = ValidVcsOrganisation,
-                VcsOrganisations = new List<string>()
+                VcsOrganisations = []
             };
 
             //  Act
@@ -186,9 +180,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         public async Task OnPost_Valid_SetsValueInCache()
         {
             //  Arrange
-            var permissionModel = _fixture.Create<PermissionModel>();
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new WhichVcsOrganisation(_mockCacheService.Object, _serviceDirectoryClient.Object)
+            var sut = new WhichVcsOrganisation(_mockCacheService, _serviceDirectoryClient)
             {
                 VcsOrganisationName = ValidVcsOrganisation,
                 VcsOrganisations = new List<string>()
@@ -198,9 +190,9 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
             _ = await sut.OnPost();
 
             //  Assert
-            _mockCacheService.Verify(m => m.StorePermissionModel(
-                It.Is<PermissionModel>(arg => arg.VcsOrganisationName == ValidVcsOrganisation 
-                    && arg.VcsOrganisationId == ValidVcsOrganisationId), It.IsAny<string>()));
+            await _mockCacheService.Received().StorePermissionModel(
+                Arg.Is<PermissionModel>(arg => arg.VcsOrganisationName == ValidVcsOrganisation 
+                                               && arg.VcsOrganisationId == ValidVcsOrganisationId), Arg.Any<string>());
         }
     }
 }

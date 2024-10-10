@@ -1,0 +1,93 @@
+name: Environment Provisioning
+run-name: Provisioning Environment for ${{ inputs.environment }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: The environment target for deployment
+        default: 'Development'
+        type: choice
+        options:
+          - 'Development'
+          - 'Test'
+          - 'Test2'
+          - 'Pre-production'
+          - 'Production'
+      action:
+        description: Test the planned changes or plan and apply the changes
+        default: 'Plan Only'
+        type: choice
+        options:
+          - 'Plan Only'
+          - 'Plan & Apply'
+            
+permissions:
+  id-token: write
+  contents: read
+  
+jobs:
+  provision-environment:
+    name: Provision Environment
+    runs-on: ubuntu-22.04
+    environment: ${{ inputs.environment }}
+    env:
+      RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs-terraform
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          
+      - name: Terraform Setup
+        id: setup
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        id: init
+        run: |
+          cd terraform
+          STORAGE_ACCOUNT_NAME=${{ vars.AZURE_RESOURCE_PREFIX }}safhterraform
+          CONTAINER_NAME=${{ vars.AZURE_RESOURCE_PREFIX }}appserviceterraform
+          STATE_FILE_KEY=$CONTAINER_NAME/${{ vars.AZURE_RESOURCE_PREFIX }}appservicetf.tfstate
+          terraform init \
+            -backend-config=storage_account_name=$STORAGE_ACCOUNT_NAME \
+            -backend-config=container_name=$CONTAINER_NAME \
+            -backend-config=key=$STATE_FILE_KEY \
+            -backend-config=resource_group_name=${{ env.RESOURCE_GROUP }} \
+            -backend-config=subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }} \
+            -backend-config=tenant_id=${{ secrets.AZURE_TENANT_ID }} \
+            -backend-config=client_id=${{ secrets.AZURE_CLIENT_ID }} \
+            -backend-config=client_secret=${{ secrets.AZURE_CLIENT_SECRET }}
+      
+      - name: Terraform Plan
+        run: |
+          cd terraform
+          VARS_FILE=$(echo "${{ inputs.environment }}.tfvars" | tr '[:upper:]' '[:lower:]')
+          terraform plan \
+            -var-file=$VARS_FILE \
+            -var='sql_server_user=${{ secrets.TERRAFORM_APP_SQL_SERVER_USER }}' \
+            -var='sql_server_pwd=${{ secrets.TERRAFORM_APP_SQL_SERVER_PWD }}' \
+            -var='sql_server_reporting_user=${{ secrets.TERRAFORM_REPORT_SQL_SERVER_USER }}' \
+            -var='sql_server_reporting_pwd=${{ secrets.TERRAFORM_REPORT_SQL_SERVER_PWD }}' \
+            -var='certificate_password=${{ secrets.TERRAFORM_SSL_CERTIFICATE_PWD }}' \
+            -var='ssl_cert_path_sd_ui=${{ secrets.TERRAFORM_SSL_FIND_PFX }}' \
+            -var='ssl_cert_path_referral_ui=${{ secrets.TERRAFORM_SSL_CONNECT_PFX }}' \
+            -var='ssl_cert_path_sd_admin_ui=${{ secrets.TERRAFORM_SSL_MANAGE_PFX }}' \
+            -out=tfplan
+      
+      - name: Terraform Apply
+        if: ${{ inputs.action == 'Plan & Apply' }}
+        run: |
+          cd terraform
+          terraform apply -auto-approve tfplan

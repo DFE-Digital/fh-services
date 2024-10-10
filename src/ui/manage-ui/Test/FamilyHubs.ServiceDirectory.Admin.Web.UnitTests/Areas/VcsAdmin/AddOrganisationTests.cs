@@ -7,49 +7,49 @@ using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
 {
     public class AddOrganisationTests
     {
-        private readonly Mock<ICacheService> _mockCacheService;
-        private readonly Mock<IServiceDirectoryClient> _mockServiceDirectoryClient;
+        private readonly ICacheService _mockCacheService;
+        private readonly IServiceDirectoryClient _mockServiceDirectoryClient;
         private readonly Fixture _fixture;
-        private const string TooLong = "TooLongStringMoreThan255Characters12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
-        private HttpContext _httpContext;
+        private readonly HttpContext _httpContext;
 
         public AddOrganisationTests()
         {
-            _mockCacheService = new Mock<ICacheService>();
-            _mockServiceDirectoryClient = new Mock<IServiceDirectoryClient>();
+            _mockCacheService = Substitute.For<ICacheService>();
+            _mockServiceDirectoryClient = Substitute.For<IServiceDirectoryClient>();
             _fixture = new Fixture();
 
             _httpContext = new DefaultHttpContext();
             _httpContext.Request.Headers.Append("Host", "localhost:7216");
             _httpContext.Request.Headers.Append("Referer", "https://localhost:7216/Welcome");
 
-            _mockServiceDirectoryClient.Setup(x => x.GetCachedVcsOrganisations(It.IsAny<long>(), CancellationToken.None))
-                .ReturnsAsync([
-                        new OrganisationDto
-                        {
-                            OrganisationType = OrganisationType.LA,
-                            Name = "Any",
-                            Description = "Test",
-                            AdminAreaCode = "Test",
-                            Id = 1
-                        }
-                ]);
+            _mockServiceDirectoryClient.GetCachedVcsOrganisations(Arg.Any<long>(), CancellationToken.None)
+                .Returns(Task.FromResult(new List<OrganisationDto>
+                {
+                    new()
+                    {
+                        OrganisationType = OrganisationType.LA,
+                        Name = "Any",
+                        Description = "Test",
+                        AdminAreaCode = "Test",
+                        Id = 1
+                    }
+                }));
 
-            _mockCacheService.Setup(m => m.RetrieveString(CacheKeyNames.LaOrganisationId)).ReturnsAsync("1");
+            _mockCacheService.RetrieveString(CacheKeyNames.LaOrganisationId).Returns("1");
         }
 
         [Fact]
         public async Task OnPost_ModelStateInvalid_ReturnsPageWithError()
         {
             // Arrange
-            var sut = new AddOrganisationModel(_mockCacheService.Object, _mockServiceDirectoryClient.Object) 
+            var sut = new AddOrganisationModel(_mockCacheService, _mockServiceDirectoryClient) 
             { 
                 PageContext = { HttpContext = _httpContext } 
             };
@@ -65,11 +65,11 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
         [Theory]
         [InlineData("")]
         [InlineData(" ")]
-        [InlineData(TooLong)]
-        public async Task OnPost_InvalidName_ReturnsPageWithError(string organisationName)
+        [InlineData(Constants.TooLongGreaterThan255)]
+        public async Task OnPost_InvalidOrganisation_ReturnsPageWithError(string organisationName)
         {
             //  Arrange
-            var sut = new AddOrganisationModel(_mockCacheService.Object, _mockServiceDirectoryClient.Object)
+            var sut = new AddOrganisationModel(_mockCacheService, _mockServiceDirectoryClient)
             {
                 OrganisationName = organisationName,
                 PageContext = { HttpContext = _httpContext }
@@ -83,10 +83,10 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
         }
 
         [Fact]
-        public async Task OnPost_Valid_RedirectsToExpectedPage()
+        public async Task OnPost_ValidOrganisation_RedirectsToExpectedPage()
         {
             //  Arrange
-            var sut = new AddOrganisationModel(_mockCacheService.Object, _mockServiceDirectoryClient.Object)
+            var sut = new AddOrganisationModel(_mockCacheService, _mockServiceDirectoryClient)
             {
                 OrganisationName = "Some Name",
                 PageContext = { HttpContext = _httpContext }
@@ -103,12 +103,12 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
         }
 
         [Fact]
-        public async Task OnPost_Valid_SetsValueInCache()
+        public async Task OnPost_ValidOrganisation_SetsValueInCache()
         {
             //  Arrange
             var permissionModel = _fixture.Create<PermissionModel>();
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
-            var sut = new AddOrganisationModel(_mockCacheService.Object, _mockServiceDirectoryClient.Object)
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(permissionModel);
+            var sut = new AddOrganisationModel(_mockCacheService, _mockServiceDirectoryClient)
             {
                 OrganisationName = "Some Name",
                 PageContext = { HttpContext = _httpContext }
@@ -118,7 +118,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
             _ = await sut.OnPost();
 
             //  Assert
-            _mockCacheService.Verify(m => m.StoreString(It.IsAny<string>(), It.Is<string>(arg => arg == "Some Name")));
+            await _mockCacheService.Received().StoreString(Arg.Any<string>(), Arg.Is<string>(arg => arg == "Some Name"));
         }
     }
 }

@@ -5,28 +5,32 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.La;
 
 public class PersonalDetailsTests
 {
-    private readonly Mock<IRequestDistributedCache> _mockRequestDistributedCache;
+    private readonly IRequestDistributedCache _mockRequestDistributedCache;
     private readonly PersonsDetailsModel _personalDetailsModel;
 
     public PersonalDetailsTests()
     {
-        _mockRequestDistributedCache = new Mock<IRequestDistributedCache>();
-        DefaultHttpContext httpContext = new DefaultHttpContext();
-        _personalDetailsModel = new PersonsDetailsModel(_mockRequestDistributedCache.Object);
-        _personalDetailsModel.PageContext.HttpContext = httpContext;
-        CompiledPageActionDescriptor compiledPageActionDescriptor = new();
-        _personalDetailsModel.PageContext.ActionDescriptor = compiledPageActionDescriptor;
-        _personalDetailsModel.PageContext.ActionDescriptor.DisplayName = "/La/PersonsDetails";
+        _mockRequestDistributedCache = Substitute.For<IRequestDistributedCache>();
+        var httpContext = new DefaultHttpContext();
+        CompiledPageActionDescriptor compiledPageActionDescriptor = new()
+        {
+            DisplayName = "/La/PersonsDetails"
+        };
+        _personalDetailsModel = new PersonsDetailsModel(_mockRequestDistributedCache)
+        {
+            PageContext =
+            {
+                HttpContext = httpContext,
+                ActionDescriptor = compiledPageActionDescriptor
+            }
+        };
     }
 
     [Theory]
@@ -37,19 +41,17 @@ public class PersonalDetailsTests
     public async Task ThenPersonsDetailsOnGetIsSuccessfull(string selectionType, string value1, string value2)
     {
         //Arrange
-        int callback = 0;
-        _mockRequestDistributedCache.Setup(x => x.GetAsync<SubjectAccessRequestViewModel>(It.IsAny<string>()))
-            .Callback(() => callback++)
-            .ReturnsAsync(new SubjectAccessRequestViewModel
+        _mockRequestDistributedCache.GetAsync<SubjectAccessRequestViewModel>(Arg.Any<string>())
+            .Returns(_ => Task.FromResult<SubjectAccessRequestViewModel?>(new SubjectAccessRequestViewModel
             {
                 SelectionType = selectionType, Value1 = value1, Value2 = value2
-            });
+            }));
 
         //Act
         await _personalDetailsModel.OnGet();
 
         // Assert
-        callback.Should().Be(1);
+        await _mockRequestDistributedCache.Received(1).GetAsync<SubjectAccessRequestViewModel>(Arg.Any<string>());
         _personalDetailsModel.ContactSelection[0].Should().Be(selectionType);
     }
 
@@ -57,15 +59,14 @@ public class PersonalDetailsTests
     public async Task ThenPersonsDetailsOnGetIsSuccessfull_WithoutViewModel()
     {
         //Arrange
-        int callback = 0;
-        _mockRequestDistributedCache.Setup(x => x.GetAsync<SubjectAccessRequestViewModel>(It.IsAny<string>()))
-        .Callback(() => callback++);
+        _mockRequestDistributedCache.GetAsync<SubjectAccessRequestViewModel>(Arg.Any<string>())
+            .Returns(_ => Task.FromResult<SubjectAccessRequestViewModel?>(null));
 
         //Act
         await _personalDetailsModel.OnGet();
 
         // Assert
-        callback.Should().Be(1);
+        await _mockRequestDistributedCache.Received(1).GetAsync<SubjectAccessRequestViewModel>(Arg.Any<string>());
     }
 
     [Theory]
@@ -76,21 +77,20 @@ public class PersonalDetailsTests
     public async Task ThenPersonsDetailsOnPostIsSuccessfull(string selectionType)
     {
         //Arrange
-        _personalDetailsModel.ContactSelection = new List<string> { selectionType };
+        _personalDetailsModel.ContactSelection = [selectionType];
         _personalDetailsModel.Email = "TestUser@email.com";
         _personalDetailsModel.Telephone = "1234567890";
         _personalDetailsModel.Textphone = "1234567890";
         _personalDetailsModel.Name = "Test User";
         _personalDetailsModel.Postcode = "B60 1PY";
-        int callback = 0;
-        _mockRequestDistributedCache.Setup(x => x.SetAsync(It.IsAny<string>(), It.IsAny<SubjectAccessRequestViewModel>()))
-            .Callback(() => callback++);
+        _mockRequestDistributedCache.SetAsync(Arg.Any<string>(), Arg.Any<SubjectAccessRequestViewModel>())
+            .Returns(_ => Task.FromResult(new SubjectAccessRequestViewModel() { SelectionType = "" }));
             
         //Act
         var result = await _personalDetailsModel.OnPost() as RedirectToPageResult;
 
         // Assert
-        callback.Should().Be(1);
+        await _mockRequestDistributedCache.Received(1).SetAsync(Arg.Any<string>(), Arg.Any<SubjectAccessRequestViewModel>());
         _personalDetailsModel.ValidationValid.Should().BeTrue();
         ArgumentNullException.ThrowIfNull(result);
         result.PageName.Should().Be("/La/SubjectAccessResultDetails");
@@ -106,20 +106,19 @@ public class PersonalDetailsTests
     {
         //Arrange
         _personalDetailsModel.Email = value;
-        _personalDetailsModel.ContactSelection = new List<string> { selectionType };
+        _personalDetailsModel.ContactSelection = [selectionType];
         if (selectionType == string.Empty)
         {
             _personalDetailsModel.ContactSelection.Clear();
         }
-        int callback = 0;
-        _mockRequestDistributedCache.Setup(x => x.SetAsync(It.IsAny<string>(), It.IsAny<SubjectAccessRequestViewModel>()))
-            .Callback(() => callback++);
+        _mockRequestDistributedCache.SetAsync(Arg.Any<string>(), Arg.Any<SubjectAccessRequestViewModel>())
+            .Returns(_ => Task.CompletedTask);
 
         //Act
         await _personalDetailsModel.OnPost();
 
         // Assert
-        callback.Should().Be(0);
+        await _mockRequestDistributedCache.DidNotReceive().SetAsync(Arg.Any<string>(), Arg.Any<SubjectAccessRequestViewModel>());
         _personalDetailsModel.ValidationValid.Should().BeFalse();
         switch(selectionType) 
         {

@@ -6,83 +6,81 @@ using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Http;
-using Moq;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
-namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
+namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin;
+
+public class AddOrganisationWhichLocalAuthorityTests
 {
-    public class AddOrganisationWhichLocalAuthorityTests
+    private readonly ICacheService _mockCacheService;
+    private readonly IServiceDirectoryClient _serviceDirectoryClient;
+    private const string ValidLocalAuthority = "ValidLocalAuthority";
+    private const long ValidLocalAuthorityId = 1234;
+
+    public AddOrganisationWhichLocalAuthorityTests()
     {
-        private readonly Mock<ICacheService> _mockCacheService;
-        private readonly Mock<IServiceDirectoryClient> _serviceDirectoryClient;
-        private readonly Fixture _fixture;
-        private const string ValidLocalAuthority = "ValidLocalAuthority";
-        private const long ValidLocalAuthorityId = 1234;
-
-        public AddOrganisationWhichLocalAuthorityTests()
+        var fixture = new Fixture();
+            
+        var organisations = fixture.Create<List<OrganisationDto>>();
+        organisations[0].Id = ValidLocalAuthorityId;
+        organisations[0].Name = ValidLocalAuthority;
+            
+        for (var i = 1; i < organisations.Count; i++)
         {
-            _fixture = new Fixture();
-            var organisations = _fixture.Create<List<OrganisationDto>>();
+            organisations[i].Id = i;
+        }
 
-            organisations[0].Id = ValidLocalAuthorityId;
-            organisations[0].Name = ValidLocalAuthority;
-            for (var i = 1; i < organisations.Count; i++)
+
+        _mockCacheService = Substitute.For<ICacheService>();
+        _mockCacheService.GetOrganisations().Returns(organisations);
+
+        _serviceDirectoryClient = Substitute.For<IServiceDirectoryClient>();
+        _serviceDirectoryClient.GetCachedLaOrganisations(CancellationToken.None)
+            .Returns(Task.FromResult(new List<OrganisationDto>
             {
-                organisations[i].Id = i;
-            }
+                new()
+                {
+                    OrganisationType = OrganisationType.LA,
+                    Name = ValidLocalAuthority,
+                    Description = "Test",
+                    AdminAreaCode = "Test",
+                    Id = ValidLocalAuthorityId
+                }
+            }));
+    }
 
 
-            _mockCacheService = new Mock<ICacheService>();
-            _mockCacheService.Setup(m => m.GetOrganisations()).ReturnsAsync(organisations);
-
-            _serviceDirectoryClient = new Mock<IServiceDirectoryClient>();
-            _serviceDirectoryClient.Setup(x => x.GetCachedLaOrganisations(CancellationToken.None))
-                .ReturnsAsync(new List<OrganisationDto>(new[] { new OrganisationDto
-                    {
-                        OrganisationType = OrganisationType.LA,
-                        Name = ValidLocalAuthority,
-                        Description = "Test",
-                        AdminAreaCode = "Test",
-                        Id = ValidLocalAuthorityId
-                    }
-                }));
-        }
-
-
-        [Fact]
-        public async Task OnGet_LaOrganisationName_Set()
+    [Fact]
+    public async Task OnGet_LaOrganisationName_Set()
+    {
+        //  Arrange
+        var mockHttpContext = GetHttpContext(RoleTypes.DfeAdmin, -1);
+        _mockCacheService.RetrieveString(CacheKeyNames.LaOrganisationId).Returns(ValidLocalAuthorityId.ToString());
+        var sut = new AddOrganisationWhichLocalAuthorityModel(_mockCacheService, _serviceDirectoryClient)
         {
-            //  Arrange
-            var mockHttpContext = GetHttpContext(RoleTypes.DfeAdmin, -1);
-            _mockCacheService.Setup(m => m.RetrieveString(CacheKeyNames.LaOrganisationId)).ReturnsAsync(ValidLocalAuthorityId.ToString());
-            var sut = new AddOrganisationWhichLocalAuthorityModel(_mockCacheService.Object, _serviceDirectoryClient.Object)
-            {
-                LaOrganisationName = string.Empty,
-                LocalAuthorities = new List<string>(),
-                PageContext = { HttpContext = mockHttpContext.Object }
-            };
+            LaOrganisationName = string.Empty,
+            LocalAuthorities = [],
+            PageContext = { HttpContext = mockHttpContext }
+        };
 
-            //  Act
-            await sut.OnGet();
+        //  Act
+        await sut.OnGet();
 
-            //  Assert
-            Assert.Equal(ValidLocalAuthority, sut.LaOrganisationName);
-        }
+        //  Assert
+        Assert.Equal(ValidLocalAuthority, sut.LaOrganisationName);
+    }
 
-        private Mock<HttpContext> GetHttpContext(string role, long organisationId)
-        {
-            var claims = new List<Claim> {
-                new Claim(FamilyHubsClaimTypes.FullName, "any") ,
-                new Claim(FamilyHubsClaimTypes.AccountId, "1"),
-                new Claim(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()),
-                new Claim(FamilyHubsClaimTypes.Role, role),
-            };
+    private static HttpContext GetHttpContext(string role, long organisationId)
+    {
+        var claims = new List<Claim> {
+            new(FamilyHubsClaimTypes.FullName, "any") ,
+            new(FamilyHubsClaimTypes.AccountId, "1"),
+            new(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()),
+            new(FamilyHubsClaimTypes.Role, role),
+        };
 
-            return TestHelper.GetHttpContext(claims);
-        }
+        return TestHelper.GetHttpContext(claims);
     }
 }

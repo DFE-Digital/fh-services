@@ -6,6 +6,13 @@ on:
       project:
         required: true
         type: string
+      publish_project:
+        required: true
+        type: string
+        description: Name of the project to publish without the csproj
+      dotnet_version:
+        required: true
+        type: string
       runner:
         required: false
         default: 'ubuntu-22.04'
@@ -41,11 +48,11 @@ jobs:
 
       - name: Restore Project
         shell: bash
-        run: dotnet restore
+        run: dotnet restore ./src/${{ inputs.publish_project }}/${{ inputs.publish_project }}.csproj
 
       - name: Publish Project
         shell: bash
-        run: dotnet publish --configuration Release --no-restore --property:PublishDir=${{ env.BUILD_DIRECTORY }}
+        run: dotnet publish ./src/${{ inputs.publish_project }}/${{ inputs.publish_project }}.csproj --configuration Release --no-restore --property:PublishDir=${{ env.BUILD_DIRECTORY }}
 
         # The name is the Present Working Directory, e.g., "idam-api" or "manage-ui"
       - name: Get Name for Artifact
@@ -61,3 +68,4 @@ jobs:
           name: ${{ steps.get-name.outputs.artifact_name }}
           path: ${{ env.BUILD_DIRECTORY }}
           if-no-files-found: error
+          include-hidden-files: true # Required so folders such as .azurefunctions are included in the zip

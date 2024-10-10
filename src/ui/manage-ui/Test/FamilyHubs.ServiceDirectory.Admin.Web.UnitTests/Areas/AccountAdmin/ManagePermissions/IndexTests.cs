@@ -4,23 +4,23 @@ using FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManagePermi
 using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.ManagePermissions
 {
     public class IndexTests
     {
-        private readonly Mock<IIdamClient> _mockIdamClient;
-        private readonly Mock<ICacheService> _mockCacheService;
+        private readonly IIdamClient _mockIdamClient;
+        private readonly ICacheService _mockCacheService;
+        
+        private const int OrganisationId = 1;
 
         public IndexTests()
         {
-            _mockIdamClient = new Mock<IIdamClient>();
-            _mockCacheService = new Mock<ICacheService>();
+            _mockIdamClient = Substitute.For<IIdamClient>();
+            _mockCacheService = Substitute.For<ICacheService>();
         }
 
         [Theory]
@@ -30,31 +30,34 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
             int? pageNumber, string? name, string? email, string? organisation, bool? isLa, bool? isVcs, string? sortBy)
         {
             //  Arrange
-            var organisationId = 1;
             var expectedPageNumber = pageNumber ?? 1;
-            var sut = new IndexModel(_mockIdamClient.Object, _mockCacheService.Object);
-            sut.PageContext.HttpContext = GetMockHttpContext(organisationId, RoleTypes.DfeAdmin).Object;
+            var sut = new IndexModel(_mockIdamClient, _mockCacheService)
+            {
+                PageContext =
+                {
+                    HttpContext = GetMockHttpContext(OrganisationId, RoleTypes.DfeAdmin)
+                }
+            };
 
             //  Act
             await sut.OnGet(pageNumber, name, email, organisation, isLa, isVcs, sortBy);
 
             //  Assert
-            _mockIdamClient.Verify(x => x.GetAccounts(
+            await _mockIdamClient.Received(1).GetAccounts(
                 expectedPageNumber,
                 name,
                 email,
                 organisation,
                 isLa,
                 isVcs,
-                sortBy
-                ), Times.Once());
+                sortBy);
         }
 
         [Fact]
         public void OnPost_Redirects()
         {
             //  Arrange
-            var sut = new IndexModel(_mockIdamClient.Object, _mockCacheService.Object);
+            var sut = new IndexModel(_mockIdamClient, _mockCacheService);
 
             //  Act
             var response = sut.OnPost();
@@ -64,18 +67,21 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
         }
 
 
-        private Mock<HttpContext> GetMockHttpContext(long organisationId, string userRole)
+        // TODO: Look into moving this to shared helper class as it's duplicated in multiple projects
+        private HttpContext GetMockHttpContext(long organisationId, string userRole)
         {
-            var mockUser = new Mock<ClaimsPrincipal>();
-            var claims = new List<Claim>();
-            claims.Add(new Claim(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()));
-            claims.Add(new Claim(FamilyHubsClaimTypes.Role, userRole));
+            var mockUser = Substitute.For<ClaimsPrincipal>();
+            var claims = new List<Claim>
+            {
+                new(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()),
+                new(FamilyHubsClaimTypes.Role, userRole)
+            };
 
-            mockUser.SetupGet(x => x.Claims).Returns(claims);
+            mockUser.Claims.Returns(claims);
 
 
-            var mockHttpContext = new Mock<HttpContext>();
-            mockHttpContext.SetupGet(x => x.User).Returns(mockUser.Object);
+            var mockHttpContext = Substitute.For<HttpContext>();
+            mockHttpContext.User.Returns(mockUser);
 
             return mockHttpContext;
         }

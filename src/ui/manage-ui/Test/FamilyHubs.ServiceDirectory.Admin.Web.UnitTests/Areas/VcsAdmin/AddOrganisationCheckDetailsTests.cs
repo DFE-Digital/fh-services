@@ -8,104 +8,99 @@ using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
-namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
+namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin;
+
+public class AddOrganisationCheckDetailsTests
 {
-    public class AddOrganisationCheckDetailsTests
+    private readonly ICacheService _mockCacheService;
+    private readonly IServiceDirectoryClient _mockServiceDirectoryClient;
+    private readonly Fixture _fixture;
+    private readonly HttpContext _httpContext;
+        
+    private const int OrganisationId = 123;
+
+    public AddOrganisationCheckDetailsTests()
     {
-        private readonly Mock<ICacheService> _mockCacheService;
-        private readonly Mock<IServiceDirectoryClient> _mockServiceDirectoryClient;
-        private readonly Fixture _fixture;
-        private readonly HttpContext _httpContext;
+        _mockCacheService = Substitute.For<ICacheService>();
+        _mockServiceDirectoryClient = Substitute.For<IServiceDirectoryClient>();
+        _fixture = new Fixture();
 
-        public AddOrganisationCheckDetailsTests()
+        _httpContext = new DefaultHttpContext();
+        _httpContext.Request.Headers.Append("Host", "localhost:7216");
+        _httpContext.Request.Headers.Append("Referer", "https://localhost:7216/Welcome");
+    }
+
+    [Fact]
+    public async Task OnGet_Valid_SetsOrganisationNameFromCache()
+    {
+        //  Arrange
+        var organisations = _fixture.Create<List<OrganisationDto>>();
+        organisations[0].Id = OrganisationId;
+
+        _mockServiceDirectoryClient.GetCachedLaOrganisations(Arg.Any<CancellationToken>()).Returns(organisations);
+        _mockCacheService.RetrieveString(Arg.Any<string>()).Returns(OrganisationId.ToString());
+
+        var sut = new AddOrganisationCheckDetailsModel(_mockCacheService, _mockServiceDirectoryClient)
         {
-            _mockCacheService = new Mock<ICacheService>();
-            _mockServiceDirectoryClient = new Mock<IServiceDirectoryClient>();
-            _fixture = new Fixture();
+            PageContext = { HttpContext = _httpContext }
+        };
 
-            _httpContext = new DefaultHttpContext();
-            _httpContext.Request.Headers.Append("Host", "localhost:7216");
-            _httpContext.Request.Headers.Append("Referer", "https://localhost:7216/Welcome");
-        }
+        //  Act
+        await sut.OnGet();
 
-        [Fact]
-        public async Task OnGet_Valid_SetsOrganisationNameFromCache()
+        //  Assert
+        sut.OrganisationName.Should().Be(OrganisationId.ToString());
+    }
+
+    [Fact]
+    public async Task OnPost_Valid_CreatesOrganisation()
+    {
+        //  Arrange            
+        _mockCacheService.RetrieveString(CacheKeyNames.AddOrganisationName).Returns("Name");
+        _mockCacheService.RetrieveString(CacheKeyNames.AdminAreaCode).Returns("AdminCode");
+        _mockCacheService.RetrieveString(CacheKeyNames.LaOrganisationId).Returns(OrganisationId.ToString());
+        var args = new List<OrganisationDetailsDto>();
+        var outcome = new Outcome<long, ApiException>((long)1);
+        _mockServiceDirectoryClient.CreateOrganisation(Arg.Do<OrganisationDetailsDto>(x => args.Add(x))).Returns(Task.FromResult(outcome));
+        var sut = new AddOrganisationCheckDetailsModel(_mockCacheService, _mockServiceDirectoryClient)
         {
-            //  Arrange
-            var organisations = _fixture.Create<List<OrganisationDto>>();
-            organisations[0].Id = 123;
+            PageContext = { HttpContext = _httpContext }
+        };
 
-            _mockServiceDirectoryClient.Setup(x => x.GetCachedLaOrganisations(It.IsAny<CancellationToken>())).ReturnsAsync(organisations);
-            _mockCacheService.Setup(x => x.RetrieveString(It.IsAny<string>())).ReturnsAsync("123");
+        //  Act
+        await sut.OnPost();
 
-            var sut = new AddOrganisationCheckDetailsModel(_mockCacheService.Object, _mockServiceDirectoryClient.Object)
-            {
-                PageContext = { HttpContext = _httpContext }
-            };
-
-            //  Act
-            await sut.OnGet();
-
-            //  Assert
-            sut.OrganisationName.Should().Be("123");
-        }
-
-        [Fact]
-        public async Task OnPost_Valid_CreatesOrganisation()
-        {
-            //  Arrange            
-            _mockCacheService.Setup(x => x.RetrieveString(CacheKeyNames.AddOrganisationName)).ReturnsAsync("Name");
-            _mockCacheService.Setup(x => x.RetrieveString(CacheKeyNames.AdminAreaCode)).ReturnsAsync("AdminCode");
-            _mockCacheService.Setup(x => x.RetrieveString(CacheKeyNames.LaOrganisationId)).ReturnsAsync("123");
-            var args = new List<OrganisationDetailsDto>();
-            var outcome = new Outcome<long, ApiException>((long)1);
-            _mockServiceDirectoryClient.Setup(x => x.CreateOrganisation(Capture.In<OrganisationDetailsDto>(args))).Returns(Task.FromResult(outcome));
-            var sut = new AddOrganisationCheckDetailsModel(_mockCacheService.Object, _mockServiceDirectoryClient.Object)
-            {
-                PageContext = { HttpContext = _httpContext }
-            };
-
-            //  Act
-            await sut.OnPost();
-
-            //  Assert            
-            _mockServiceDirectoryClient.Verify(x => x.CreateOrganisation(It.IsAny<OrganisationDetailsDto>()));
-            Assert.Equal("Name", args[0].Name);
-            Assert.Equal("Name", args[0].Description);
-            Assert.Equal("AdminCode", args[0].AdminAreaCode);
-            Assert.Equal(123, args[0].AssociatedOrganisationId);
-
-
-        }
-
-        [Fact]
-        public async Task OnPost_Valid_RedirectsToExpectedPage()
-        {
-            //  Arrange
-            var outcome = new Outcome<long, ApiException>((long)1);
-            _mockServiceDirectoryClient.Setup(x => x.CreateOrganisation(It.IsAny<OrganisationDetailsDto>())).Returns(Task.FromResult(outcome));
-            _mockCacheService.Setup(x => x.RetrieveString(It.IsAny<string>())).ReturnsAsync("123");
-            var sut = new AddOrganisationCheckDetailsModel(_mockCacheService.Object, _mockServiceDirectoryClient.Object)
-            {
-                PageContext = { HttpContext = _httpContext }
-            };
-
-            //  Act
-            var result = await sut.OnPost();
-
-            //  Assert
-            Assert.IsType<RedirectToPageResult>(result);
-            Assert.Equal("/AddOrganisationResult", ((RedirectToPageResult)result).PageName);
-
-        }
+        //  Assert            
+        await _mockServiceDirectoryClient.Received(1).CreateOrganisation(Arg.Any<OrganisationDetailsDto>());
+        Assert.Equal("Name", args[0].Name);
+        Assert.Equal("Name", args[0].Description);
+        Assert.Equal("AdminCode", args[0].AdminAreaCode);
+        Assert.Equal(OrganisationId, args[0].AssociatedOrganisationId);
 
 
     }
 
+    [Fact]
+    public async Task OnPost_Valid_RedirectsToExpectedPage()
+    {
+        //  Arrange
+        var outcome = new Outcome<long, ApiException>(1);
+        _mockServiceDirectoryClient.CreateOrganisation(Arg.Any<OrganisationDetailsDto>()).Returns(Task.FromResult(outcome));
+        _mockCacheService.RetrieveString(Arg.Any<string>()).Returns(OrganisationId.ToString());
+        var sut = new AddOrganisationCheckDetailsModel(_mockCacheService, _mockServiceDirectoryClient)
+        {
+            PageContext = { HttpContext = _httpContext }
+        };
+
+        //  Act
+        var result = await sut.OnPost();
+
+        //  Assert
+        Assert.IsType<RedirectToPageResult>(result);
+        Assert.Equal("/AddOrganisationResult", ((RedirectToPageResult)result).PageName);
+
+    }
 }

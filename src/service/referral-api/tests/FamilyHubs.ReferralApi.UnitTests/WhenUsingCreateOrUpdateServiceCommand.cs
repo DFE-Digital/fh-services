@@ -1,26 +1,17 @@
-﻿using AutoMapper;
-using FamilyHubs.Referral.Core;
-using FamilyHubs.Referral.Core.Commands.CreateOrUpdateService;
+﻿using FamilyHubs.Referral.Core.Commands.CreateOrUpdateService;
 using FamilyHubs.Referral.Data.Entities;
 using FamilyHubs.ReferralService.Shared.Dto;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace FamilyHubs.Referral.UnitTests;
 
-public class WhenUsingCreateOrUpdateServiceCommand : BaseCreateDbUnitTest
+public class WhenUsingCreateOrUpdateServiceCommand : BaseCreateDbUnitTest<CreateOrUpdateServiceCommandHandler>
 {
     [Fact]
     public async Task ThenCreateNewService()
     {
-        //Arange
-        var myProfile = new AutoMappingProfiles();
-        var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
-        IMapper mapper = new Mapper(configuration);
-        var logger = new Mock<ILogger<CreateOrUpdateServiceCommandHandler>>();
-        var mockApplicationDbContext = GetApplicationDbContext();
+        //Arrange
         var service = new ReferralServiceDto
         {
             Id = 4,
@@ -36,11 +27,11 @@ public class WhenUsingCreateOrUpdateServiceCommand : BaseCreateDbUnitTest
         };
 
         CreateOrUpdateServiceCommand command = new(service);
-        CreateOrUpdateServiceCommandHandler handler = new(mockApplicationDbContext, mapper, logger.Object);
+        CreateOrUpdateServiceCommandHandler handler = new(MockApplicationDbContext, Mapper, Logger);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
-        var dbService = mockApplicationDbContext.ReferralServices.FirstOrDefault(x => x.Id == 4);
+        var result = await handler.Handle(command, new CancellationToken());
+        var dbService = MockApplicationDbContext.ReferralServices.FirstOrDefault(x => x.Id == 4);
 
         //Assert
         result.Should().BeGreaterThan(0);
@@ -53,13 +44,8 @@ public class WhenUsingCreateOrUpdateServiceCommand : BaseCreateDbUnitTest
     [Fact]
     public async Task ThenUpdateService()
     {
-        //Arange
-        var myProfile = new AutoMappingProfiles();
-        var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
-        IMapper mapper = new Mapper(configuration);
-        var logger = new Mock<ILogger<CreateOrUpdateServiceCommandHandler>>();
-        var mockApplicationDbContext = GetApplicationDbContext();
-        mockApplicationDbContext.ReferralServices.Add(new Data.Entities.ReferralService
+        //Arrange
+        MockApplicationDbContext.ReferralServices.Add(new Data.Entities.ReferralService
         {
             Id = 4,
             Name = "Test Service",
@@ -72,7 +58,9 @@ public class WhenUsingCreateOrUpdateServiceCommand : BaseCreateDbUnitTest
                 Description = "Test Organisation Description",
             }
         });
-        mockApplicationDbContext.SaveChanges();
+
+        await MockApplicationDbContext.SaveChangesAsync();
+
         var service = new ReferralServiceDto
         {
             Id = 4,
@@ -87,12 +75,13 @@ public class WhenUsingCreateOrUpdateServiceCommand : BaseCreateDbUnitTest
             }
 
         };
+
         CreateOrUpdateServiceCommand command = new(service);
-        CreateOrUpdateServiceCommandHandler handler = new(mockApplicationDbContext, mapper, logger.Object);
+        CreateOrUpdateServiceCommandHandler handler = new(MockApplicationDbContext, Mapper, Logger);
 
         //Act
-        var result = await handler.Handle(command, new System.Threading.CancellationToken());
-        var dbService = mockApplicationDbContext.ReferralServices
+        var result = await handler.Handle(command, new CancellationToken());
+        var dbService = MockApplicationDbContext.ReferralServices
                         .Include(x => x.Organisation)
                         .FirstOrDefault(x => x.Id == 4);
 

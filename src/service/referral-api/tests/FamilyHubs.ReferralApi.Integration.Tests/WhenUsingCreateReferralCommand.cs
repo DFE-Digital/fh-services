@@ -2,26 +2,26 @@ using FamilyHubs.Referral.Core.ClientServices;
 using FamilyHubs.Referral.Core.Commands.CreateReferral;
 using FamilyHubs.ReferralService.Shared.Dto;
 using FluentAssertions;
-using FluentAssertions.Equivalency;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Moq;
 using System.Diagnostics;
 using System.Net;
 using FamilyHubs.ReferralService.Shared.Dto.CreateUpdate;
 using FamilyHubs.ReferralService.Shared.Dto.Metrics;
 using FamilyHubs.SharedKernel.Identity.Models;
+using NSubstitute;
 
 namespace FamilyHubs.Referral.Integration.Tests;
 
 public class WhenUsingCreateReferralCommand : DataIntegrationTestBase
 {
-    public DateTimeOffset RequestTimestamp { get; set; }
-    public FamilyHubsUser FamilyHubsUser { get; set; }
-    public const long ExpectedAccountId = 123L;
-    public const long ExpectedOrganisationId = 456L;
+    private readonly IServiceDirectoryService _mockServiceDirectory;
+
+    private DateTimeOffset RequestTimestamp { get; }
+    private FamilyHubsUser FamilyHubsUser { get; }
+    private const long ExpectedAccountId = 123L;
+    private const long ExpectedOrganisationId = 456L;
     private const long ExpectedVcsOrganisationId = 2L;
-    public string ExpectedRequestCorrelationId { get; set; }
+    private string ExpectedRequestCorrelationId { get; }
 
     public WhenUsingCreateReferralCommand()
     {
@@ -37,7 +37,26 @@ public class WhenUsingCreateReferralCommand : DataIntegrationTestBase
         activity.SetParentId(ActivityTraceId.CreateRandom(), ActivitySpanId.CreateRandom());
         activity.Start();
         Activity.Current = activity;
-        ExpectedRequestCorrelationId = Activity.Current!.TraceId.ToString();
+        ExpectedRequestCorrelationId = Activity.Current.TraceId.ToString();
+
+        _mockServiceDirectory = Substitute.For<IServiceDirectoryService>();
+
+        _mockServiceDirectory.GetOrganisationById(Arg.Any<long>())!.Returns(Task.FromResult(new ServiceDirectory.Shared.Dto.OrganisationDto
+        {
+            Id = 2,
+            Name = "Organisation",
+            Description = "Organisation Description",
+            OrganisationType = ServiceDirectory.Shared.Enums.OrganisationType.VCFS,
+            AdminAreaCode = "AdminAreaCode"
+        }));
+
+        _mockServiceDirectory.GetServiceById(Arg.Any<long>())!.Returns(Task.FromResult(new ServiceDirectory.Shared.Dto.ServiceDto
+        {
+            Id = 2,
+            Name = "Service",
+            Description = "Service Description",
+            ServiceType = ServiceDirectory.Shared.Enums.ServiceType.FamilyExperience
+        }));
     }
 
     [Fact]
@@ -45,28 +64,9 @@ public class WhenUsingCreateReferralCommand : DataIntegrationTestBase
     {
         var newReferral = new CreateReferralDto(TestDataProvider.GetReferralDto(),
             new ConnectionRequestsSentMetricDto(RequestTimestamp));
-        Mock<IServiceDirectoryService> mockServiceDirectory = new Mock<IServiceDirectoryService>();
-        mockServiceDirectory.Setup(x => x.GetOrganisationById(It.IsAny<long>())).ReturnsAsync(
-            new ServiceDirectory.Shared.Dto.OrganisationDto
-            {
-                Id = 2,
-                Name = "Organisation",
-                Description = "Organisation Description",
-                OrganisationType = ServiceDirectory.Shared.Enums.OrganisationType.VCFS,
-                AdminAreaCode = "AdminAreaCode"
-            });
-
-        mockServiceDirectory.Setup(x => x.GetServiceById(It.IsAny<long>())).ReturnsAsync(
-            new ServiceDirectory.Shared.Dto.ServiceDto
-            {
-                Id = 2,
-                Name = "Service",
-                Description = "Service Description",
-                ServiceType = ServiceDirectory.Shared.Enums.ServiceType.FamilyExperience
-            });
 
         CreateReferralCommand createCommand = new(newReferral, FamilyHubsUser);
-        CreateReferralCommandHandler createHandler = new(TestDbContext, Mapper, mockServiceDirectory.Object);
+        CreateReferralCommandHandler createHandler = new(TestDbContext, Mapper, _mockServiceDirectory);
 
         //Act
         var result = await createHandler.Handle(createCommand, new CancellationToken());
@@ -88,12 +88,12 @@ public class WhenUsingCreateReferralCommand : DataIntegrationTestBase
         var actualReferral = Mapper.Map<ReferralDto>(actualService);
 
         actualReferral.Should().BeEquivalentTo(newReferral.Referral, options =>
-            options.Excluding((IMemberInfo info) => info.Name.Contains("Id"))
-                .Excluding((IMemberInfo info) => info.Name.Contains("Created"))
-                .Excluding((IMemberInfo info) => info.Name.Contains("CreatedBy"))
-                .Excluding((IMemberInfo info) => info.Name.Contains("LastModified"))
-                .Excluding((IMemberInfo info) => info.Name.Contains("LastModifiedBy"))
-                .Excluding((IMemberInfo info) => info.Name.Contains("Url"))
+            options.Excluding(info => info.Name.Contains("Id"))
+                .Excluding(info => info.Name.Contains("Created"))
+                .Excluding(info => info.Name.Contains("CreatedBy"))
+                .Excluding(info => info.Name.Contains("LastModified"))
+                .Excluding(info => info.Name.Contains("LastModifiedBy"))
+                .Excluding(info => info.Name.Contains("Url"))
         );
     }
 
@@ -102,28 +102,9 @@ public class WhenUsingCreateReferralCommand : DataIntegrationTestBase
     {
         var newReferral = new CreateReferralDto(TestDataProvider.GetReferralDto(),
             new ConnectionRequestsSentMetricDto(RequestTimestamp));
-        Mock<IServiceDirectoryService> mockServiceDirectory = new Mock<IServiceDirectoryService>();
-        mockServiceDirectory.Setup(x => x.GetOrganisationById(It.IsAny<long>())).ReturnsAsync(
-            new ServiceDirectory.Shared.Dto.OrganisationDto
-            {
-                Id = 2,
-                Name = "Organisation",
-                Description = "Organisation Description",
-                OrganisationType = ServiceDirectory.Shared.Enums.OrganisationType.VCFS,
-                AdminAreaCode = "AdminAreaCode"
-            });
-
-        mockServiceDirectory.Setup(x => x.GetServiceById(It.IsAny<long>())).ReturnsAsync(
-            new ServiceDirectory.Shared.Dto.ServiceDto
-            {
-                Id = 2,
-                Name = "Service",
-                Description = "Service Description",
-                ServiceType = ServiceDirectory.Shared.Enums.ServiceType.FamilyExperience
-            });
 
         CreateReferralCommand createCommand = new(newReferral, FamilyHubsUser);
-        CreateReferralCommandHandler createHandler = new(TestDbContext, Mapper, mockServiceDirectory.Object);
+        CreateReferralCommandHandler createHandler = new(TestDbContext, Mapper, _mockServiceDirectory);
 
         //Act
         var result = await createHandler.Handle(createCommand, new CancellationToken());

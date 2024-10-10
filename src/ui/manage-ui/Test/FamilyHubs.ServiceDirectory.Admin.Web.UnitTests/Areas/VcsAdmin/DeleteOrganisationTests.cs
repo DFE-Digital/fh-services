@@ -1,128 +1,130 @@
-﻿using AutoFixture;
-using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
-using FamilyHubs.ServiceDirectory.Admin.Core.Models;
+﻿using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
-using FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManagePermissions;
 using FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
-using FamilyHubs.ServiceDirectory.Shared.Models;
-using FamilyHubs.SharedKernel.Identity;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Moq;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
+using NSubstitute;
 using Xunit;
 
-namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
+namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin;
+
+public class DeleteOrganisationTests
 {
-    public class DeleteOrganisationTests
+    private readonly IServiceDirectoryClient _mockServiceDirectoryClient;
+    private readonly ICacheService _mockCacheService;
+    private readonly IIdamClient _mockIdamClient;
+    
+    private const int OrganisationId = 1;
+    
+    
+    public DeleteOrganisationTests()
     {
-        private readonly Mock<IServiceDirectoryClient> _mockServiceDirectoryClient;
-        private readonly Mock<ICacheService> _mockCacheService;
-        private readonly Mock<IIdamClient> _mockIdamClient;
-        
-        
-        public DeleteOrganisationTests()
+        _mockServiceDirectoryClient = Substitute.For<IServiceDirectoryClient>();
+        _mockCacheService = Substitute.For<ICacheService>();
+        _mockIdamClient = Substitute.For<IIdamClient>();                       
+    }
+
+    [Fact]
+    public async Task OnGet_BackPathSet()
+    {
+        //  Arrange
+        _mockCacheService.RetrieveLastPageName().Returns(Task.FromResult("testurl/abc"));
+
+        var sut = new DeleteOrganisationModel(
+            _mockServiceDirectoryClient, 
+            _mockCacheService, 
+            _mockIdamClient)
         {
-            _mockServiceDirectoryClient = new Mock<IServiceDirectoryClient>();
-            _mockCacheService = new Mock<ICacheService>();
-            _mockIdamClient = new Mock<IIdamClient>();                       
-        }
+            DeleteOrganisation = null , 
+            BackButtonPath = "testurl"
+        };
 
-        [Fact]
-        public async Task OnGet_BackPathSet()
+        //  Act
+        await sut.OnGet(OrganisationId);
+
+        //  Assert
+        Assert.Equal("testurl/abc", sut.BackButtonPath);
+    }
+
+    [Fact]
+    public async Task OnGet_OranisationNameIsSavedInCache()
+    {
+        //  Arrange
+        var organisation = new OrganisationDetailsDto
         {
-            //  Arrange
-            var organisationId = 1;
-            _mockCacheService.Setup(x => x.RetrieveLastPageName()).Returns(Task.FromResult("testurl/abc"));
+            Id= OrganisationId, 
+            Name = "TestOrg", 
+            Description="description", 
+            AdminAreaCode="code",
+            OrganisationType=OrganisationType.VCFS
+        };
+        _mockServiceDirectoryClient.GetOrganisationById(Arg.Any<long>(), Arg.Any<CancellationToken>()).Returns(organisation);
+        _mockCacheService.When(x => x.StoreString(Arg.Any<string>(), Arg.Any<string>()));
+        var sut = new DeleteOrganisationModel(_mockServiceDirectoryClient, _mockCacheService, _mockIdamClient) { DeleteOrganisation = null };
 
-            var sut = new DeleteOrganisationModel(_mockServiceDirectoryClient.Object, _mockCacheService.Object, _mockIdamClient.Object) { DeleteOrganisation = null , BackButtonPath = "testurl"};
+        //  Act
+        await sut.OnGet(OrganisationId);
 
-            //  Act
-            await sut.OnGet(organisationId);
+        //  Assert
+        await _mockCacheService.Received(1).StoreString("DeleteOrganisationName", organisation.Name);        
+    }
 
-            //  Assert
-            Assert.Equal("testurl/abc", sut.BackButtonPath);
-        }
 
-        [Fact]
-        public async Task OnGet_OranisationNameIsSavedInCache()
+    [Fact]
+    public async Task OnPost_HasValidationErrorWhenNoSelection()
+    {
+        //  Arrange
+        var sut = new DeleteOrganisationModel(_mockServiceDirectoryClient, _mockCacheService, _mockIdamClient)
         {
-            //  Arrange
-            var organisationId = 1;
-            var organisation = new OrganisationDetailsDto{ Id= organisationId, Name = "TestOrg", Description="description", AdminAreaCode="code",OrganisationType=OrganisationType.VCFS };
-            _mockServiceDirectoryClient.Setup(x => x.GetOrganisationById(It.IsAny<long>(), It.IsAny<CancellationToken>())).ReturnsAsync(organisation);
-            _mockCacheService.Setup(x => x.StoreString(It.IsAny<string>(), It.IsAny<string>()));
-            var sut = new DeleteOrganisationModel(_mockServiceDirectoryClient.Object, _mockCacheService.Object, _mockIdamClient.Object) { DeleteOrganisation = null };
+            DeleteOrganisation = null
+        };
 
-            //  Act
-            await sut.OnGet(organisationId);
+        //  Act
+        var result = await sut.OnPost(OrganisationId);
 
-            //  Assert
-            _mockCacheService.Verify(x => x.StoreString("DeleteOrganisationName", organisation.Name), Times.Once);           
-        }
+        //  Assert
+        Assert.IsType<PageResult>(result);
+        Assert.True(sut.HasValidationError);
+    }
 
-
-        [Fact]
-        public async Task OnPost_ErrorIsDisplayedWhenNoSelection()
+    [Fact]
+    public async Task OnPost_UserRedirectedToResultPageWhenNoSelected()
+    {
+        //  Arrange
+        var sut = new DeleteOrganisationModel(_mockServiceDirectoryClient, _mockCacheService, _mockIdamClient)
         {
-            //  Arrange
-            var organisationId = 1;
-            
-            var sut = new DeleteOrganisationModel(_mockServiceDirectoryClient.Object, _mockCacheService.Object, _mockIdamClient.Object) { DeleteOrganisation = null };
+            DeleteOrganisation = false
+        };
 
-            //  Act
-            var result = await sut.OnPost(organisationId);
+        //  Act
+        var result = await sut.OnPost(OrganisationId);
 
-            //  Assert
-            Assert.IsType<PageResult>(result);
-            Assert.True(sut.HasValidationError);
-        }
+        //  Assert
+        Assert.IsType<RedirectToPageResult>(result);
+        Assert.False(sut.HasValidationError);
+        Assert.Equal("DeleteOrganisationResult", ((RedirectToPageResult)result).PageName);
+    }
 
-        [Fact]
-        public async Task OnPost_UserRedirectedToResultPageWhenNoSelected()
-        {
-            //  Arrange
-            var organisationId = 1;
-            
-            var sut = new DeleteOrganisationModel(_mockServiceDirectoryClient.Object, _mockCacheService.Object, _mockIdamClient.Object) { DeleteOrganisation = false };
+    [Fact]
+    public async Task OnPost_OrganisationAndAccountsDeletedWhenYesSelected()
+    {
+        //  Arrange
+        _mockIdamClient.When(x => x.DeleteOrganisationAccounts(Arg.Any<long>()));
+        _mockServiceDirectoryClient.When(x => x.DeleteOrganisation(Arg.Any<long>()));
 
-            //  Act
-            var result = await sut.OnPost(organisationId);
+        var sut = new DeleteOrganisationModel(_mockServiceDirectoryClient, _mockCacheService, _mockIdamClient) { DeleteOrganisation = true };
 
-            //  Assert
-            Assert.IsType<RedirectToPageResult>(result);
-            Assert.False(sut.HasValidationError);
-            Assert.Equal("DeleteOrganisationResult", ((RedirectToPageResult)result).PageName);
+        //  Act
+        var result = await sut.OnPost(OrganisationId);
 
-        }
+        //  Assert
+        await _mockIdamClient.Received(1).DeleteOrganisationAccounts(OrganisationId);
+        await _mockServiceDirectoryClient.Received(1).DeleteOrganisation(OrganisationId);
 
-        [Fact]
-        public async Task OnPost_OrganisationAndAccountsDeletedWhenYesSelected()
-        {
-            //  Arrange
-            var organisationId = 1;
-            _mockIdamClient.Setup(x => x.DeleteOrganisationAccounts(It.IsAny<long>()));
-            _mockServiceDirectoryClient.Setup(x => x.DeleteOrganisation(It.IsAny<long>()));
-
-            var sut = new DeleteOrganisationModel(_mockServiceDirectoryClient.Object, _mockCacheService.Object, _mockIdamClient.Object) { DeleteOrganisation = true };
-
-            //  Act
-            var result = await sut.OnPost(organisationId);
-
-            //  Assert
-            _mockIdamClient.Verify(x=>x.DeleteOrganisationAccounts(organisationId), Times.Once);
-            _mockServiceDirectoryClient.Verify(x=>x.DeleteOrganisation(organisationId), Times.Once);
-
-            Assert.IsType<RedirectToPageResult>(result);
-            Assert.False(sut.HasValidationError);
-            Assert.Equal("DeleteOrganisationResult", ((RedirectToPageResult)result).PageName);
-
-        }
+        Assert.IsType<RedirectToPageResult>(result);
+        Assert.False(sut.HasValidationError);
+        Assert.Equal("DeleteOrganisationResult", ((RedirectToPageResult)result).PageName);
     }
 }

@@ -1,41 +1,12 @@
 ﻿using FamilyHubs.Referral.Core.ApiClients;
-using FamilyHubs.Referral.Core.Models;
 using FamilyHubs.ReferralService.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
-using Moq;
-using Moq.Protected;
-using System.Net;
-using System.Net.Http;
 
 namespace FamilyHubs.ReferralUi.UnitTests.Core.ApiClients;
 
 public static class ClientHelper
 {
-    public static HttpClient GetMockClient<T>(T content, bool badRequest = false)
-    {
-        ArgumentNullException.ThrowIfNull(content);
-        var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-
-        HttpStatusCode httpStatusCode = HttpStatusCode.OK;
-        if (badRequest)
-        {
-            httpStatusCode = HttpStatusCode.BadRequest;
-        }
-
-        mockHttpMessageHandler.Protected()
-            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                Content = new StringContent(content.ToString() ?? string.Empty),
-                StatusCode = httpStatusCode,
-            });
-
-        var client = new HttpClient(mockHttpMessageHandler.Object);
-        client.BaseAddress = new Uri("https://localhost");
-        return client;
-    }
-
     public static List<TaxonomyDto> GetTaxonomies()
     {
         var activity = new TaxonomyDto { Id = 1, Name = "Activities, clubs and groups", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = null };
@@ -47,54 +18,54 @@ public static class ClientHelper
 
         var taxonomies = new List<TaxonomyDto>
         {
-            new TaxonomyDto { Name = "Activities", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
-            new TaxonomyDto { Name = "Before and after school clubs", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
-            new TaxonomyDto { Name = "Holiday clubs and schemes", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
-            new TaxonomyDto { Name = "Music, arts and dance", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
-            new TaxonomyDto { Name = "Parent, baby and toddler groups", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
-            new TaxonomyDto { Name = "Pre-school playgroup", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
-            new TaxonomyDto { Name = "Sports and recreation", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
+            new() { Name = "Activities", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
+            new() { Name = "Before and after school clubs", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
+            new() { Name = "Holiday clubs and schemes", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
+            new() { Name = "Music, arts and dance", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
+            new() { Name = "Parent, baby and toddler groups", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
+            new() { Name = "Pre-school playgroup", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
+            new() { Name = "Sports and recreation", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = activity.Id },
 
-            new TaxonomyDto { Name = "Bullying and cyber bullying", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
-            new TaxonomyDto { Name = "Debt and welfare advice", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
-            new TaxonomyDto { Name = "Domestic abuse", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
-            new TaxonomyDto { Name = "Intensive targeted family support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
-            new TaxonomyDto { Name = "Money, benefits and housing", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
-            new TaxonomyDto { Name = "Parenting support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
-            new TaxonomyDto { Name = "Reducing parental conflict", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
-            new TaxonomyDto { Name = "Separating and separated parent support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
-            new TaxonomyDto { Name = "Stopping smoking", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
-            new TaxonomyDto { Name = "Substance misuse (including alcohol and drug)", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
-            new TaxonomyDto { Name = "Targeted youth support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
-            new TaxonomyDto { Name = "Youth justice services", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
+            new() { Name = "Bullying and cyber bullying", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
+            new() { Name = "Debt and welfare advice", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
+            new() { Name = "Domestic abuse", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
+            new() { Name = "Intensive targeted family support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
+            new() { Name = "Money, benefits and housing", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
+            new() { Name = "Parenting support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
+            new() { Name = "Reducing parental conflict", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
+            new() { Name = "Separating and separated parent support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
+            new() { Name = "Stopping smoking", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
+            new() { Name = "Substance misuse (including alcohol and drug)", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
+            new() { Name = "Targeted youth support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
+            new() { Name = "Youth justice services", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = support.Id },
 
-            new TaxonomyDto { Name = "Hearing and sight", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = health.Id },
-            new TaxonomyDto { Name = "Mental health, social and emotional support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = health.Id },
-            new TaxonomyDto { Name = "Nutrition and weight management", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = health.Id },
-            new TaxonomyDto { Name = "Oral health", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = health.Id },
-            new TaxonomyDto { Name = "Public health services", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = health.Id },
+            new() { Name = "Hearing and sight", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = health.Id },
+            new() { Name = "Mental health, social and emotional support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = health.Id },
+            new() { Name = "Nutrition and weight management", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = health.Id },
+            new() { Name = "Oral health", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = health.Id },
+            new() { Name = "Public health services", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = health.Id },
 
-            new TaxonomyDto { Name = "Birth registration", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = earlyYear.Id },
-            new TaxonomyDto { Name = "Early years language and learning", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = earlyYear.Id },
-            new TaxonomyDto { Name = "Health visiting", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = earlyYear.Id },
-            new TaxonomyDto { Name = "Infant feeding support (including breastfeeding)", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = earlyYear.Id },
-            new TaxonomyDto { Name = "Midwife and maternity", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = earlyYear.Id },
-            new TaxonomyDto { Name = "Perinatal mental health support (pregnancy to one year post birth)", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = earlyYear.Id },
+            new() { Name = "Birth registration", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = earlyYear.Id },
+            new() { Name = "Early years language and learning", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = earlyYear.Id },
+            new() { Name = "Health visiting", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = earlyYear.Id },
+            new() { Name = "Infant feeding support (including breastfeeding)", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = earlyYear.Id },
+            new() { Name = "Midwife and maternity", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = earlyYear.Id },
+            new() { Name = "Perinatal mental health support (pregnancy to one year post birth)", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = earlyYear.Id },
 
-            new TaxonomyDto { Name = "Autistic Spectrum Disorder (ASD)", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
-            new TaxonomyDto { Name = "Breaks and respite", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
-            new TaxonomyDto { Name = "Early years support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
-            new TaxonomyDto { Name = "Groups for parents and carers of children with SEND", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
-            new TaxonomyDto { Name = "Hearing impairment", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
-            new TaxonomyDto { Name = "Learning difficulties and disabilities", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
-            new TaxonomyDto { Name = "Multi-sensory impairment", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
-            new TaxonomyDto { Name = "Other difficulties or disabilities", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
-            new TaxonomyDto { Name = "Physical disabilities", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
-            new TaxonomyDto { Name = "Social, emotional and mental health support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
-            new TaxonomyDto { Name = "Speech, language and communication needs", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
-            new TaxonomyDto { Name = "Visual impairment", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
+            new() { Name = "Autistic Spectrum Disorder (ASD)", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
+            new() { Name = "Breaks and respite", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
+            new() { Name = "Early years support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
+            new() { Name = "Groups for parents and carers of children with SEND", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
+            new() { Name = "Hearing impairment", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
+            new() { Name = "Learning difficulties and disabilities", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
+            new() { Name = "Multi-sensory impairment", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
+            new() { Name = "Other difficulties or disabilities", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
+            new() { Name = "Physical disabilities", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
+            new() { Name = "Social, emotional and mental health support", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
+            new() { Name = "Speech, language and communication needs", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
+            new() { Name = "Visual impairment", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = send.Id },
 
-            new TaxonomyDto { Name = "Community transport", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = transport.Id },
+            new() { Name = "Community transport", TaxonomyType = TaxonomyType.ServiceCategory, ParentId = transport.Id },
 
         };
 
@@ -142,7 +113,7 @@ public static class ClientHelper
                 Team = "Team",
                 UserAccountRoles = new List<UserAccountRoleDto>()
                     {
-                        new UserAccountRoleDto
+                        new()
                         {
                             UserAccount = new UserAccountDto
                             {
@@ -169,7 +140,7 @@ public static class ClientHelper
                 Name = "Service",
                 Description = "Service Description",
                 Url = "www.service.com",
-                OrganisationDto = new FamilyHubs.ReferralService.Shared.Dto.OrganisationDto
+                OrganisationDto = new ReferralService.Shared.Dto.OrganisationDto
                 {
                     Id = 2,
                     ReferralServiceId = 2,
@@ -180,7 +151,7 @@ public static class ClientHelper
         };
     }
 
-    public static ServiceDto GetTestCountyCouncilServicesDto(string serviceId = "5059a0b2-ad5d-4288-b7c1-e30d35345b0e")
+    public static ServiceDto GetTestCountyCouncilServicesDto()
     {
         var service = new ServiceDto
         {
@@ -192,14 +163,14 @@ public static class ClientHelper
             CanFamilyChooseDeliveryLocation = true,
             ServiceDeliveries = new List<ServiceDeliveryDto>
             {
-                new ServiceDeliveryDto
+                new()
                 {
                     Name = AttendingType.Online,
                 }
             },
             Eligibilities = new List<EligibilityDto>
             {
-                new EligibilityDto
+                new()
                 {
                     EligibilityType = null,
                     MinimumAge = 0,
@@ -208,7 +179,7 @@ public static class ClientHelper
             },
             Contacts = new List<ContactDto>
             {
-                new ContactDto
+                new()
                 {
                     Name = "Contact",
                     Title = string.Empty,
@@ -220,7 +191,7 @@ public static class ClientHelper
             },
             CostOptions = new List<CostOptionDto>
             {
-                new CostOptionDto
+                new()
                 {
                     Amount = 1,
                     Option = "paid",
@@ -229,7 +200,7 @@ public static class ClientHelper
             },
             Languages = new List<LanguageDto>
             {
-                new LanguageDto
+                new()
                 {
                     Name = "English",
                     Code = "en"
@@ -237,7 +208,7 @@ public static class ClientHelper
             },
             ServiceAreas = new List<ServiceAreaDto>
             {
-                new ServiceAreaDto
+                new()
                 {
                     ServiceAreaName = "National",
                     Extent = null,
@@ -246,7 +217,7 @@ public static class ClientHelper
             },
             Locations = new List<LocationDto>
             {
-                new LocationDto
+                new()
                 {
                     Name = "Test Location",
                     Description = "",
@@ -261,7 +232,7 @@ public static class ClientHelper
                     LocationType = LocationType.Postal,
                     Contacts = new List<ContactDto>
                     {
-                        new ContactDto
+                        new()
                         {
                             Name = "Contact",
                             Title = string.Empty,
@@ -273,7 +244,7 @@ public static class ClientHelper
                     },
                     Schedules = new List<ScheduleDto>
                     {
-                        new ScheduleDto
+                        new()
                         {
                             Description = "Description",
                             ValidFrom = new DateTime(2023, 1, 1).ToUniversalTime(),
@@ -291,28 +262,28 @@ public static class ClientHelper
             },
             Taxonomies = new List<TaxonomyDto>
             {
-                new TaxonomyDto
+                new()
                 {
                     Id = 1,
                     Name = "Organisation",
                     TaxonomyType = TaxonomyType.ServiceCategory,
                     ParentId = null
                 },
-                new TaxonomyDto
+                new()
                 {
                     Id = 2,
                     Name = "Support",
                     TaxonomyType = TaxonomyType.ServiceCategory,
                     ParentId = null
                 },
-                new TaxonomyDto
+                new()
                 {
                     Id = 3,
                     Name = "Children",
                     TaxonomyType = TaxonomyType.ServiceCategory,
                     ParentId = null
                 },
-                new TaxonomyDto
+                new()
                 {
 
                     Id = 4,
@@ -323,7 +294,7 @@ public static class ClientHelper
             },
             Schedules = new List<ScheduleDto>
             {
-                new ScheduleDto
+                new()
                 {
                     Description = "Description",
                     OpensAt = new DateTime(2023, 1, 1).ToUniversalTime(),
@@ -359,14 +330,15 @@ public static class ClientHelper
 
     public static List<AccountDto> GetAccountList() 
     {
-        return new List<AccountDto>
-        {
-            new AccountDto 
+        return
+        [
+            new AccountDto
             {
                 Id = 1,
                 Name = "Test User1",
                 Email = "TestUser1@email.com"
             },
+
 
             new AccountDto
             {
@@ -374,6 +346,6 @@ public static class ClientHelper
                 Name = "Test User2",
                 Email = "TestUser2@email.com"
             }
-        };
+        ];
     }
 }

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using AutoFixture;
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models;
@@ -11,23 +8,24 @@ using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
 {
     public class TypeOfRoleTests
     {
-        private readonly Mock<ICacheService> _mockCacheService;
+        private readonly ICacheService _mockCacheService;
         private readonly Fixture _fixture;
         private readonly TypeOfRole _sut;
 
         public TypeOfRoleTests()
         {
-            _mockCacheService = new Mock<ICacheService>();
-            var mockServiceDirectoryClient = new Mock<IServiceDirectoryClient>();
-            mockServiceDirectoryClient.Setup(x => x.GetCachedLaOrganisations(CancellationToken.None))
-                .ReturnsAsync(new List<OrganisationDto>(new [] { new OrganisationDto
+            _mockCacheService = Substitute.For<ICacheService>();
+            var mockServiceDirectoryClient = Substitute.For<IServiceDirectoryClient>();
+            mockServiceDirectoryClient.GetCachedLaOrganisations(CancellationToken.None)
+                .Returns(new List<OrganisationDto>([
+                    new OrganisationDto
                     {
                         OrganisationType = OrganisationType.LA,
                         Name = "Test",
@@ -35,9 +33,9 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
                         AdminAreaCode = "Test",
                         Id = 1
                     }
-                }));
+                ]));
             
-            _sut = new TypeOfRole(_mockCacheService.Object, mockServiceDirectoryClient.Object)
+            _sut = new TypeOfRole(_mockCacheService, mockServiceDirectoryClient)
             {
                 SelectedValue = string.Empty,
                 PageContext =
@@ -57,7 +55,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
         {
             //  Arrange
             var permissionModel = _fixture.Create<PermissionModel>();
-            _mockCacheService.Setup(m => m.GetPermissionModel(It.IsAny<string>())).ReturnsAsync(permissionModel);
+            _mockCacheService.GetPermissionModel(Arg.Any<string>()).Returns(permissionModel);
 
             //  Act
             await _sut.OnGet();
@@ -105,7 +103,10 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
             _ = await _sut.OnPost();
 
             //  Assert
-            _mockCacheService.Verify(m => m.StorePermissionModel(It.Is<PermissionModel>(arg => arg.OrganisationType == "LA"), It.IsAny<string>()));
+            await _mockCacheService
+                .Received()
+                .StorePermissionModel(Arg.Is<PermissionModel>(arg => arg.OrganisationType == "LA"),
+                    Arg.Any<string>());
         }
     }
 }

@@ -20,7 +20,7 @@ public class UpdateClaimCommandTests : DataIntegrationTestBase<UpdateClaimComman
             Name = claim.Name,
             Value = claim.Value
         };
-        var updateHandler = new UpdateClaimCommandHandler(TestDbContext, MockLogger.Object);
+        var updateHandler = new UpdateClaimCommandHandler(TestDbContext, MockLogger);
 
         //Act
         var result = await updateHandler.Handle(updateCommand, new CancellationToken());
@@ -44,7 +44,7 @@ public class UpdateClaimCommandTests : DataIntegrationTestBase<UpdateClaimComman
             Value = "test"
         };
 
-        var handler = new UpdateClaimCommandHandler(TestDbContext, MockLogger.Object);
+        var handler = new UpdateClaimCommandHandler(TestDbContext, MockLogger);
 
         // Act 
         // Assert

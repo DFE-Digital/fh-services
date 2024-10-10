@@ -1,27 +1,24 @@
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.SharedKernel.Reports.WeeklyBreakdown;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
+using NSubstitute;
 using Xunit;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.IntegrationTests.PerformanceData;
 
 public class FindTest : BaseTest
 {
-    private readonly Mock<IReportingClient> _reportingClient = new();
-    private readonly Mock<IServiceDirectoryClient> _serviceDirectoryClient = new();
+    private readonly IReportingClient _reportingClient = Substitute.For<IReportingClient>();
+    private readonly IServiceDirectoryClient _serviceDirectoryClient = Substitute.For<IServiceDirectoryClient>();
 
     private const ServiceType TestServiceType = ServiceType.FamilyExperience;
 
     protected override void Configure(IServiceCollection services)
     {
-        services.AddSingleton(_reportingClient.Object);
-        services.AddSingleton(_serviceDirectoryClient.Object);
+        services.AddSingleton(_reportingClient);
+        services.AddSingleton(_serviceDirectoryClient);
     }
 
     [Fact]
@@ -40,17 +37,18 @@ public class FindTest : BaseTest
         };
 
         _reportingClient
-            .Setup(r => r.GetServicesSearches4WeekBreakdown(TestServiceType, null, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(breakdown);
+            .GetServicesSearches4WeekBreakdown(TestServiceType, null, Arg.Any<CancellationToken>())
+            .Returns(breakdown);
 
         var searchCount = Random.Next(0, 1000000);
         _reportingClient
-            .Setup(r => r.GetServicesSearchesTotal(TestServiceType, null, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(searchCount);
+            .GetServicesSearchesTotal(TestServiceType, null, Arg.Any<CancellationToken>())
+            .Returns(searchCount);
         var recentSearchCount = Random.Next(0, 1000000);
         _reportingClient
-            .Setup(r => r.GetServicesSearchesPast7Days(TestServiceType, null, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(recentSearchCount);
+            .GetServicesSearchesPast7Days(TestServiceType, null, Arg.Any<CancellationToken>())
+            .Returns(recentSearchCount);
+        
 
         // Login
         await Login(StubUser.DfeAdmin);
@@ -81,8 +79,8 @@ public class FindTest : BaseTest
     public async Task As_LaManager_Then_Find_Data_Should_Be_Correct()
     {
         _serviceDirectoryClient
-            .Setup(sd => sd.GetOrganisationById(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new OrganisationDetailsDto
+            .GetOrganisationById(Arg.Any<long>(), Arg.Any<CancellationToken>())
+            .Returns(new OrganisationDetailsDto
             {
                 Name = "Test Org",
                 OrganisationType = OrganisationType.LA,
@@ -92,28 +90,30 @@ public class FindTest : BaseTest
 
         var breakdown = new WeeklyReportBreakdown
         {
-            WeeklyReports = new[]
-            {
+            WeeklyReports =
+            [
                 new WeeklyReport { Date = "Week 1", SearchCount = Random.Next(0, 1000000) },
                 new WeeklyReport { Date = "Week 2", SearchCount = Random.Next(0, 1000000) },
                 new WeeklyReport { Date = "Week 3", SearchCount = Random.Next(0, 1000000) },
                 new WeeklyReport { Date = "Week 4", SearchCount = Random.Next(0, 1000000) }
-            },
+            ],
             TotalSearchCount = Random.Next(0, 1000000)
         };
 
         _reportingClient
-            .Setup(r => r.GetServicesSearches4WeekBreakdown(TestServiceType, It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(breakdown);
+            .GetServicesSearches4WeekBreakdown(TestServiceType, Arg.Any<long>(), Arg.Any<CancellationToken>())
+            .Returns(breakdown);
 
         var searchCount = Random.Next(0, 1000000);
         _reportingClient
-            .Setup(r => r.GetServicesSearchesTotal(TestServiceType, It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(searchCount);
+            .GetServicesSearchesTotal(TestServiceType, Arg.Any<long>(), Arg.Any<CancellationToken>())
+            .Returns(searchCount);
+
         var recentSearchCount = Random.Next(0, 1000000);
+
         _reportingClient
-            .Setup(r => r.GetServicesSearchesPast7Days(TestServiceType, It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(recentSearchCount);
+            .GetServicesSearchesPast7Days(TestServiceType, Arg.Any<long>(), Arg.Any<CancellationToken>())
+            .Returns(recentSearchCount);
 
         // Login
         await Login(StubUser.LaAdmin);
