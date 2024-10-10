@@ -1,0 +1,18 @@
+{
+  "name": "e2e-framework",
+  "type": "module",
+  "scripts": {
+    "setup:dev": "dotenvx run -f .env.local -- node scripts/setup.js",
+    "teardown:dev": "dotenvx run -f .env.local -- node scripts/teardown.js",
+    "prepare": "husky",
+    "format": "standard --fix"
+  },
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.16.1",
+    "sequelize": "^6.37.4",
+    "tedious": "^18.6.1"
+  },
+  "devDependencies": {
+    "standard": "^17.1.2"
+  }
+}
