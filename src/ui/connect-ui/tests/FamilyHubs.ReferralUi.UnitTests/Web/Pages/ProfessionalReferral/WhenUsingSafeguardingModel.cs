@@ -8,7 +8,7 @@ public class WhenUsingSafeguardingModel : BaseProfessionalReferralPage
     [Fact]
     public async Task ThenOnGetSetsIdAndName()
     {
-        var safeguardingModel = new SafeguardingModel(ReferralDistributedCache.Object);
+        var safeguardingModel = new SafeguardingModel(ReferralDistributedCache);
 
         //Act
         await safeguardingModel.OnGetAsync("Id");

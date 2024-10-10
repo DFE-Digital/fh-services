@@ -1,21 +1,21 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Moq;
 using System.Text.Json;
 using FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options.Configure;
 using FamilyHubs.SharedKernel.Razor.UnitTests.FamilyHubsUi.Configure.Helpers;
 using FluentAssertions;
+using NSubstitute;
 
 namespace FamilyHubs.SharedKernel.Razor.UnitTests.FamilyHubsUi.Configure;
 
 public class FamilyHubsUiOptionsConfigureTests : FamilyHubsUiOptionsTestBase
 {
-    public FamilyHubsUiOptionsConfigure FamilyHubsUiOptionsConfigure { get; set; }
-    public Mock<IConfiguration> Configuration { get; set; }
+    private readonly IConfiguration _configuration;
+    private readonly FamilyHubsUiOptionsConfigure _familyHubsUiOptionsConfigure;
 
     public FamilyHubsUiOptionsConfigureTests()
     {
-        Configuration = new Mock<IConfiguration>();
-        FamilyHubsUiOptionsConfigure = new FamilyHubsUiOptionsConfigure(Configuration.Object);
+        _configuration = Substitute.For<IConfiguration>();
+        _familyHubsUiOptionsConfigure = new FamilyHubsUiOptionsConfigure(_configuration);
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public class FamilyHubsUiOptionsConfigureTests : FamilyHubsUiOptionsTestBase
         var expectedFamilyHubsUiOptions = DeepClone(FamilyHubsUiOptions);
 
         // act
-        FamilyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
+        _familyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
 
         FamilyHubsUiOptions.Should().BeEquivalentTo(expectedFamilyHubsUiOptions);
     }
@@ -42,7 +42,7 @@ public class FamilyHubsUiOptionsConfigureTests : FamilyHubsUiOptionsTestBase
         link.Text = text;
 
         // act
-        FamilyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
+        _familyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
 
         var actualLink = FamilyHubsUiOptions.Header.NavigationLinks.FirstOrDefault();
         Assert.NotNull(actualLink);
@@ -62,7 +62,7 @@ public class FamilyHubsUiOptionsConfigureTests : FamilyHubsUiOptionsTestBase
         link.Text = text;
 
         // act
-        FamilyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
+        _familyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
 
         var actualLink = FamilyHubsUiOptions.Header.ActionLinks.FirstOrDefault();
         Assert.NotNull(actualLink);
@@ -82,7 +82,7 @@ public class FamilyHubsUiOptionsConfigureTests : FamilyHubsUiOptionsTestBase
         link.Text = text;
 
         // act
-        FamilyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
+        _familyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
 
         var actualLink = FamilyHubsUiOptions.Footer.Links.FirstOrDefault();
         Assert.NotNull(actualLink);
@@ -94,14 +94,14 @@ public class FamilyHubsUiOptionsConfigureTests : FamilyHubsUiOptionsTestBase
     {
         const string configKey = "A:B";
         const string configValue = "configValue";
-        Configuration.Setup(c => c[configKey]).Returns(configValue);
+        _configuration[configKey].Returns(configValue);
 
         var link = FamilyHubsUiOptions.Header.NavigationLinks[0];
         link.Url = null;
         link.ConfigUrl = configKey;
 
         // act
-        FamilyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
+        _familyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
 
         var actualLink = FamilyHubsUiOptions.Header.NavigationLinks.FirstOrDefault();
         Assert.NotNull(actualLink);
@@ -113,14 +113,14 @@ public class FamilyHubsUiOptionsConfigureTests : FamilyHubsUiOptionsTestBase
     {
         const string configKey = "A:B";
         const string configValue = "configValue";
-        Configuration.Setup(c => c[configKey]).Returns(configValue);
+        _configuration[configKey].Returns(configValue);
 
         var link = FamilyHubsUiOptions.Header.ActionLinks[0];
         link.Url = null;
         link.ConfigUrl = configKey;
 
         // act
-        FamilyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
+        _familyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
 
         var actualLink = FamilyHubsUiOptions.Header.ActionLinks.FirstOrDefault();
         Assert.NotNull(actualLink);
@@ -132,21 +132,21 @@ public class FamilyHubsUiOptionsConfigureTests : FamilyHubsUiOptionsTestBase
     {
         const string configKey = "A:B";
         const string configValue = "configValue";
-        Configuration.Setup(c => c[configKey]).Returns(configValue);
+        _configuration[configKey].Returns(configValue);
 
         var link = FamilyHubsUiOptions.Footer.Links[0];
         link.Url = null;
         link.ConfigUrl = configKey;
 
         // act
-        FamilyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
+        _familyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
 
         var actualLink = FamilyHubsUiOptions.Footer.Links.FirstOrDefault();
         Assert.NotNull(actualLink);
         Assert.Equal(configValue, actualLink.Url);
     }
 
-    protected static T DeepClone<T>(T obj)
+    private static T DeepClone<T>(T obj)
     {
         string json = JsonSerializer.Serialize(obj);
         return JsonSerializer.Deserialize<T>(json)!;

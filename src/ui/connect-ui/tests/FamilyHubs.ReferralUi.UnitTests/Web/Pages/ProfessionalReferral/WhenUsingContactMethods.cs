@@ -2,7 +2,7 @@
 using FamilyHubs.Referral.Web.Pages.ProfessionalReferral;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.ReferralUi.UnitTests.Web.Pages.ProfessionalReferral;
 
@@ -12,7 +12,7 @@ public class WhenUsingContactMethods : BaseProfessionalReferralPage
 
     public WhenUsingContactMethods()
     {
-        _contactMethodsModel = new ContactMethodsModel(ReferralDistributedCache.Object);
+        _contactMethodsModel = new ContactMethodsModel(ReferralDistributedCache);
     }
 
     [Fact]
@@ -42,9 +42,8 @@ public class WhenUsingContactMethods : BaseProfessionalReferralPage
         await _contactMethodsModel.OnPostAsync("1");
 
         //Assert
-        ReferralDistributedCache.Verify(x =>
-            x.SetAsync(It.IsAny<string>(), It.IsAny<ConnectionRequestModel>()), Times.Once);
-        var content = await ReferralDistributedCache.Object.GetAsync(ProfessionalEmail);
+        await ReferralDistributedCache.Received(1).SetAsync(Arg.Any<string>(), Arg.Any<ConnectionRequestModel>());
+        var content = await ReferralDistributedCache.GetAsync(ProfessionalEmail);
         ArgumentNullException.ThrowIfNull(content);
         content.EngageReason.Should().Be(_contactMethodsModel.TextAreaValue);
         

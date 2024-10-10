@@ -10,7 +10,7 @@ public class WhenUsingSharePrivacy : BaseProfessionalReferralPage
 
     public WhenUsingSharePrivacy()
     {
-        _sharePrivacyModel = new SharePrivacyModel(ReferralDistributedCache.Object);
+        _sharePrivacyModel = new SharePrivacyModel(ReferralDistributedCache);
     }
 
     [Fact]

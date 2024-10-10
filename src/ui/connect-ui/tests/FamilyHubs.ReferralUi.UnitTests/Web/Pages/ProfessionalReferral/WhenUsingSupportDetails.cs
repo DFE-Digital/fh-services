@@ -9,7 +9,7 @@ public class WhenUsingSupportDetails : BaseProfessionalReferralPage
     private readonly SupportDetailsModel _supportDetailsModel;
     public WhenUsingSupportDetails()
     {
-        _supportDetailsModel = new SupportDetailsModel(ReferralDistributedCache.Object);
+        _supportDetailsModel = new SupportDetailsModel(ReferralDistributedCache);
     }
 
     [Fact]

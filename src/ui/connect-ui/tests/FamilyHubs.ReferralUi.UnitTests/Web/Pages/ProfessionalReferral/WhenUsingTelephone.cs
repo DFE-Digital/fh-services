@@ -11,7 +11,7 @@ public class WhenUsingTelephone : BaseProfessionalReferralPage
 
     public WhenUsingTelephone()
     {
-        _telephoneModel = new TelephoneModel(ReferralDistributedCache.Object);
+        _telephoneModel = new TelephoneModel(ReferralDistributedCache);
     }
 
     [Fact]

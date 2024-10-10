@@ -11,7 +11,7 @@ public class WhenUsingLetter : BaseProfessionalReferralPage
 
     public WhenUsingLetter()
     {
-        _letterModel = new LetterModel(ReferralDistributedCache.Object);
+        _letterModel = new LetterModel(ReferralDistributedCache);
     }
 
     [Fact]
@@ -58,6 +58,4 @@ public class WhenUsingLetter : BaseProfessionalReferralPage
 
         _letterModel.BackUrl.Should().Be("/ProfessionalReferral/Text?ServiceId=1");
     }
-
-    //todo: unit tests to check BackUrl
 }

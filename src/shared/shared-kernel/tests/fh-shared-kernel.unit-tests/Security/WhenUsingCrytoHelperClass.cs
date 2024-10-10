@@ -1,30 +1,27 @@
-﻿using System.Collections.Generic;
-using FamilyHubs.SharedKernel.Security;
+﻿using FamilyHubs.SharedKernel.Security;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore.DataEncryption.Providers;
-using Moq;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
+using NSubstitute;
 
 namespace FamilyHubs.SharedKernel.UnitTests.Security;
 
 public class WhenUsingCrytoHelperClass
 {
-    
     [Fact]
     public async Task ThenEncryptStringAndThenDecryptItBack()
     {
         //Arrange
-        (string publicKey, string privateKey, string dbEncryptionKey, string dbEncryptionIVKey) = GenerateKeys();
+        (string publicKey, string privateKey, string dbEncryptionKey, string dbEncryptionIvKey) = GenerateKeys();
 
-        Mock<IKeyProvider> provider = new Mock<IKeyProvider>();
-        provider.Setup(x => x.GetPublicKey()).ReturnsAsync(publicKey);
-        provider.Setup(x => x.GetPrivateKey()).ReturnsAsync(privateKey);
-        provider.Setup(x => x.GetDbEncryptionKey()).ReturnsAsync(dbEncryptionKey);
-        provider.Setup(x => x.GetDbEncryptionIVKey()).ReturnsAsync(dbEncryptionIVKey);
+        IKeyProvider provider = Substitute.For<IKeyProvider>();
+        provider.GetPublicKey().Returns(publicKey);
+        provider.GetPrivateKey().Returns(privateKey);
+        provider.GetDbEncryptionKey().Returns(dbEncryptionKey);
+        provider.GetDbEncryptionIVKey().Returns(dbEncryptionIvKey);
 
         string expected = "Hello, RSA encryption!";
-        ICrypto crypto = new Crypto(provider.Object);
+        ICrypto crypto = new Crypto(provider);
 
         //Act
         string encryptedData = await crypto.EncryptData(expected);
@@ -35,11 +32,10 @@ public class WhenUsingCrytoHelperClass
         expected.Should().NotBe(encryptedData);
         encryptedData.Length.Should().BeGreaterThan(expected.Length);
         dbEncryptionKey.Should().NotBeNullOrEmpty();
-        dbEncryptionIVKey.Should().NotBeNullOrEmpty();
+        dbEncryptionIvKey.Should().NotBeNullOrEmpty();
     }
-    
 
-    public (string publicKey, string privateKey, string dbEncryptionKey, string dbEncryptionIVKey) GenerateKeys()
+    private (string publicKey, string privateKey, string dbEncryptionKey, string dbEncryptionIVKey) GenerateKeys()
     {
         using (var rsa = RSA.Create())
         {
@@ -52,7 +48,7 @@ public class WhenUsingCrytoHelperClass
             {
                 items.Add(item.ToString());
             }
-            string dbEncryptionIVKey = string.Join(',', items.ToArray());
+            string dbEncryptionIvKey = string.Join(',', items.ToArray());
             items.Clear();
 
             foreach (var item in result.Key)
@@ -61,7 +57,7 @@ public class WhenUsingCrytoHelperClass
             }
             string dbEncryptionKey = string.Join(',', items.ToArray());
 
-            return (publicKey, privateKey, dbEncryptionKey, dbEncryptionIVKey);
+            return (publicKey, privateKey, dbEncryptionKey, dbEncryptionIvKey);
         }
     }
 }

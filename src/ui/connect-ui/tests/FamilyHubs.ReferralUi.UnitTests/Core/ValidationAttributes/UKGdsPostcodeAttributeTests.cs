@@ -4,11 +4,11 @@ namespace FamilyHubs.ReferralUi.UnitTests.Core.ValidationAttributes;
 
 public class UKGdsPostcodeAttributeTests
 {
-    public UkGdsPostcodeAttribute UKGdsPostcodeAttribute { get; set; }
+    private UkGdsPostcodeAttribute UkGdsPostcodeAttribute { get; }
 
     public UKGdsPostcodeAttributeTests()
     {
-        UKGdsPostcodeAttribute = new UkGdsPostcodeAttribute();
+        UkGdsPostcodeAttribute = new UkGdsPostcodeAttribute();
     }
 
     [Theory]
@@ -41,7 +41,7 @@ public class UKGdsPostcodeAttributeTests
     public void IsValid_WhenPostcodeIsTested_ReturnsWhetherIsValid(bool expectedIsValid, string? postcode)
     {
         // Act
-        var result = UKGdsPostcodeAttribute.IsValid(postcode);
+        var result = UkGdsPostcodeAttribute.IsValid(postcode);
 
         if (expectedIsValid)
             Assert.True(result);
@@ -74,7 +74,7 @@ public class UKGdsPostcodeAttributeTests
     public void SanitisePostcode_WhenPostcodeIsSupplied_ReturnsSanitisedPostcode(string expectedPostcode, string postcode)
     {
         // Act
-        string result = UkGdsPostcodeAttribute.SanitisePostcode(postcode);
+        var result = UkGdsPostcodeAttribute.SanitisePostcode(postcode);
 
         Assert.Equal(expectedPostcode, result);
     }

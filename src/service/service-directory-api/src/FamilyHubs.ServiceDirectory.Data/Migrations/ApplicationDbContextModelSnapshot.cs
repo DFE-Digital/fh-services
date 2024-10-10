@@ -23,6 +23,336 @@ namespace FamilyHubs.ServiceDirectory.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("AccessibilityAttribute", b =>
+                {
+                    b.Property<Guid>("AccessibilityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AccessibilityId", "AttributesId");
+
+                    b.HasIndex("AttributesId");
+
+                    b.ToTable("AccessibilityAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AccessibilityMetadata", b =>
+                {
+                    b.Property<Guid>("AccessibilityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AccessibilityId", "MetadataId");
+
+                    b.HasIndex("MetadataId");
+
+                    b.ToTable("AccessibilityMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AddressAttribute", b =>
+                {
+                    b.Property<Guid>("AddressId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AddressId", "AttributesId");
+
+                    b.HasIndex("AttributesId");
+
+                    b.ToTable("AddressAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AddressMetadata", b =>
+                {
+                    b.Property<Guid>("AddressId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AddressId", "MetadataId");
+
+                    b.HasIndex("MetadataId");
+
+                    b.ToTable("AddressMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeContact", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ContactId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "ContactId");
+
+                    b.HasIndex("ContactId");
+
+                    b.ToTable("ContactAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeCostOption", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CostOptionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "CostOptionId");
+
+                    b.HasIndex("CostOptionId");
+
+                    b.ToTable("CostOptionAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeFunding", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FundingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "FundingId");
+
+                    b.HasIndex("FundingId");
+
+                    b.ToTable("FundingAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeLanguage", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("LanguageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "LanguageId");
+
+                    b.HasIndex("LanguageId");
+
+                    b.ToTable("LanguageAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeLocation", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "LocationId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("LocationAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeMetaTableDescription", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MetaTableDescriptionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "MetaTableDescriptionId");
+
+                    b.HasIndex("MetaTableDescriptionId");
+
+                    b.ToTable("MetaTableDescriptionAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeMetadata", b =>
+                {
+                    b.Property<Guid>("AttributeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributeId", "MetadataId");
+
+                    b.HasIndex("MetadataId");
+
+                    b.ToTable("AttributeMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeOrganization", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "OrganizationId");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("OrganizationAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeOrganizationIdentifier", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationIdentifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "OrganizationIdentifierId");
+
+                    b.HasIndex("OrganizationIdentifierId");
+
+                    b.ToTable("OrganizationIdentifierAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributePhone", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PhoneId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "PhoneId");
+
+                    b.HasIndex("PhoneId");
+
+                    b.ToTable("PhoneAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeProgram", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProgramId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "ProgramId");
+
+                    b.HasIndex("ProgramId");
+
+                    b.ToTable("ProgramAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeRequiredDocument", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RequiredDocumentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "RequiredDocumentId");
+
+                    b.HasIndex("RequiredDocumentId");
+
+                    b.ToTable("RequiredDocumentAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeSchedule", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ScheduleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "ScheduleId");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.ToTable("ScheduleAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeService", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "ServiceId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("ServiceAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeServiceArea", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ServiceAreaId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "ServiceAreaId");
+
+                    b.HasIndex("ServiceAreaId");
+
+                    b.ToTable("ServiceAreaAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("AttributeServiceAtLocation", b =>
+                {
+                    b.Property<Guid>("AttributesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ServiceAtLocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttributesId", "ServiceAtLocationId");
+
+                    b.HasIndex("ServiceAtLocationId");
+
+                    b.ToTable("ServiceAtLocationAttributes", "dedsmeta");
+                });
+
+            modelBuilder.Entity("ContactMetadata", b =>
+                {
+                    b.Property<Guid>("ContactId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ContactId", "MetadataId");
+
+                    b.HasIndex("MetadataId");
+
+                    b.ToTable("ContactMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("CostOptionMetadata", b =>
+                {
+                    b.Property<Guid>("CostOptionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CostOptionId", "MetadataId");
+
+                    b.HasIndex("MetadataId");
+
+                    b.ToTable("CostOptionMetadata", "dedsmeta");
+                });
+
             modelBuilder.Entity("FamilyHubs.ServiceDirectory.Data.Entities.AccessibilityForDisabilities", b =>
                 {
                     b.Property<long>("Id")
@@ -966,6 +1296,1395 @@ namespace FamilyHubs.ServiceDirectory.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Accessibility", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "details");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<string>("Url")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)")
+                        .HasAnnotation("Relational:JsonPropertyName", "url");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("Accessibilities", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "accessibility");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Address", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address1")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "address_1");
+
+                    b.Property<string>("Address2")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "address_2");
+
+                    b.Property<string>("AddressType")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "address_type");
+
+                    b.Property<string>("Attention")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "attention");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "city");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "country");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "postal_code");
+
+                    b.Property<string>("Region")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "region");
+
+                    b.Property<string>("StateProvince")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "state_province");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("Addresses", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "addresses");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LinkEntity")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "link_entity");
+
+                    b.Property<Guid?>("LinkId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "link_id");
+
+                    b.Property<string>("LinkType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "link_type");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("TaxonomyTermId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Value")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "value");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("TaxonomyTermId")
+                        .IsUnique()
+                        .HasFilter("[TaxonomyTermId] IS NOT NULL");
+
+                    b.ToTable("Attributes", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "attributes");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Contact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Department")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "department");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "email");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ServiceAtLocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "title");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.HasIndex("ServiceAtLocationId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("Contacts", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "contacts");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.CostOption", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasAnnotation("Relational:JsonPropertyName", "amount");
+
+                    b.Property<string>("AmountDescription")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "amount_description");
+
+                    b.Property<string>("Currency")
+                        .HasColumnType("nchar(3)")
+                        .HasAnnotation("Relational:JsonPropertyName", "currency");
+
+                    b.Property<string>("Option")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "option");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ValidFrom")
+                        .HasColumnType("date")
+                        .HasAnnotation("Relational:JsonPropertyName", "valid_from");
+
+                    b.Property<DateTime?>("ValidTo")
+                        .HasColumnType("date")
+                        .HasAnnotation("Relational:JsonPropertyName", "valid_to");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("CostOptions", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "cost_options");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Funding", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "source");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("OrganizationId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("Fundings", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "funding");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Language", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "code");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "note");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("PhoneId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("PhoneId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("Languages", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "languages");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Location", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AlternateName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "alternate_name");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<string>("ExternalIdentifier")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "external_identifier");
+
+                    b.Property<string>("ExternalIdentifierType")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "external_identifier_type");
+
+                    b.Property<decimal?>("Latitude")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasAnnotation("Relational:JsonPropertyName", "latitude");
+
+                    b.Property<string>("LocationType")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)")
+                        .HasAnnotation("Relational:JsonPropertyName", "location_type");
+
+                    b.Property<decimal?>("Longitude")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasAnnotation("Relational:JsonPropertyName", "longitude");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Transportation")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "transportation");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "url");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("Locations", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "location");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.MetaTableDescription", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CharacterSet")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "character_set");
+
+                    b.Property<string>("Language")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "language");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.ToTable("MetaTableDescriptions", "deds");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "field_name");
+
+                    b.Property<DateTime>("LastActionDate")
+                        .HasColumnType("date")
+                        .HasAnnotation("Relational:JsonPropertyName", "last_action_date");
+
+                    b.Property<string>("LastActionType")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "last_action_type");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<string>("PreviousValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "previous_value");
+
+                    b.Property<string>("ReplacementValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "replacement_value");
+
+                    b.Property<Guid?>("ResourceId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "resource_id");
+
+                    b.Property<string>("ResourceType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "resource_type");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "updated_by");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.ToTable("Metadata", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "metadata");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Organization", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AlternateName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "alternate_name");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "email");
+
+                    b.Property<string>("LegalStatus")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "legal_status");
+
+                    b.Property<string>("Logo")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)")
+                        .HasAnnotation("Relational:JsonPropertyName", "logo");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("ParentOrganizationId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "parent_organization_id");
+
+                    b.Property<string>("Uri")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)")
+                        .HasAnnotation("Relational:JsonPropertyName", "uri");
+
+                    b.Property<string>("Website")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)")
+                        .HasAnnotation("Relational:JsonPropertyName", "website");
+
+                    b.Property<short>("YearIncorporated")
+                        .HasColumnType("smallint")
+                        .HasAnnotation("Relational:JsonPropertyName", "year_incorporated");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.ToTable("Organizations", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "organization");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.OrganizationIdentifier", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Identifier")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "identifier");
+
+                    b.Property<string>("IdentifierScheme")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "identifier_scheme");
+
+                    b.Property<string>("IdentifierType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "identifier_type");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("OrganizationIdentifiers", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "organization_identifiers");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Phone", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ContactId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<short?>("Extension")
+                        .HasColumnType("smallint")
+                        .HasAnnotation("Relational:JsonPropertyName", "extension");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "number");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ServiceAtLocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Type")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "type");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("ContactId");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.HasIndex("ServiceAtLocationId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("Phones", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "phones");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Program", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AlternateName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "alternate_name");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("Programs", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "program");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.RequiredDocument", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Document")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "document");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Uri")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)")
+                        .HasAnnotation("Relational:JsonPropertyName", "uri");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("RequiredDocuments", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "required_documents");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Schedule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AttendingType")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "attending_type");
+
+                    b.Property<string>("ByDay")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "byday");
+
+                    b.Property<string>("ByMonthDay")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "bymonthday");
+
+                    b.Property<string>("ByWeekNo")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "byweekno");
+
+                    b.Property<string>("ByYearDay")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "byyearday");
+
+                    b.Property<TimeSpan?>("ClosesAt")
+                        .HasColumnType("time")
+                        .HasAnnotation("Relational:JsonPropertyName", "closes_at");
+
+                    b.Property<short?>("Count")
+                        .HasColumnType("smallint")
+                        .HasAnnotation("Relational:JsonPropertyName", "count");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<DateTime?>("DtStart")
+                        .HasMaxLength(50)
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "dtstart");
+
+                    b.Property<string>("Freq")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "freq");
+
+                    b.Property<short?>("Interval")
+                        .HasColumnType("smallint")
+                        .HasAnnotation("Relational:JsonPropertyName", "interval");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "notes");
+
+                    b.Property<TimeSpan?>("OpensAt")
+                        .HasColumnType("time")
+                        .HasAnnotation("Relational:JsonPropertyName", "opens_at");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<string>("ScheduleLink")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)")
+                        .HasAnnotation("Relational:JsonPropertyName", "schedule_link");
+
+                    b.Property<Guid?>("ServiceAtLocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte?>("Timezone")
+                        .HasColumnType("tinyint")
+                        .HasAnnotation("Relational:JsonPropertyName", "timezone");
+
+                    b.Property<DateTime?>("Until")
+                        .HasMaxLength(50)
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "until");
+
+                    b.Property<DateTime?>("ValidFrom")
+                        .HasColumnType("date")
+                        .HasAnnotation("Relational:JsonPropertyName", "valid_from");
+
+                    b.Property<DateTime?>("ValidTo")
+                        .HasColumnType("date")
+                        .HasAnnotation("Relational:JsonPropertyName", "valid_to");
+
+                    b.Property<string>("Wkst")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "wkst");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("ServiceAtLocationId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("Schedules", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "schedules");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Accreditations")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "accreditations");
+
+                    b.Property<string>("Alert")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "alert");
+
+                    b.Property<string>("AlternateName")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "alternate_name");
+
+                    b.Property<string>("ApplicationProcess")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)")
+                        .HasAnnotation("Relational:JsonPropertyName", "application_process");
+
+                    b.Property<DateTime?>("AssuredDate")
+                        .HasColumnType("date")
+                        .HasAnnotation("Relational:JsonPropertyName", "assured_date");
+
+                    b.Property<string>("AssurerEmail")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "assurer_email");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<string>("EligibilityDescription")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "eligibility_description");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "email");
+
+                    b.Property<string>("FeesDescription")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "fees_description");
+
+                    b.Property<string>("InterpretationServices")
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)")
+                        .HasAnnotation("Relational:JsonPropertyName", "interpretation_services");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasPrecision(7)
+                        .HasColumnType("datetime2(7)")
+                        .HasAnnotation("Relational:JsonPropertyName", "last_modified");
+
+                    b.Property<byte>("MaximumAge")
+                        .HasColumnType("tinyint")
+                        .HasAnnotation("Relational:JsonPropertyName", "maximum_age");
+
+                    b.Property<byte>("MinimumAge")
+                        .HasColumnType("tinyint")
+                        .HasAnnotation("Relational:JsonPropertyName", "minimum_age");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProgramId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "status");
+
+                    b.Property<string>("Url")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)")
+                        .HasAnnotation("Relational:JsonPropertyName", "url");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("OrganizationId");
+
+                    b.HasIndex("ProgramId");
+
+                    b.ToTable("Services", "deds");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.ServiceArea", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<string>("Extent")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "extent");
+
+                    b.Property<string>("ExtentType")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "extent_type");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Uri")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)")
+                        .HasAnnotation("Relational:JsonPropertyName", "uri");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("ServiceAreas", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "service_areas");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.ServiceAtLocation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("ServiceAtLocations", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "service_at_locations");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Taxonomy", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<string>("Uri")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)")
+                        .HasAnnotation("Relational:JsonPropertyName", "uri");
+
+                    b.Property<string>("Version")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "version");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.ToTable("Taxonomies", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "taxonomy_detail");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.TaxonomyTerm", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "code");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<string>("Language")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasAnnotation("Relational:JsonPropertyName", "language");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
+
+                    b.Property<Guid>("OrId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasAnnotation("Relational:JsonPropertyName", "parent_id");
+
+                    b.Property<string>("Taxonomy")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasAnnotation("Relational:JsonPropertyName", "taxonomy");
+
+                    b.Property<Guid?>("TaxonomyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TermUri")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)")
+                        .HasAnnotation("Relational:JsonPropertyName", "term_uri");
+
+                    b.HasKey("Id");
+
+                    SqlServerKeyBuilderExtensions.IsClustered(b.HasKey("Id"), false);
+
+                    b.HasIndex("TaxonomyId")
+                        .IsUnique()
+                        .HasFilter("[TaxonomyId] IS NOT NULL");
+
+                    b.ToTable("TaxonomyTerms", "deds");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "taxonomy_term");
+                });
+
+            modelBuilder.Entity("FundingMetadata", b =>
+                {
+                    b.Property<Guid>("FundingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("FundingId", "MetadataId");
+
+                    b.HasIndex("MetadataId");
+
+                    b.ToTable("FundingMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("LanguageMetadata", b =>
+                {
+                    b.Property<Guid>("LanguageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LanguageId", "MetadataId");
+
+                    b.HasIndex("MetadataId");
+
+                    b.ToTable("LanguageMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("LocationMetadata", b =>
+                {
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LocationId", "MetadataId");
+
+                    b.HasIndex("MetadataId");
+
+                    b.ToTable("LocationMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("MetaTableDescriptionMetadata", b =>
+                {
+                    b.Property<Guid>("MetaTableDescriptionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MetaTableDescriptionId", "MetadataId");
+
+                    b.HasIndex("MetadataId");
+
+                    b.ToTable("MetaTableDescriptionMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("MetadataOrganization", b =>
+                {
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MetadataId", "OrganizationId");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("OrganizationMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("MetadataOrganizationIdentifier", b =>
+                {
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationIdentifierId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MetadataId", "OrganizationIdentifierId");
+
+                    b.HasIndex("OrganizationIdentifierId");
+
+                    b.ToTable("OrganizationIdentifierMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("MetadataPhone", b =>
+                {
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PhoneId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MetadataId", "PhoneId");
+
+                    b.HasIndex("PhoneId");
+
+                    b.ToTable("PhoneMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("MetadataProgram", b =>
+                {
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProgramId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MetadataId", "ProgramId");
+
+                    b.HasIndex("ProgramId");
+
+                    b.ToTable("ProgramMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("MetadataRequiredDocument", b =>
+                {
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RequiredDocumentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MetadataId", "RequiredDocumentId");
+
+                    b.HasIndex("RequiredDocumentId");
+
+                    b.ToTable("RequiredDocumentMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("MetadataSchedule", b =>
+                {
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ScheduleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MetadataId", "ScheduleId");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.ToTable("ScheduleMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("MetadataService", b =>
+                {
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MetadataId", "ServiceId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("ServiceMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("MetadataServiceArea", b =>
+                {
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ServiceAreaId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MetadataId", "ServiceAreaId");
+
+                    b.HasIndex("ServiceAreaId");
+
+                    b.ToTable("ServiceAreaMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("MetadataServiceAtLocation", b =>
+                {
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ServiceAtLocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MetadataId", "ServiceAtLocationId");
+
+                    b.HasIndex("ServiceAtLocationId");
+
+                    b.ToTable("ServiceAtLocationMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("MetadataTaxonomy", b =>
+                {
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TaxonomyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MetadataId", "TaxonomyId");
+
+                    b.HasIndex("TaxonomyId");
+
+                    b.ToTable("TaxonomyMetadata", "dedsmeta");
+                });
+
+            modelBuilder.Entity("MetadataTaxonomyTerm", b =>
+                {
+                    b.Property<Guid>("MetadataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TaxonomyTermId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MetadataId", "TaxonomyTermId");
+
+                    b.HasIndex("TaxonomyTermId");
+
+                    b.ToTable("TaxonomyTermMetadata", "dedsmeta");
+                });
+
             modelBuilder.Entity("ServiceTaxonomies", b =>
                 {
                     b.Property<long>("ServiceId")
@@ -979,6 +2698,336 @@ namespace FamilyHubs.ServiceDirectory.Data.Migrations
                     b.HasIndex("TaxonomyId");
 
                     b.ToTable("ServiceTaxonomies");
+                });
+
+            modelBuilder.Entity("AccessibilityAttribute", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Accessibility", null)
+                        .WithMany()
+                        .HasForeignKey("AccessibilityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AccessibilityMetadata", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Accessibility", null)
+                        .WithMany()
+                        .HasForeignKey("AccessibilityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AddressAttribute", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Address", null)
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AddressMetadata", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Address", null)
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeContact", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Contact", null)
+                        .WithMany()
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeCostOption", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.CostOption", null)
+                        .WithMany()
+                        .HasForeignKey("CostOptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeFunding", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Funding", null)
+                        .WithMany()
+                        .HasForeignKey("FundingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeLanguage", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Language", null)
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeLocation", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Location", null)
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeMetaTableDescription", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.MetaTableDescription", null)
+                        .WithMany()
+                        .HasForeignKey("MetaTableDescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeMetadata", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeOrganization", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Organization", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeOrganizationIdentifier", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.OrganizationIdentifier", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationIdentifierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributePhone", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Phone", null)
+                        .WithMany()
+                        .HasForeignKey("PhoneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeProgram", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Program", null)
+                        .WithMany()
+                        .HasForeignKey("ProgramId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeRequiredDocument", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.RequiredDocument", null)
+                        .WithMany()
+                        .HasForeignKey("RequiredDocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeSchedule", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Schedule", null)
+                        .WithMany()
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeService", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", null)
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeServiceArea", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.ServiceArea", null)
+                        .WithMany()
+                        .HasForeignKey("ServiceAreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AttributeServiceAtLocation", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", null)
+                        .WithMany()
+                        .HasForeignKey("AttributesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.ServiceAtLocation", null)
+                        .WithMany()
+                        .HasForeignKey("ServiceAtLocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ContactMetadata", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Contact", null)
+                        .WithMany()
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CostOptionMetadata", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.CostOption", null)
+                        .WithMany()
+                        .HasForeignKey("CostOptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FamilyHubs.ServiceDirectory.Data.Entities.AccessibilityForDisabilities", b =>
@@ -1145,6 +3194,420 @@ namespace FamilyHubs.ServiceDirectory.Data.Migrations
                     b.Navigation("Service");
                 });
 
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Accessibility", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Location", null)
+                        .WithMany("Accessibilities")
+                        .HasForeignKey("LocationId");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Address", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Location", null)
+                        .WithMany("Addresses")
+                        .HasForeignKey("LocationId");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.TaxonomyTerm", "TaxonomyTerm")
+                        .WithOne()
+                        .HasForeignKey("FamilyHubs.SharedKernel.OpenReferral.Entities.Attribute", "TaxonomyTermId");
+
+                    b.Navigation("TaxonomyTerm");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Contact", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Location", null)
+                        .WithMany("Contacts")
+                        .HasForeignKey("LocationId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Organization", null)
+                        .WithMany("Contacts")
+                        .HasForeignKey("OrganizationId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.ServiceAtLocation", null)
+                        .WithMany("Contacts")
+                        .HasForeignKey("ServiceAtLocationId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", null)
+                        .WithMany("Contacts")
+                        .HasForeignKey("ServiceId");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.CostOption", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", null)
+                        .WithMany("CostOptions")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Funding", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Organization", null)
+                        .WithMany("Funding")
+                        .HasForeignKey("OrganizationId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", null)
+                        .WithMany("Funding")
+                        .HasForeignKey("ServiceId");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Language", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Location", null)
+                        .WithMany("Languages")
+                        .HasForeignKey("LocationId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Phone", null)
+                        .WithMany("Languages")
+                        .HasForeignKey("PhoneId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", null)
+                        .WithMany("Languages")
+                        .HasForeignKey("ServiceId");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Location", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Organization", null)
+                        .WithMany("Locations")
+                        .HasForeignKey("OrganizationId");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.OrganizationIdentifier", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Organization", null)
+                        .WithMany("OrganizationIdentifiers")
+                        .HasForeignKey("OrganizationId");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Phone", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Contact", null)
+                        .WithMany("Phones")
+                        .HasForeignKey("ContactId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Location", null)
+                        .WithMany("Phones")
+                        .HasForeignKey("LocationId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Organization", null)
+                        .WithMany("Phones")
+                        .HasForeignKey("OrganizationId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.ServiceAtLocation", null)
+                        .WithMany("Phones")
+                        .HasForeignKey("ServiceAtLocationId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", null)
+                        .WithMany("Phones")
+                        .HasForeignKey("ServiceId");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Program", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Organization", null)
+                        .WithMany("Programs")
+                        .HasForeignKey("OrganizationId");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.RequiredDocument", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", null)
+                        .WithMany("RequiredDocuments")
+                        .HasForeignKey("ServiceId");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Schedule", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Location", null)
+                        .WithMany("Schedules")
+                        .HasForeignKey("LocationId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.ServiceAtLocation", null)
+                        .WithMany("Schedules")
+                        .HasForeignKey("ServiceAtLocationId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", null)
+                        .WithMany("Schedules")
+                        .HasForeignKey("ServiceId");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Organization", "Organization")
+                        .WithMany()
+                        .HasForeignKey("OrganizationId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Program", "Program")
+                        .WithMany()
+                        .HasForeignKey("ProgramId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organization");
+
+                    b.Navigation("Program");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.ServiceArea", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", null)
+                        .WithMany("ServiceAreas")
+                        .HasForeignKey("ServiceId");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.ServiceAtLocation", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId");
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", null)
+                        .WithMany("ServiceAtLocations")
+                        .HasForeignKey("ServiceId");
+
+                    b.Navigation("Location");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.TaxonomyTerm", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Taxonomy", "TaxonomyDetail")
+                        .WithOne()
+                        .HasForeignKey("FamilyHubs.SharedKernel.OpenReferral.Entities.TaxonomyTerm", "TaxonomyId");
+
+                    b.Navigation("TaxonomyDetail");
+                });
+
+            modelBuilder.Entity("FundingMetadata", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Funding", null)
+                        .WithMany()
+                        .HasForeignKey("FundingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LanguageMetadata", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Language", null)
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LocationMetadata", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Location", null)
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MetaTableDescriptionMetadata", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.MetaTableDescription", null)
+                        .WithMany()
+                        .HasForeignKey("MetaTableDescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MetadataOrganization", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Organization", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MetadataOrganizationIdentifier", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.OrganizationIdentifier", null)
+                        .WithMany()
+                        .HasForeignKey("OrganizationIdentifierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MetadataPhone", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Phone", null)
+                        .WithMany()
+                        .HasForeignKey("PhoneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MetadataProgram", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Program", null)
+                        .WithMany()
+                        .HasForeignKey("ProgramId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MetadataRequiredDocument", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.RequiredDocument", null)
+                        .WithMany()
+                        .HasForeignKey("RequiredDocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MetadataSchedule", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Schedule", null)
+                        .WithMany()
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MetadataService", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", null)
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MetadataServiceArea", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.ServiceArea", null)
+                        .WithMany()
+                        .HasForeignKey("ServiceAreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MetadataServiceAtLocation", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.ServiceAtLocation", null)
+                        .WithMany()
+                        .HasForeignKey("ServiceAtLocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MetadataTaxonomy", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Taxonomy", null)
+                        .WithMany()
+                        .HasForeignKey("TaxonomyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MetadataTaxonomyTerm", b =>
+                {
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.Metadata", null)
+                        .WithMany()
+                        .HasForeignKey("MetadataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FamilyHubs.SharedKernel.OpenReferral.Entities.TaxonomyTerm", null)
+                        .WithMany()
+                        .HasForeignKey("TaxonomyTermId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ServiceTaxonomies", b =>
                 {
                     b.HasOne("FamilyHubs.ServiceDirectory.Data.Entities.Service", null)
@@ -1216,6 +3679,76 @@ namespace FamilyHubs.ServiceDirectory.Data.Migrations
             modelBuilder.Entity("FamilyHubs.ServiceDirectory.Data.ServiceType", b =>
                 {
                     b.Navigation("ServiceSearches");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Contact", b =>
+                {
+                    b.Navigation("Phones");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Location", b =>
+                {
+                    b.Navigation("Accessibilities");
+
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Contacts");
+
+                    b.Navigation("Languages");
+
+                    b.Navigation("Phones");
+
+                    b.Navigation("Schedules");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Organization", b =>
+                {
+                    b.Navigation("Contacts");
+
+                    b.Navigation("Funding");
+
+                    b.Navigation("Locations");
+
+                    b.Navigation("OrganizationIdentifiers");
+
+                    b.Navigation("Phones");
+
+                    b.Navigation("Programs");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Phone", b =>
+                {
+                    b.Navigation("Languages");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.Service", b =>
+                {
+                    b.Navigation("Contacts");
+
+                    b.Navigation("CostOptions");
+
+                    b.Navigation("Funding");
+
+                    b.Navigation("Languages");
+
+                    b.Navigation("Phones");
+
+                    b.Navigation("RequiredDocuments");
+
+                    b.Navigation("Schedules");
+
+                    b.Navigation("ServiceAreas");
+
+                    b.Navigation("ServiceAtLocations");
+                });
+
+            modelBuilder.Entity("FamilyHubs.SharedKernel.OpenReferral.Entities.ServiceAtLocation", b =>
+                {
+                    b.Navigation("Contacts");
+
+                    b.Navigation("Phones");
+
+                    b.Navigation("Schedules");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,38 +1,15 @@
-﻿using System.Net;
-using FamilyHubs.ServiceDirectory.Shared.Dto;
+﻿using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
-using Moq;
-using Moq.Protected;
 
 namespace FamilyHubs.ReferralUi.UnitTests.Services;
 
 public class BaseClientService
 {
-    protected static HttpClient GetMockClient(string content)
-    {
-        var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        mockHttpMessageHandler.Protected()
-            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                Content = new StringContent(content),
-                StatusCode = HttpStatusCode.OK
-            });
-
-        var client = new HttpClient(mockHttpMessageHandler.Object);
-        client.BaseAddress = new Uri("Https://Localhost");
-        return client;
-    }
-
-    protected OrganisationDetailsDto GetTestCountyCouncilDto()
-    {
-        var bristolCountyCouncil = new OrganisationDetailsDto
-        {
-            OrganisationType = OrganisationType.NotSet, Name = "Unit Test County Council", Description = "Unit Test County Council", AdminAreaCode = ""
-        };
-        return bristolCountyCouncil;
-    }
-
+    /// <summary>
+    /// Returns a test County Council Service DTO, no fields are null
+    /// </summary>
+    /// <param name="parentId"></param>
+    /// <returns></returns>
     public static ServiceDto GetTestCountyCouncilServicesDto(long parentId)
     {
         ServiceDto service = new()
@@ -48,9 +25,9 @@ public class BaseClientService
             Status = ServiceStatusType.Active,
             Fees = null,
             CanFamilyChooseDeliveryLocation = false,
-            ServiceAreas = new List<ServiceAreaDto>()
+            ServiceAreas = new List<ServiceAreaDto>
             {
-                new ServiceAreaDto
+                new()
                 {
                     Id = 2,
                     ServiceAreaName = "National",
@@ -59,9 +36,9 @@ public class BaseClientService
 
                 }
             },
-            Contacts = new List<ContactDto>()
+            Contacts = new List<ContactDto>
             {
-                new ContactDto
+                new()
                 {
                     Id = 3,
                     ServiceId = 1,
@@ -73,9 +50,9 @@ public class BaseClientService
                     Url = "www.google.com"
                 }
             },
-            Eligibilities = new List<EligibilityDto>()
+            Eligibilities = new List<EligibilityDto>
             {
-                new EligibilityDto
+                new()
                 {
                     Id = 4,
                     ServiceId = 1,
@@ -85,9 +62,9 @@ public class BaseClientService
                 }
             },
             CostOptions = new List<CostOptionDto>(),
-            Languages = new List<LanguageDto>()
+            Languages = new List<LanguageDto>
             {
-                new LanguageDto
+                new()
                 {
                     Id = 5,
                     ServiceId = 1,
@@ -97,9 +74,9 @@ public class BaseClientService
             },
             ServiceDeliveries = new List<ServiceDeliveryDto>(),
             Schedules = new List<ScheduleDto>(),
-            Locations = new List<LocationDto>()
+            Locations = new List<LocationDto>
             {
-                new LocationDto
+                new()
                 {
                     Id = 6,
                     Schedules = new List<ScheduleDto>(),
@@ -117,9 +94,9 @@ public class BaseClientService
                 }
             },
             Fundings = new List<FundingDto>(),
-            Taxonomies = new List<TaxonomyDto>()
+            Taxonomies = new List<TaxonomyDto>
             {
-                new TaxonomyDto
+                new()
                 {
                     Id = 7,
                     Name = "UnitTest bccprimaryservicetype:38",

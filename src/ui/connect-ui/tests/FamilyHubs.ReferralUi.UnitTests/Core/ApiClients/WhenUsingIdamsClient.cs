@@ -1,12 +1,20 @@
-﻿using FamilyHubs.Referral.Core.ApiClients;
+﻿using System.Net;
+using FamilyHubs.Referral.Core.ApiClients;
 using FluentAssertions;
-using Moq;
 using System.Text.Json;
+using FamilyHubs.ReferralUi.UnitTests.Helpers;
+using NSubstitute;
 
 namespace FamilyHubs.ReferralUi.UnitTests.Core.ApiClients;
 
 public class WhenUsingIdamsClient
 {
+    private readonly IHttpClientFactory _mockClientFactory;
+    public WhenUsingIdamsClient()
+    {
+        _mockClientFactory = Substitute.For<IHttpClientFactory>();
+    }
+    
     [Fact]
     public async Task ThenGetAccountList()
     {
@@ -14,15 +22,11 @@ public class WhenUsingIdamsClient
         var expectedListAccounts = ClientHelper.GetAccountList();
         var jsonString = JsonSerializer.Serialize(expectedListAccounts);
 
-        HttpClient httpClient = ClientHelper.GetMockClient<string>(jsonString);
-        httpClient.DefaultRequestHeaders.Clear();
-        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer token");
-        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        var httpClient = TestHelpers.GetMockClient(jsonString, HttpStatusCode.Accepted);
 
-        Mock<IHttpClientFactory> mockClientFactory = new Mock<IHttpClientFactory>();
-        mockClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+        _mockClientFactory.CreateClient(Arg.Any<string>()).Returns(httpClient);
 
-        IIdamsClient idamClientService = new IdamsClient(mockClientFactory.Object);
+        var idamClientService = new IdamsClient(_mockClientFactory);
 
         //Act
         var result = await idamClientService.GetVcsProfessionalsEmailsAsync(1);
@@ -32,18 +36,14 @@ public class WhenUsingIdamsClient
     }
 
     [Fact]
-    public async Task ThenThrowsIdamsClientException()
+    public async Task ThenThrowsIdamsClientException_OnBadRequest()
     {
         // Arrange
-        HttpClient httpClient = ClientHelper.GetMockClient<string>("Error message", true);
-        httpClient.DefaultRequestHeaders.Clear();
-        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer token");
-        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+        var httpClient = TestHelpers.GetMockClient("", HttpStatusCode.BadRequest);
 
-        Mock<IHttpClientFactory> mockClientFactory = new Mock<IHttpClientFactory>();
-        mockClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+        _mockClientFactory.CreateClient(Arg.Any<string>()).Returns(httpClient);
 
-        IIdamsClient idamClientService = new IdamsClient(mockClientFactory.Object);
+        var idamClientService = new IdamsClient(_mockClientFactory);
 
         // Act and Assert
         await Assert.ThrowsAsync<IdamsClientException>(() => idamClientService.GetVcsProfessionalsEmailsAsync(1, CancellationToken.None));

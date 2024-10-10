@@ -26,6 +26,8 @@ jobs:
             service/service-directory-api,
             service/referral-api,
             service/report-api,
+            service/mock-hsda-api,
+            function/open-referral-function,
             ui/connect-dashboard-ui,
             ui/connect-ui,
             ui/find-ui,
@@ -48,6 +50,10 @@ jobs:
             job_name: "Test - Referral API"
           - working_directory: service/report-api
             job_name: "Test - Report API"
+          - working_directory: service/mock-hsda-api
+            job_name: "Test - Mock HSDA API"
+          - working_directory: function/open-referral-function
+            job_name: "Test - Open Referral Function"
           - working_directory: ui/connect-dashboard-ui
             job_name: "Test - Connect Dashboard UI"
           - working_directory: ui/connect-ui

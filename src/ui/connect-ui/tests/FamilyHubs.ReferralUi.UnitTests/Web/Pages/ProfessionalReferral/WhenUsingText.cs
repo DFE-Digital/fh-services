@@ -11,7 +11,7 @@ public class WhenUsingText : BaseProfessionalReferralPage
 
     public WhenUsingText()
     {
-        _textModel = new TextModel(ReferralDistributedCache.Object);
+        _textModel = new TextModel(ReferralDistributedCache);
     }
 
     [Fact]

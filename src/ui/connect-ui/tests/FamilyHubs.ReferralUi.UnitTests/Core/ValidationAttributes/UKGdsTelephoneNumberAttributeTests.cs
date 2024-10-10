@@ -3,14 +3,9 @@ using FluentAssertions;
 
 namespace FamilyHubs.ReferralUi.UnitTests.Core.ValidationAttributes;
 
-public class UKGdsTelephoneNumberAttributeTests
+public class UkGdsTelephoneNumberAttributeTests
 {
-    public UkGdsTelephoneNumberAttribute UKGdsTelephoneNumberAttribute { get; set; }
-
-    public UKGdsTelephoneNumberAttributeTests()
-    {
-        UKGdsTelephoneNumberAttribute = new UkGdsTelephoneNumberAttribute();
-    }
+    private UkGdsTelephoneNumberAttribute UkGdsTelephoneNumberAttribute { get;} = new();
 
     [Theory]
     // GDS says allow country code
@@ -140,6 +135,6 @@ public class UKGdsTelephoneNumberAttributeTests
     [InlineData(false, "07700 900 982")]
     public void IsValid_ShouldReturnIfNumberIsValid(bool expected, object number)
     {
-        UKGdsTelephoneNumberAttribute.IsValid(number).Should().Be(expected);
+        UkGdsTelephoneNumberAttribute.IsValid(number).Should().Be(expected);
     }
 }

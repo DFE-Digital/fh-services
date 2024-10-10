@@ -1,117 +1,111 @@
-﻿using System;
-using System.Collections.Generic;
-using FamilyHubs.SharedKernel.GovLogin.Configuration;
-using FamilyHubs.SharedKernel.Identity;
+﻿using FamilyHubs.SharedKernel.GovLogin.Configuration;
 using FamilyHubs.SharedKernel.Identity.Authentication.Gov;
 using FamilyHubs.SharedKernel.Identity.Authorisation.FamilyHubs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NSubstitute;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Threading.Tasks;
+using FamilyHubs.SharedKernel.Identity;
 
-namespace FamilyHubs.SharedKernel.UnitTests.Identity.Authentication.Gov
+namespace FamilyHubs.SharedKernel.UnitTests.Identity.Authentication.Gov;
+
+public class AccountMiddlewareTests
 {
-    public class AccountMiddlewareTests
+    private readonly GovUkOidcConfiguration _configuration;
+    private readonly RequestDelegate _nextMock;
+    private readonly ILogger<AccountMiddleware> _mockedLogger;
+    private readonly ISessionService _mockSessionService;
+
+    public AccountMiddlewareTests()
     {
-        private readonly GovUkOidcConfiguration _configuration;
-        private readonly RequestDelegate _nextMock;
-        private readonly ILogger<AccountMiddleware> _mockedLogger;
-        private readonly Mock<ISessionService> _mockSessionService;
+        _configuration = new GovUkOidcConfiguration { Oidc = new Oidc() , Urls = new Urls()};
+        _configuration.BearerTokenSigningKey = Guid.NewGuid().ToString();
+        _configuration.Oidc.PrivateKey = Guid.NewGuid().ToString();
+        _nextMock = Substitute.For<RequestDelegate>();
+        _mockedLogger = Substitute.For<ILogger<AccountMiddleware>>();
+        _mockSessionService = Substitute.For<ISessionService>();
+    }
 
-        public AccountMiddlewareTests()
-        {
-            _configuration = new GovUkOidcConfiguration { Oidc = new Oidc() , Urls = new Urls()};
-            _configuration.BearerTokenSigningKey = Guid.NewGuid().ToString();
-            _configuration.Oidc.PrivateKey = Guid.NewGuid().ToString();
-            _nextMock = Mock.Of<RequestDelegate>();
-            _mockedLogger = Mock.Of<ILogger<AccountMiddleware>>();
-            _mockSessionService = new Mock<ISessionService>();
-        }
+    [Fact]
+    public async Task InvokeAsync_UserNull_NoTokenSet()
+    {
+        //  Arrange
+        var mockContext = CreateMockHttpContext();
+        var accountMiddleware = new AccountMiddleware(_nextMock, _configuration, _mockSessionService, _mockedLogger);
 
-        [Fact]
-        public async Task InvokeAsync_UserNull_NoTokenSet()
-        {
-            //  Arrange
-            var mockContext = CreateMockHttpContext();
-            var context = mockContext.Object;
-            var accountMiddleware = new AccountMiddleware(_nextMock, _configuration, _mockSessionService.Object, _mockedLogger);
+        //  Act
+        await accountMiddleware.InvokeAsync(mockContext);
 
-            //  Act
-            await accountMiddleware.InvokeAsync(context);
+        //  Assert
+        var bearerToken = mockContext.GetBearerToken();
+        Assert.True(string.IsNullOrEmpty(bearerToken));
+    }
 
-            //  Assert
-            var bearerToken = context.GetBearerToken();
-            Assert.True(string.IsNullOrEmpty(bearerToken));
-        }
+    [Fact]
+    public async Task InvokeAsync_UserNotAuthenticated_NoTokenSet()
+    {
+        //  Arrange
+        var mockContext = CreateMockHttpContext();
+        var claimsPrincipal = CreateUser(false);
+        mockContext.User.Returns(claimsPrincipal);
+        var accountMiddleware = new AccountMiddleware(_nextMock, _configuration, _mockSessionService, _mockedLogger);
 
-        [Fact]
-        public async Task InvokeAsync_UserNotAuthenticated_NoTokenSet()
-        {
-            //  Arrange
-            var mockContext = CreateMockHttpContext();
-            mockContext.Setup(m => m.User).Returns(CreateUser(false));
-            var context = mockContext.Object;
-            var accountMiddleware = new AccountMiddleware(_nextMock, _configuration, _mockSessionService.Object, _mockedLogger);
+        //  Act
+        await accountMiddleware.InvokeAsync(mockContext);
 
-            //  Act
-            await accountMiddleware.InvokeAsync(context);
+        //  Assert
+        var bearerToken = mockContext.GetBearerToken();
+        Assert.True(string.IsNullOrEmpty(bearerToken));
+    }
 
-            //  Assert
-            var bearerToken = context.GetBearerToken();
-            Assert.True(string.IsNullOrEmpty(bearerToken));
-        }
+    [Fact]
+    public async Task InvokeAsync_SetsBearerToken()
+    {
+        //  Arrange
+        var mockContext = CreateMockHttpContext();
+        var claimsPrincipal = CreateUser(true);
+        mockContext.User.Returns(claimsPrincipal);
+        var accountMiddleware = new AccountMiddleware(_nextMock, _configuration, _mockSessionService, _mockedLogger);
 
-        [Fact]
-        public async Task InvokeAsync_SetsBearerToken()
-        {
-            //  Arrange
-            var mockContext = CreateMockHttpContext();
-            mockContext.Setup(m => m.User).Returns(CreateUser(true));
-            var context = mockContext.Object;
-            var accountMiddleware = new AccountMiddleware(_nextMock, _configuration, _mockSessionService.Object, _mockedLogger);
+        //  Act
+        await accountMiddleware.InvokeAsync(mockContext);
 
-            //  Act
-            await accountMiddleware.InvokeAsync(context);
+        //  Assert
+        var bearerToken = mockContext.GetBearerToken();
+        Assert.False(string.IsNullOrEmpty(bearerToken));
+    }
 
-            //  Assert
-            var bearerToken = context.GetBearerToken();
-            Assert.False(string.IsNullOrEmpty(bearerToken));
-        }
+    private HttpContext CreateMockHttpContext()
+    {
+        var mockHttpContext = Substitute.For<HttpContext>();
 
-        private Mock<HttpContext> CreateMockHttpContext()
-        {
-            var mockHttpContext = new Mock<HttpContext>();
+        var features = Substitute.For<IFeatureCollection>();
+        var endpointFeature = Substitute.For<IEndpointFeature>();
 
-            var features = new Mock<IFeatureCollection>();
-            var endpointFeature = new Mock<IEndpointFeature>();
+        endpointFeature.Endpoint.Returns((Endpoint?)null);
 
-            endpointFeature.Setup(ef => ef.Endpoint).Returns((Endpoint?)null);
+        features.Get<IEndpointFeature>().Returns(endpointFeature);
+        mockHttpContext.Features.Returns(features);
 
-            features.Setup(f => f.Get<IEndpointFeature>())
-                .Returns(endpointFeature.Object);
-            mockHttpContext.Setup(c => c.Features).Returns(features.Object);
+        var items = new Dictionary<object, object?>();
+        mockHttpContext.Items.Returns(items);
 
-            var items = new Dictionary<object, object?>();
-            mockHttpContext.Setup(m => m.Items).Returns(items);
+        var request = Substitute.For<HttpRequest>();
+        request.Path.Returns(new PathString("/somepath/action"));
+        mockHttpContext.Request.Returns(request);
+        return mockHttpContext;
+    }
 
-            var request = new Mock<HttpRequest>();
-            request.SetupGet(m => m.Path).Returns("/somepath/action");
-            mockHttpContext.Setup(m => m.Request).Returns(request.Object);
-            return mockHttpContext;
-        }
+    private ClaimsPrincipal CreateUser(bool isAuthenticated)
+    {
+        var mockUser = Substitute.For<ClaimsPrincipal>();
+        var mockIdentity = Substitute.For<IIdentity>();
 
-        private ClaimsPrincipal CreateUser(bool isAuthenticated)
-        {
-            var mockUser = new Mock<ClaimsPrincipal>();
-            var mockIdentity = new Mock<IIdentity>();
+        mockIdentity.IsAuthenticated.Returns(isAuthenticated);
+        mockUser.Identity.Returns(mockIdentity);
 
-            mockIdentity.Setup(m => m.IsAuthenticated).Returns(isAuthenticated);
-            mockUser.Setup(m => m.Identity).Returns(mockIdentity.Object);
-
-            return mockUser.Object;
-        }
+        return mockUser;
     }
 }

@@ -10,7 +10,7 @@ public class WhenUsingConsent : BaseProfessionalReferralPage
 
     public WhenUsingConsent()
     {
-        _consentModel = new ConsentModel(ReferralDistributedCache.Object);
+        _consentModel = new ConsentModel(ReferralDistributedCache);
     }
 
     [Fact]

@@ -33,6 +33,8 @@ jobs:
                    src/service/referral-api/,
                    src/service/report-api/,
                    src/service/service-directory-api/,
+                   src/service/mock-hsda-api/,
+                   src/function/open-referral-function/,
                    src/ui/connect-dashboard-ui/,
                    src/ui/connect-ui/,
                    src/ui/find-ui/,
@@ -41,28 +43,48 @@ jobs:
         ]
         include:
           - project: src/service/idam-api/
+            publish_project: FamilyHubs.Idam.Api
             job_name: Build - IDAM API
           - project: src/service/notification-api/
+            publish_project: FamilyHubs.Notification.Api
             job_name: Build - Notification API
           - project: src/service/referral-api/
+            publish_project: FamilyHubs.Referral.Api
             job_name: Build - Referral API
           - project: src/service/report-api/
+            publish_project: FamilyHubs.Report.Api
             job_name: Build - Report API
           - project: src/service/service-directory-api/
+            publish_project: FamilyHubs.ServiceDirectory.Api
             job_name: Build - Service Directory API
+          - project: src/service/mock-hsda-api/
+            publish_project: FamilyHubs.Mock-Hsda.Api
+            job_name: Build - Mock HSDA API
+            dotnet_version_override: "8.0.x"
+          - project: src/function/open-referral-function/
+            publish_project: FamilyHubs.OpenReferral.Function
+            job_name: Build - Open Referral Function
+            dotnet_version_override: "8.0.x"
           - project: src/ui/connect-dashboard-ui/
+            publish_project: FamilyHubs.RequestForSupport.Web
             job_name: Build - Connect Dashboard UI
           - project: src/ui/connect-ui/
+            publish_project: FamilyHubs.Referral.Web
             job_name: Build - Connect UI
           - project: src/ui/find-ui/
+            publish_project: FamilyHubs.ServiceDirectory.Web
             job_name: Build - Find UI
           - project: src/ui/idam-maintenance-ui/
+            publish_project: FamilyHubs.Idams.Maintenance.UI
             job_name: Build - IDAM Maintenance UI
           - project: src/ui/manage-ui/
+            publish_project: FamilyHubs.ServiceDirectory.Admin.Web
             job_name: Build - Manage UI
     uses: ./.github/workflows/build-upload-artifact.yml
     with:
       project: ${{ matrix.project }}
+      publish_project: ${{ matrix.publish_project }}
+      dotnet_version: ${{ matrix.dotnet_version_override || vars.DOTNET_VERSION }}
 
   deploy-api-services:
     name: ${{ matrix.job_name }}
@@ -115,6 +137,14 @@ jobs:
             data_project_name: FamilyHubs.ServiceDirectory.Data
             database_context: ApplicationDbContext
             azure_app_name: as-fh-sd-api
+
+          - artifact_name: mock-hsda-api
+            job_name: Deploy - Mock HSDA API
+            keyvault_prefix: MOCK-HSDA-API
+            project_name: FamilyHubs.Mock-Hsda.Api
+            data_project_name: FamilyHubs.Mock-Hsda.Api
+            database_context: MockDbContext
+            azure_app_name: as-fh-open-referral-mock-api
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -126,7 +156,8 @@ jobs:
       project_type: service
       azure_app_name: ${{ matrix.azure_app_name }}
     secrets: inherit
-
+    
+    
   deploy-ui-services:
     name: ${{ matrix.job_name }}
     needs: [ deploy-api-services ]
@@ -178,6 +209,31 @@ jobs:
       azure_app_name: ${{ matrix.azure_app_name }}
     secrets: inherit
 
+
+
+  deploy-functions:
+    name: ${{ matrix.job_name }}
+    needs: [ build-projects-upload-artifacts ]
+    strategy:
+      matrix:
+        artifact_name: [
+          open-referral-function
+        ]
+        include:
+          - artifact_name: open-referral-function
+            job_name: Deploy - Open Referral Function
+            keyvault_prefix: OPEN-REFERRAL-FUNC
+            azure_app_name: fa-fh-open-referral
+
+    uses: ./.github/workflows/deploy-function.yml
+    with:
+      environment: ${{ inputs.environment }}
+      artifact_name: ${{ matrix.artifact_name }}
+      keyvault_prefix: ${{ matrix.keyvault_prefix }}
+      azure_app_name: ${{ matrix.azure_app_name }}
+    secrets: inherit
+    
+    
   run-api-acceptance-tests:
     if: startsWith(inputs.environment, 'Test')
     name: ${{ matrix.job_name }}
@@ -197,11 +253,11 @@ jobs:
           - project_name: referral-api
             job_name: Test - Referral API
             keyvault_prefix: TEST-REFERRAL-API
-            test_project_name: FamilyHubs.Referral.Api.AcceptanceTests  
+            test_project_name: FamilyHubs.Referral.Api.AcceptanceTests
           - project_name: service-directory-api
             job_name: Test - Service Directory API
             keyvault_prefix: TEST-SERVICE-DIRECTORY-API
-            test_project_name: FamilyHubs.ServiceDirectory.Api.AcceptanceTests  
+            test_project_name: FamilyHubs.ServiceDirectory.Api.AcceptanceTests
     uses: ./.github/workflows/run-acceptance-tests.yml
     with:
       environment: ${{ inputs.environment }}

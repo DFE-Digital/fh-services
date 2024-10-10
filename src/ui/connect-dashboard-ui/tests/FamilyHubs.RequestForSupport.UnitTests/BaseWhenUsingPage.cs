@@ -1,4 +1,5 @@
-﻿using FamilyHubs.ReferralService.Shared.Dto;
+﻿using System.Globalization;
+using FamilyHubs.ReferralService.Shared.Dto;
 using FamilyHubs.ReferralService.Shared.Enums;
 using FamilyHubs.ReferralService.Shared.Models;
 using FamilyHubs.RequestForSupport.Core.ApiClients;
@@ -9,44 +10,49 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
-using Moq;
 using System.Security.Claims;
 using System.Security.Principal;
+using FamilyHubs.RequestForSupport.UnitTests.Helpers;
+using NSubstitute;
 
 namespace FamilyHubs.RequestForSupport.UnitTests;
 
 public abstract class BaseWhenUsingPage
 {
-    protected readonly Mock<IReferralClientService> MockReferralClientService;
-    protected readonly Mock<ITempDataDictionary> MockTempDataDictionary;
+    protected readonly IReferralClientService MockReferralClientService;
+    protected readonly ITempDataDictionary MockTempDataDictionary;
+    protected const string ReasonForDecliningTempDataValue = "example reason"; 
 
     protected BaseWhenUsingPage()
     {
-        MockReferralClientService = new Mock<IReferralClientService>();
+        MockReferralClientService = Substitute.For<IReferralClientService>();
 
-        MockTempDataDictionary = new Mock<ITempDataDictionary>();
-        MockTempDataDictionary.Setup(x => x["ReasonForDeclining"]).Returns("example reason");
+        MockTempDataDictionary = Substitute.For<ITempDataDictionary>();
+        MockTempDataDictionary["ReasonForDeclining"].Returns(ReasonForDecliningTempDataValue);
     }
 
     protected PageContext GetPageContext()
     {
-        MockReferralClientService
-            .Setup(x => x.GetReferralById(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(WhenUsingTheVcsDashboard.GetReferralDto());
+        MockReferralClientService.GetReferralById(Arg.Any<long>(), Arg.Any<CancellationToken>())
+            .Returns(TestHelpers.GetMockReferralDto());
 
-        List<ReferralDto> list = new() { GetReferralDto() };
-        PaginatedList<ReferralDto> pagelist = new PaginatedList<ReferralDto>(list, 1, 1, 1);
-        MockReferralClientService
-            .Setup(x => x.GetRequestsForConnectionByOrganisationId(It.IsAny<string>(), It.IsAny<ReferralOrderBy>(), It.IsAny<bool?>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(pagelist);
+        List<ReferralDto> list = [GetReferralDto()];
+        var pagelist = new PaginatedList<ReferralDto>(list, 1, 1, 1);
+        MockReferralClientService.GetRequestsForConnectionByOrganisationId(
+                Arg.Any<string>(), 
+                Arg.Any<ReferralOrderBy>(), 
+                Arg.Any<bool?>(),
+                Arg.Any<int>(),
+                Arg.Any<int>(),
+                Arg.Any<CancellationToken>())
+            .Returns(pagelist);
 
-        var displayName = "User name";
-        var identity = new GenericIdentity(displayName);
+        var identity = new GenericIdentity("User name");
         identity.AddClaim(new Claim(FamilyHubsClaimTypes.Role, "VcsAdmin"));
         identity.AddClaim(new Claim(FamilyHubsClaimTypes.OrganisationId, "1"));
         identity.AddClaim(new Claim(FamilyHubsClaimTypes.AccountStatus, "active"));
         identity.AddClaim(new Claim(FamilyHubsClaimTypes.FullName, "Test User"));
-        identity.AddClaim(new Claim(FamilyHubsClaimTypes.ClaimsValidTillTime, DateTime.UtcNow.AddMinutes(30).ToString()));
+        identity.AddClaim(new Claim(FamilyHubsClaimTypes.ClaimsValidTillTime, DateTime.UtcNow.AddMinutes(30).ToString(CultureInfo.InvariantCulture)));
         identity.AddClaim(new Claim(ClaimTypes.Email, "vcsAdmin2.VcsAdmin@stub.com"));
         identity.AddClaim(new Claim(FamilyHubsClaimTypes.PhoneNumber, "012345678"));
         var principle = new ClaimsPrincipal(identity);
@@ -70,7 +76,7 @@ public abstract class BaseWhenUsingPage
         return pageContext;
     }
 
-    public static ReferralDto GetReferralDto()
+    private static ReferralDto GetReferralDto()
     {
         return new ReferralDto
         {
