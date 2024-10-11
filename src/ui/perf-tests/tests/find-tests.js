@@ -1,23 +1,10 @@
 import http from 'k6/http';
 import { browser } from 'k6/browser';
 import { sleep } from 'k6';
-
-export const options = {
-    scenarios: {
-        ui: {
-            executor: 'shared-iterations',
-            options: {
-                browser: {
-                    // This is a mandatory parameter that instructs k6 to launch and
-                    // connect to a chromium-based browser, and use it to run UI-based
-                    // tests.
-                    type: 'chromium',
-                },
-            },
-        },
-    }
-};
-
+export let FindTests = [
+    searchResultsTest,
+    verifyStatusCodeTest
+];
 export async function searchResultsTest() {
     const page = await browser.newPage();
 
@@ -45,7 +32,7 @@ export async function searchResultsTest() {
     sleep(1);
 }
 
-export function news() {
+export function verifyStatusCodeTest() {
     const res = http.get('https://test.find-support-for-your-family.education.gov.uk/ServiceFilter?postcode=E1%202EN&adminarea=E09000030&latitude=51.517612&longitude=-0.056838&frompostcodesearch=True');
 
     check(res, {
