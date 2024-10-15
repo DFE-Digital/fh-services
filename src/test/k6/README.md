@@ -8,11 +8,11 @@ Here we have written performance tests for the three services in Family Hubs: Fi
 - Navigate to folder of service under test (i.e. find-tests, connect-tests, or manage-tests)
 
 # How to run the tests
+Set the environment variables in settings.json to define whether you are running the tests locally and which type of test you are running (load, stress, or soak)
+k6 run main.js
+k6 run --vus=10 --duration=30s main.js
 
-k6 run script.js
-k6 run --vus=10 --duration=30s script.js
-
-To see the tests run we can run K6_BROWSER_HEADLESS=true k6 run script.js
+To see the tests run we can run K6_BROWSER_HEADLESS=true k6 run main.js
 
 # Helpful Links
 
@@ -22,5 +22,5 @@ See https://grafana.com/docs/k6/latest/using-k6-browser/running-browser-tests/ t
 
 Stuff to investigate
 
-What does the executor shared-iterations mean? What other executor options do we have?
+Executor types documented here: https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/
 
