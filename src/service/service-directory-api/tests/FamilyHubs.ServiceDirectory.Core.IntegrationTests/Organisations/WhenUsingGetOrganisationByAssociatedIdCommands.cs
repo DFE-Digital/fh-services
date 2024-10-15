@@ -15,17 +15,17 @@ public class WhenUsingGetOrganisationByAssociatedIdCommands : DataIntegrationTes
         TestDbContext.Organisations.Add(child);
         await TestDbContext.SaveChangesAsync();
 
-        var getCommand = new GetOrganisationsByAssociatedIdCommand(parent.Id );
+        var getCommand = new GetOrganisationsByAssociatedIdCommand(parent.Id);
         var getHandler = new GetOrganisationsByAssociatedIdCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
-        Assert.True(result.Count(x => x.Id == parent.Id) == 1);
-        Assert.True(result.Count(x => x.Id == child.Id) == 1);
-        Assert.True(result.Count == 2);
+        result.Count(x => x.Id == parent.Id).Should().Be(1);
+        result.Count(x => x.Id == child.Id).Should().Be(1);
+        result.Count.Should().Be(2);
     }
 
     [Fact]
@@ -38,11 +38,11 @@ public class WhenUsingGetOrganisationByAssociatedIdCommands : DataIntegrationTes
         var getHandler = new GetOrganisationsByAssociatedIdCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
-        Assert.False(result.Any());
+        result.Count.Should().Be(0);
     }
 
 }

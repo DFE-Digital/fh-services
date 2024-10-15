@@ -1,106 +1,119 @@
 ﻿using FamilyHubs.ServiceDirectory.Core.Commands.Locations.UpdateLocation;
+using FamilyHubs.ServiceDirectory.Data.Entities;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
 using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Locations;
 
 public class WhenUsingUpdateLocationCommand : DataIntegrationTestBase
 {
-    public readonly Mock<ILogger<UpdateLocationCommandHandler>> UpdateLogger = new Mock<ILogger<UpdateLocationCommandHandler>>();
+    private readonly ILogger<UpdateLocationCommandHandler> _updateLogger = GetLogger<UpdateLocationCommandHandler>();
+
+    private readonly LocationDto _testLocation;
+
+    public WhenUsingUpdateLocationCommand()
+    {
+        _testLocation = GetTestLocation();
+        _testLocation.Id = CreateLocation(_testLocation);
+        _testLocation.Name = "Unit Test Update Service Name";
+        _testLocation.Description = "Unit Test Update Service Name";
+    }
+
+    private Location? GetLocation() => TestDbContext.Locations
+        .SingleOrDefault(s => s.Name == _testLocation.Name);
+
+    private Contact? GetContact(ContactDto contactDto) => TestDbContext.Contacts
+        .SingleOrDefault(s => s.Name == contactDto.Name);
+
+    private Schedule? GetSchedule(ScheduleDto scheduleDto) => TestDbContext
+        .Schedules.SingleOrDefault(s => s.ByDay == scheduleDto.ByDay);
 
     [Fact]
     public async Task ThenUpdateLocationOnly()
     {
         //Arrange
-        var testLocation = GetTestLocation();
-        testLocation.Id = await CreateLocation(testLocation);
-        testLocation.Name = "Unit Test Update Service Name";
-        testLocation.Description = "Unit Test Update Service Name";
-
-        var updateCommand = new UpdateLocationCommand(testLocation.Id, testLocation);
-        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger.Object);
+        var updateCommand = new UpdateLocationCommand(_testLocation.Id, _testLocation);
+        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, _updateLogger);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(testLocation.Id);
+        result.Should().Be(_testLocation.Id);
 
-        var actualService = TestDbContext.Locations.SingleOrDefault(s => s.Name == testLocation.Name);
-        actualService.Should().NotBeNull();
-        actualService!.Description.Should().Be(testLocation.Description);
+        var actualLocation = GetLocation();
+
+        actualLocation.Should().NotBeNull();
+        actualLocation!.Description.Should().Be(_testLocation.Description);
     }
 
     [Fact]
     public async Task ThenUpdateLocationAddAndDeleteContacts()
     {
         //Arrange
-        var testLocation = GetTestLocation();
-        testLocation.Id = await CreateLocation(testLocation);
-        var existingItem = testLocation.Contacts.ElementAt(0);
+        var existingItem = _testLocation.Contacts.ElementAt(0);
         var contact = new ContactDto
         {
             Id = 0,
             Name = "New Contact",
             Telephone = "New Telephone"
         };
-        testLocation.Contacts.Clear();
-        testLocation.Contacts.Add(contact);
 
-        var updateCommand = new UpdateLocationCommand(testLocation.Id, testLocation);
-        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger.Object);
+        _testLocation.Contacts.Clear();
+        _testLocation.Contacts.Add(contact);
+
+        var updateCommand = new UpdateLocationCommand(_testLocation.Id, _testLocation);
+        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, _updateLogger);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(testLocation.Id);
+        result.Should().Be(_testLocation.Id);
 
-        var actualService = TestDbContext.Locations.SingleOrDefault(s => s.Name == testLocation.Name);
-        actualService.Should().NotBeNull();
-        actualService!.Contacts.Count.Should().Be(1);
+        var actualLocation = GetLocation();
 
-        var actualContact = TestDbContext.Contacts.SingleOrDefault(s => s.Name == contact.Name);
+        actualLocation.Should().NotBeNull();
+        actualLocation!.Contacts.Count.Should().Be(1);
+
+        var actualContact = GetContact(contact);
         actualContact.Should().NotBeNull();
         actualContact.Should().BeEquivalentTo(contact, options =>
             options.Excluding((IMemberInfo info) => info.Name.Contains("Id"))
                 .Excluding((IMemberInfo info) => info.Name.Contains("Distance")));
 
-        var unexpectedEntity = TestDbContext.Contacts.Where(lc => lc.Id == existingItem.Id).ToList();
-        unexpectedEntity.Should().HaveCount(0);
+        var unexpectedContactCount = TestDbContext.Contacts.Count(c => c.Id == existingItem.Id);
+        unexpectedContactCount.Should().Be(0);
     }
 
     [Fact]
     public async Task ThenUpdateLocationWithUpdatedContacts()
     {
         //Arrange
-        var testLocation = GetTestLocation();
-        testLocation.Id = await CreateLocation(testLocation);
-        var contact = testLocation.Contacts.ElementAt(0);
+        var contact = _testLocation.Contacts.ElementAt(0);
         contact.Name = "Updated Name";
         contact.Email = "Updated Email";
         contact.Telephone = "Updated Telephone";
 
-        var updateCommand = new UpdateLocationCommand(testLocation.Id, testLocation);
-        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger.Object);
+        var updateCommand = new UpdateLocationCommand(_testLocation.Id, _testLocation);
+        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, _updateLogger);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(testLocation.Id);
+        result.Should().Be(_testLocation.Id);
 
-        var actualService = TestDbContext.Locations.SingleOrDefault(s => s.Name == testLocation.Name);
-        actualService.Should().NotBeNull();
-        actualService!.Contacts.Count.Should().Be(1);
+        var actualLocation = GetLocation();
+        actualLocation.Should().NotBeNull();
+        actualLocation!.Contacts.Count.Should().Be(1);
 
-        var actualContact = TestDbContext.Contacts.SingleOrDefault(s => s.Name == contact.Name);
+        var actualContact = GetContact(contact);
         actualContact.Should().NotBeNull();
         actualContact.Should().BeEquivalentTo(contact, options =>
             options.Excluding((IMemberInfo info) => info.Name.Contains("Id")));
@@ -110,9 +123,7 @@ public class WhenUsingUpdateLocationCommand : DataIntegrationTestBase
     public async Task ThenUpdateLocationAddAndDeleteSchedules()
     {
         //Arrange
-        var testLocation = GetTestLocation();
-        testLocation.Id = await CreateLocation(testLocation);
-        var existingItem = testLocation.Schedules.ElementAt(0);
+        var existingItem = _testLocation.Schedules.ElementAt(0);
         var expected = new ScheduleDto
         {
             ValidFrom = DateTime.UtcNow,
@@ -121,61 +132,58 @@ public class WhenUsingUpdateLocationCommand : DataIntegrationTestBase
             ByMonthDay = "New ByMonthDay"
         };
 
-        testLocation.Schedules.Clear();
-        testLocation.Schedules.Add(expected);
+        _testLocation.Schedules.Clear();
+        _testLocation.Schedules.Add(expected);
 
-        var updateCommand = new UpdateLocationCommand(testLocation.Id, testLocation);
-        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger.Object);
+        var updateCommand = new UpdateLocationCommand(_testLocation.Id, _testLocation);
+        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, _updateLogger);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(testLocation.Id);
+        result.Should().Be(_testLocation.Id);
 
-        var actualService = TestDbContext.Locations.SingleOrDefault(s => s.Name == testLocation.Name);
-        actualService.Should().NotBeNull();
-        actualService!.Schedules.Count.Should().Be(1);
+        var actualLocation = GetLocation();
+        actualLocation.Should().NotBeNull();
+        actualLocation!.Schedules.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.Schedules.SingleOrDefault(s => s.ByDay == expected.ByDay);
-        actualEntity.Should().NotBeNull();
-        actualEntity.Should().BeEquivalentTo(expected, options =>
+        var actualSchedule = GetSchedule(expected);
+        actualSchedule.Should().NotBeNull();
+        actualSchedule.Should().BeEquivalentTo(expected, options =>
             options.Excluding(info => info.Name.Contains("Id"))
                 .Excluding(info => info.Name.Contains("Distance")));
 
-        var unexpectedEntity = TestDbContext.Schedules.Where(lc => lc.Id == existingItem.Id).ToList();
-        unexpectedEntity.Should().HaveCount(0);
+        var unexpectedScheduleCount = TestDbContext.Schedules.Count(s => s.Id == existingItem.Id);
+        unexpectedScheduleCount.Should().Be(0);
     }
 
     [Fact]
     public async Task ThenUpdateLocationUpdatedSchedules()
     {
         //Arrange
-        var testLocation = GetTestLocation();
-        testLocation.Id = await CreateLocation(testLocation);
-
-        var expected = testLocation.Schedules.ElementAt(0);
+        var expected = _testLocation.Schedules.ElementAt(0);
         expected.ByDay = "Updated ByDay";
         expected.ByMonthDay = "Updated ByMonthDay";
 
-        var updateCommand = new UpdateLocationCommand(testLocation.Id, testLocation);
-        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, UpdateLogger.Object);
+        var updateCommand = new UpdateLocationCommand(_testLocation.Id, _testLocation);
+        var updateHandler = new UpdateLocationCommandHandler(TestDbContext, Mapper, _updateLogger);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(testLocation.Id);
+        result.Should().Be(_testLocation.Id);
 
-        var actualService = TestDbContext.Locations.SingleOrDefault(s => s.Name == testLocation.Name);
-        actualService.Should().NotBeNull();
-        actualService!.Schedules.Count.Should().Be(1);
+        var actualLocation = GetLocation();
+        actualLocation.Should().NotBeNull();
+        actualLocation!.Schedules.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.Schedules.SingleOrDefault(s => s.ByDay == expected.ByDay);
-        actualEntity.Should().NotBeNull();
-        actualEntity.Should().BeEquivalentTo(expected, options =>
-            options.Excluding((IMemberInfo info) => info.Name.Contains("Id")));
+        var actualSchedule = GetSchedule(expected);
+        actualSchedule.Should().NotBeNull();
+        actualSchedule.Should().BeEquivalentTo(expected, options =>
+            options.Excluding(info => info.Name.Contains("Id")));
     }
 }

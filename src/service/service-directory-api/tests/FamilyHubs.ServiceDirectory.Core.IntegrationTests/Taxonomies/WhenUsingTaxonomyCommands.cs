@@ -6,8 +6,6 @@ using FamilyHubs.ServiceDirectory.Data.Entities;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Taxonomies;
 
@@ -17,13 +15,12 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
     public async Task ThenCreateTaxonomy()
     {
         //Arrange
-        var logger = new Mock<ILogger<CreateTaxonomyCommandHandler>>();
         var testTaxonomy = GetTestTaxonomyDto();
         var command = new CreateTaxonomyCommand(testTaxonomy);
-        var handler = new CreateTaxonomyCommandHandler(TestDbContext, Mapper, logger.Object);
+        var handler = new CreateTaxonomyCommandHandler(TestDbContext, Mapper, GetLogger<CreateTaxonomyCommandHandler>());
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -41,13 +38,12 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
         TestDbContext.Taxonomies.Add(dbTaxonomy);
         await TestDbContext.SaveChangesAsync();
         var testTaxonomy = GetTestTaxonomyDto();
-        var logger = new Mock<ILogger<UpdateTaxonomyCommandHandler>>();
 
         var command = new UpdateTaxonomyCommand(dbTaxonomy.Id, testTaxonomy);
-        var handler = new UpdateTaxonomyCommandHandler(TestDbContext, logger.Object);
+        var handler = new UpdateTaxonomyCommandHandler(TestDbContext, GetLogger<UpdateTaxonomyCommandHandler>());
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -65,28 +61,30 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
         };
         TestDbContext.Taxonomies.Add(dbTaxonomy);
         await TestDbContext.SaveChangesAsync();
-        var logger = new Mock<ILogger<UpdateTaxonomyCommandHandler>>();
-        var handler = new UpdateTaxonomyCommandHandler(TestDbContext, logger.Object);
+        var handler = new UpdateTaxonomyCommandHandler(TestDbContext, GetLogger<UpdateTaxonomyCommandHandler>());
         var command = new UpdateTaxonomyCommand(dbTaxonomy.Id, default!);
 
         // Act
         //Assert
-        await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(command, CancellationToken.None));
-
+        await handler
+            .Invoking(x => x.Handle(command, CancellationToken.None))
+            .Should()
+            .ThrowAsync<NullReferenceException>();
     }
 
     [Fact]
     public async Task ThenHandle_ThrowsNotFoundException_WhenTaxonomyIdNotFound()
     {
         // Arrange
-        var logger = new Mock<ILogger<UpdateTaxonomyCommandHandler>>();
-        var handler = new UpdateTaxonomyCommandHandler(TestDbContext, logger.Object);
-        var command = new UpdateTaxonomyCommand(Random.Shared.Next(), default!);
+        var handler = new UpdateTaxonomyCommandHandler(TestDbContext, GetLogger<UpdateTaxonomyCommandHandler>());
+        var command = new UpdateTaxonomyCommand(0, default!);
 
         // Act
         //Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, CancellationToken.None));
-
+        await handler
+            .Invoking(x => x.Handle(command, CancellationToken.None))
+            .Should()
+            .ThrowAsync<NotFoundException>();
     }
 
     [Fact]
@@ -101,12 +99,11 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
         TestDbContext.Taxonomies.Add(dbTaxonomy);
         await TestDbContext.SaveChangesAsync();
 
-
         var command = new GetTaxonomiesCommand(TaxonomyType.ServiceCategory, 1, 1000, null);
         var handler = new GetTaxonomiesCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
@@ -128,7 +125,7 @@ public class WhenUsingTaxonomyCommands : DataIntegrationTestBase
         var handler = new GetTaxonomiesCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await handler.Handle(new GetTaxonomiesCommand(TaxonomyType.NotSet, null, null, null), new CancellationToken());
+        var result = await handler.Handle(new GetTaxonomiesCommand(TaxonomyType.NotSet, null, null, null), CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();

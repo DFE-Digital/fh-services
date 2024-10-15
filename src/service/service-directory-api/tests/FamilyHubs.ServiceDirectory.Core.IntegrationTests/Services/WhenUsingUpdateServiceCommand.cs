@@ -1,186 +1,186 @@
 ﻿using FamilyHubs.ServiceDirectory.Core.Commands.Services.UpdateService;
+using FamilyHubs.ServiceDirectory.Data.Entities;
 using FamilyHubs.ServiceDirectory.Shared.CreateUpdateDto;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
+using Microsoft.EntityFrameworkCore;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Services;
 
-//todo: it would be so much better if these tests only tested a single thing, i.e. the tests are broken down into multiple tests that check something was added, the old was deleted etc, to make maintenance easier
-
 public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
 {
+    private ServiceDto _serviceDto = null!;
+    private ServiceChangeDto _serviceChange = null!;
+    private UpdateServiceCommand _updateServiceCommand = null!;
+    private UpdateServiceCommandHandler _updateServiceCommandHandler = null!;
+
+    private async Task Setup()
+    {
+        await CreateOrganisationDetails();
+        _serviceDto = TestOrganisation.Services.ElementAt(0);
+        _serviceChange = Mapper.Map<ServiceChangeDto>(_serviceDto);
+        _updateServiceCommand = new UpdateServiceCommand(_serviceDto.Id, _serviceChange);
+        _updateServiceCommandHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
+    }
+
+    private Service? GetService(string serviceDtoName) => TestDbContext.Services
+        .Include(s => s.Eligibilities)
+        .Include(s => s.ServiceAreas)
+        .Include(s => s.ServiceDeliveries)
+        .Include(s => s.Languages)
+        .Include(s => s.CostOptions)
+        .Include(s => s.Contacts)
+        .Include(s => s.Schedules)
+        .Include(s => s.Locations)
+        .Include(s => s.Taxonomies)
+        .SingleOrDefault(s => s.Name == serviceDtoName);
+
     [Fact]
     public async Task ThenUpdateServiceOnly()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        service.Name = "Unit Test Update Service Name";
-        service.Description = "Unit Test Update Service Name";
-
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
-
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
+        await Setup();
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(service.Id);
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        result.Should().Be(_serviceDto.Id);
+        var actualService = GetService(_serviceDto.Name);
         actualService.Should().NotBeNull();
-        actualService!.Description.Should().Be(service.Description);
+        actualService!.Description.Should().Be(_serviceDto.Description);
     }
 
     [Fact]
     public async Task ThenUpdateServiceAddAndDeleteEligibilities()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
+        await Setup();
 
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
-
-        var existingItem = serviceChange.Eligibilities.ElementAt(0);
+        var existingItem = _serviceChange.Eligibilities.ElementAt(0);
 
         var expected = new EligibilityDto
         {
-            //ServiceId = service.Id,
             MaximumAge = 2,
             MinimumAge = 0,
             EligibilityType = null
         };
-        serviceChange.Eligibilities.Clear();
-        serviceChange.Eligibilities.Add(expected);
-
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
+        _serviceChange.Eligibilities.Clear();
+        _serviceChange.Eligibilities.Add(expected);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = GetService(_serviceDto.Name);
         actualService.Should().NotBeNull();
         actualService!.Eligibilities.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.Eligibilities.SingleOrDefault(s => s.EligibilityType == expected.EligibilityType);
-        actualEntity.Should().NotBeNull();
-        actualEntity.Should().BeEquivalentTo(expected, options =>
+        var actualEligibility =
+            TestDbContext.Eligibilities.SingleOrDefault(s => s.EligibilityType == expected.EligibilityType);
+        actualEligibility.Should().NotBeNull();
+        actualEligibility.Should().BeEquivalentTo(expected, options =>
             options.Excluding(info => info.Name.Contains("Id"))
                 .Excluding(info => info.Name.Contains("Distance")));
 
-        var unexpectedEntity = TestDbContext.Eligibilities.Where(lc => lc.Id == existingItem.Id).ToList();
-        unexpectedEntity.Should().HaveCount(0);
+        var unexpectedEligibilityCount = TestDbContext.Eligibilities.Count(e => e.Id == existingItem.Id);
+        unexpectedEligibilityCount.Should().Be(0);
     }
 
     [Fact]
     public async Task ThenUpdateServiceUpdatedEligibilities()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
+        await Setup();
 
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
-
-        var expected = serviceChange.Eligibilities.ElementAt(0);
+        var expected = _serviceChange.Eligibilities.ElementAt(0);
         expected.MinimumAge = 500;
         expected.MaximumAge = 5000;
 
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
-
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = GetService(_serviceDto.Name);
         actualService.Should().NotBeNull();
         actualService!.Eligibilities.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.Eligibilities.SingleOrDefault(s => s.EligibilityType == expected.EligibilityType);
-        actualEntity.Should().NotBeNull();
-        actualEntity.Should().BeEquivalentTo(expected);
+        var actualEligibility =
+            TestDbContext.Eligibilities.SingleOrDefault(s => s.EligibilityType == expected.EligibilityType);
+        actualEligibility.Should().NotBeNull();
+        actualEligibility.Should().BeEquivalentTo(expected);
     }
 
     [Fact]
     public async Task ThenUpdateServiceAddAndDeleteServiceAreas()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
-        var existingItem = serviceChange.ServiceAreas.ElementAt(0);
+        await Setup();
+
+        var existingItem = _serviceChange.ServiceAreas.ElementAt(0);
         var expected = new ServiceAreaDto
         {
             ServiceAreaName = "ServiceAreaName",
             Extent = "Extent",
             Uri = "Uri"
         };
-        serviceChange.ServiceAreas.Clear();
-        serviceChange.ServiceAreas.Add(expected);
-
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
+        _serviceChange.ServiceAreas.Clear();
+        _serviceChange.ServiceAreas.Add(expected);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = GetService(_serviceDto.Name);
         actualService.Should().NotBeNull();
         actualService!.ServiceAreas.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.ServiceAreas.SingleOrDefault(s => s.ServiceAreaName == expected.ServiceAreaName);
-        actualEntity.Should().NotBeNull();
-        actualEntity.Should().BeEquivalentTo(expected, options =>
+        var actualServiceArea =
+            TestDbContext.ServiceAreas.SingleOrDefault(s => s.ServiceAreaName == expected.ServiceAreaName);
+        actualServiceArea.Should().NotBeNull();
+        actualServiceArea.Should().BeEquivalentTo(expected, options =>
             options.Excluding(info => info.Name.Contains("Id"))
                 .Excluding(info => info.Name.Contains("Distance")));
 
-        var unexpectedEntity = TestDbContext.ServiceAreas.Where(lc => lc.Id == existingItem.Id).ToList();
-        unexpectedEntity.Should().HaveCount(0);
+        var unexpectedServiceAreaCount = TestDbContext.ServiceAreas.Count(e => e.Id == existingItem.Id);
+        unexpectedServiceAreaCount.Should().Be(0);
     }
 
     [Fact]
     public async Task ThenUpdateServiceUpdatedServiceAreas()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        var expected = serviceChange.ServiceAreas.ElementAt(0);
+        var expected = _serviceChange.ServiceAreas.ElementAt(0);
         expected.ServiceAreaName = "Updated ServiceAreaName";
         expected.Extent = "Updated Extent";
 
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
-
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = GetService(_serviceDto.Name);
         actualService.Should().NotBeNull();
         actualService!.ServiceAreas.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.ServiceAreas.SingleOrDefault(s => s.ServiceAreaName == expected.ServiceAreaName);
+        var actualEntity =
+            TestDbContext.ServiceAreas.SingleOrDefault(s => s.ServiceAreaName == expected.ServiceAreaName);
         actualEntity.Should().NotBeNull();
         actualEntity.Should().BeEquivalentTo(expected);
     }
@@ -189,144 +189,122 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
     public async Task ThenUpdateServiceDeleteServiceDeliveries()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        var existingItem = serviceChange.ServiceDeliveries.ElementAt(0);
+        var existingItem = _serviceChange.ServiceDeliveries.ElementAt(0);
 
-        serviceChange.ServiceDeliveries.Clear();
-
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
+        _serviceChange.ServiceDeliveries.Clear();
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = GetService(_serviceDto.Name);
         actualService.Should().NotBeNull();
         actualService!.ServiceDeliveries.Count.Should().Be(0);
 
-        var unexpectedEntity = TestDbContext.ServiceDeliveries.Where(lc => lc.Id == existingItem.Id).ToList();
-        unexpectedEntity.Should().HaveCount(0);
+        var unexpectedServiceDeliveryCount = TestDbContext.ServiceDeliveries.Count(e => e.Id == existingItem.Id);
+        unexpectedServiceDeliveryCount.Should().Be(0);
     }
 
     [Fact]
     public async Task ThenUpdateServiceUpdatedServiceDeliveries()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        var expected = serviceChange.ServiceDeliveries.ElementAt(0);
+        var expected = _serviceChange.ServiceDeliveries.ElementAt(0);
         expected.Name = AttendingType.InPerson;
 
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
-
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = GetService(_serviceDto.Name);
         actualService.Should().NotBeNull();
         actualService!.ServiceDeliveries.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.ServiceDeliveries.SingleOrDefault(s => s.Name == expected.Name);
-        actualEntity.Should().NotBeNull();
-        actualEntity.Should().BeEquivalentTo(expected);
+        var actualServiceDelivery = TestDbContext.ServiceDeliveries.SingleOrDefault(s => s.Name == expected.Name);
+        actualServiceDelivery.Should().NotBeNull();
+        actualServiceDelivery.Should().BeEquivalentTo(expected);
     }
 
     [Fact]
     public async Task ThenUpdateServiceAddAndDeleteLanguages()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        var existingItem = serviceChange.Languages.ElementAt(0);
+        var existingItem = _serviceChange.Languages.ElementAt(0);
         var expected = new LanguageDto()
         {
             Name = "New Language",
             Code = "xx"
         };
 
-        serviceChange.Languages.Clear();
-        serviceChange.Languages.Add(expected);
-
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
+        _serviceChange.Languages.Clear();
+        _serviceChange.Languages.Add(expected);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == service.Name);
+        var actualService = GetService(_serviceDto.Name);
         actualService.Should().NotBeNull();
         actualService!.Languages.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.Languages.SingleOrDefault(s => s.Name == expected.Name);
-        actualEntity.Should().NotBeNull();
-        actualEntity.Should().BeEquivalentTo(expected, options =>
+        var actualLanguage = TestDbContext.Languages.SingleOrDefault(s => s.Name == expected.Name);
+        actualLanguage.Should().NotBeNull();
+        actualLanguage.Should().BeEquivalentTo(expected, options =>
             options.Excluding((IMemberInfo info) => info.Name.Contains("Id"))
                 .Excluding((IMemberInfo info) => info.Name.Contains("Distance")));
 
-        var unexpectedEntity = TestDbContext.Languages.Where(lc => lc.Id == existingItem.Id).ToList();
-        unexpectedEntity.Should().HaveCount(0);
+        var unexpectedLanguageCount = TestDbContext.Languages.Count(e => e.Id == existingItem.Id);
+        unexpectedLanguageCount.Should().Be(0);
     }
 
     [Fact]
     public async Task ThenUpdateServiceUpdatedLanguages()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        var expected = serviceChange.Languages.ElementAt(0);
+        var expected = _serviceChange.Languages.ElementAt(0);
         expected.Name = "Updated Language";
         expected.Code = "UL";
 
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
-
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = GetService(_serviceDto.Name);
         actualService.Should().NotBeNull();
         actualService!.Languages.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.Languages.SingleOrDefault(s => s.Name == expected.Name);
-        actualEntity.Should().NotBeNull();
-        actualEntity.Should().BeEquivalentTo(expected);
+        var actualLanguage = TestDbContext.Languages.SingleOrDefault(s => s.Name == expected.Name);
+        actualLanguage.Should().NotBeNull();
+        actualLanguage.Should().BeEquivalentTo(expected);
     }
 
     [Fact]
     public async Task ThenUpdateServiceAddAndDeleteCostOptions()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        var existingItem = serviceChange.CostOptions.ElementAt(0);
+        var existingItem = _serviceChange.CostOptions.ElementAt(0);
         var expected = new CostOptionDto
         {
             ValidFrom = DateTime.UtcNow,
@@ -336,94 +314,81 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
             AmountDescription = "Amount Description"
         };
 
-        serviceChange.CostOptions.Clear();
-        serviceChange.CostOptions.Add(expected);
-
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
+        _serviceChange.CostOptions.Clear();
+        _serviceChange.CostOptions.Add(expected);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = GetService(_serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.CostOptions.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.CostOptions.SingleOrDefault(s => s.Option == expected.Option);
-        actualEntity.Should().NotBeNull();
-        actualEntity.Should().BeEquivalentTo(expected, options =>
+        var actualCostOption = TestDbContext.CostOptions.SingleOrDefault(s => s.Option == expected.Option);
+        actualCostOption.Should().NotBeNull();
+        actualCostOption.Should().BeEquivalentTo(expected, options =>
             options.Excluding(info => info.Name.Contains("Id"))
                 .Excluding(info => info.Name.Contains("Distance")));
 
-        var unexpectedEntity = TestDbContext.CostOptions.Where(lc => lc.Id == existingItem.Id).ToList();
-        unexpectedEntity.Should().HaveCount(0);
+        var unexpectedCostOptionCount = TestDbContext.CostOptions.Count(e => e.Id == existingItem.Id);
+        unexpectedCostOptionCount.Should().Be(0);
     }
 
     [Fact]
     public async Task ThenUpdateServiceUpdatedCostOptions()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        var expected = serviceChange.CostOptions.ElementAt(0);
+        var expected = _serviceChange.CostOptions.ElementAt(0);
         expected.Amount = 987;
         expected.Option = "Updated Option";
         expected.AmountDescription = "Updated Amount Description";
 
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
-
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = GetService(_serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.CostOptions.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.CostOptions.SingleOrDefault(s => s.Option == expected.Option);
-        actualEntity.Should().NotBeNull();
-        actualEntity.Should().BeEquivalentTo(expected);
+        var actualCostOption = TestDbContext.CostOptions.SingleOrDefault(s => s.Option == expected.Option);
+        actualCostOption.Should().NotBeNull();
+        actualCostOption.Should().BeEquivalentTo(expected);
     }
 
     [Fact]
     public async Task ThenUpdateServiceAddAndDeleteContacts()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        var existingItem = serviceChange.Contacts.ElementAt(0);
+        var existingItem = _serviceChange.Contacts.ElementAt(0);
         var contact = new ContactDto
         {
             Id = 0,
             Name = "New Contact",
             Telephone = "New Telephone"
         };
-        serviceChange.Contacts.Clear();
-        serviceChange.Contacts.Add(contact);
-
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
+        _serviceChange.Contacts.Clear();
+        _serviceChange.Contacts.Add(contact);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = GetService(_serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Contacts.Count.Should().Be(1);
 
@@ -433,34 +398,29 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
             options.Excluding((IMemberInfo info) => info.Name.Contains("Id"))
                 .Excluding((IMemberInfo info) => info.Name.Contains("Distance")));
 
-        var unexpectedEntity = TestDbContext.Contacts.Where(lc => lc.Id == existingItem.Id).ToList();
-        unexpectedEntity.Should().HaveCount(0);
+        var unexpectedContactCount = TestDbContext.Contacts.Count(e => e.Id == existingItem.Id);
+        unexpectedContactCount.Should().Be(0);
     }
 
     [Fact]
     public async Task ThenUpdateServiceWithUpdatedContacts()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        var contact = serviceChange.Contacts.ElementAt(0);
+        var contact = _serviceChange.Contacts.ElementAt(0);
         contact.Name = "Updated Name";
         contact.Email = "Updated Email";
         contact.Telephone = "Updated Telephone";
 
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
-
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = GetService(_serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Contacts.Count.Should().Be(1);
 
@@ -473,11 +433,9 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
     public async Task ThenUpdateServiceAddAndDeleteSchedules()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        var existingItem = serviceChange.Schedules.ElementAt(0);
+        var existingItem = _serviceChange.Schedules.ElementAt(0);
         var expected = new ScheduleDto
         {
             ValidFrom = DateTime.UtcNow,
@@ -486,74 +444,63 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
             ByMonthDay = "New ByMonthDay"
         };
 
-        serviceChange.Schedules.Clear();
-        serviceChange.Schedules.Add(expected);
-
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
+        _serviceChange.Schedules.Clear();
+        _serviceChange.Schedules.Add(expected);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = GetService(_serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Schedules.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.Schedules.SingleOrDefault(s => s.ByDay == expected.ByDay);
-        actualEntity.Should().NotBeNull();
-        actualEntity.Should().BeEquivalentTo(expected, options =>
+        var actualSchedule = TestDbContext.Schedules.SingleOrDefault(s => s.ByDay == expected.ByDay);
+        actualSchedule.Should().NotBeNull();
+        actualSchedule.Should().BeEquivalentTo(expected, options =>
             options.Excluding(info => info.Name.Contains("Id"))
                 .Excluding(info => info.Name.Contains("Distance")));
 
-        var unexpectedEntity = TestDbContext.Schedules.Where(lc => lc.Id == existingItem.Id).ToList();
-        unexpectedEntity.Should().HaveCount(0);
+        var unexpectedScheduleCount = TestDbContext.Schedules.Count(e => e.Id == existingItem.Id);
+        unexpectedScheduleCount.Should().Be(0);
     }
 
     [Fact]
     public async Task ThenUpdateServiceUpdatedSchedules()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        var expected = serviceChange.Schedules.ElementAt(0);
+        var expected = _serviceChange.Schedules.ElementAt(0);
         expected.ByDay = "Updated ByDay";
         expected.ByMonthDay = "Updated ByMonthDay";
 
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
-
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = GetService(_serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Schedules.Count.Should().Be(1);
 
-        var actualEntity = TestDbContext.Schedules.SingleOrDefault(s => s.ByDay == expected.ByDay);
-        actualEntity.Should().NotBeNull();
-        actualEntity.Should().BeEquivalentTo(expected);
+        var actualSchedule = TestDbContext.Schedules.SingleOrDefault(s => s.ByDay == expected.ByDay);
+        actualSchedule.Should().NotBeNull();
+        actualSchedule.Should().BeEquivalentTo(expected);
     }
 
-    //todo: ideally we'd have one test for add, one for delete (and this one for add and delete
     [Fact]
     public async Task ThenUpdateServiceAddAndDeleteLocations()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        var location = service.Locations.ElementAt(0);
+        var location = _serviceDto.Locations.ElementAt(0);
         var expected = new LocationDto
         {
             Name = "New Location",
@@ -568,25 +515,22 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
             Longitude = 0,
             LocationType = LocationType.Postal
         };
-        var existingLocationId = await CreateLocation(expected);
+        var existingLocationId = CreateLocation(expected);
 
-        serviceChange.ServiceAtLocations.Clear();
-        serviceChange.ServiceAtLocations.Add(new ServiceAtLocationDto
+        _serviceChange.ServiceAtLocations.Clear();
+        _serviceChange.ServiceAtLocations.Add(new ServiceAtLocationDto
         {
             LocationId = existingLocationId
         });
 
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
-
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = GetService(_serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Locations.Count.Should().Be(1);
 
@@ -608,11 +552,8 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
     public async Task ThenUpdateServiceAddAndDeleteLocationsWithSchedules()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
-        //todo: don't use hardcoded id?
         await AddServiceAtLocationSchedule(1, new ScheduleDto
         {
             AttendingType = AttendingType.InPerson.ToString(),
@@ -620,7 +561,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
             ByDay = "MO"
         });
 
-        var location = service.Locations.ElementAt(0);
+        var location = _serviceDto.Locations.ElementAt(0);
         var expected = new LocationDto
         {
             Name = "New Location",
@@ -635,7 +576,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
             Longitude = 0,
             LocationType = LocationType.Postal
         };
-        var existingLocationId = await CreateLocation(expected);
+        var existingLocationId = CreateLocation(expected);
 
         var expectedSchedule = new ScheduleDto()
         {
@@ -653,20 +594,17 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
             }
         };
 
-        serviceChange.ServiceAtLocations.Clear();
-        serviceChange.ServiceAtLocations.Add(expectedServiceAtLocation);
-
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
+        _serviceChange.ServiceAtLocations.Clear();
+        _serviceChange.ServiceAtLocations.Add(expectedServiceAtLocation);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = GetService(_serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Locations.Should().HaveCount(1);
 
@@ -683,7 +621,7 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
             options.Excluding((IMemberInfo info) => info.Name.Contains("Id"))
                 .Excluding((IMemberInfo info) => info.Name.Contains("Distance")));
 
-        // check old serviceatlocation is deleted and the new one is saved correctly
+        // check old ServiceAtLocation is deleted and the new one is saved correctly
         TestDbContext.ServiceAtLocations.Should().HaveCount(1);
         TestDbContext.ServiceAtLocations.First().Id.Should().Be(2);
         TestDbContext.ServiceAtLocations.First().Should().BeEquivalentTo(expectedServiceAtLocation, options =>
@@ -692,38 +630,34 @@ public class WhenUsingUpdateServiceCommand : DataIntegrationTestBase
         // check the old schedule is deleted and the new one is saved correctly
         TestDbContext.Schedules.Where(s => s.ServiceAtLocationId != null).Should().HaveCount(1);
         TestDbContext.Schedules.Single(s => s.ServiceAtLocationId != null).Id.Should().Be(4);
-        TestDbContext.Schedules.Single(s => s.ServiceAtLocationId != null).Should().BeEquivalentTo(expectedSchedule, options =>
-            options.Excluding(info => info.Name.Contains("Id")));
+        TestDbContext.Schedules.Single(s => s.ServiceAtLocationId != null).Should().BeEquivalentTo(expectedSchedule,
+            options =>
+                options.Excluding(info => info.Name.Contains("Id")));
     }
 
     [Fact]
     public async Task ThenUpdateServiceAddAndDeleteTaxonomies()
     {
         //Arrange
-        await CreateOrganisationDetails();
-        var service = TestOrganisation.Services.ElementAt(0);
-        var serviceChange = Mapper.Map<ServiceChangeDto>(service);
+        await Setup();
 
         var newTaxonomy = TestDbContext.Taxonomies.First(t => t.Name == "Sports and recreation");
 
-        var taxonomy = service.Taxonomies.ElementAt(0);
-        serviceChange.TaxonomyIds.Clear();
-        serviceChange.TaxonomyIds.Add(newTaxonomy.Id);
-
-        var updateCommand = new UpdateServiceCommand(service.Id, serviceChange);
-        var updateHandler = new UpdateServiceCommandHandler(TestDbContext, Mapper);
+        var taxonomy = _serviceDto.Taxonomies.ElementAt(0);
+        _serviceChange.TaxonomyIds.Clear();
+        _serviceChange.TaxonomyIds.Add(newTaxonomy.Id);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await _updateServiceCommandHandler.Handle(_updateServiceCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        result.Should().Be(serviceChange.Id);
+        result.Should().Be(_serviceChange.Id);
 
-        var actualService = TestDbContext.Services.SingleOrDefault(s => s.Name == serviceChange.Name);
+        var actualService = GetService(_serviceChange.Name);
         actualService.Should().NotBeNull();
         actualService!.Taxonomies.Count.Should().Be(1);
-        actualService!.Taxonomies.Select(t => t.Id).Should().BeEquivalentTo(new[] { newTaxonomy.Id });
+        actualService.Taxonomies.Select(t => t.Id).Should().BeEquivalentTo(new[] { newTaxonomy.Id });
 
         // Delete wont cascade delete Taxonomies, so existing will be left behind
         var detachedEntity = TestDbContext.Taxonomies.SingleOrDefault(s => s.Name == taxonomy.Name);

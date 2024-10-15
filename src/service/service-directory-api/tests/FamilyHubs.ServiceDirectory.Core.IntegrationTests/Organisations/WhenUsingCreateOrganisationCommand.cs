@@ -4,28 +4,35 @@ using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Organisations;
 
 public class WhenUsingCreateOrganisationCommand : DataIntegrationTestBase
 {
+    private readonly ILogger<CreateOrganisationCommandHandler> _createLogger = GetLogger<CreateOrganisationCommandHandler>();
+
     [Fact]
     public async Task ThenCreateOrganisation()
     {
         //Arrange
         var organisation = Mapper.Map<OrganisationDto>(TestOrganisation);
         var createOrganisationCommand = new CreateOrganisationCommand(organisation);
-        var handler = new CreateOrganisationCommandHandler(TestDbContext, Mapper, GetLogger<CreateOrganisationCommandHandler>());
+        var handler = new CreateOrganisationCommandHandler(TestDbContext, Mapper, _createLogger);
 
         //Act
-        var result = await handler.Handle(createOrganisationCommand, new CancellationToken());
+        var result = await handler.Handle(createOrganisationCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
-        var actualOrganisation = TestDbContext.Organisations.SingleOrDefault(o => o.Id == result);
+        var actualOrganisation = TestDbContext.Organisations
+            .Include(o => o.Services)
+            .Include(o => o.Locations)
+            .SingleOrDefault(o => o.Id == result);
         actualOrganisation.Should().NotBeNull();
         actualOrganisation!.Services.Count.Should().Be(0);
-        actualOrganisation!.Locations.Count.Should().Be(0);
+        actualOrganisation.Locations.Count.Should().Be(0);
         actualOrganisation.Should().BeEquivalentTo(organisation, options => 
             options.Excluding((IMemberInfo info) => info.Name.Contains("Id")));
     }
@@ -49,10 +56,10 @@ public class WhenUsingCreateOrganisationCommand : DataIntegrationTestBase
         };
 
         var command = new CreateOrganisationCommand(relatedOrganisation);
-        var handler = new CreateOrganisationCommandHandler(TestDbContext, Mapper, GetLogger<CreateOrganisationCommandHandler>());
+        var handler = new CreateOrganisationCommandHandler(TestDbContext, Mapper, _createLogger);
 
         //Act
-        var result = await handler.Handle(command, new CancellationToken());
+        var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -69,10 +76,13 @@ public class WhenUsingCreateOrganisationCommand : DataIntegrationTestBase
         await CreateOrganisationDetails();
 
         var command = new CreateOrganisationCommand(TestOrganisation);
-        var handler = new CreateOrganisationCommandHandler(TestDbContext, Mapper, GetLogger<CreateOrganisationCommandHandler>());
+        var handler = new CreateOrganisationCommandHandler(TestDbContext, Mapper, _createLogger);
 
         // Act 
         // Assert
-        await Assert.ThrowsAsync<AlreadyExistsException>(() => handler.Handle(command, new CancellationToken()));
+        await handler
+            .Invoking(x => x.Handle(command, CancellationToken.None))
+            .Should()
+            .ThrowAsync<AlreadyExistsException>();
     }
 }

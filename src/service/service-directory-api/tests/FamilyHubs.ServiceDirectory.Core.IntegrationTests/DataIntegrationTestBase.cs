@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using System.Security.Claims;
+using AutoFixture;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
 using FamilyHubs.ServiceDirectory.Core.Helper;
@@ -6,33 +7,41 @@ using FamilyHubs.ServiceDirectory.Data.Entities;
 using FamilyHubs.ServiceDirectory.Data.Interceptors;
 using FamilyHubs.ServiceDirectory.Data.Repository;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
+using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Moq;
+using NSubstitute;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests;
 
-public class DataIntegrationTestBase : IDisposable, IAsyncDisposable
+public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
 {
-    public OrganisationDetailsDto TestOrganisation { get; set; }
-    public OrganisationDetailsDto TestOrganisationFreeService { get; set; }
-    public OrganisationDto TestOrganisationWithoutAnyServices { get; set; }
-    public IMapper Mapper { get; }
-    public IConfiguration Configuration { get; }
-    public ApplicationDbContext TestDbContext { get; }
-    public static NullLogger<T> GetLogger<T>() => new();
-    protected readonly IHttpContextAccessor HttpContextAccessor;
-    public readonly Fixture FixtureObjectGenerator;
-    public static readonly ILoggerFactory TestLoggerFactory
+    protected ApplicationDbContext TestDbContext { get; }
+
+    protected static ILogger<T> GetLogger<T>() => Substitute.For<ILogger<T>>();
+
+    protected IMapper Mapper { get; }
+    protected IConfiguration Configuration { get; }
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly Fixture _fixtureObjectGenerator;
+
+    protected OrganisationDetailsDto TestOrganisation { get; }
+    protected OrganisationDetailsDto TestOrganisationFreeService { get; }
+    protected OrganisationDto TestOrganisationWithoutAnyServices { get; }
+
+    private static readonly ILoggerFactory TestLoggerFactory
         = LoggerFactory.Create(builder => { builder.AddConsole(); });
 
-    public DataIntegrationTestBase()
+    private static readonly string[] ConfigAction = ["CreatedBy", "Created", "LastModified", "LastModified"];
+
+    private static int _dbSuffix;
+
+    protected DataIntegrationTestBase()
     {
-        FixtureObjectGenerator = new Fixture();
+        _fixtureObjectGenerator = new Fixture();
         TestOrganisation = TestDataProvider.GetTestCountyCouncilDto();
         TestOrganisationFreeService = TestDataProvider.GetTestCountyCouncilWithFreeServiceDto();
         TestOrganisationWithoutAnyServices = TestDataProvider.GetTestCountyCouncilWithoutAnyServices();
@@ -44,19 +53,19 @@ public class DataIntegrationTestBase : IDisposable, IAsyncDisposable
         Mapper = serviceProvider.GetRequiredService<IMapper>();
         Configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
-        HttpContextAccessor = Mock.Of<IHttpContextAccessor>();
+        _httpContextAccessor = Substitute.For<IHttpContextAccessor>();
 
         InitialiseDatabase();
     }
 
-    public LocationDto GetTestLocation()
+    protected LocationDto GetTestLocation()
     {
         var locationDto = TestOrganisation.Services.ElementAt(0).Locations.ElementAt(0);
         locationDto.OrganisationId = TestDbContext.Organisations.First().Id;
         return locationDto;
     }
 
-    public async Task<OrganisationDetailsDto> CreateOrganisationDetails(OrganisationDetailsDto? organisationDto = null)
+    protected async Task<OrganisationDetailsDto> CreateOrganisationDetails(OrganisationDetailsDto? organisationDto = null)
     {
         var organisationWithServices = Mapper.Map<Organisation>(organisationDto ?? TestOrganisation);
 
@@ -69,7 +78,7 @@ public class DataIntegrationTestBase : IDisposable, IAsyncDisposable
         return Mapper.Map(organisationWithServices, organisationDto ?? TestOrganisation);
     }
 
-    public async Task<OrganisationDto> CreateOrganisation(OrganisationDto? organisationDto = null)
+    protected async Task<OrganisationDto> CreateOrganisation(OrganisationDto? organisationDto = null)
     {
         var organisationWithoutAnyServices = Mapper.Map<Organisation>(organisationDto ?? TestOrganisationWithoutAnyServices);
 
@@ -84,18 +93,18 @@ public class DataIntegrationTestBase : IDisposable, IAsyncDisposable
         return Mapper.Map(organisationWithoutAnyServices, organisationDto ?? TestOrganisationWithoutAnyServices);
     }
 
-    public async Task<long> CreateLocation(LocationDto locationDto)
+    protected long CreateLocation(LocationDto locationDto)
     {
         var existingLocation = Mapper.Map<Location>(locationDto);
 
         TestDbContext.Locations.Add(existingLocation);
 
-        await TestDbContext.SaveChangesAsync();
+        TestDbContext.SaveChanges();
 
         return existingLocation.Id;
     }
 
-    public async Task<long> AddServiceAtLocationSchedule(long serviceAtLocationId, ScheduleDto scheduleDto)
+    protected async Task AddServiceAtLocationSchedule(long serviceAtLocationId, ScheduleDto scheduleDto)
     {
         var schedule = Mapper.Map<Schedule>(scheduleDto);
 
@@ -104,32 +113,9 @@ public class DataIntegrationTestBase : IDisposable, IAsyncDisposable
         serviceAtLocation.Schedules.Add(schedule);
 
         await TestDbContext.SaveChangesAsync();
-
-        return schedule.Id;
     }
 
-    //public async Task<long> CreateContact(ContactDto contactDto)
-    //{
-    //    var existingContact = Mapper.Map<Contact>(contactDto);
-
-    //    TestDbContext.Contacts.Add(existingContact);
-
-    //    await TestDbContext.SaveChangesAsync();
-
-    //    return existingContact.Id;
-    //}
-
-    //public async Task<long> CreateTaxonomy(TaxonomyDto taxonomyDto)
-    //{
-    //    var existingLocation = Mapper.Map<Taxonomy>(taxonomyDto);
-
-    //    TestDbContext.Taxonomies.Add(existingLocation);
-    //    await TestDbContext.SaveChangesAsync();
-
-    //    return existingLocation.Id;
-    //}
-
-    public async Task<List<Service>> CreateManyTestServicesQueryTesting()
+    protected async Task<List<Service>> CreateManyTestServicesQueryTesting()
     {
         var testOrganisations = TestDbContext.Organisations.Select(o => new { o.Id, o.Name })
             .Where(o => o.Name == "Bristol County Council" || o.Name == "Salford City Council")
@@ -163,14 +149,14 @@ public class DataIntegrationTestBase : IDisposable, IAsyncDisposable
             organisationSeedData.SeedOrganisations().GetAwaiter().GetResult();
     }
 
-    protected ServiceProvider CreateNewServiceProvider()
+    private ServiceProvider CreateNewServiceProvider()
     {
-        var serviceDirectoryConnection = $"Data Source=sd-{Random.Shared.Next().ToString()}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
-        
-        var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(HttpContextAccessor);
+        var serviceDirectoryConnection = $"Data Source=sd-{Interlocked.Increment(ref _dbSuffix)}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
+
+        var auditableEntitySaveChangesInterceptor = new AuditableEntitySaveChangesInterceptor(_httpContextAccessor);
 
         var inMemorySettings = new Dictionary<string, string?> {
-            {"UseSqlite", "true"},
+            {"UseSqlite", "true"}
         };
         var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build();
 
@@ -187,7 +173,7 @@ public class DataIntegrationTestBase : IDisposable, IAsyncDisposable
             .AddSingleton(auditableEntitySaveChangesInterceptor)
             .AddAutoMapper((serviceProvider, cfg) =>
             {
-                var auditProperties = new[] { "CreatedBy", "Created", "LastModified", "LastModified" };
+                var auditProperties = ConfigAction;
                 cfg.AddProfile<AutoMappingProfiles>();
                 cfg.AddCollectionMappers();
                 cfg.UseEntityFrameworkCoreModel<ApplicationDbContext>(serviceProvider);
@@ -202,13 +188,33 @@ public class DataIntegrationTestBase : IDisposable, IAsyncDisposable
         { 
             AdminAreaCode = parent.AdminAreaCode,
             AssociatedOrganisationId = parent.Id,
-            Description = FixtureObjectGenerator.Create<string>(),
-            Name = FixtureObjectGenerator.Create<string>(),
+            Description = _fixtureObjectGenerator.Create<string>(),
+            Name = _fixtureObjectGenerator.Create<string>(),
             OrganisationType = Shared.Enums.OrganisationType.VCFS,
-            Id = FixtureObjectGenerator.Create<long>()
+            Id = _fixtureObjectGenerator.Create<long>()
         };
 
         return child;
+    }
+
+    protected static IHttpContextAccessor GetMockHttpContextAccessor(long organisationId, string userRole)
+    {
+        var mockUser = Substitute.For<ClaimsPrincipal>();
+        var claims = new List<Claim>
+        {
+            new(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()),
+            new(FamilyHubsClaimTypes.Role, userRole)
+        };
+
+        mockUser.Claims.Returns(claims);
+
+        var mockHttpContext = Substitute.For<HttpContext>();
+        mockHttpContext.User.Returns(mockUser);
+
+        var mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+        mockHttpContextAccessor.HttpContext.Returns(mockHttpContext);
+
+        return mockHttpContextAccessor;
     }
 
     public void Dispose()

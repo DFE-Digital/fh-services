@@ -17,7 +17,7 @@ public class WhenUsingGetOrganisationCommands : DataIntegrationTestBase
         var getHandler = new GetOrganisationByIdHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
@@ -33,7 +33,10 @@ public class WhenUsingGetOrganisationCommands : DataIntegrationTestBase
 
         // Act 
         // Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => getHandler.Handle(getCommand, new CancellationToken()));
+        await getHandler
+            .Invoking(x => x.Handle(getCommand, CancellationToken.None))
+            .Should()
+            .ThrowAsync<NotFoundException>();
     }
 
     [Fact]
@@ -44,10 +47,9 @@ public class WhenUsingGetOrganisationCommands : DataIntegrationTestBase
 
         var getCommand = new GetOrganisationAdminAreaByIdCommand { OrganisationId = TestOrganisation.Id };
         var getHandler = new GetOrganisationAdminAreaByIdCommandHandler(TestDbContext);
-        TestOrganisation.Logo = "";
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();

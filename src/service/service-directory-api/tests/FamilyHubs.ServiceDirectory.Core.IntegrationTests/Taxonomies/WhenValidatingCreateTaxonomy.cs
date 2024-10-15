@@ -23,7 +23,7 @@ public class WhenValidatingCreateTaxonomy
         var result = validator.Validate(testModel);
 
         //Assert
-        result.Errors.Any().Should().BeFalse();
+        result.Errors.Count.Should().Be(0);
     }
 
     [Fact]

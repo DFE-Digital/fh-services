@@ -5,8 +5,6 @@ using FamilyHubs.ServiceDirectory.Core.Queries.Services.GetServicesByOrganisatio
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Services;
 
@@ -23,12 +21,10 @@ public class WhenUsingGetServiceCommand : DataIntegrationTestBase
         var handler = new GetServicesCommandHandler(Configuration, TestDbContext, Mapper);
 
         //Act
-        var results = await handler.Handle(command, new CancellationToken());
+        var results = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         results.Should().NotBeNull();
-        ArgumentNullException.ThrowIfNull(TestOrganisation);
-        ArgumentNullException.ThrowIfNull(TestOrganisation.Services);
         results.Items[0].Should().BeEquivalentTo(TestOrganisation.Services.ElementAt(0));
     }
 
@@ -48,7 +44,7 @@ public class WhenUsingGetServiceCommand : DataIntegrationTestBase
         var handler = new GetServiceNamesCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var results = await handler.Handle(command, new CancellationToken());
+        var results = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         results.Should().NotBeNull();
@@ -73,7 +69,7 @@ public class WhenUsingGetServiceCommand : DataIntegrationTestBase
         var handler = new GetServicesCommandHandler(Configuration, TestDbContext, Mapper);
 
         //Act
-        var results = await handler.Handle(command, new CancellationToken());
+        var results = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         results.Should().NotBeNull();
@@ -91,12 +87,10 @@ public class WhenUsingGetServiceCommand : DataIntegrationTestBase
         var handler = new GetServicesCommandHandler(Configuration, TestDbContext, Mapper);
 
         //Act
-        var results = await handler.Handle(command, new CancellationToken());
+        var results = await handler.Handle(command, CancellationToken.None);
 
         //Assert
         results.Should().NotBeNull();
-        ArgumentNullException.ThrowIfNull(TestOrganisationFreeService);
-        ArgumentNullException.ThrowIfNull(TestOrganisationFreeService.Services);
         results.Items[0].Should().BeEquivalentTo(TestOrganisationFreeService.Services.ElementAt(0));
     }
 
@@ -107,13 +101,13 @@ public class WhenUsingGetServiceCommand : DataIntegrationTestBase
         await CreateOrganisationDetails();
 
         var command = new DeleteServiceByIdCommand(1);
-        var handler = new DeleteServiceByIdCommandHandler(TestDbContext, new Mock<ILogger<DeleteServiceByIdCommandHandler>>().Object);
+        var handler = new DeleteServiceByIdCommandHandler(TestDbContext, GetLogger<DeleteServiceByIdCommandHandler>());
 
         //Act
-        var results = await handler.Handle(command, new CancellationToken());
+        var results = await handler.Handle(command, CancellationToken.None);
 
         //Assert
-        results.Should().Be(true);
+        results.Should().BeTrue();
     }
 
     [Fact]
@@ -121,10 +115,13 @@ public class WhenUsingGetServiceCommand : DataIntegrationTestBase
     {
         //Arrange
         var command = new DeleteServiceByIdCommand(Random.Shared.Next());
-        var handler = new DeleteServiceByIdCommandHandler(TestDbContext, new Mock<ILogger<DeleteServiceByIdCommandHandler>>().Object);
+        var handler = new DeleteServiceByIdCommandHandler(TestDbContext, GetLogger<DeleteServiceByIdCommandHandler>());
 
         // Act 
         // Assert
-        await Assert.ThrowsAsync<NotFoundException>(() => handler.Handle(command, new CancellationToken()));
+        await handler
+            .Invoking(x => x.Handle(command, CancellationToken.None))
+            .Should()
+            .ThrowAsync<NotFoundException>();
     }
 }

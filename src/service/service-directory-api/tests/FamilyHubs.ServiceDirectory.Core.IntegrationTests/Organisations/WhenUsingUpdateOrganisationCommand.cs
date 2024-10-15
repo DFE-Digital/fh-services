@@ -4,20 +4,13 @@ using FamilyHubs.SharedKernel.Identity;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Moq;
-using System.Security.Claims;
 
 namespace FamilyHubs.ServiceDirectory.Core.IntegrationTests.Organisations;
 
 public class WhenUsingUpdateOrganisationCommand : DataIntegrationTestBase
 {
-    public readonly Mock<IHttpContextAccessor> MockHttpContextAccessor;
-    public readonly Mock<ILogger<UpdateOrganisationCommandHandler>> UpdateLogger = new();
-
-    public WhenUsingUpdateOrganisationCommand()
-    {
-        MockHttpContextAccessor = GetMockHttpContextAccessor(-1, RoleTypes.DfeAdmin);
-    }
+    private readonly IHttpContextAccessor _mockHttpContextAccessor = GetMockHttpContextAccessor(-1, RoleTypes.DfeAdmin);
+    private readonly ILogger<UpdateOrganisationCommandHandler> _updateLogger = GetLogger<UpdateOrganisationCommandHandler>();
 
     [Fact]
     public async Task ThenUpdateOrganisationOnly()
@@ -29,10 +22,10 @@ public class WhenUsingUpdateOrganisationCommand : DataIntegrationTestBase
         TestOrganisation.Description = "Unit Test Update TestOrganisation Name";
 
         var updateCommand = new UpdateOrganisationCommand(TestOrganisation.Id, TestOrganisation);
-        var updateHandler = new UpdateOrganisationCommandHandler(MockHttpContextAccessor.Object, TestDbContext, Mapper, UpdateLogger.Object);
+        var updateHandler = new UpdateOrganisationCommandHandler(_mockHttpContextAccessor, TestDbContext, Mapper, _updateLogger);
 
         //Act
-        var result = await updateHandler.Handle(updateCommand, new CancellationToken());
+        var result = await updateHandler.Handle(updateCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBe(0);
@@ -55,27 +48,12 @@ public class WhenUsingUpdateOrganisationCommand : DataIntegrationTestBase
         var mockHttpContextAccessor = GetMockHttpContextAccessor(50, RoleTypes.LaManager);
 
         var updateCommand = new UpdateOrganisationCommand(TestOrganisation.Id, TestOrganisation);
-        var updateHandler = new UpdateOrganisationCommandHandler(mockHttpContextAccessor.Object, TestDbContext, Mapper, UpdateLogger.Object);
+        var updateHandler = new UpdateOrganisationCommandHandler(mockHttpContextAccessor, TestDbContext, Mapper, _updateLogger);
 
         //Act / Assert
-        await Assert.ThrowsAsync<ForbiddenException>(async () => await updateHandler.Handle(updateCommand, new CancellationToken()));
-    }
-
-    private Mock<IHttpContextAccessor> GetMockHttpContextAccessor(long organisationId, string userRole)
-    {
-        var mockUser = new Mock<ClaimsPrincipal>();
-        var claims = new List<Claim>();
-        claims.Add(new Claim(FamilyHubsClaimTypes.OrganisationId, organisationId.ToString()));
-        claims.Add(new Claim(FamilyHubsClaimTypes.Role, userRole));
-
-        mockUser.SetupGet(x => x.Claims).Returns(claims);
-
-        var mockHttpContext = new Mock<HttpContext>();
-        mockHttpContext.SetupGet(x => x.User).Returns(mockUser.Object);
-
-        var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
-        mockHttpContextAccessor.SetupGet(x => x.HttpContext).Returns(mockHttpContext.Object);
-
-        return mockHttpContextAccessor;
+        await updateHandler
+            .Invoking(x => x.Handle(updateCommand, CancellationToken.None))
+            .Should()
+            .ThrowAsync<ForbiddenException>();
     }
 }

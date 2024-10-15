@@ -1,12 +1,9 @@
 ﻿using FamilyHubs.ReferralService.Shared.Dto;
 using FamilyHubs.ReferralService.Shared.Models;
 using FamilyHubs.RequestForSupport.Core.ApiClients;
-using FamilyHubs.SharedKernel.Security;
 using FluentAssertions;
-using Moq;
-using Moq.Protected;
-using System.Net;
 using System.Text.Json;
+using FamilyHubs.RequestForSupport.UnitTests.Helpers;
 
 namespace FamilyHubs.RequestForSupport.UnitTests;
 
@@ -16,18 +13,15 @@ public class WhenUsingReferralClientService
     [Fact]
     public async Task ThenGetRequestsByLaProfessional()
     {
-        var accountId = "123";
-        List<ReferralDto> listReferral = new List<ReferralDto>() { GetReferralDto() };
-        PaginatedList<ReferralDto> expectedList = new PaginatedList<ReferralDto>(listReferral, 1, 1, 10);
-        string jsonString = JsonSerializer.Serialize(expectedList);
-        HttpClient httpClient = GetMockClient(jsonString);
-        httpClient.DefaultRequestHeaders.Clear();
-        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer token");
-        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-        ReferralClientService referralClientService = new ReferralClientService(httpClient);
+        var listReferral = new List<ReferralDto> { GetReferralDto() };
+        var expectedList = new PaginatedList<ReferralDto>(listReferral, 1, 1, 10);
+        var jsonString = JsonSerializer.Serialize(expectedList);
+        var httpClient = TestHelpers.GetMockClient(jsonString);
+        var referralClientService = new ReferralClientService(httpClient);
 
         // Act
-        var result = await referralClientService.GetRequestsByLaProfessional(accountId, null, null, 1, 10);
+        var result = await referralClientService
+            .GetRequestsByLaProfessional(accountId:"123", null, null);
 
         // Assert
         result.Should().BeEquivalentTo(expectedList);
@@ -36,18 +30,15 @@ public class WhenUsingReferralClientService
     [Fact]
     public async Task ThenGetRequestsForConnectionByOrganisationId()
     {
-        var organisationId = "123";
-        List<ReferralDto> listReferral = new List<ReferralDto>() { GetReferralDto() };
-        PaginatedList<ReferralDto> expectedList = new PaginatedList<ReferralDto>(listReferral, 1, 1, 10);
-        string jsonString = JsonSerializer.Serialize(expectedList);
-        HttpClient httpClient = GetMockClient(jsonString);
-        httpClient.DefaultRequestHeaders.Clear();
-        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer token");
-        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-        ReferralClientService referralClientService = new ReferralClientService(httpClient);
+        var listReferral = new List<ReferralDto> { GetReferralDto() };
+        var expectedList = new PaginatedList<ReferralDto>(listReferral, 1, 1, 10);
+        var jsonString = JsonSerializer.Serialize(expectedList);
+        var httpClient = TestHelpers.GetMockClient(jsonString);
+        var referralClientService = new ReferralClientService(httpClient);
 
         // Act
-        var result = await referralClientService.GetRequestsForConnectionByOrganisationId(organisationId, null, null, 1, 10);
+        var result = await referralClientService
+            .GetRequestsForConnectionByOrganisationId(organisationId:"123", null, null);
 
         // Assert
         result.Should().BeEquivalentTo(expectedList);
@@ -56,20 +47,17 @@ public class WhenUsingReferralClientService
     [Fact]
     public async Task ThenGetReferralById()
     {
-        var referralId = 1L;
         var expectedReferral = GetReferralDto();
-        string jsonString = JsonSerializer.Serialize(expectedReferral);
-        HttpClient httpClient = GetMockClient(jsonString);
-        httpClient.DefaultRequestHeaders.Clear();
-        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer token");
-        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-        ReferralClientService referralClientService = new ReferralClientService(httpClient);
+        var jsonString = JsonSerializer.Serialize(expectedReferral);
+        var httpClient = TestHelpers.GetMockClient(jsonString);
+        var referralClientService = new ReferralClientService(httpClient);
 
         // Act
-        var result = await referralClientService.GetReferralById(referralId);
+        var result = await referralClientService.GetReferralById(referralId: 1L);
 
         // Assert
-        result.Should().BeEquivalentTo(expectedReferral, options => options.Excluding(x => x.ReasonForSupport).Excluding(x => x.EngageWithFamily));
+        result.Should().BeEquivalentTo(expectedReferral, options => 
+            options.Excluding(x => x.ReasonForSupport).Excluding(x => x.EngageWithFamily));
     }
 
 
@@ -78,40 +66,19 @@ public class WhenUsingReferralClientService
     [InlineData(ReferralStatus.Declined)]
     public async Task ThenUpdateReferralStatus(ReferralStatus expectedReferralStatus)
     {
-        var referralId = 1L;
-        string jsonString = JsonSerializer.Serialize(expectedReferralStatus.ToString());
-        HttpClient httpClient = GetMockClient(jsonString);
-        httpClient.DefaultRequestHeaders.Clear();
-        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer token");
-        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-        ReferralClientService referralClientService = new ReferralClientService(httpClient);
+        var jsonString = JsonSerializer.Serialize(expectedReferralStatus.ToString());
+        var httpClient = TestHelpers.GetMockClient(jsonString);
+        var referralClientService = new ReferralClientService(httpClient);
 
         // Act
-        var result = await referralClientService.UpdateReferralStatus(referralId, expectedReferralStatus);
+        var result = await referralClientService.UpdateReferralStatus(referralId:1L, expectedReferralStatus);
 
         // Assert
-        
         result.Replace("\"","").Should().Be(expectedReferralStatus.ToString());
       
     }
 
-    private HttpClient GetMockClient(string content)
-    {
-        var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        mockHttpMessageHandler.Protected()
-            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                Content = new StringContent(content),
-                StatusCode = HttpStatusCode.OK
-            });
-
-        var client = new HttpClient(mockHttpMessageHandler.Object);
-        client.BaseAddress = new Uri("Https://Localhost");
-        return client;
-    }
-
-    public static ReferralDto GetReferralDto()
+    private static ReferralDto GetReferralDto()
     {
         return new ReferralDto
         {
@@ -138,9 +105,9 @@ public class WhenUsingReferralClientService
                 Name = "Bob Referrer",
                 PhoneNumber = "1234567890",
                 Team = "Team",
-                UserAccountRoles = new List<UserAccountRoleDto>()
-                    {
-                        new UserAccountRoleDto
+                UserAccountRoles = new List<UserAccountRoleDto>
+                {
+                        new()
                         {
                             UserAccount = new UserAccountDto
                             {

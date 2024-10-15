@@ -17,11 +17,11 @@ public class WhenUsingListOrganisationsCommand : DataIntegrationTestBase
         var getHandler = new ListOrganisationCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
-        result.Last().Should().BeEquivalentTo((OrganisationDto)TestOrganisation);
+        result.Last().Should().BeEquivalentTo<OrganisationDto>(TestOrganisation);
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class WhenUsingListOrganisationsCommand : DataIntegrationTestBase
         var getHandler = new ListOrganisationCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
@@ -50,7 +50,7 @@ public class WhenUsingListOrganisationsCommand : DataIntegrationTestBase
         var getHandler = new ListOrganisationCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
@@ -66,13 +66,13 @@ public class WhenUsingListOrganisationsCommand : DataIntegrationTestBase
         TestOrganisation.AssociatedOrganisationId = laOrganisationId;
         await CreateOrganisationDetails();
 
-        var getCommand = new ListOrganisationsCommand(new List<long>(), null,
+        var getCommand = new ListOrganisationsCommand([], null,
             OrganisationType.VCFS,
             laOrganisationId);
         var getHandler = new ListOrganisationCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
@@ -87,13 +87,13 @@ public class WhenUsingListOrganisationsCommand : DataIntegrationTestBase
         TestOrganisation.AssociatedOrganisationId = TestDbContext.Organisations.First().Id;
         await CreateOrganisationDetails();
 
-        var getCommand = new ListOrganisationsCommand(new List<long>(), null,
+        var getCommand = new ListOrganisationsCommand([], null,
             OrganisationType.VCFS,
             TestDbContext.Organisations.Skip(1).First().Id);
         var getHandler = new ListOrganisationCommandHandler(TestDbContext, Mapper);
 
         //Act
-        var result = await getHandler.Handle(getCommand, new CancellationToken());
+        var result = await getHandler.Handle(getCommand, CancellationToken.None);
 
         //Assert
         result.Should().NotBeNull();
