@@ -1,7 +1,0 @@
-{
-  "vus": 5,
-  "duration": "60s",
-  "tags": {
-    "test_type": "stress",
-  }
-}
