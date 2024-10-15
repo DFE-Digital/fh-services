@@ -1,0 +1,13 @@
+{
+  "TEST_FILTERS": {
+    "enabled": false,
+    "startsWith": null,
+    "endsWith": null,
+    "contains": null,
+    "regex": null
+  },
+  "ENVIRONMENT": {
+    "execution": "local",
+    "optionsSet": "load"
+  }
+}

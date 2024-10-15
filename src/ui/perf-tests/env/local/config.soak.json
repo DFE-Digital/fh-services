@@ -1,0 +1,26 @@
+{
+  "tags": {
+    "test_type": "stress"
+  },
+  "scenarios": {
+    "ui": {
+      "executor": "constant-vus",
+      "vus": 5,
+
+      "iterations": 5,
+      "options": {
+        "browser": {
+          "type": "chromium"
+        }
+      }
+    }
+  },
+  "thresholds": {
+    "http_req_failed": ["rate<0.01"],
+    "http_req_duration": ["p(95)<200"],
+
+    "browser_web_vital_lcp": ["p(90) < 1000"],
+    "browser_web_vital_inp": ["p(90) < 80"],
+    "browser_web_vital_cls": ["p(90) < 100"]
+  }
+}
