@@ -1,7 +1,6 @@
-import { sleep } from 'k6';
-
 // #region PARSE __ENV
 let ENVIRONMENT = {};
+
 // Parse environment variables
 // Default to local execution
 ENVIRONMENT.execution = "local";
@@ -37,14 +36,26 @@ DATA.ENVIRONMENT = ENVIRONMENT;
 
 let TESTS_TO_RUN = [ ...TESTS ];
 
-export default function () {
-    // VU code
-    TESTS_TO_RUN.forEach(t => { t(); sleep(1); });
-    sleep(1);
+// Runs automatically before test run
+export function setup() {
+    return DATA;
 }
 
-/*
-// data teardown step
-export function teardown(data) {
+export default function (DATA) {
+    // VU code
+    TESTS_TO_RUN.forEach(t => { t(DATA); });
+}
+
+// This function gets called automatically by K6 after a test run. Produces a test report in the location specified.
+export function handleSummary(data) {
+    console.log('Preparing the end-of-test summary...');
+    return {
+        "testResults.json": JSON.stringify(data)
+    };
+}
+
+// TODO: data teardown step
+//export function teardown(data) {
     // teardown code
-}*/
+//}
+

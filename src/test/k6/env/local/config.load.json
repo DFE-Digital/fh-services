@@ -5,9 +5,9 @@
   "scenarios": {
     "ui": {
       "executor": "per-vu-iterations",
-      "vus": 4000,
+      "vus": 1,
       
-      "iterations": 5,
+      "iterations": 400,
       "options": {
         "browser": {
           "type": "chromium"

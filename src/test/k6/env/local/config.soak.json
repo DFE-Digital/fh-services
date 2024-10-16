@@ -1,13 +1,12 @@
 {
   "tags": {
-    "test_type": "stress"
+    "test_type": "soak"
   },
   "scenarios": {
     "ui": {
       "executor": "ramping-vus",
-      "vus": 400,
-      "duration": "240m",
-      "iterations": 5,
+      "vus": 1,
+      "duration": "5m",
       "options": {
         "browser": {
           "type": "chromium"

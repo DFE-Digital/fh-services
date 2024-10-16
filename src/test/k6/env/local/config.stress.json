@@ -5,7 +5,7 @@
   "scenarios": {
     "ui": {
       "executor": "constant-vus",
-      "vus": 5,
+      "vus": 525,
       "duration": "5m",
       "iterations": 5,
       "options": {

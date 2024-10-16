@@ -2,11 +2,11 @@ import http from 'k6/http';
 import { browser } from 'k6/browser';
 import { sleep } from 'k6';
 
-export async function searchResultsTest() {
+export async function searchResultsTest(data) {
     const page = await browser.newPage();
 
     try {
-        await page.goto('https://test.find-support-for-your-family.education.gov.uk/');
+        await page.goto(`${data.SETTINGS.baseUrl}`);
 
         const startButton = await page.locator('input[class="govuk-button govuk-button--start"]').click();
 
@@ -29,8 +29,8 @@ export async function searchResultsTest() {
     sleep(1);
 }
 
-export function verifyStatusCodeTest() {
-    const res = http.get('https://test.find-support-for-your-family.education.gov.uk/ServiceFilter?postcode=E1%202EN&adminarea=E09000030&latitude=51.517612&longitude=-0.056838&frompostcodesearch=True');
+export function verifyStatusCodeTest(data) {
+    const res = http.get(`${data.SETTINGS.baseUrl}/ServiceFilter?postcode=E1%202EN&adminarea=E09000030&latitude=51.517612&longitude=-0.056838&frompostcodesearch=True')`);
 
     check(res, {
         'status is 200': (r) => r.status === 200,

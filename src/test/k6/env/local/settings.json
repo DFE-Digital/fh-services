@@ -1,4 +1,7 @@
 {
+  "SETTINGS": {
+    "baseUrl": "https://test.find-support-for-your-family.education.gov.uk"
+  },
   "TEST_FILTERS": {
     "enabled": false,
     "startsWith": null,
@@ -8,6 +11,6 @@
   },
   "ENVIRONMENT": {
     "execution": "local",
-    "optionsSet": "load"
+    "optionsSet": "soak"
   }
 }
