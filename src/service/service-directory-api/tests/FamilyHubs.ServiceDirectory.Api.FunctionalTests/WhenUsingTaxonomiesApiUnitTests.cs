@@ -1,12 +1,10 @@
 ﻿using System.Net;
-using System.Text;
 using System.Text.Json;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.ServiceDirectory.Shared.Models;
 using FamilyHubs.SharedKernel.Identity;
 using FluentAssertions;
-using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace FamilyHubs.ServiceDirectory.Api.FunctionalTests;
@@ -28,8 +26,7 @@ public class WhenUsingTaxonomiesApiUnitTests : BaseWhenUsingApiUnitTests
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
-        if (!response.IsSuccessStatusCode)
-            ArgumentException.ThrowIfNullOrEmpty(responseContent);
+        response.IsSuccessStatusCode.Should().BeTrue(responseContent);
 
         var retVal = JsonSerializer.Deserialize<PaginatedList<TaxonomyDto>>(responseContent, new JsonSerializerOptions(JsonSerializerDefaults.Web));
 
@@ -55,9 +52,7 @@ public class WhenUsingTaxonomiesApiUnitTests : BaseWhenUsingApiUnitTests
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
-        if (!response.IsSuccessStatusCode)
-            ArgumentException.ThrowIfNullOrEmpty(responseContent);
-
+        response.IsSuccessStatusCode.Should().BeTrue(responseContent);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         long.Parse(responseContent).Should().BeGreaterThan(0);
     }
@@ -78,8 +73,7 @@ public class WhenUsingTaxonomiesApiUnitTests : BaseWhenUsingApiUnitTests
 
         var responseContent = await response.Content.ReadAsStringAsync();
 
-        if (!response.IsSuccessStatusCode)
-            ArgumentException.ThrowIfNullOrEmpty(responseContent);
+        response.IsSuccessStatusCode.Should().BeTrue(responseContent);
 
         var createdTaxonomyId = JsonSerializer.Deserialize<long>(responseContent);
 

@@ -93,37 +93,42 @@ public class OrganisationClientService : ApiService, IOrganisationClientService
         {
             urlBuilder.Append("&allChildrenYoungPeople=true");
         }
-        
+
         AddAgeToUrl(urlBuilder, filter.GivenAge);
 
-        if (filter.ServiceDeliveries != null)
+        if (filter.ServiceDeliveries is not null)
         {
             urlBuilder.Append($"&serviceDeliveries={filter.ServiceDeliveries}");
         }
 
-        if (filter.IsPaidFor != null)
+        if (filter.IsPaidFor is not null)
         {
             urlBuilder.Append($"&isPaidFor={filter.IsPaidFor.Value}");
         }
 
-        if (filter.TaxonomyIds != null)
+        if (filter.TaxonomyIds is not null)
         {
             urlBuilder.Append($"&taxonomyIds={filter.TaxonomyIds}");
         }
 
-        if (filter.DistrictCode != null)
+        if (filter.DistrictCode is not null)
         {
             urlBuilder.Append($"&districtCode={filter.DistrictCode}");
         }
 
-        if (filter.LanguageCode != null)
+        if (filter.LanguageCode is not null)
         {
             urlBuilder.Append($"&languages={filter.LanguageCode}");
         }
 
-        if (filter.CanFamilyChooseLocation != null && filter.CanFamilyChooseLocation == true)
+        if (filter.CanFamilyChooseLocation is not null && filter.CanFamilyChooseLocation == true)
         {
             urlBuilder.Append($"&canFamilyChooseLocation={filter.CanFamilyChooseLocation.Value}");
+        }
+
+        if (filter.DaysAvailable is not null)
+        {
+            urlBuilder.Append($"&days={filter.DaysAvailable}");
         }
 
         var request = new HttpRequestMessage
@@ -144,21 +149,32 @@ public class OrganisationClientService : ApiService, IOrganisationClientService
 
     private static string GetPositionUrl(string? serviceType, double? latitude, double? longitude, double? proximity, string status, int pageNumber, int pageSize)
     {
-        return $"api/services-simple?serviceType={serviceType}&status={status}&pageNumber={pageNumber}&pageSize={pageSize}{(
-                latitude != null ? $"&latitude={latitude}" : string.Empty)}{(
-                longitude != null ? $"&longitude={longitude}" : string.Empty)}{(
-                proximity != null ? $"&proximity={proximity}" : string.Empty)}";
+        var builder = new GetServicesUrlBuilder();
+        if (serviceType is not null)
+        {
+            builder.WithServiceType(serviceType);
+        }
+
+        if (latitude.HasValue && longitude.HasValue && proximity.HasValue)
+        {
+            builder.WithProximity(latitude.Value, longitude.Value, proximity.Value);
+        }
+
+        return "api/services-simple" + builder
+            .WithStatus(status)
+            .WithPage(pageNumber, pageSize)
+            .Build();
     }
 
-    public void AddAgeToUrl(StringBuilder url, int? givenAge)
+    public static void AddAgeToUrl(StringBuilder url, int? givenAge)
     {
-        if (givenAge != null)
+        if (givenAge is not null)
         {
             url.AppendLine($"&givenAge={givenAge}");
         }
     }
 
-    public void AddTextToUrl(StringBuilder url, string? text)
+    public static void AddTextToUrl(StringBuilder url, string? text)
     {
         if (!string.IsNullOrWhiteSpace(text))
         {

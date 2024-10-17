@@ -1,8 +1,11 @@
-﻿namespace FamilyHubs.ServiceDirectory.Api.FunctionalTests;
+﻿using System.Text;
+using FamilyHubs.ServiceDirectory.Shared.ReferenceData.ICalendar;
+
+namespace FamilyHubs.ServiceDirectory.Api.FunctionalTests;
 
 public class GetServicesUrlBuilder
 {
-    private readonly List<string> _urlParameter = new List<string>();
+    private readonly List<string> _urlParameter = new();
     public GetServicesUrlBuilder WithServiceType(string serviceType)
     {
         _urlParameter.Add($"serviceType={serviceType}");
@@ -26,9 +29,9 @@ public class GetServicesUrlBuilder
         return this;
     }
 
-    public GetServicesUrlBuilder WithProximity(double latitude, double longtitude, double proximity)
+    public GetServicesUrlBuilder WithProximity(double latitude, double longitude, double proximity)
     {
-        _urlParameter.Add($"latitude={latitude}&longtitude={longtitude}&proximity={proximity}");
+        _urlParameter.Add($"latitude={latitude}&longitude={longitude}&proximity={proximity}");
         return this;
     }
 
@@ -68,21 +71,17 @@ public class GetServicesUrlBuilder
         return this;
     }
 
-    public string Build()
+    public GetServicesUrlBuilder WithDaysAvailable(params DayCode[] codes)
     {
-        var isFirst = true;
-        var url = string.Empty;
-        foreach(var param in _urlParameter)
-        {
-            if (isFirst)
-            {
-                isFirst = false;
-                url += "?" + param;
-            }          
-            else
-                url += "&" + param;
-        }
-
-        return url;
+        _urlParameter.Add($"days={string.Join(",", codes)}");
+        return this;
     }
+
+    public string Build() =>
+        _urlParameter.Aggregate(new StringBuilder(), (builder, param) =>
+        {
+            builder.Append(builder.Length == 0 ? "?" : "&");
+            builder.Append(param);
+            return builder;
+        }).ToString();
 }

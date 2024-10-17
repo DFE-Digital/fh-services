@@ -147,7 +147,7 @@ public class ProfessionalReferralCacheModel : ProfessionalReferralModel
         return GenerateBackUrl(PreviousPage(currentPage, contactMethodsSelected));
     }
 
-    private ConnectJourneyPage PreviousPage(ConnectContactDetailsJourneyPage currentPage, bool[] contactMethodsSelected)
+    private static ConnectJourneyPage PreviousPage(ConnectContactDetailsJourneyPage currentPage, bool[] contactMethodsSelected)
     {
         while (--currentPage >= 0)
         {

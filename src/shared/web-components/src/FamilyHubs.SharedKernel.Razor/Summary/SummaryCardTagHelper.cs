@@ -44,7 +44,7 @@ public class SummaryCardTagHelper : TagHelper
             </div>");
     }
 
-    private void AddAction(StringBuilder actions, string? action, string? visuallyHidden, string? href)
+    private static void AddAction(StringBuilder actions, string? action, string? visuallyHidden, string? href)
     {
         if (action == null)
             return;

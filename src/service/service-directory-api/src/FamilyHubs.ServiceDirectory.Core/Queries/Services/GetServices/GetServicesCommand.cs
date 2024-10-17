@@ -7,6 +7,7 @@ using FamilyHubs.ServiceDirectory.Data.Repository;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.ServiceDirectory.Shared.Models;
+using FamilyHubs.ServiceDirectory.Shared.ReferenceData.ICalendar;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -28,7 +29,8 @@ public class GetServicesCommand : IRequest<PaginatedList<ServiceDto>>
         string? taxonomyIds,
         string? languages,
         bool? canFamilyChooseLocation,
-        bool? isFamilyHub)
+        bool? isFamilyHub,
+        string? days)
     {
         ServiceType = serviceType ?? ServiceType.NotSet;
         Status = status ?? ServiceStatusType.NotSet;
@@ -47,6 +49,7 @@ public class GetServicesCommand : IRequest<PaginatedList<ServiceDto>>
         Languages = languages;
         CanFamilyChooseLocation = canFamilyChooseLocation;
         IsFamilyHub = isFamilyHub;
+        DaysAvailable = days;
     }
 
     public ServiceType ServiceType { get; }
@@ -61,6 +64,7 @@ public class GetServicesCommand : IRequest<PaginatedList<ServiceDto>>
     public int PageSize { get; }
     public string? Text { get; }
     public string? ServiceDeliveries { get; }
+    public string? DaysAvailable { get; }
     public bool? IsPaidFor { get; }
     public string? TaxonomyIds { get; }
     public string? Languages { get; }
@@ -108,7 +112,8 @@ public class GetServicesCommandHandler : IRequestHandler<GetServicesCommand, Pag
             .Join(FhJoin.Type.Left, "[Languages] la", "s.Id = la.ServiceId")
             .Join(FhJoin.Type.Left, "[Eligibilities] e", "s.Id = e.ServiceId")
             .Join(FhJoin.Type.Left, "[CostOptions] co", "s.Id = co.ServiceId")
-            .Join(FhJoin.Type.Left, "[ServiceDeliveries] sd", "s.Id = sd.ServiceId")
+            .Join(FhJoin.Type.Left, "[Schedules] ls", "sl.Id = ls.ServiceAtLocationId")
+            .Join(FhJoin.Type.Left, "[Schedules] ss", "s.Id = ss.ServiceId")
             .GroupBy("s.Id")
             .SetLimit(FhQueryLimit.FromPage(request.PageNumber, request.PageSize))
             .AndWhen(
@@ -149,7 +154,9 @@ public class GetServicesCommandHandler : IRequestHandler<GetServicesCommand, Pag
                 )
             ).AndNotNull(
                 request.ServiceDeliveries,
-                sd => new InCondition("sd.Name", "ServiceDeliveries", sd)
+                sd => new InCondition("ss.AttendingType", "ServiceServiceDeliveries", sd).Or(
+                    new InCondition("ls.AttendingType", "LocationServiceDeliveries", sd)
+                )
             );
 
         // if 'all children and young people' (for children ticked & all ages),
@@ -170,20 +177,47 @@ public class GetServicesCommandHandler : IRequestHandler<GetServicesCommand, Pag
             );
         }
 
+        if (request.DaysAvailable is not null)
+        {
+            var validDays = request.DaysAvailable
+                .Split(",")
+                .Where(day => Enum.TryParse(day, out DayCode _))
+                .ToArray();
+            var concatOperator = _useSqlite ? "||" : "+"; // MS SQL refuses to adopt the standard
+
+            if (validDays.Any())
+            {
+                query
+                    .And(
+                        new OrCondition(
+                            validDays
+                                .Select((day, idx) => new StringCondition($"ls.ByDay LIKE ('%' {concatOperator} @Day{idx} {concatOperator} '%') OR " +
+                                                                          $"ss.ByDay LIKE ('%' {concatOperator} @Day{idx} {concatOperator} '%')",
+                                    new FhParameter($"@Day{idx}", day)))
+                                .ToArray<FhQueryCondition>()
+                        )
+                    );
+            }
+        }
+
         if (request.Longitude is not null && request.Latitude is not null)
         {
+            var distanceSql = _useSqlite ?
+                $"Distance(l.GeoPoint, GeomFromText('POINT ({request.Longitude.Value} {request.Latitude.Value})', {GeoPoint.WGS84}))" :
+                $"l.GeoPoint.STDistance(geography::Point({request.Latitude.Value}, {request.Longitude.Value}, {GeoPoint.WGS84}))";
+
             if (request.Meters is not null)
             {
                 query.And(
                     new StringCondition(
-                        $"l.GeoPoint.STDistance(geography::Point({request.Latitude.Value}, {request.Longitude.Value}, {GeoPoint.WGS84})) < @MaxDistance",
+                        $"{distanceSql} < @MaxDistance",
                         new FhParameter("@MaxDistance", request.Meters.Value)
                     )
                 );
             }
 
             query
-                .AddFields($"MIN(l.GeoPoint.STDistance(geography::Point({request.Latitude.Value}, {request.Longitude.Value}, {GeoPoint.WGS84}))) dist")
+                .AddFields($"MIN({distanceSql}) dist")
                 .AddOrderBy("dist");
         }
         else

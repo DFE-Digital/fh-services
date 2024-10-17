@@ -27,7 +27,6 @@ namespace FamilyHubs.Referral.Core;
 /// </remarks>>
 public class ConnectTelemetryPiiRedactor : ITelemetryInitializer
 {
-    // longtitude is due to the spelling error in the API. at some point, we should fix that (and all the consumers)
     private static readonly Regex SiteQueryStringRegex = new(@"(?<=(email|postcode)=)[^&]+", RegexOptions.Compiled);
     private static readonly Regex PathRegex = new(@"(?<=postcodes\/)[\w% ]+", RegexOptions.Compiled);
     private static readonly string[] TracePropertiesToRedact = { "Uri", "Scope", "QueryString", "HostingRequestStartingLog", "HostingRequestFinishedLog" };

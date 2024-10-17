@@ -120,7 +120,6 @@ public class SubjectAccessResultDetailsTests
                     OrganisationDto = new OrganisationDto
                     {
                         Id = 1,
-                        ReferralServiceId = 1,
                         Name = "Test Organisation",
                         Description = "Test Organisation Description",
                     }

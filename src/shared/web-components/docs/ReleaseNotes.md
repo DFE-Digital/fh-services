@@ -1,9 +1,20 @@
 # Release Notes
 
+# 9.5
+
+Rename `<unordered-list>` to `govuk-ul` and improve.
+Add `govuk-ol` tag helper.
+
+# 9.4
+
+Add `<unordered-list>` tag helper.
+
 # 9.3
 
 Add /info page which returns app's build version. Can include build number / commit hash etc.
 To help identify what version of code is live.
+
+* 9.3.5 Add support for data-testid attribute to summary rows (used by summary card and summary list)
 
 # 9.2
 

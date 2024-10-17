@@ -27,8 +27,7 @@ namespace FamilyHubs.SharedKernel.Telemetry;
 /// </remarks>>
 public class ConnectTelemetryPiiRedactor : ITelemetryInitializer
 {
-    // longtitude is due to the spelling error in the API. at some point, we should fix that (and all the consumers)
-    private static readonly Regex SiteQueryStringRegex = new(@"(?<=(email|postcode|latitude|longitude|longtitude)=)[^&]+", RegexOptions.Compiled);
+    private static readonly Regex SiteQueryStringRegex = new(@"(?<=(email|postcode|latitude|longitude)=)[^&]+", RegexOptions.Compiled);
     private static readonly Regex ApiQueryStringRegex = new(@"(?<=email=)([-+]?[0-9]*\.?[0-9]+)(?=&)|(?<=latitude=)([-+]?[0-9]*\.?[0-9]+)(?=&)|(?<=longitude=)([-+]?[0-9]*\.?[0-9]+)(?=&)");
     private static readonly Regex PathRegex = new(@"(?<=postcodes\/)[\w% ]+", RegexOptions.Compiled);
     private static readonly string[] TracePropertiesToRedact = { "Uri", "Scope", "QueryString", "HostingRequestStartingLog", "HostingRequestFinishedLog" };
@@ -87,7 +86,7 @@ public class ConnectTelemetryPiiRedactor : ITelemetryInitializer
         DebugCheckForUnredactedData(telemetry);
     }
 
-    private void SanitizeProperty(Regex regex, IDictionary<string, string> properties, string key)
+    private static void SanitizeProperty(Regex regex, IDictionary<string, string> properties, string key)
     {
         if (properties.TryGetValue(key, out string? value))
         {
@@ -95,12 +94,12 @@ public class ConnectTelemetryPiiRedactor : ITelemetryInitializer
         }
     }
 
-    private string Sanitize(Regex regex, string value)
+    private static string Sanitize(Regex regex, string value)
     {
         return regex.Replace(value, "REDACTED");
     }
 
-    private Uri Sanitize(Regex regex, Uri uri)
+    private static Uri Sanitize(Regex regex, Uri uri)
     {
         // only create a uri if necessary (might be slower, but should stop memory churn)
         string unredactedUri = uri.ToString();
@@ -188,12 +187,6 @@ public class ConnectTelemetryPiiRedactor : ITelemetryInitializer
 
         if (value.Contains("longitude=")
             && !value.Contains("longitude=REDACTED"))
-        {
-            Debugger.Break();
-        }
-
-        if (value.Contains("longtitude=")
-            && !value.Contains("longtitude=REDACTED"))
         {
             Debugger.Break();
         }

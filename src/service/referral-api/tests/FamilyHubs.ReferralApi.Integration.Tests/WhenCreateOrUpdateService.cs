@@ -13,14 +13,14 @@ public class WhenCreateOrUpdateService : DataIntegrationTestBase
     public async Task ThenCreateServiceWithExistingOrganisation()
     {
         var organisation = await CreateOrganisation();
-        organisation.ReferralServiceId = 787;
-        
+
         Data.Entities.ReferralService service = new Data.Entities.ReferralService
         {
             Id = 787,
             Name = "Test service name 002",
             Description = "Keeping Children Safe Online",
-            Organisation = organisation,
+            OrganizationId = 1,
+            Organisation = organisation
         };
 
         var serviceDto = Mapper.Map<ReferralServiceDto>(service);

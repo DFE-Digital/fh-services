@@ -76,7 +76,6 @@ public abstract class BaseUnitTest<T>
                 OrganisationDto = new OrganisationDto
                 {
                     Id = 2,
-                    ReferralServiceId = 2,
                     Name = "Organisation",
                     Description = "Organisation Description",
                 }

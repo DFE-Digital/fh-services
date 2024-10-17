@@ -42,7 +42,7 @@
     <PackageVersion Include="EncryptColumn.Core" Version="1.0.0" />
     <PackageVersion Include="EntityFramework" Version="6.5.1" />
     <PackageVersion Include="Enums.NET" Version="5.0.0" />
-    <PackageVersion Include="FamilyHubs.SharedKernel.Razor" Version="9.3.4" />
+    <PackageVersion Include="FamilyHubs.SharedKernel.Razor" Version="9.5.1" />
     <PackageVersion Include="Fare" Version="2.2.1" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="FluentAssertions.Analyzers" Version="0.33.0" />

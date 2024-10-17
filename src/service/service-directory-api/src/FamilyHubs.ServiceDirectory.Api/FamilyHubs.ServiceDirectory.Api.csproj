@@ -5,7 +5,7 @@
 		<UserSecretsId>26d99b98-f8d3-4ce4-ab2e-2042a23ac6eb</UserSecretsId>
 		<NoWarn>S1135;S125;S2139;S6678</NoWarn>
 		<NuGetAuditMode>direct</NuGetAuditMode>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>

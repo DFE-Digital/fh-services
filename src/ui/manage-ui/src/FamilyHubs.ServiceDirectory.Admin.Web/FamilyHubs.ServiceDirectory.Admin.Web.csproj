@@ -2,22 +2,19 @@
 
   <PropertyGroup>
     <UserSecretsId>2406474f-95c2-4623-924b-dd2be59b3348</UserSecretsId>
-	<NuGetAuditMode>direct</NuGetAuditMode>
+    <NuGetAuditMode>direct</NuGetAuditMode>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-	<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-	<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <NoWarn>S101;S125;S1135</NoWarn>
   </PropertyGroup>
 
-	<PropertyGroup>
-		<NoWarn>S101;S125;S1135</NoWarn>
-	</PropertyGroup>
-
-	<ItemGroup>
-	  <Compile Remove="Areas\SubjectAccessRequest\**" />
-	  <Content Remove="Areas\SubjectAccessRequest\**" />
-	  <EmbeddedResource Remove="Areas\SubjectAccessRequest\**" />
-	  <None Remove="Areas\SubjectAccessRequest\**" />
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Areas\SubjectAccessRequest\**" />
+    <Content Remove="Areas\SubjectAccessRequest\**" />
+    <EmbeddedResource Remove="Areas\SubjectAccessRequest\**" />
+    <None Remove="Areas\SubjectAccessRequest\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FamilyHubs.SharedKernel.Razor"/>
@@ -32,8 +29,8 @@
     <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
     <PackageReference Include="Serilog.Sinks.Console" />
     <PackageReference Include="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
