@@ -36,7 +36,7 @@ public class DeleteService : PageModel
     }
 
     private async Task<bool> IsOpenConnectionRequests() =>
-        await _referralServiceClient.GetReferralsCountByServiceId(ServiceId) > 0;
+        ServiceType == ServiceType.InformationSharing && await _referralServiceClient.GetReferralsCountByServiceId(ServiceId) > 0;
 
     private async Task SetServiceInformation()
     {
