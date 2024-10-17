@@ -1,4 +1,5 @@
 @page
+@using FamilyHubs.ServiceDirectory.Shared.Enums
 @using FamilyHubs.SharedKernel.Razor.ErrorNext
 @model DeleteService
 @{
@@ -22,7 +23,7 @@
                 </h1>
             </legend>
             <p class="govuk-body">By deleting this service you will completely remove it from both the directory and Manage family support services and accounts.</p>
-            @if (Model.UserRoleCanSeeConnectionRequestWarning)
+            @if (Model.ServiceType == ServiceType.InformationSharing)
             {
                 <div class="govuk-warning-text">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>

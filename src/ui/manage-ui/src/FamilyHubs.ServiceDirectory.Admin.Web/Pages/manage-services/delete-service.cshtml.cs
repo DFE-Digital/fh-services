@@ -1,6 +1,8 @@
 using System.Collections.Immutable;
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models;
+using FamilyHubs.ServiceDirectory.Shared.Dto;
+using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.SharedKernel.Identity;
 using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using Microsoft.AspNetCore.Authorization;
@@ -21,8 +23,7 @@ public class DeleteService : PageModel
     public string BackUrl => "/manage-services/Service-Detail?flow=edit";
     [BindProperty] public long ServiceId { get; set; }
     public string ServiceName { get; set; } = null!;
-    public bool UserRoleCanSeeConnectionRequestWarning =>
-        RoleGroups.VcsManagerOrDualRole.Contains(HttpContext.GetFamilyHubsUser().Role);
+    public ServiceType ServiceType { get; set; }
 
     [BindProperty] public bool? Selected { get; set; }
 
@@ -37,8 +38,13 @@ public class DeleteService : PageModel
     private async Task<bool> IsOpenConnectionRequests() =>
         await _referralServiceClient.GetReferralsCountByServiceId(ServiceId) > 0;
 
-    private async Task<string> GetServiceName() =>
-        (await _serviceDirectoryClient.GetServiceById(ServiceId)).Name;
+    private async Task SetServiceInformation()
+    {
+        ServiceDto serviceDto = await _serviceDirectoryClient.GetServiceById(ServiceId);
+
+        ServiceName = serviceDto.Name;
+        ServiceType = serviceDto.ServiceType;
+    }
 
     private async Task MarkServiceAsDefunct() => await _serviceDirectoryClient.DeleteService(ServiceId);
 
@@ -53,7 +59,7 @@ public class DeleteService : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        ServiceName = await GetServiceName();
+        await SetServiceInformation();
 
         if (NeitherRadioButtonIsSelected())
         {
@@ -79,7 +85,8 @@ public class DeleteService : PageModel
     public async Task<IActionResult> OnGetAsync(long serviceId)
     {
         ServiceId = serviceId;
-        ServiceName = await GetServiceName();
+
+        await SetServiceInformation();
 
         return Page();
     }
