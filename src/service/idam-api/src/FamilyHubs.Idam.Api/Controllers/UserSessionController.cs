@@ -16,8 +16,9 @@ public class UserSessionController(IMediator mediator) : ControllerBase
     [HttpPost]
     public async Task<string> Create([FromBody] AddUserSessionCommand request, CancellationToken cancellationToken)
     {
-        var result = await mediator.Send(request, cancellationToken);
         _ = await mediator.Send(new DeleteExpiredUserSessionsCommand(), cancellationToken).ConfigureAwait(false);
+        var result = await mediator.Send(request, cancellationToken);
+        
         HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
         HttpContext.Response.Headers.Append("Location", $"Api/UserSession/{result}");
         return result;
