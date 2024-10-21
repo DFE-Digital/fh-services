@@ -35,13 +35,13 @@ public class DeleteService : PageModel
         _referralServiceClient = referralServiceClient;
     }
 
+    private static bool IsServiceAlreadyDeleted(ServiceDto serviceDto) => serviceDto.Status == ServiceStatusType.Defunct;
+
     private async Task<bool> IsOpenConnectionRequests() =>
         ServiceType == ServiceType.InformationSharing && await _referralServiceClient.GetReferralsCountByServiceId(ServiceId) > 0;
 
-    private async Task SetServiceInformation()
+    private void SetServiceInformation(ServiceDto serviceDto)
     {
-        ServiceDto serviceDto = await _serviceDirectoryClient.GetServiceById(ServiceId);
-
         ServiceName = serviceDto.Name;
         ServiceType = serviceDto.ServiceType;
     }
@@ -57,9 +57,27 @@ public class DeleteService : PageModel
             .Add(ErrorId.Delete_Service__NeitherRadioButtonIsSelected, errorMessage);
     }
 
+    public async Task<IActionResult> OnGetAsync(long serviceId)
+    {
+        ServiceId = serviceId;
+
+        ServiceDto serviceDto = await _serviceDirectoryClient.GetServiceById(ServiceId);
+
+        if (IsServiceAlreadyDeleted(serviceDto))
+        {
+            return RedirectToPage("/Error/404");
+        }
+
+        SetServiceInformation(serviceDto);
+
+        return Page();
+    }
+
     public async Task<IActionResult> OnPostAsync()
     {
-        await SetServiceInformation();
+        ServiceDto serviceDto = await _serviceDirectoryClient.GetServiceById(ServiceId);
+
+        SetServiceInformation(serviceDto);
 
         if (NeitherRadioButtonIsSelected())
         {
@@ -80,14 +98,5 @@ public class DeleteService : PageModel
         await MarkServiceAsDefunct();
 
         return RedirectToPage(ShutterPageUrl, new { serviceName = ServiceName, isDeleted = true });
-    }
-
-    public async Task<IActionResult> OnGetAsync(long serviceId)
-    {
-        ServiceId = serviceId;
-
-        await SetServiceInformation();
-
-        return Page();
     }
 }
