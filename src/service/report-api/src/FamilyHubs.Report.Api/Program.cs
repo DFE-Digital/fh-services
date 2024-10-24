@@ -7,7 +7,7 @@ using FamilyHubs.Report.Core.Queries.ServiceSearchFacts.Validators;
 using FamilyHubs.Report.Data;
 using FamilyHubs.Report.Data.Repository;
 using FamilyHubs.SharedKernel.GovLogin.AppStart;
-using FamilyHubs.SharedKernel.Razor.Health;
+using FamilyHubs.SharedKernel.Health;
 using FluentValidation;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.EntityFrameworkCore;

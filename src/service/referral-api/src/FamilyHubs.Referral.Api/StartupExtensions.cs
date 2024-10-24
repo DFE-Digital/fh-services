@@ -18,7 +18,7 @@ using FamilyHubs.SharedKernel.GovLogin.AppStart;
 using FamilyHubs.SharedKernel.Identity;
 using FamilyHubs.SharedKernel.Security;
 using FamilyHubs.Referral.Core.ClientServices;
-using FamilyHubs.SharedKernel.Razor.Health;
+using FamilyHubs.SharedKernel.Health;
 
 namespace FamilyHubs.Referral.Api;
 

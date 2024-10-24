@@ -1,6 +1,4 @@
-using FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options;
-using FamilyHubs.SharedKernel.Razor.Health;
-using Microsoft.Extensions.Options;
+using FamilyHubs.SharedKernel.Health;
 
 var builder = WebApplication.CreateBuilder(args);
 

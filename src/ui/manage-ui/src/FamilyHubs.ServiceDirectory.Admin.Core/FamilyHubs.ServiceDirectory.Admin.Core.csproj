@@ -11,7 +11,6 @@
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.AzureKeyVault" />
     <PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" />
-    <PackageReference Include="FamilyHubs.SharedKernel.Razor" />
     <PackageReference Include="libphonenumber-csharp" />
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" />
     <PackageReference Include="SonarAnalyzer.CSharp">
@@ -26,6 +25,7 @@
     <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
     <ProjectReference Include="..\..\..\..\service\notification-api\src\FamilyHubs.Notification.Api.Client\FamilyHubs.Notification.Api.Client.csproj" />
     <ProjectReference Include="..\..\..\..\service\notification-api\shared\FamilyHubs.Notification.Api.Contracts\FamilyHubs.Notification.Api.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\..\shared\web-components\src\FamilyHubs.SharedKernel.Razor\FamilyHubs.SharedKernel.Razor.csproj" />
   </ItemGroup>
 
 </Project>

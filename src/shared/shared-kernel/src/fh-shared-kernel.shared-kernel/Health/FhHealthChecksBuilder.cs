@@ -1,12 +1,10 @@
-﻿using FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options.HealthCheck;
+﻿using FamilyHubs.SharedKernel.Health.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace FamilyHubs.SharedKernel.Razor.Health;
+namespace FamilyHubs.SharedKernel.Health;
 
-//todo: move to sharedkernel, so can be used in api's
-//todo: Urls don't support parent fam hub options 
 public class FhHealthChecksBuilder
 {
     public enum UrlType

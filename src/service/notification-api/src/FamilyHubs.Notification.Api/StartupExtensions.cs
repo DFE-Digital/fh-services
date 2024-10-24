@@ -17,9 +17,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using FamilyHubs.Notification.Core.Commands.CreateNotification;
 using FamilyHubs.Notification.Data.NotificationServices;
-using FamilyHubs.SharedKernel.Razor.Health;
-using Notify.Client;
-using Notify.Interfaces;
+using FamilyHubs.SharedKernel.Health;
 using FamilyHubs.SharedKernel.Security;
 
 namespace FamilyHubs.Notification.Api;

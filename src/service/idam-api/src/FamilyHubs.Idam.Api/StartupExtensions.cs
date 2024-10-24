@@ -5,7 +5,7 @@ using FamilyHubs.Idam.Core.Services;
 using FamilyHubs.Idam.Data.Interceptors;
 using FamilyHubs.Idam.Data.Repository;
 using FamilyHubs.SharedKernel.GovLogin.AppStart;
-using FamilyHubs.SharedKernel.Razor.Health;
+using FamilyHubs.SharedKernel.Health;
 using FamilyHubs.SharedKernel.Security;
 using FluentValidation;
 using MediatR;

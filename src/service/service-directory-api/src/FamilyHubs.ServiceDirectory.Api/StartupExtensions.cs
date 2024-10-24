@@ -8,7 +8,7 @@ using FamilyHubs.ServiceDirectory.Data;
 using FamilyHubs.ServiceDirectory.Data.Interceptors;
 using FamilyHubs.ServiceDirectory.Data.Repository;
 using FamilyHubs.SharedKernel.GovLogin.AppStart;
-using FamilyHubs.SharedKernel.Razor.Health;
+using FamilyHubs.SharedKernel.Health;
 using FluentValidation;
 using MediatR;
 using Microsoft.ApplicationInsights.Extensibility;

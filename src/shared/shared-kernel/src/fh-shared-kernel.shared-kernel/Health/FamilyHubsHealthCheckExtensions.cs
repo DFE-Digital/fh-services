@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options.HealthCheck;
+using FamilyHubs.SharedKernel.Health.Options;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace FamilyHubs.SharedKernel.Razor.Health;
+namespace FamilyHubs.SharedKernel.Health;
 
 public static class FamilyHubsHealthCheckExtensions
 {

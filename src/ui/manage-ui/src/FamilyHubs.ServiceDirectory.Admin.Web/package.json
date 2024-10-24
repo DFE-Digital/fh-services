@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "familyhubs-frontend": "9.5.1"
+    "familyhubs-frontend": "file:../../src/familyhubs-frontend"
   }
 }
