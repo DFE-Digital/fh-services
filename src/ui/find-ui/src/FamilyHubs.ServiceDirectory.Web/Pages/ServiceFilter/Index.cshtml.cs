@@ -1,10 +1,7 @@
 using System.Dynamic;
-using System.Net;
-using System.Text.Json;
 using FamilyHubs.ServiceDirectory.Core.ServiceDirectory.Interfaces;
 using FamilyHubs.ServiceDirectory.Core.ServiceDirectory.Models;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
-using FamilyHubs.ServiceDirectory.Shared.Dto.Metrics;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.ServiceDirectory.Shared.Models;
 using FamilyHubs.ServiceDirectory.Web.Content;
@@ -37,7 +34,8 @@ public class ServiceFilterModel : PageModel
     public string? AdminArea { get; set; }
     public float? Latitude { get; set; }
     public float? Longitude { get; set; }
-    public IEnumerable<Service> Services { get; set; }
+    public IEnumerable<Service> Services { get; set; } // TODO: FHB-805 - Remove After Testing
+    public IEnumerable<ServiceDetail> ServiceDetailList { get; set; }
     public bool FromPostcodeSearch { get; set; }
     public int CurrentPage { get; set; }
     public IPagination Pagination { get; set; }
@@ -79,7 +77,8 @@ public class ServiceFilterModel : PageModel
         _pageFilterFactory = pageFilterFactory;
         _logger = logger;
 
-        Services = Enumerable.Empty<Service>();
+        Services = [];
+        ServiceDetailList = [];
         Pagination = new DontShowPagination();
     }
 
@@ -249,12 +248,37 @@ public class ServiceFilterModel : PageModel
         try
         {
             DateTime requestTimestamp = DateTime.UtcNow;
-            
-            (PaginatedList<ServiceDto> paginatedServices, Pagination, HttpResponseMessage? response) 
-                = await GetServicesAndPagination(adminArea, latitude, longitude);
-            UpdateServicesPagination(paginatedServices);
 
-            DateTime? responseTimestamp = response is not null ? DateTime.UtcNow : null;
+            ServicesParams servicesParams = new(adminArea, latitude, longitude)
+            {
+                PageNumber = CurrentPage, PageSize = PageSize
+            };
+
+            foreach (var filter in Filters)
+            {
+                filter.AddFilterCriteria(servicesParams);
+            }
+
+            (PaginatedList<ServiceDto> List, HttpResponseMessage? Response) serviceDtoListPaginated = await GetPaginatedServiceList(servicesParams);
+            PaginatedList<LocationDto> locationDtoListPaginated = await GetPaginatedLocationList(CurrentPage, PageSize);
+
+            TotalResults = serviceDtoListPaginated.List.TotalCount + locationDtoListPaginated.TotalCount;
+
+            IEnumerable<ServiceDetail> serviceList = ServiceMapper.ToModel(serviceDtoListPaginated.List.Items);
+            IEnumerable<ServiceDetail> locationList = LocationMapper.ToModel(locationDtoListPaginated.Items);
+
+            Pagination = new LargeSetPagination(serviceDtoListPaginated.List.TotalPages + locationDtoListPaginated.TotalPages, CurrentPage);
+
+            ServiceDetailList = ServiceDetailList
+                .Concat(serviceList)
+                .Concat(locationList)
+                .OrderBy(x => x.Distance);
+
+            // (PaginatedList<ServiceDto> paginatedServices, Pagination, HttpResponseMessage? response)
+            //     = await GetServicesAndPagination(adminArea, latitude, longitude);
+            // UpdateServicesPagination(paginatedServices); // TODO: FHB-805 Remove all this after
+
+            DateTime? responseTimestamp = serviceDtoListPaginated.Response is not null ? DateTime.UtcNow : null;
 
             if (Postcode is not null)
             {
@@ -269,10 +293,10 @@ public class ServiceFilterModel : PageModel
                     Postcode!,
                     AdminArea,
                     SelectedFilterDistance,
-                    paginatedServices.Items,
+                    serviceDtoListPaginated.List.Items,
                     requestTimestamp,
                     responseTimestamp,
-                    response?.StatusCode,
+                    serviceDtoListPaginated.Response?.StatusCode,
                     CorrelationId
                 );
 
@@ -288,33 +312,39 @@ public class ServiceFilterModel : PageModel
         return Page();
     }
 
-    private async Task<(
-        PaginatedList<ServiceDto> services,
-        IPagination pagination,
-        HttpResponseMessage? response
-    )> GetServicesAndPagination(string adminArea, float latitude, float longitude)
-    {
-        var serviceParams = new ServicesParams(adminArea, latitude, longitude)
-        {
-            PageNumber = CurrentPage,
-            PageSize = PageSize
-        };
+    private async Task<(PaginatedList<ServiceDto>, HttpResponseMessage?)>
+        GetPaginatedServiceList(ServicesParams servicesParams) => await _serviceDirectoryClient.GetServices(servicesParams);
 
-        foreach (var filter in Filters)
-        {
-            filter.AddFilterCriteria(serviceParams);
-        }
+    private async Task<PaginatedList<LocationDto>>
+        GetPaginatedLocationList(int? pageNumber, int? pageSize) => await _serviceDirectoryClient.GetLocations(true, pageNumber, pageSize, Latitude, Longitude);
 
-        var (services, response) = await _serviceDirectoryClient.GetServices(serviceParams);
-
-        var pagination = new LargeSetPagination(services.TotalPages, CurrentPage);
-
-        return (services, pagination, response);
-    }
-
-    private void UpdateServicesPagination(PaginatedList<ServiceDto> paginatedServices) 
-    {
-        TotalResults = paginatedServices.TotalCount;
-        Services = ServiceMapper.ToViewModel(paginatedServices.Items);
-    }
+    // private async Task<( // TODO: FHB-805 Remove all this after
+    //     PaginatedList<ServiceDto> services,
+    //     IPagination pagination,
+    //     HttpResponseMessage? response
+    // )> GetServicesAndPagination(string adminArea, float latitude, float longitude)
+    // {
+    //     var serviceParams = new ServicesParams(adminArea, latitude, longitude)
+    //     {
+    //         PageNumber = CurrentPage,
+    //         PageSize = PageSize
+    //     };
+    //
+    //     foreach (var filter in Filters)
+    //     {
+    //         filter.AddFilterCriteria(serviceParams);
+    //     }
+    //
+    //     var (services, response) = await _serviceDirectoryClient.GetServices(serviceParams);
+    //
+    //     var pagination = new LargeSetPagination(services.TotalPages, CurrentPage);
+    //
+    //     return (services, pagination, response);
+    // }
+    //
+    // private void UpdateServicesPagination(PaginatedList<ServiceDto> paginatedServices)
+    // {
+    //     TotalResults = paginatedServices.TotalCount;
+    //     Services = ServiceMapper.ToModel(paginatedServices.Items);
+    // }
 }

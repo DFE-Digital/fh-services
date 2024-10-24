@@ -16,7 +16,7 @@
 }
 
 @*todo: doesn't let user unselect default 'within 20 miles'!*@
-@if (Model.FromPostcodeSearch && !Model.Services.Any()) {
+@if (Model.FromPostcodeSearch && !Model.ServiceDetailList.Any()) {
     <partial name="_ServiceFilterNoResults" />
 }
 else {
@@ -95,7 +95,7 @@ else {
                 </div>
             </div>
             <div id="results" class="govuk-grid-column-two-thirds" data-total-results="@Model.TotalResults">
-                @if (!Model.Services.Any())
+                @if (!Model.ServiceDetailList.Any())
                 {
                     <h2 class="govuk-heading-m">
                         Try another search
@@ -110,9 +110,9 @@ else {
                 }
                 else
                 {
-                    foreach (var service in Model.Services)
+                    foreach (ServiceDetail serviceDetail in Model.ServiceDetailList)
                     {
-                        <partial name="_Service" model='service'/>
+                        @await Html.PartialAsync(serviceDetail.ServiceDetailType == ServiceDetailType.Service ? "_service" : "_location", serviceDetail)
                     }
 
                     <partial name="_LargeSetPaginationForm" model='Model.Pagination' />

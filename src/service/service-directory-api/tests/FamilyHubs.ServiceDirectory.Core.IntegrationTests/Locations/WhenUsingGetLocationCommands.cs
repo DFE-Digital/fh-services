@@ -75,7 +75,7 @@ public class WhenUsingGetLocationCommands : DataIntegrationTestBase
         //Arrange
         var services = await CreateManyTestServicesQueryTesting();
 
-        var getCommand = new ListLocationsCommand(null, null, null, null,null, null);
+        var getCommand = new ListLocationsCommand(null, null, null, null,null, null, null, null);
         var getHandler = new ListLocationCommandHandler(TestDbContext, Mapper);
 
         //Act

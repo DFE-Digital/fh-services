@@ -17,11 +17,20 @@ public class MinimalLocationEndPoints
 {
     public void RegisterLocationEndPoints(WebApplication app)
     {
-        app.MapGet("api/locations", async (int? pageNumber, string? orderByColumn, int? pageSize, bool? isAscending, string? searchName, bool? isFamilyHub, CancellationToken cancellationToken, ISender mediator, ILogger<MinimalLocationEndPoints> logger) =>
+        app.MapGet("api/locations", async(
+            int? pageNumber,
+            string? orderByColumn,
+            int? pageSize,
+            bool? isAscending,
+            string? searchName,
+            bool? isFamilyHub,
+            double? latitude,
+            double? longitude,
+            CancellationToken cancellationToken, ISender mediator, ILogger<MinimalLocationEndPoints> logger) =>
         {
             try
             {
-                var command = new ListLocationsCommand(pageNumber, orderByColumn, pageSize, isAscending, searchName, isFamilyHub);
+                var command = new ListLocationsCommand(pageNumber, orderByColumn, pageSize, isAscending, searchName, isFamilyHub, latitude, longitude);
                 var result = await mediator.Send(command, cancellationToken);
                 return result;
             }
