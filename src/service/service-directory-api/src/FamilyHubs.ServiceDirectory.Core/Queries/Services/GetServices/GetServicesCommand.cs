@@ -112,6 +112,7 @@ public class GetServicesCommandHandler : IRequestHandler<GetServicesCommand, Pag
             .Join(FhJoin.Type.Left, "[Languages] la", "s.Id = la.ServiceId")
             .Join(FhJoin.Type.Left, "[Eligibilities] e", "s.Id = e.ServiceId")
             .Join(FhJoin.Type.Left, "[CostOptions] co", "s.Id = co.ServiceId")
+            .Join(FhJoin.Type.Left, "[ServiceDeliveries] sd", "s.Id = sd.ServiceId")
             .Join(FhJoin.Type.Left, "[Schedules] ls", "sl.Id = ls.ServiceAtLocationId")
             .Join(FhJoin.Type.Left, "[Schedules] ss", "s.Id = ss.ServiceId")
             .GroupBy("s.Id")
@@ -154,9 +155,7 @@ public class GetServicesCommandHandler : IRequestHandler<GetServicesCommand, Pag
                 )
             ).AndNotNull(
                 request.ServiceDeliveries,
-                sd => new InCondition("ss.AttendingType", "ServiceServiceDeliveries", sd).Or(
-                    new InCondition("ls.AttendingType", "LocationServiceDeliveries", sd)
-                )
+                sd => new InCondition("sd.Name", "ServiceServiceDeliveries", sd)
             );
 
         // if 'all children and young people' (for children ticked & all ages),
@@ -228,7 +227,6 @@ public class GetServicesCommandHandler : IRequestHandler<GetServicesCommand, Pag
         var pArr = query.AllParameters(_useSqlite);
         var total = await _context.Database.SqlQueryRaw<long>(query.Format(_useSqlite, includeOrderBy: false, includeLimit: false), pArr).CountAsync(cancellationToken);
         var ids = _context.Database.SqlQueryRaw<long>(query.Format(_useSqlite), pArr);
-
         var joinQuery = _context.Services
             .IgnoreAutoIncludes()
             .AsNoTracking()
