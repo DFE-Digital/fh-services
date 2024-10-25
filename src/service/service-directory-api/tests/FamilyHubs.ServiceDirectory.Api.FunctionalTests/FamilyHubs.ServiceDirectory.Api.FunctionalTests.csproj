@@ -12,7 +12,6 @@
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.Data.Sqlite" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="mod_spatialite" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Newtonsoft.Json" />
@@ -27,6 +26,19 @@
     </PackageReference>
   </ItemGroup>
 
+  <Choose>
+    <When Condition="$([MSBuild]::IsOSUnixLike())">
+      <ItemGroup>
+        <PackageReference Include="SQLitePCLRaw.bundle_sqlite3" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"/>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\src\FamilyHubs.ServiceDirectory.Api\FamilyHubs.ServiceDirectory.Api.csproj" />
   </ItemGroup>
