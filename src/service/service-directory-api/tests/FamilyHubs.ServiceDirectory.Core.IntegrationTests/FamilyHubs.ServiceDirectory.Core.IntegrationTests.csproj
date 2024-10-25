@@ -12,7 +12,6 @@
     <PackageReference Include="EntityFramework" />
     <PackageReference Include="Fare" />
     <PackageReference Include="FluentAssertions" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NSubstitute" />
     <PackageReference Include="xunit" />
@@ -26,6 +25,19 @@
     </PackageReference>
   </ItemGroup>
 
+  <Choose>
+    <When Condition="$([MSBuild]::IsOSUnixLike())">
+      <ItemGroup>
+        <PackageReference Include="SQLitePCLRaw.bundle_sqlite3" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"/>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\src\FamilyHubs.ServiceDirectory.Core\FamilyHubs.ServiceDirectory.Core.csproj" />
   </ItemGroup>
