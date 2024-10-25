@@ -45,7 +45,7 @@ jobs:
             job_name: "Test - IDAM API"
           - working_directory: service/service-directory-api
             job_name: "Test - Service Directory API"
-            runs_on_windows: true
+            runs_on_windows: false
           - working_directory: service/referral-api
             job_name: "Test - Referral API"
           - working_directory: service/report-api
