@@ -21,18 +21,17 @@ public static class ServiceMapper
     {
         Debug.Assert(service.ServiceType == Shared.Enums.ServiceType.FamilyExperience);
 
-        var location = service.Locations.First();
         var eligibility = service.Eligibilities.FirstOrDefault();
 
         var name = service.Name;
         var contact = service.GetContact();
 
         return new Service(
-            IsFamilyHub(location) ? ServiceType.FamilyHub : ServiceType.Service,
+            IsFamilyHub(service.Locations) ? ServiceType.FamilyHub : ServiceType.Service,
             name,
             service.Distance != null ? DistanceConverter.MetersToMiles(service.Distance.Value) : null,
             GetCost(service),
-            location.GetAddress(),
+            GetWhere(service.Locations),
             service.GetServiceAvailability(),
             GetCategories(service),
             GetAgeRange(eligibility),
@@ -42,15 +41,21 @@ public static class ServiceMapper
             GetWebsiteUrl(contact?.Url));
     }
 
+    private static IEnumerable<string> GetWhere(ICollection<LocationDto> locationDtoList)
+        => locationDtoList.Count switch
+        {
+            0 => [],
+            1 => locationDtoList.First().GetAddress(),
+            _ => [$"Available at {locationDtoList.Count} locations"]
+        };
+
     private static string? GetAgeRange(EligibilityDto? eligibility)
     {
         return eligibility == null ? null : $"{AgeDisplayExtensions.AgeToString(eligibility.MinimumAge)} to {AgeDisplayExtensions.AgeToString(eligibility.MaximumAge)}";
     }
 
-    private static bool IsFamilyHub(LocationDto location)
-    {
-        return location.LocationTypeCategory == LocationTypeCategory.FamilyHub;
-    }
+    private static bool IsFamilyHub(IEnumerable<LocationDto> locations)
+        => locations.Any(location => location.LocationTypeCategory == LocationTypeCategory.FamilyHub);
 
     private static string? GetWebsiteUrl(string? url)
     {
