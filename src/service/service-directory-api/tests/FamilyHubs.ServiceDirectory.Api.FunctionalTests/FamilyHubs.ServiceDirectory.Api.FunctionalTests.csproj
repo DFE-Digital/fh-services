@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <Choose>
-    <When Condition="$([MSBuild]::IsOSUnixLike())">
+    <When Condition="$([System.OperatingSystem]::IsLinux())">
       <ItemGroup>
         <PackageReference Include="SQLitePCLRaw.bundle_sqlite3" />
       </ItemGroup>
