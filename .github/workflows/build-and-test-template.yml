@@ -9,14 +9,11 @@ on:
       dotnet_version:
         required: true
         type: string
-      runs_on:
-        required: true
-        type: string
 
 jobs:
   build_and_test:
     name: Build Project & Run Tests
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: 'ubuntu-22.04'
     defaults:
       run:
         working-directory: src/${{ inputs.working_directory }}
