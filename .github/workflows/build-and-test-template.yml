@@ -37,12 +37,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Pre-requisites
+      - name: Install & Configure Spatialite
         if: ${{ inputs.working_directory == 'service/service-directory-api' }}
         shell: bash
         run: |
-          sudo apt-get install -y libspatialite-dev
-          sudo apt-get install -y libsqlite3-mod-spatialite
+          sudo apt-get install libspatialite-dev libsqlite3-mod-spatialite -y
           sudo ldconfig "/usr/lib/x86_64-linux-gnu/mod_spatialite.so"
           
       - name: Restore Project
