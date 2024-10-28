@@ -27,6 +27,7 @@ public static class ServiceMapper
         var contact = service.GetContact();
 
         return new Service(
+            service.Id,
             IsFamilyHub(service.Locations) ? ServiceType.FamilyHub : ServiceType.Service,
             name,
             service.Distance != null ? DistanceConverter.MetersToMiles(service.Distance.Value) : null,

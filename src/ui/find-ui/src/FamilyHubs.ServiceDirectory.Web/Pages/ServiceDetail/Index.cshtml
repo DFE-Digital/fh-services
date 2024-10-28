@@ -1,0 +1,196 @@
+@page
+@model FamilyHubs.ServiceDirectory.Web.Pages.ServiceDetail.Index
+
+@* TODO: FHB-712 - Back Button *@
+@* TODO: FHB-712 - Shared with Connect? It does have differences so need to evaluate after getting the functionality in *@
+
+
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@Model.Service.Name</h1>
+</div>
+<div class="govuk-grid-column-two-thirds">
+<p class="govuk-body govuk-!-margin-bottom-6">@Model.Service.Description</p>
+
+<h2 class="govuk-heading-m">Service details</h2>
+
+<dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Support it offers
+        </dt>
+        <dd class="govuk-summary-list__value">
+            <ul class="govuk-list">
+                @foreach (string supportOffered in @Model.Service.Categories)
+                {
+                    <li>@supportOffered</li>
+                }
+            </ul>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Does support relate to children or young people?
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.Service.Eligibility
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Languages
+        </dt>
+        <dd class="govuk-summary-list__value">
+            <ul class="govuk-list">
+                @foreach (string language in Model.Service.Languages)
+                {
+                    <li>@language</li>
+                }
+            </ul>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Cost
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.Service.Cost
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            How this service is provided
+        </dt>
+        <dd class="govuk-summary-list__value">
+            @Model.Service.Deliveries
+        </dd>
+    </div>
+</dl>
+
+@for (int i = 0; i < Model.Service.Locations.Count; i++)
+{
+    Location location = Model.Service.Locations[i];
+    <h2 class="govuk-heading-m">Location @(i + 1)</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9" id="replace-commas">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Address
+            </dt>
+            <dd class="govuk-summary-list__value">
+            <ul class="govuk-list">
+                @foreach (string addressSegment in @location.Address)
+                {
+                    <li>@addressSegment</li>
+                }
+            </ul>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Family hub
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @Model.Service.Location.IsFamilyHub
+            </dd>
+        </div>
+        @if (location.Accessibilities.Any())
+        {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Accessibility details
+                </dt>
+                <ul class="govuk-list">
+                    @foreach (string accessibility in @location.Accessibilities)
+                    {
+                        <li>@accessibility</li>
+                    }
+                </ul>
+            </div>
+        }
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Location details
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @location.Details
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Days service is available
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @location.DaysAvailable
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Extra availability details
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @location.ExtraAvailabilityDetails
+            </dd>
+        </div>
+    </dl>
+    <!--Online and telephone-->
+    @* TODO: FHB-712 - Logic for handling online and telephone, below is just a placeholder example*@
+    <h2 class="govuk-heading-m">Online and telephone</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9" id="replace-commas">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Days service is available
+            </dt>
+            <dd class="govuk-summary-list__value">
+                Saturday
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Extra availability details
+            </dt>
+            <dd class="govuk-summary-list__value">
+                We are available on video calls or telephone calls on saturdays between 10am and 5pm.
+            </dd>
+        </div>
+    </dl>
+}
+
+<h2 class="govuk-heading-m">More details</h2>
+<p class="govuk-body govuk-!-margin-bottom-9">@Model.Service.MoreDetails</p>
+
+<h2 class="govuk-heading-m">Contact details</h2>
+<div class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Email
+        </dt>
+        <dd class="govuk-summary-list__value">
+            <a href="mailto:@Model.Service.Email">@Model.Service.Email</a>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Phone
+        </dt>
+        <dd class="govuk-summary-list__value">
+            <a href="tel:@Model.Service.Phone">@Model.Service.Phone</a>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Website
+        </dt>
+        <dd class="govuk-summary-list__value">
+            <a href="@Model.Service.Website">@Model.Service.Website</a>
+        </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            Text message
+        </dt>
+        <dd class="govuk-summary-list__value">
+            <a href="tel:@Model.Service.TextMessage">@Model.Service.TextMessage</a>
+        </dd>
+    </div>
+</div>
+</div>
+</div>
