@@ -11,8 +11,6 @@ using FamilyHubs.SharedKernel.HealthCheck;
 using FamilyHubs.ServiceDirectory.Shared.Dto.Metrics;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using System.Net.Http.Json;
-using FamilyHubs.ServiceDirectory.Shared;
-using FamilyHubs.ServiceDirectory.Shared.Dto.BaseDto;
 
 namespace FamilyHubs.ServiceDirectory.Infrastructure.Services.ServiceDirectory;
 
@@ -24,6 +22,8 @@ public class ServiceDirectoryClient : IServiceDirectoryClient, IHealthCheckUrlGr
     private static string? _endpoint;
     internal const string HttpClientName = "servicedirectory";
     private static readonly string GetServicesBaseUri = "api/services-simple?serviceType=FamilyExperience";
+
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
 
     public ServiceDirectoryClient(IHttpClientFactory httpClientFactory, IMemoryCache memoryCache)
     {
@@ -45,6 +45,19 @@ public class ServiceDirectoryClient : IServiceDirectoryClient, IHealthCheckUrlGr
             services.PageNumber,
             //todo: not nice to hard-code default from api
             servicesParams.PageSize ?? 10);
+    }
+
+    public async Task<ServiceDto> GetServiceById(long serviceId, CancellationToken cancellationToken = default)
+    {
+        HttpClient httpClient = _httpClientFactory.CreateClient(HttpClientName);
+
+        HttpResponseMessage response = await httpClient.GetAsync($"api/services/{serviceId}", cancellationToken);
+
+        ServiceDto serviceDto =
+            JsonSerializer.Deserialize<ServiceDto>(await response.Content.ReadAsStringAsync(cancellationToken), JsonSerializerOptions)
+            ?? throw new ServiceDirectoryClientException(response, $"Service with ID {serviceId} returned a null response");
+
+        return serviceDto;
     }
 
     public Task<PaginatedList<TaxonomyDto>> GetTaxonomies(CancellationToken cancellationToken = default)
@@ -90,7 +103,7 @@ public class ServiceDirectoryClient : IServiceDirectoryClient, IHealthCheckUrlGr
 
         var taxonomies = await JsonSerializer.DeserializeAsync<PaginatedList<TaxonomyDto>>(
             await response.Content.ReadAsStreamAsync(cancellationToken),
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true },
+            JsonSerializerOptions,
             cancellationToken);
 
         if (taxonomies is null)
@@ -138,7 +151,7 @@ public class ServiceDirectoryClient : IServiceDirectoryClient, IHealthCheckUrlGr
 
         var services = await JsonSerializer.DeserializeAsync<PaginatedList<ServiceDto>>(
             await response.Content.ReadAsStreamAsync(cancellationToken),
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true },
+            JsonSerializerOptions,
             cancellationToken);
 
         if (services is null)

@@ -9,6 +9,8 @@ namespace FamilyHubs.ServiceDirectory.Core.ServiceDirectory.Interfaces;
 
 public interface IServiceDirectoryClient
 {
+    Task<ServiceDto> GetServiceById(long serviceId, CancellationToken cancellationToken = default);
+
     // leaky, not clean, but this is our service, as opposed to a generic service that we might want to swap
     Task<PaginatedList<TaxonomyDto>> GetTaxonomies(CancellationToken cancellationToken = default);
     Task<(PaginatedList<ServiceDto> services, HttpResponseMessage? response)> GetServices(ServicesParams servicesParams, CancellationToken cancellationToken = default);
