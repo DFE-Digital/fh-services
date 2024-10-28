@@ -43,7 +43,7 @@
     "gulp-sourcemaps": "^3.0.0",
     "gulp-terser": "^2.1.0",
     "gulp-typescript": "^6.0.0-alpha.1",
-    "rollup": "^1.32.1",
+    "rollup": "^2.0.0",
     "sass": "~1.60",
     "typescript": "^5.2.2"
   }
