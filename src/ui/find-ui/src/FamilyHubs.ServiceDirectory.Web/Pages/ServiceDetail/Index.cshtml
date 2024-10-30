@@ -2,6 +2,7 @@
 @model FamilyHubs.ServiceDirectory.Web.Pages.ServiceDetail.Index
 
 @* TODO: FHB-712 - Back Button *@
+@* TODO: FHB-712 - Some ages 25+ say 127, need to be converted *@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -140,27 +141,31 @@
             </dl>
         }
 
-        <!--Online and telephone-->
-        @* TODO: FHB-712 - Logic for handling online and telephone, below is just a placeholder example *@
-        <h2 class="govuk-heading-m">Online and telephone</h2>
-        <dl class="govuk-summary-list govuk-!-margin-bottom-9" id="replace-commas">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Days service is available
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    Saturday @* TODO: FHB-712 - These can be empty, so nullable check *@
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Extra availability details
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    We are available on video calls or telephone calls on saturdays between 10am and 5pm.
-                </dd>
-            </div>
-        </dl>
+        @if (!string.IsNullOrWhiteSpace(Model.Service.OnlineTelephone))
+        {
+            <h2 class="govuk-heading-m">@Model.Service.OnlineTelephone</h2>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9" id="replace-commas">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Days service is available
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.Service.DaysAvailable
+                    </dd>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(Model.Service.ExtraAvailabilityDetails))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Extra availability details
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.Service.ExtraAvailabilityDetails
+                        </dd>
+                    </div>
+                }
+            </dl>
+        }
 
         @if (!string.IsNullOrWhiteSpace(Model.Service.MoreDetails))
         {
