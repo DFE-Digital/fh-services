@@ -9,8 +9,6 @@ using Location = FamilyHubs.ServiceDirectory.Web.Models.Location;
 
 namespace FamilyHubs.ServiceDirectory.Web.Pages.ServiceDetail;
 
-// TODO: FHB-712 - Most of this can be shared with Connect, so look to move it to a shared space when functionality done!
-
 public class Index : PageModel
 {
     private readonly IServiceDirectoryClient _serviceDirectoryClient;
@@ -39,9 +37,9 @@ public class Index : PageModel
     private static string IsFamilyHub(LocationTypeCategory locationTypeCategory) =>
         locationTypeCategory == LocationTypeCategory.FamilyHub ? "Yes" : "No";
 
-    private static ScheduleDto GetScheduleForLocation(long locationId,
+    private static ScheduleDto? GetScheduleForLocation(long locationId,
         ICollection<ServiceAtLocationDto> serviceAtLocations)
-        => serviceAtLocations.First(sAl => sAl.LocationId == locationId).Schedules.First(); // TODO: FHB-712 - This throws errors for quite a few things but doesn't in Connect
+        => serviceAtLocations.FirstOrDefault(sAl => sAl.LocationId == locationId)?.Schedules.FirstOrDefault();
 
     private static IEnumerable<string> GetAccessibilities(
         ICollection<AccessibilityForDisabilitiesDto> serviceAccessibilityForDisabilities)
@@ -63,6 +61,7 @@ public class Index : PageModel
         ICollection<ServiceAtLocationDto> serviceAtLocations)
     {
         List<Location> locations = [];
+
         locations.AddRange(
             from serviceLocation in serviceLocations
             let locationSchedule = GetScheduleForLocation(serviceLocation.Id, serviceAtLocations)
@@ -70,8 +69,8 @@ public class Index : PageModel
             {
                 IsFamilyHub = IsFamilyHub(serviceLocation.LocationTypeCategory),
                 Details = serviceLocation.Description,
-                DaysAvailable = GetDaysAvailable(locationSchedule),
-                ExtraAvailabilityDetails = locationSchedule.Description,
+                DaysAvailable = locationSchedule is not null ? GetDaysAvailable(locationSchedule) : null,
+                ExtraAvailabilityDetails = locationSchedule?.Description,
                 Address = serviceLocation.GetAddress(),
                 Accessibilities = GetAccessibilities(serviceLocation.AccessibilityForDisabilities)
             });
@@ -79,26 +78,34 @@ public class Index : PageModel
         return locations;
     }
 
-    private static ServiceDetailModel GetServiceDetailModel(ServiceDto serviceDto)
+    private static Contact GetContact(ICollection<ContactDto> serviceContacts)
     {
-        ServiceDetailModel serviceDetailModel = new()
+        ContactDto? contactDto = serviceContacts.FirstOrDefault();
+
+        return new Contact
         {
-            Name = serviceDto.Name,
-            Description = serviceDto.Description,
-            Eligibility = GetEligibility(serviceDto.Eligibilities),
-            Cost = GetCostOption(serviceDto.CostOptions),
-            MoreDetails = "More Details", // TODO: Where does this come from?
-            Deliveries = GetDeliveries(serviceDto.ServiceDeliveries),
-
-            Categories = serviceDto.Taxonomies.Select(t => t.Name).Order(),
-            Languages = serviceDto.Languages.Select(l => l.Name).Order(),
-
-            Locations = GetLocations(serviceDto.Locations, serviceDto.ServiceAtLocations),
-            Contact = new Contact() // TODO: Contact
+            Email = contactDto?.Email,
+            Phone = contactDto?.Telephone,
+            TextMessage = contactDto?.TextPhone,
+            Website = contactDto?.Url
         };
-
-        return serviceDetailModel;
     }
+
+    private static ServiceDetailModel GetServiceDetailModel(ServiceDto serviceDto) => new()
+    {
+        Name = serviceDto.Name,
+        Summary = serviceDto.Summary,
+        Eligibility = GetEligibility(serviceDto.Eligibilities),
+        Cost = GetCostOption(serviceDto.CostOptions),
+        MoreDetails = serviceDto.Description,
+        Deliveries = GetDeliveries(serviceDto.ServiceDeliveries),
+
+        Categories = serviceDto.Taxonomies.Select(t => t.Name).Order(),
+        Languages = serviceDto.Languages.Select(l => l.Name).Order(),
+
+        Locations = GetLocations(serviceDto.Locations, serviceDto.ServiceAtLocations),
+        Contact = GetContact(serviceDto.Contacts)
+    };
 
     public async Task<IActionResult> OnGetAsync(long serviceId)
     {

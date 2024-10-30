@@ -2,15 +2,13 @@
 @model FamilyHubs.ServiceDirectory.Web.Pages.ServiceDetail.Index
 
 @* TODO: FHB-712 - Back Button *@
-@* TODO: FHB-712 - Shared with Connect? It does have differences so need to evaluate after getting the functionality in *@
-
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <h1 class="govuk-heading-l govuk-!-margin-bottom-6">@Model.Service.Name</h1>
     </div>
     <div class="govuk-grid-column-two-thirds">
-        <p class="govuk-body govuk-!-margin-bottom-6">@Model.Service.Description</p>
+        <p class="govuk-body govuk-!-margin-bottom-6">@Model.Service.Summary</p>
 
         <h2 class="govuk-heading-m">Service details</h2>
 
@@ -21,7 +19,7 @@
                 </dt>
                 <dd class="govuk-summary-list__value">
                     <ul class="govuk-list">
-                        @foreach (string supportOffered in @Model.Service.Categories)
+                        @foreach (string supportOffered in Model.Service.Categories)
                         {
                             <li>@supportOffered</li>
                         }
@@ -78,7 +76,7 @@
                     </dt>
                     <dd class="govuk-summary-list__value">
                     <ul class="govuk-list">
-                        @foreach (string addressSegment in @location.Address)
+                        @foreach (string addressSegment in location.Address)
                         {
                             <li>@addressSegment</li>
                         }
@@ -99,63 +97,76 @@
                             Accessibility details
                         </dt>
                         <ul class="govuk-list">
-                            @foreach (string accessibility in @location.Accessibilities)
+                            @foreach (string accessibility in location.Accessibilities)
                             {
                                 <li>@accessibility</li>
                             }
                         </ul>
                     </div>
                 }
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Location details
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @location.Details
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Days service is available
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @location.DaysAvailable
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Extra availability details
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @location.ExtraAvailabilityDetails
-                    </dd>
-                </div>
-            </dl>
-            <!--Online and telephone-->
-            @* TODO: FHB-712 - Logic for handling online and telephone, below is just a placeholder example*@
-            <h2 class="govuk-heading-m">Online and telephone</h2>
-            <dl class="govuk-summary-list govuk-!-margin-bottom-9" id="replace-commas">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Days service is available
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        Saturday
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Extra availability details
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        We are available on video calls or telephone calls on saturdays between 10am and 5pm.
-                    </dd>
-                </div>
+                @if (!string.IsNullOrWhiteSpace(location.Details))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Location details
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @location.Details
+                        </dd>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(location.DaysAvailable))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Days service is available
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @location.DaysAvailable
+                        </dd>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(location.ExtraAvailabilityDetails))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Extra availability details
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @location.ExtraAvailabilityDetails
+                        </dd>
+                    </div>
+                }
             </dl>
         }
 
-        <h2 class="govuk-heading-m">More details</h2>
-        <p class="govuk-body govuk-!-margin-bottom-9">@Model.Service.MoreDetails</p>
+        <!--Online and telephone-->
+        @* TODO: FHB-712 - Logic for handling online and telephone, below is just a placeholder example *@
+        <h2 class="govuk-heading-m">Online and telephone</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9" id="replace-commas">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Days service is available
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    Saturday @* TODO: FHB-712 - These can be empty, so nullable check *@
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Extra availability details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    We are available on video calls or telephone calls on saturdays between 10am and 5pm.
+                </dd>
+            </div>
+        </dl>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Service.MoreDetails))
+        {
+            <h2 class="govuk-heading-m">More details</h2>
+            <p class="govuk-body govuk-!-margin-bottom-9">@Model.Service.MoreDetails</p>
+        }
 
         <h2 class="govuk-heading-m">Contact details</h2>
         <div class="govuk-summary-list govuk-!-margin-bottom-9">
