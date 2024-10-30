@@ -153,17 +153,14 @@
                         @Model.Service.DaysAvailable
                     </dd>
                 </div>
-                @if (!string.IsNullOrWhiteSpace(Model.Service.ExtraAvailabilityDetails))
-                {
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Extra availability details
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @Model.Service.ExtraAvailabilityDetails
-                        </dd>
-                    </div>
-                }
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Extra availability details
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.Service.ExtraAvailabilityDetails
+                    </dd>
+                </div>
             </dl>
         }
 

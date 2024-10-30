@@ -132,7 +132,7 @@ public class Index : PageModel
             MoreDetails = serviceDto.Description,
             Deliveries = deliveryString.ToString(),
 
-            OnlineTelephone = onlineTelephoneString.ToString(),
+            OnlineTelephone = onlineTelephoneString.ToString(), // TODO: FHB-712 : These 3 should probs become a little Schedule model of their own
             DaysAvailable = GetDaysAvailableOnlineOrTelephone(serviceScheduleDto) ?? "None provided",
             ExtraAvailabilityDetails = serviceScheduleDto?.Description ?? "None provided",
 

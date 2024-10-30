@@ -10,8 +10,8 @@ public class ServiceDetailModel
     public string Deliveries { get; init; } = null!;
 
     public string? OnlineTelephone { get; init; }
-    public string? DaysAvailable { get; init; }
-    public string? ExtraAvailabilityDetails { get; init; }
+    public string DaysAvailable { get; init; } = null!;
+    public string ExtraAvailabilityDetails { get; init; } = null!;
 
     public IEnumerable<string> Categories { get; init; } = [];
     public IEnumerable<string> Languages { get; init; } = [];
