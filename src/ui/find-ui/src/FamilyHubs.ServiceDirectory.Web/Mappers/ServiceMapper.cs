@@ -22,7 +22,7 @@ public static class ServiceMapper
 
         var location = service.Locations.First();
         var eligibility = service.Eligibilities.FirstOrDefault();
-        var deliveries = service.ServiceDeliveries;
+        var serviceDeliveries = service.ServiceDeliveries;
 
         var name = service.Name;
         var contact = service.GetContact();
@@ -34,7 +34,7 @@ public static class ServiceMapper
             location.GetAddress(),
             service.GetServiceAvailability(),
             GetCategories(service),
-            deliveries.Select(d => d.Name.ToDescription()),
+            serviceDeliveries.Select(d => d.Name.ToDescription()),
             GetAgeRange(eligibility),
             contact?.Telephone,
             contact?.Email,
