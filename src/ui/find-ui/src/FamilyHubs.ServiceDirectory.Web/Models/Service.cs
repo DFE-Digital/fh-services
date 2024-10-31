@@ -1,16 +1,9 @@
 ﻿
 namespace FamilyHubs.ServiceDirectory.Web.Models
 {
-    public enum ServiceType
-    {
-        FamilyHub,
-        Service
-    }
-
     //todo: type hierarchy, rather than type? or just null what we don't have?
     // when / opening hours will show regular schedule only. holiday schedule will be ignored for mvp (probably just show the description field)
     public sealed record Service(
-        ServiceType Type,
         string Name,
         //todo: what's actually mandatory?
         double? Distance,

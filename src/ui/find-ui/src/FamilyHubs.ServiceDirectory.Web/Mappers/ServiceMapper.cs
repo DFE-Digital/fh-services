@@ -3,9 +3,7 @@ using System.Diagnostics;
 using FamilyHubs.ServiceDirectory.Core.Distance;
 using FamilyHubs.ServiceDirectory.Shared.Display;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
-using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.ServiceDirectory.Shared.Extensions;
-using ServiceType = FamilyHubs.ServiceDirectory.Web.Models.ServiceType;
 
 namespace FamilyHubs.ServiceDirectory.Web.Mappers;
 
@@ -28,7 +26,6 @@ public static class ServiceMapper
         var contact = service.GetContact();
 
         return new Service(
-            IsFamilyHub(location) ? ServiceType.FamilyHub : ServiceType.Service,
             name,
             service.Distance != null ? DistanceConverter.MetersToMiles(service.Distance.Value) : null,
             GetCost(service),
@@ -45,11 +42,6 @@ public static class ServiceMapper
     private static string? GetAgeRange(EligibilityDto? eligibility)
     {
         return eligibility == null ? null : $"{AgeDisplayExtensions.AgeToString(eligibility.MinimumAge)} to {AgeDisplayExtensions.AgeToString(eligibility.MaximumAge)}";
-    }
-
-    private static bool IsFamilyHub(LocationDto location)
-    {
-        return location.LocationTypeCategory == LocationTypeCategory.FamilyHub;
     }
 
     private static string? GetWebsiteUrl(string? url)
