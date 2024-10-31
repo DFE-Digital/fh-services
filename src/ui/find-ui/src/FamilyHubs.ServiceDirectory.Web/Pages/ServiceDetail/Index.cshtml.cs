@@ -25,11 +25,11 @@ public class Index : PageModel
         await _serviceDirectoryClient.GetServiceById(serviceId);
 
     private static string GetAttendingTypes(IEnumerable<AttendingType> attendingTypes) => attendingTypes.Aggregate(
-        new StringBuilder(), (current, attendingType) => attendingType switch
+        new StringBuilder(), (builder, attendingType) => attendingType switch
         {
-            AttendingType.InPerson => current.Append("In person"),
-            AttendingType.Online => current.Append(", Online"),
-            AttendingType.Telephone => current.Append(", Telephone"),
+            AttendingType.InPerson => builder.Append("In person"),
+            AttendingType.Online => builder.Append(", Online"),
+            AttendingType.Telephone => builder.Append(", Telephone"),
             _ => throw new ArgumentOutOfRangeException(nameof(attendingType),
                 $"The attending type {attendingType} was not expected")
         }).ToString();
@@ -96,17 +96,8 @@ public class Index : PageModel
         locationTypeCategory == LocationTypeCategory.FamilyHub ? "Yes" : "No";
 
     private static IEnumerable<string> GetAccessibilities(
-        ICollection<AccessibilityForDisabilitiesDto> serviceAccessibilityForDisabilities)
-    {
-        List<string> accessibilities = [];
-
-        accessibilities
-            .AddRange(serviceAccessibilityForDisabilities
-                .Select(x => x.Accessibility)
-                .OfType<string>());
-
-        return accessibilities;
-    }
+        ICollection<AccessibilityForDisabilitiesDto> accessibilityForDisabilities)
+        => [..accessibilityForDisabilities.Select(x => x.Accessibility).OfType<string>()];
 
     private static Contact GetContact(ICollection<ContactDto> serviceContacts)
     {
