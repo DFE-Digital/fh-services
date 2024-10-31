@@ -14,6 +14,7 @@ public class Index : PageModel
 {
     private readonly IServiceDirectoryClient _serviceDirectoryClient;
 
+    public string BackUrl { get; set; } = null!;
     public ServiceDetailModel Service { get; set; } = null!;
 
     public Index(IServiceDirectoryClient serviceDirectoryClient)
@@ -148,10 +149,11 @@ public class Index : PageModel
         return serviceDetailModel;
     }
 
-    public async Task<IActionResult> OnGetAsync(long serviceId)
+    public async Task<IActionResult> OnGetAsync(string fromUrl, long serviceId)
     {
         ServiceDto serviceDto = await GetService(serviceId);
 
+        BackUrl = fromUrl;
         Service = GetServiceDetailModel(serviceDto);
 
         return Page();
