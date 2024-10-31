@@ -1,4 +1,4 @@
-namespace FamilyHubs.ServiceDirectory.Web.Models;
+namespace FamilyHubs.ServiceDirectory.Web.Models.ServiceDetail;
 
 public class Contact
 {

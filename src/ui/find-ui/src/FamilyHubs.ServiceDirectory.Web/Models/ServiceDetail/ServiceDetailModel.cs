@@ -1,4 +1,4 @@
-namespace FamilyHubs.ServiceDirectory.Web.Models;
+namespace FamilyHubs.ServiceDirectory.Web.Models.ServiceDetail;
 
 public class ServiceDetailModel
 {
@@ -7,11 +7,10 @@ public class ServiceDetailModel
     public string Eligibility { get; init; } = null!;
     public string Cost { get; init; } = null!;
     public string? MoreDetails { get; init; }
-    public string Deliveries { get; init; } = null!;
+    public string AttendingTypes { get; init; } = null!;
 
     public string? OnlineTelephone { get; init; }
-    public string DaysAvailable { get; init; } = null!;
-    public string ExtraAvailabilityDetails { get; init; } = null!;
+    public Schedule? Schedule { get; init; } = null!;
 
     public IEnumerable<string> Categories { get; init; } = [];
     public IEnumerable<string> Languages { get; init; } = [];

@@ -1,4 +1,5 @@
 @page
+@using FamilyHubs.ServiceDirectory.Web.Models.ServiceDetail
 @model FamilyHubs.ServiceDirectory.Web.Pages.ServiceDetail.Index
 
 @* TODO: FHB-712 - Back Button *@
@@ -61,7 +62,7 @@
                     How this service is provided
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.Service.Deliveries
+                    @Model.Service.AttendingTypes
                 </dd>
             </div>
         </dl>
@@ -116,32 +117,32 @@
                         </dd>
                     </div>
                 }
-                @if (!string.IsNullOrWhiteSpace(location.DaysAvailable))
+                @if (!string.IsNullOrWhiteSpace(location.Schedule.DaysAvailable))
                 {
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             Days service is available
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @location.DaysAvailable
+                            @location.Schedule.DaysAvailable
                         </dd>
                     </div>
                 }
-                @if (!string.IsNullOrWhiteSpace(location.ExtraAvailabilityDetails))
+                @if (!string.IsNullOrWhiteSpace(location.Schedule.ExtraAvailabilityDetails))
                 {
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             Extra availability details
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            @location.ExtraAvailabilityDetails
+                            @location.Schedule.ExtraAvailabilityDetails
                         </dd>
                     </div>
                 }
             </dl>
         }
 
-        @if (!string.IsNullOrWhiteSpace(Model.Service.OnlineTelephone))
+        @if (Model.Service.Schedule is not null)
         {
             <h2 class="govuk-heading-m">@Model.Service.OnlineTelephone</h2>
             <dl class="govuk-summary-list govuk-!-margin-bottom-9" id="replace-commas">
@@ -150,7 +151,7 @@
                         Days service is available
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.Service.DaysAvailable
+                        @Model.Service.Schedule.DaysAvailable
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -158,7 +159,7 @@
                         Extra availability details
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.Service.ExtraAvailabilityDetails
+                        @Model.Service.Schedule.ExtraAvailabilityDetails
                     </dd>
                 </div>
             </dl>

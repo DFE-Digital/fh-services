@@ -3,10 +3,10 @@ using FamilyHubs.ServiceDirectory.Core.ServiceDirectory.Interfaces;
 using FamilyHubs.ServiceDirectory.Shared.Display;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
-using FamilyHubs.ServiceDirectory.Web.Models;
+using FamilyHubs.ServiceDirectory.Web.Models.ServiceDetail;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Location = FamilyHubs.ServiceDirectory.Web.Models.Location;
+using Location = FamilyHubs.ServiceDirectory.Web.Models.ServiceDetail.Location;
 
 namespace FamilyHubs.ServiceDirectory.Web.Pages.ServiceDetail;
 
@@ -24,42 +24,45 @@ public class Index : PageModel
     private async Task<ServiceDto> GetService(long serviceId) =>
         await _serviceDirectoryClient.GetServiceById(serviceId);
 
-    private static string GetEligibility(ICollection<EligibilityDto> serviceEligibilities)
-        => serviceEligibilities.Count == 0
-            ? "No"
-            : $"Yes, {serviceEligibilities.First().MinimumAge} to {serviceEligibilities.First().MaximumAge} years old";
+    private static string GetAttendingTypes(IEnumerable<AttendingType> attendingTypes) => attendingTypes.Aggregate(
+        new StringBuilder(), (current, attendingType) => attendingType switch
+        {
+            AttendingType.InPerson => current.Append("In person"),
+            AttendingType.Online => current.Append(", Online"),
+            AttendingType.Telephone => current.Append(", Telephone"),
+            _ => throw new ArgumentOutOfRangeException(nameof(attendingType),
+                $"The attending type {attendingType} was not expected")
+        }).ToString();
 
-    private static string GetCostOption(ICollection<CostOptionDto> serviceCostOptions)
-        => serviceCostOptions.Count == 0 ? "Free" : "Yes, it costs money to use.";
+    private static string GetOnlineTelephoneHeader(string attendingTypes)
+    {
+        StringBuilder onlineTelephoneHeader = new();
+
+        if (attendingTypes.Contains("Online", StringComparison.InvariantCultureIgnoreCase))
+        {
+            onlineTelephoneHeader.Append("Online");
+        }
+
+        if (attendingTypes.Contains("Telephone", StringComparison.InvariantCultureIgnoreCase))
+        {
+            onlineTelephoneHeader.Append(onlineTelephoneHeader.Length == 0 ? "Telephone" : " and telephone");
+        }
+
+        return onlineTelephoneHeader.ToString();
+    }
 
     private static IEnumerable<AttendingType> GetDeliveries(ICollection<ServiceDeliveryDto> serviceDeliveries)
         => serviceDeliveries.Select(x => x.Name).Order();
 
-    private static string IsFamilyHub(LocationTypeCategory locationTypeCategory) =>
-        locationTypeCategory == LocationTypeCategory.FamilyHub ? "Yes" : "No";
+    private static string GetEligibility(ICollection<EligibilityDto> serviceEligibilities)
+        => serviceEligibilities.Count == 0
+            ? "No"
+            : $"Yes, {AgeDisplayExtensions.AgeToString(serviceEligibilities.First().MinimumAge)} to {AgeDisplayExtensions.AgeToString(serviceEligibilities.First().MaximumAge)} years old";
 
-    private static string? GetDaysAvailableOnlineOrTelephone(ScheduleDto? scheduleDto) =>
-        scheduleDto?.ByDay?.Split(',').GetDayNames(); // TODO: FHB-712 - Common Method
+    private static string GetCostOption(ICollection<CostOptionDto> serviceCostOptions)
+        => serviceCostOptions.Count == 0 ? "Free" : "Yes, it costs money to use.";
 
-    private static ScheduleDto? GetScheduleForLocation(long locationId,
-        ICollection<ServiceAtLocationDto> serviceAtLocations)
-        => serviceAtLocations.FirstOrDefault(x => x.LocationId == locationId)?.Schedules.FirstOrDefault();
-
-    private static IEnumerable<string> GetAccessibilities(
-        ICollection<AccessibilityForDisabilitiesDto> serviceAccessibilityForDisabilities)
-    {
-        List<string> accessibilities = [];
-
-        accessibilities
-            .AddRange(serviceAccessibilityForDisabilities
-                .Select(x => x.Accessibility)
-                .OfType<string>());
-
-        return accessibilities;
-    }
-
-    private static string GetDaysAvailable(ScheduleDto locationSchedule) =>
-        (locationSchedule.ByDay?.Split(',')).GetDayNames(); // TODO: FHB-712 - Common Method
+    private static string? GetDaysAvailable(ScheduleDto? scheduleDto) => scheduleDto?.ByDay?.Split(',').GetDayNames();
 
     private static List<Location> GetLocations(ICollection<LocationDto> serviceLocations,
         ICollection<ServiceAtLocationDto> serviceAtLocations)
@@ -73,13 +76,36 @@ public class Index : PageModel
             {
                 IsFamilyHub = IsFamilyHub(serviceLocation.LocationTypeCategory),
                 Details = serviceLocation.Description,
-                DaysAvailable = locationSchedule is not null ? GetDaysAvailable(locationSchedule) : null,
-                ExtraAvailabilityDetails = locationSchedule?.Description,
+                Schedule = new Schedule
+                {
+                    DaysAvailable = GetDaysAvailable(locationSchedule),
+                    ExtraAvailabilityDetails = locationSchedule?.Description
+                },
                 Address = serviceLocation.GetAddress(),
                 Accessibilities = GetAccessibilities(serviceLocation.AccessibilityForDisabilities)
             });
 
         return locations;
+    }
+
+    private static ScheduleDto? GetScheduleForLocation(long locationId,
+        ICollection<ServiceAtLocationDto> serviceAtLocations)
+        => serviceAtLocations.FirstOrDefault(x => x.LocationId == locationId)?.Schedules.FirstOrDefault();
+
+    private static string IsFamilyHub(LocationTypeCategory locationTypeCategory) =>
+        locationTypeCategory == LocationTypeCategory.FamilyHub ? "Yes" : "No";
+
+    private static IEnumerable<string> GetAccessibilities(
+        ICollection<AccessibilityForDisabilitiesDto> serviceAccessibilityForDisabilities)
+    {
+        List<string> accessibilities = [];
+
+        accessibilities
+            .AddRange(serviceAccessibilityForDisabilities
+                .Select(x => x.Accessibility)
+                .OfType<string>());
+
+        return accessibilities;
     }
 
     private static Contact GetContact(ICollection<ContactDto> serviceContacts)
@@ -100,28 +126,8 @@ public class Index : PageModel
         ScheduleDto? serviceScheduleDto =
             serviceDto.Schedules.FirstOrDefault(x => x.ServiceId == serviceDto.Id);
 
-        IEnumerable<AttendingType> deliveries = GetDeliveries(serviceDto.ServiceDeliveries);
-
-        StringBuilder deliveryString = new();
-        StringBuilder onlineTelephoneString = new();
-
-        foreach (AttendingType delivery in deliveries) // TODO: FHB-712 - Move into own method, possibly 2 methods!!!
-        {
-            switch (delivery)
-            {
-                case AttendingType.InPerson:
-                    deliveryString.Append("In person");
-                    break;
-                case AttendingType.Online:
-                    deliveryString.Append(", Online");
-                    onlineTelephoneString.Append("Online");
-                    break;
-                case AttendingType.Telephone:
-                    deliveryString.Append(", Telephone");
-                    onlineTelephoneString.Append(onlineTelephoneString.Length == 0 ? "Telephone" : " and telephone");
-                    break;
-            }
-        }
+        string attendingTypes = GetAttendingTypes(GetDeliveries(serviceDto.ServiceDeliveries));
+        string onlineTelephoneHeader = GetOnlineTelephoneHeader(attendingTypes);
 
         ServiceDetailModel serviceDetailModel = new()
         {
@@ -130,11 +136,16 @@ public class Index : PageModel
             Eligibility = GetEligibility(serviceDto.Eligibilities),
             Cost = GetCostOption(serviceDto.CostOptions),
             MoreDetails = serviceDto.Description,
-            Deliveries = deliveryString.ToString(),
+            AttendingTypes = attendingTypes,
 
-            OnlineTelephone = onlineTelephoneString.ToString(), // TODO: FHB-712 : These 3 should probs become a little Schedule model of their own
-            DaysAvailable = GetDaysAvailableOnlineOrTelephone(serviceScheduleDto) ?? "None provided",
-            ExtraAvailabilityDetails = serviceScheduleDto?.Description ?? "None provided",
+            OnlineTelephone = onlineTelephoneHeader,
+            Schedule = !string.IsNullOrWhiteSpace(onlineTelephoneHeader)
+                ? new Schedule
+                {
+                    DaysAvailable = GetDaysAvailable(serviceScheduleDto) ?? "None provided",
+                    ExtraAvailabilityDetails = serviceScheduleDto?.Description ?? "None provided",
+                }
+                : null,
 
             Categories = serviceDto.Taxonomies.Select(t => t.Name).Order(),
             Languages = serviceDto.Languages.Select(l => l.Name).Order(),
