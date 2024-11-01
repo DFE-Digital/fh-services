@@ -149,6 +149,11 @@ public class Index : PageModel
 
     public async Task<IActionResult> OnGetAsync(long serviceId, string fromUrl)
     {
+        if (!fromUrl.StartsWith("/ServiceFilter"))
+        {
+            throw new ArgumentException($"Back button URL is not valid: {fromUrl}");
+        }
+
         ServiceDto serviceDto = await GetService(serviceId);
 
         BackUrl = fromUrl;
