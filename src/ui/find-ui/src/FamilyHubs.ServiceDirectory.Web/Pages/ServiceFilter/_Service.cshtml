@@ -8,7 +8,14 @@
         <div class="govuk-summary-list__key">
             @*todo: description on view enum? - think it will come from db*@
             <span class="govuk-caption-m govuk-!-margin-top-3">@(Model.Type == ServiceType.FamilyHub ? "Family hub" : "Service and groups")</span>
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-0"><a asp-page="/ServiceDetail/Index" asp-route-serviceId="@Model.ServiceId" asp-route-fromUrl="@Context.Request.GetEncodedUrl()">@Model.Name</a> <span class="govuk-!-font-weight-regular"> (@Model.Distance?.ToString("0.0") miles)</span></h3>
+            @if (Model.Type == ServiceType.Service)
+            {
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-0"><a asp-page="/ServiceDetail/Index" asp-route-serviceId="@Model.ServiceId" asp-route-fromUrl="@Context.Request.GetEncodedUrl()">@Model.Name</a> <span class="govuk-!-font-weight-regular"> (@Model.Distance?.ToString("0.0") miles)</span></h3>
+            }
+            else
+            {
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-0">@Model.Name <span class="govuk-!-font-weight-regular"> (@Model.Distance?.ToString("0.0") miles)</span></h3>
+            }
         </div>
     </div>
 
