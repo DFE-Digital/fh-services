@@ -149,7 +149,7 @@ public class Index : PageModel
         return serviceDetailModel;
     }
 
-    public async Task<IActionResult> OnGetAsync(string fromUrl, long serviceId)
+    public async Task<IActionResult> OnGetAsync(long serviceId, string fromUrl)
     {
         ServiceDto serviceDto = await GetService(serviceId);
 
