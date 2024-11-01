@@ -10,7 +10,7 @@
             <span class="govuk-caption-m govuk-!-margin-top-3">@(Model.Type == ServiceType.FamilyHub ? "Family hub" : "Service and groups")</span>
             @if (Model.Type == ServiceType.Service)
             {
-                <h3 class="govuk-heading-s govuk-!-margin-bottom-0"><a asp-page="/ServiceDetail/Index" asp-route-serviceId="@Model.ServiceId" asp-route-fromUrl="@Context.Request.GetEncodedUrl()">@Model.Name</a> <span class="govuk-!-font-weight-regular"> (@Model.Distance?.ToString("0.0") miles)</span></h3>
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-0"><a asp-page="/ServiceDetail/Index" asp-route-serviceId="@Model.ServiceId" asp-route-fromUrl="@Context.Request.GetEncodedPathAndQuery()">@Model.Name</a> <span class="govuk-!-font-weight-regular"> (@Model.Distance?.ToString("0.0") miles)</span></h3>
             }
             else
             {
