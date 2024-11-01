@@ -65,7 +65,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
 
         private async Task SetPaginatedList()
         {
-            ICollection<OrganisationModel> vcsOrganisations = Sort(await GetPermittedOrganisations());
+            ICollection<OrganisationModel> vcsOrganisations = [..Sort(await GetPermittedOrganisations())];
 
             PaginatedOrganisations = new PaginatedList<OrganisationModel>(
                 vcsOrganisations.Skip((PageNum - 1) * PageSize).Take(PageSize).ToList(),
@@ -104,31 +104,31 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
             return vcsOrganisations;
         }
 
-        private ICollection<OrganisationModel> Sort(IEnumerable<OrganisationModel> organisations)
+        private IEnumerable<OrganisationModel> Sort(IEnumerable<OrganisationModel> organisations)
         {
             if (string.IsNullOrEmpty(SortBy))
             {
-                return [..organisations];
+                return organisations;
             }
 
             if (SortBy == $"{OrganisationColumn}_{SortOrder.Ascending}")
             {
-                return [..organisations.OrderBy(x => x.OrganisationName)];
+                return organisations.OrderBy(x => x.OrganisationName);
             }
 
             if (SortBy == $"{OrganisationColumn}_{SortOrder.Descending}")
             {
-                return [..organisations.OrderByDescending(x => x.OrganisationName)];
+                return organisations.OrderByDescending(x => x.OrganisationName);
             }
 
             if (SortBy == $"{LaColumn}_{SortOrder.Ascending}")
             {
-                return [..organisations.OrderBy(x => x.LocalAuthority)];
+                return organisations.OrderBy(x => x.LocalAuthority);
             }
 
             if (SortBy == $"{LaColumn}_{SortOrder.Descending}")
             {
-                return [..organisations.OrderByDescending(x => x.LocalAuthority)];
+                return organisations.OrderByDescending(x => x.LocalAuthority);
             }
 
             throw new InvalidOperationException($"SortBy cannot be parsed: {SortBy}");
