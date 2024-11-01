@@ -25,10 +25,10 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
         public PaginatedList<OrganisationModel> PaginatedOrganisations { get; set; }
 
         [BindProperty]
-        public int PageNum { get; set; } = 1; // Do not change variable name, this is what is posted by the pagination partial
+        public int PageNum { get; set; } =
+            1; // Do not change variable name, this is what is posted by the pagination partial
 
-        [BindProperty]
-        public string SortBy { get; set; } = string.Empty;
+        [BindProperty] public string SortBy { get; set; } = string.Empty;
 
         public ManageOrganisationsModel(IServiceDirectoryClient serviceDirectoryClient, ICacheService cacheService)
         {
@@ -73,43 +73,42 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
                 PageNum,
                 PageSize);
 
-            if (PaginatedOrganisations.TotalCount> 0)
+            if (PaginatedOrganisations.TotalCount > 0)
             {
                 Pagination = new LargeSetPagination(PaginatedOrganisations.TotalPages, PageNum);
             }
-
         }
 
         /// <summary>
         /// Gets the VCS organisations the user is permitted to see
         /// </summary>
-        private async Task<ICollection<OrganisationModel>> GetPermittedOrganisations()
+        private async Task<IEnumerable<OrganisationModel>> GetPermittedOrganisations()
         {
             var user = HttpContext.GetFamilyHubsUser();
 
             IEnumerable<OrganisationDto> organisations = user.Role == RoleTypes.DfeAdmin
-                ?
-                await _serviceDirectoryClient.GetOrganisations()
-                :
-                await _serviceDirectoryClient.GetOrganisationByAssociatedOrganisation(long.Parse(user.OrganisationId));
+                ? await _serviceDirectoryClient.GetOrganisations()
+                : await _serviceDirectoryClient
+                    .GetOrganisationByAssociatedOrganisation(long.Parse(user.OrganisationId));
 
-            List<OrganisationModel> vcsOrganisations = organisations
+            IEnumerable<OrganisationModel> vcsOrganisations = organisations
                 .Where(x => x.OrganisationType == Shared.Enums.OrganisationType.VCFS)
                 .Select(org => new OrganisationModel
                 {
                     OrganisationId = org.Id,
                     OrganisationName = org.Name,
-                    LocalAuthority = organisations.FirstOrDefault(x => x.Id == org.AssociatedOrganisationId)?.Name ?? string.Empty
-                }).ToList();
+                    LocalAuthority = organisations.FirstOrDefault(x => x.Id == org.AssociatedOrganisationId)?.Name ??
+                                     string.Empty
+                });
 
             return vcsOrganisations;
         }
 
-        private ICollection<OrganisationModel> Sort(ICollection<OrganisationModel> organisations)
+        private ICollection<OrganisationModel> Sort(IEnumerable<OrganisationModel> organisations)
         {
             if (string.IsNullOrEmpty(SortBy))
             {
-                return organisations;
+                return [..organisations];
             }
 
             if (SortBy == $"{OrganisationColumn}_{SortOrder.Ascending}")
