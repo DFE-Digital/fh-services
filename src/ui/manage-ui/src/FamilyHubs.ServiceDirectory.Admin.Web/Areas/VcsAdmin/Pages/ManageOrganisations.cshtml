@@ -53,10 +53,10 @@
 
                 <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <component type="typeof(Components.SortHeaderComponent)" param-Title='"Organisation"' param-Name="@Model.OrganisationColumn" param-SortBy="@Model.SortBy" param-Class='"width-100"' param-DataIndex="0" render-mode="Static"/>
+                    <component type="typeof(Components.SortHeaderComponent)" param-Title='"Organisation"' param-Name="@ManageOrganisationsModel.OrganisationColumn" param-SortBy="@Model.SortBy" param-Class='"width-100"' param-DataIndex="0" render-mode="Static"/>
                     @if (Model.IsDfeAdmin)
                     {
-                        <component type="typeof(Components.SortHeaderComponent)" param-Title='"Local authority"' param-Name="@Model.LaColumn" param-SortBy="@Model.SortBy" param-Class='"width-100"' param-DataIndex="1" render-mode="Static"/>
+                        <component type="typeof(Components.SortHeaderComponent)" param-Title='"Local authority"' param-Name="@ManageOrganisationsModel.LaColumn" param-SortBy="@Model.SortBy" param-Class='"width-100"' param-DataIndex="1" render-mode="Static"/>
                     }
                 </tr>
                 </thead>
