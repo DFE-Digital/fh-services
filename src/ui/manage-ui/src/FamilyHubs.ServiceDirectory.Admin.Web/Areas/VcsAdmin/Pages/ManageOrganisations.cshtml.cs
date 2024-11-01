@@ -38,6 +38,11 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
             Pagination = new DontShowPagination();
         }
 
+        /*
+         * TODO: FHB-678 : 1. Filter Logic
+         * TODO: FHB-678 : 2. Show Services on Organisation Page
+         * TODO: FHB-678 : 3. Service Detail Page for each Service from TODO 2.
+         */
         public async Task OnGet(int? pageNumber, string? sortBy)
         {
             IsDfeAdmin = HttpContext.IsUserDfeAdmin();
