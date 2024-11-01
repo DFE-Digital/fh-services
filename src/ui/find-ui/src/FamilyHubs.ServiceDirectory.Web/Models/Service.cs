@@ -17,11 +17,7 @@ namespace FamilyHubs.ServiceDirectory.Web.Models
         double? Distance,
         IEnumerable<string> Cost,
         IEnumerable<string> Where,
-        IEnumerable<string> When,
         IEnumerable<string> Categories,
-        string? AgeRange = null,
-        string? Phone = null,
-        string? Email = null,
-        string? WebsiteName = null,
-        string? WebsiteUrl = null);
+        IEnumerable<string> DeliveryMethods,
+        string? AgeRange = null);
 }

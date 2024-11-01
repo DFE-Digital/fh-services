@@ -4,6 +4,7 @@ using FamilyHubs.ServiceDirectory.Shared.Display;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.ServiceDirectory.Web.Models.ServiceDetail;
+using FamilyHubs.SharedKernel.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Location = FamilyHubs.ServiceDirectory.Web.Models.ServiceDetail.Location;
@@ -28,11 +29,8 @@ public class Index : PageModel
     private static string GetAttendingTypes(IEnumerable<AttendingType> attendingTypes) => attendingTypes.Aggregate(
         new StringBuilder(), (builder, attendingType) => attendingType switch
         {
-            AttendingType.InPerson => builder.Append("In person"),
-            AttendingType.Online => builder.Append(", Online"),
-            AttendingType.Telephone => builder.Append(", Telephone"),
-            _ => throw new ArgumentOutOfRangeException(nameof(attendingType),
-                $"The attending type {attendingType} was not expected")
+            AttendingType.InPerson => builder.Append(attendingType.ToDescription()),
+            _ => builder.Append(", " + attendingType.ToDescription())
         }).ToString();
 
     private static string GetOnlineTelephoneHeader(string attendingTypes)

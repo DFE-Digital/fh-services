@@ -4,7 +4,7 @@ using FamilyHubs.ServiceDirectory.Core.Distance;
 using FamilyHubs.ServiceDirectory.Shared.Display;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
-using FamilyHubs.ServiceDirectory.Shared.Extensions;
+using FamilyHubs.SharedKernel.Enums;
 using ServiceType = FamilyHubs.ServiceDirectory.Web.Models.ServiceType;
 
 namespace FamilyHubs.ServiceDirectory.Web.Mappers;
@@ -24,7 +24,6 @@ public static class ServiceMapper
         var eligibility = service.Eligibilities.FirstOrDefault();
 
         var name = service.Name;
-        var contact = service.GetContact();
 
         return new Service(
             service.Id,
@@ -33,13 +32,9 @@ public static class ServiceMapper
             service.Distance != null ? DistanceConverter.MetersToMiles(service.Distance.Value) : null,
             GetCost(service),
             GetWhere(service.Locations),
-            service.GetServiceAvailability(),
             GetCategories(service),
-            GetAgeRange(eligibility),
-            contact?.Telephone,
-            contact?.Email,
-            name,
-            GetWebsiteUrl(contact?.Url));
+            GetDeliveryMethods(service.ServiceDeliveries),
+            GetAgeRange(eligibility));
     }
 
     private static IEnumerable<string> GetWhere(ICollection<LocationDto> locationDtoList)
@@ -50,6 +45,9 @@ public static class ServiceMapper
             _ => [$"Available at {locationDtoList.Count} locations"]
         };
 
+    private static IEnumerable<string> GetDeliveryMethods(ICollection<ServiceDeliveryDto> serviceDeliveries)
+        => serviceDeliveries.Select(x => x.Name.ToDescription()).Order();
+
     private static string? GetAgeRange(EligibilityDto? eligibility)
     {
         return eligibility == null ? null : $"{AgeDisplayExtensions.AgeToString(eligibility.MinimumAge)} to {AgeDisplayExtensions.AgeToString(eligibility.MaximumAge)}";
@@ -57,18 +55,6 @@ public static class ServiceMapper
 
     private static bool IsFamilyHub(IEnumerable<LocationDto> locations)
         => locations.Any(location => location.LocationTypeCategory == LocationTypeCategory.FamilyHub);
-
-    private static string? GetWebsiteUrl(string? url)
-    {
-        if (string.IsNullOrWhiteSpace(url))
-            return default;
-
-        if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
-            return url;
-
-        // assume http! (UriBuilder interprets a single string as a host and insists on adding a '/' on the end, which doesn't work if the url contains query params)
-        return $"http://{url}";
-    }
 
     private static IEnumerable<string> GetCategories(ServiceDto service)
     {
