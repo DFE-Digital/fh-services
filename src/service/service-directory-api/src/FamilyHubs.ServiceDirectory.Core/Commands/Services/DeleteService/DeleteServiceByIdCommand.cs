@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FamilyHubs.ServiceDirectory.Core.Commands.Services.DeleteService;
+
 public class DeleteServiceByIdCommand : IRequest<bool>
 {
     public DeleteServiceByIdCommand(long id)
@@ -22,7 +23,8 @@ public class DeleteServiceByIdCommandHandler : IRequestHandler<DeleteServiceById
     private readonly ApplicationDbContext _context;
     private readonly ILogger<DeleteServiceByIdCommandHandler> _logger;
 
-    public DeleteServiceByIdCommandHandler(ApplicationDbContext context, ILogger<DeleteServiceByIdCommandHandler> logger)
+    public DeleteServiceByIdCommandHandler(ApplicationDbContext context,
+        ILogger<DeleteServiceByIdCommandHandler> logger)
     {
         _context = context;
         _logger = logger;
@@ -32,13 +34,13 @@ public class DeleteServiceByIdCommandHandler : IRequestHandler<DeleteServiceById
     {
         try
         {
-            var entity = await _context.Services
-                .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
+            Service? entity = await _context.Services
+                .FirstOrDefaultAsync(service => service.Id == request.Id, cancellationToken);
 
             if (entity is null)
                 throw new NotFoundException(nameof(Service), request.Id.ToString());
 
-            entity.Status = ServiceStatusType.Deleted;
+            entity.Status = ServiceStatusType.Defunct;
 
             await _context.SaveChangesAsync(cancellationToken);
 
@@ -46,7 +48,8 @@ public class DeleteServiceByIdCommandHandler : IRequestHandler<DeleteServiceById
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred creating organisation. {exceptionMessage}", ex.Message);
+            _logger.LogError(ex, "An error occurred deleting the Service with ID {sId}. {exceptionMessage}", request.Id,
+                ex.Message);
             throw;
         }
     }

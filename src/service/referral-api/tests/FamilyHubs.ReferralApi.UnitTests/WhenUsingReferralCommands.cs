@@ -1,3 +1,5 @@
+using AutoMapper;
+using FamilyHubs.Referral.Core;
 using FamilyHubs.Referral.Core.ClientServices;
 using FamilyHubs.Referral.Core.Commands.CreateReferral;
 using FamilyHubs.Referral.Core.Commands.SetReferralStatus;
@@ -518,6 +520,27 @@ public class WhenUsingReferralCommands : BaseCreateDbUnitTest<CreateReferralComm
         result.Items.Count.Should().Be(2);
         result.Items[0].Created.Should().NotBeNull();
         result.Items[0].Id.Should().Be(firstId);
+    }
+
+    [Fact]
+    public async Task ThenGetReferralCountByServiceId()
+    {
+        var myProfile = new AutoMappingProfiles();
+        var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
+        IMapper mapper = new Mapper(configuration);
+        var mockApplicationDbContext = GetApplicationDbContext();
+        var testReferral = GetReferralDto();
+        var createReferral = new CreateReferralDto(testReferral, new ConnectionRequestsSentMetricDto(RequestTimestamp));
+        CreateReferralCommand command = new(createReferral, FamilyHubsUser);
+        CreateReferralCommandHandler handler = new(mockApplicationDbContext, mapper, _serviceDirectoryService);
+        var response = await handler.Handle(command, new CancellationToken());
+
+        GetReferralCountByServiceIdCommand getCommand = new(response.Id);
+        GetReferralCountByServiceIdCommandHandler getHandler = new(mockApplicationDbContext);
+
+        int result = await getHandler.Handle(getCommand, new CancellationToken());
+
+        Assert.Equal(1, result);
     }
 
     [Fact]

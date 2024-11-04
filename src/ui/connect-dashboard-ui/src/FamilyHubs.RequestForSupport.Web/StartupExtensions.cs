@@ -10,7 +10,7 @@ using Serilog;
 using Serilog.Events;
 using System.Diagnostics.CodeAnalysis;
 using FamilyHubs.RequestForSupport.Infrastructure.Health;
-using FamilyHubs.SharedKernel.Razor.Health;
+using FamilyHubs.SharedKernel.Health;
 
 namespace FamilyHubs.RequestForSupport.Web;
 

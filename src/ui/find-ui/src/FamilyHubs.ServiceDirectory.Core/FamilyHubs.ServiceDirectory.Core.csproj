@@ -1,25 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	
-	<PropertyGroup>
-		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<NuGetAuditMode>direct</NuGetAuditMode>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-	</PropertyGroup>
 
-	<PropertyGroup>
-	  <NoWarn>1701;1702;S1135;S125</NoWarn>
-	</PropertyGroup>
+    <PropertyGroup>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <NuGetAuditMode>direct</NuGetAuditMode>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    </PropertyGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-	</ItemGroup>
+    <PropertyGroup>
+        <NoWarn>1701;1702;S1135;S125</NoWarn>
+    </PropertyGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\..\..\..\shared\service-directory-shared\src\FamilyHubs.ServiceDirectory.Shared\FamilyHubs.ServiceDirectory.Shared.csproj" />
-	  <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="SonarAnalyzer.CSharp">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\..\shared\service-directory-shared\src\FamilyHubs.ServiceDirectory.Shared\FamilyHubs.ServiceDirectory.Shared.csproj" />
+        <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
+    </ItemGroup>
 
 </Project>

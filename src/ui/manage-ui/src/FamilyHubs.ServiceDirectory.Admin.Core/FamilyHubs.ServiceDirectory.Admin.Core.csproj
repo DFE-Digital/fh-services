@@ -1,31 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <NuGetAuditMode>direct</NuGetAuditMode>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <NoWarn>S1135,S125</NoWarn>
-    <UserSecretsId>13e65d9e-5b5e-422b-b79b-3f2093f5f01c</UserSecretsId>
-  </PropertyGroup>
+    <PropertyGroup>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <NuGetAuditMode>direct</NuGetAuditMode>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <NoWarn>S1135,S125</NoWarn>
+        <UserSecretsId>13e65d9e-5b5e-422b-b79b-3f2093f5f01c</UserSecretsId>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.AzureKeyVault" />
-    <PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" />
-    <PackageReference Include="FamilyHubs.SharedKernel.Razor" />
-    <PackageReference Include="libphonenumber-csharp" />
-    <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" />
-    <PackageReference Include="SonarAnalyzer.CSharp">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="AspNetCore.HealthChecks.AzureKeyVault" />
+        <PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" />
+        <PackageReference Include="libphonenumber-csharp" />
+        <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" />
+        <PackageReference Include="SonarAnalyzer.CSharp">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\shared\referral-shared\src\FamilyHubs.ReferralService.Shared\FamilyHubs.ReferralService.Shared.csproj" />
-    <ProjectReference Include="..\..\..\..\shared\service-directory-shared\src\FamilyHubs.ServiceDirectory.Shared\FamilyHubs.ServiceDirectory.Shared.csproj" />
-    <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
-    <ProjectReference Include="..\..\..\..\service\notification-api\src\FamilyHubs.Notification.Api.Client\FamilyHubs.Notification.Api.Client.csproj" />
-    <ProjectReference Include="..\..\..\..\service\notification-api\shared\FamilyHubs.Notification.Api.Contracts\FamilyHubs.Notification.Api.Contracts.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\..\shared\referral-shared\src\FamilyHubs.ReferralService.Shared\FamilyHubs.ReferralService.Shared.csproj" />
+        <ProjectReference Include="..\..\..\..\shared\service-directory-shared\src\FamilyHubs.ServiceDirectory.Shared\FamilyHubs.ServiceDirectory.Shared.csproj" />
+        <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
+        <ProjectReference Include="..\..\..\..\service\notification-api\src\FamilyHubs.Notification.Api.Client\FamilyHubs.Notification.Api.Client.csproj" />
+        <ProjectReference Include="..\..\..\..\service\notification-api\shared\FamilyHubs.Notification.Api.Contracts\FamilyHubs.Notification.Api.Contracts.csproj" />
+        <ProjectReference Include="..\..\..\..\shared\web-components\src\FamilyHubs.SharedKernel.Razor\FamilyHubs.SharedKernel.Razor.csproj" />
+    </ItemGroup>
 
 </Project>

@@ -17,6 +17,7 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
     protected readonly CustomWebApplicationFactory? _webAppFactory;
     private bool _disposed;
     protected readonly JwtSecurityToken? _token;
+    protected readonly JwtSecurityToken? _tokenLaManager;
     protected readonly JwtSecurityToken? _token_forOrganisation1;
     protected readonly JwtSecurityToken? _vcstoken;
     protected readonly JwtSecurityToken? _forbiddentoken;
@@ -50,6 +51,18 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
             signingCredentials: creds,
         expires: DateTime.UtcNow.AddMinutes(5)
             );
+
+            _tokenLaManager = new JwtSecurityToken(
+                claims: new List<Claim>()
+                {
+                    new Claim("sub", configuration["GovUkOidcConfiguration:Oidc:ClientId"] ?? ""),
+                    new Claim("jti", jti),
+                    new Claim(ClaimTypes.Role, RoleTypes.LaManager),
+                    new Claim(FamilyHubsClaimTypes.OrganisationId, "1")
+                },
+                signingCredentials: creds,
+                expires: DateTime.UtcNow.AddMinutes(5)
+                );
 
         _token_forOrganisation1 = new JwtSecurityToken(
             claims: new List<Claim>
@@ -145,7 +158,7 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
 
     public void Dispose()
     {
-        if (!_initSuccessful) 
+        if (!_initSuccessful)
         {
             return;
         }
@@ -156,7 +169,7 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             context.Database.EnsureDeleted();
         }
-        
+
         if (Client != null)
         {
             Client.Dispose();
@@ -166,14 +179,14 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
         {
             _webAppFactory.Dispose();
         }
-            
+
         GC.SuppressFinalize(this);
     }
 
     protected bool IsRunningLocally()
     {
-        
-        if (!_initSuccessful || _configuration == null) 
+
+        if (!_initSuccessful || _configuration == null)
         {
             return false;
         }
@@ -191,7 +204,7 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
         {
             return false;
         }
-        
+
         // Fallback to a default check if User Secrets file or machine name is not specified
         // For example, you can add additional checks or default behavior here
         return false;

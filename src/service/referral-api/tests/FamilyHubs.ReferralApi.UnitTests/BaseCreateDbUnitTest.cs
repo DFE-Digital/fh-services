@@ -27,7 +27,7 @@ public abstract class BaseCreateDbUnitTest<T> : BaseUnitTest<T>
         MockApplicationDbContext = GetApplicationDbContext();
     }
 
-    private static ApplicationDbContext GetApplicationDbContext()
+    protected static ApplicationDbContext GetApplicationDbContext()
     {
         var options = CreateNewContextOptions();
         var mockIHttpContextAccessor = Substitute.For<IHttpContextAccessor>();

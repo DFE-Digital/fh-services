@@ -33,6 +33,7 @@
     <ProjectReference Include="..\FamilyHubs.RequestForSupport.Core\FamilyHubs.RequestForSupport.Core.csproj" />
     <ProjectReference Include="..\FamilyHubs.RequestForSupport.Infrastructure\FamilyHubs.RequestForSupport.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\..\service\notification-api\src\FamilyHubs.Notification.Api.Client\FamilyHubs.Notification.Api.Client.csproj" />
+    <ProjectReference Include="..\..\..\..\shared\web-components\src\FamilyHubs.SharedKernel.Razor\FamilyHubs.SharedKernel.Razor.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "license": "MIT",
   "dependencies": {
-    "familyhubs-frontend": "9.5.1"
+    "familyhubs-frontend": "file:../../../../shared/web-components/src/familyhubs-frontend"
   }
 }

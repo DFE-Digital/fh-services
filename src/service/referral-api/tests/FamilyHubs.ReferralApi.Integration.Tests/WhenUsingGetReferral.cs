@@ -29,6 +29,21 @@ public class WhenUsingGetReferral : DataIntegrationTestBase
     }
 
     [Theory]
+    [InlineData(2, 1)]
+    [InlineData(3, 0)]
+    public async Task ThenGetReferralCountByServiceIdOnly(int serviceId, int expected)
+    {
+        await CreateReferral();
+
+        GetReferralCountByServiceIdCommand command = new(serviceId);
+        GetReferralCountByServiceIdCommandHandler handler = new(TestDbContext);
+
+        int result = await handler.Handle(command, new CancellationToken());
+
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
     [InlineData(ReferralOrderBy.DateSent, true)]
     [InlineData(ReferralOrderBy.DateSent, false)]
     [InlineData(ReferralOrderBy.DateUpdated, true)]

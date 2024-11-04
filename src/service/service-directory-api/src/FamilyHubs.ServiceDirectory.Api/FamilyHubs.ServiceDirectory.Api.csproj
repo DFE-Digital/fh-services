@@ -9,7 +9,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-        <PackageReference Include="FamilyHubs.SharedKernel.Razor" />
 		<PackageReference Include="MediatR" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">

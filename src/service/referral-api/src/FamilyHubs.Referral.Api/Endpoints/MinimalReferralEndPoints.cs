@@ -102,6 +102,15 @@ public class MinimalReferralEndPoints
 
         }).WithMetadata(new SwaggerOperationAttribute("Get Referrals", "Get Referral By Composite Keys") { Tags = new[] { "Referrals" } });
 
+        app.MapGet("api/referral/count",
+            [Authorize(Roles = RoleGroups.AdminRole)]
+            async (long serviceId, CancellationToken cancellationToken, ISender mediator) =>
+        {
+            GetReferralCountByServiceIdCommand request = new(serviceId);
+            int result = await mediator.Send(request, cancellationToken);
+            return result;
+        }).WithMetadata(new SwaggerOperationAttribute("Get Count of Referrals", "Get Count of Referrals related to a Service, using the Service ID."));
+
         app.MapPost("api/status/{referralId}/{status}", [Authorize(Roles = RoleGroups.VcsProfessionalOrDualRole)] async (long referralId, string status, CancellationToken cancellationToken, ISender _mediator, HttpContext httpContext, ILogger < MinimalReferralEndPoints> logger) =>
         {
             (long _, string role, long organisationId) = GetUserDetailsFromClaims(httpContext);

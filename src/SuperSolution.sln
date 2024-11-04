@@ -257,6 +257,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4D2300AF-512
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyHubs.Mock-Hsda.Api", "service\mock-hsda-api\src\FamilyHubs.Mock-Hsda.Api\FamilyHubs.Mock-Hsda.Api.csproj", "{3410936A-B361-40F5-AD43-ED4100E24059}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyHubs.Idam.Api.UnitTests", "service\idam-api\tests\FamilyHubs.Idam.Api.UnitTests\FamilyHubs.Idam.Api.UnitTests.csproj", "{E16B478A-82FA-43C1-9135-E7411EC14013}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -546,6 +548,10 @@ Global
 		{3410936A-B361-40F5-AD43-ED4100E24059}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3410936A-B361-40F5-AD43-ED4100E24059}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3410936A-B361-40F5-AD43-ED4100E24059}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E16B478A-82FA-43C1-9135-E7411EC14013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E16B478A-82FA-43C1-9135-E7411EC14013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E16B478A-82FA-43C1-9135-E7411EC14013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E16B478A-82FA-43C1-9135-E7411EC14013}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3BDE7741-0874-4DCE-BC06-A6996C24F150} = {FA55DA32-3617-4409-9F03-73BDD536DDF4}
@@ -671,5 +677,6 @@ Global
 		{AB3F357F-D9BD-430C-97C9-70185D247EB6} = {9F3BAA04-4BF5-4CEF-A586-0221D8C7FE44}
 		{4D2300AF-512A-4D1B-BA1D-D2A8DD862097} = {AB3F357F-D9BD-430C-97C9-70185D247EB6}
 		{3410936A-B361-40F5-AD43-ED4100E24059} = {4D2300AF-512A-4D1B-BA1D-D2A8DD862097}
+		{E16B478A-82FA-43C1-9135-E7411EC14013} = {253E18DD-B081-4FAB-86C3-674F34A9BF9F}
 	EndGlobalSection
 EndGlobal

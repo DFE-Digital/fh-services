@@ -1,0 +1,63 @@
+@page
+@using FamilyHubs.ServiceDirectory.Shared.Enums
+@using FamilyHubs.SharedKernel.Razor.ErrorNext
+@model DeleteService
+@{
+    ViewData["Title"] = "Deleting a Service";
+    Model.Error.ErrorIdToHtmlElementId = _ => "radio-yes";
+    Error? error = Model.Error.GetErrorIfTriggered();
+}
+
+@section Back {
+    <a href="@Model.BackUrl" class="govuk-back-link">Back</a>
+}
+
+<partial name="_ErrorSummaryNext" for="@Model.Error" />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <fieldset class="govuk-fieldset" aria-describedby="@error?.InputErrorMessageParaId">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-4">
+                <h1 class="govuk-fieldset__heading">
+                    Do you want to permanently delete this service?
+                </h1>
+            </legend>
+            <p class="govuk-body">By deleting this service you will completely remove it from both the directory and Manage family support services and accounts.</p>
+            @if (Model.ServiceType == ServiceType.InformationSharing)
+            {
+                <div class="govuk-warning-text">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">
+                        <span class="govuk-visually-hidden">Warning</span>
+                        You cannot delete a service if it has connection requests that have not been actioned.
+                    </strong>
+                </div>
+            }
+            <form method="post" novalidate>
+                <div class="govuk-form-group @error?.FormGroupClass">
+                    <h2 class="govuk-heading-m govuk-!-margin-top-6">Do you want to delete @Model.ServiceName?</h2>
+                    <partial name="_ErrorMessageNext" model="error"/>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" asp-for="@Model.Selected" id="radio-yes" type="radio" value="true">
+                            <label class="govuk-label govuk-radios__label" for="radio-yes">
+                                Yes, I want to delete it
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" asp-for="@Model.Selected" id="radio-no" type="radio" value="false">
+                            <label class="govuk-label govuk-radios__label" for="radio-no">
+                                No, I want to keep it
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="govuk-button-group">
+                    <button class="govuk-button">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+</div>

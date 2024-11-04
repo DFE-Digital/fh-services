@@ -18,6 +18,7 @@ public interface IReferralService
 {
     Task<List<ReferralDto>> GetReferralsByRecipient(SubjectAccessRequestViewModel model);
     Task<ReferralDto> GetReferralById(long referralId, CancellationToken cancellationToken = default);
+    Task<int> GetReferralsCountByServiceId(long serviceId, CancellationToken cancellationToken = default);
 }
 
 public class ReferralService : ApiService, IReferralService
@@ -98,5 +99,21 @@ public class ReferralService : ApiService, IReferralService
         }
 
         return referral;
+    }
+
+    public async Task<int> GetReferralsCountByServiceId(long serviceId, CancellationToken cancellationToken = default)
+    {
+        HttpRequestMessage request = new()
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri(Client.BaseAddress + $"api/referral/count?serviceId={serviceId}")
+        };
+
+        using HttpResponseMessage response = await Client.SendAsync(request, cancellationToken);
+        string content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        int result = JsonSerializer.Deserialize<int>(content);
+
+        return result;
     }
 }

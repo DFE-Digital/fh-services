@@ -1,50 +1,50 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <UserSecretsId>2406474f-95c2-4623-924b-dd2be59b3348</UserSecretsId>
-    <NuGetAuditMode>direct</NuGetAuditMode>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-    <NoWarn>S101;S125;S1135</NoWarn>
-  </PropertyGroup>
+    <PropertyGroup>
+        <UserSecretsId>2406474f-95c2-4623-924b-dd2be59b3348</UserSecretsId>
+        <NuGetAuditMode>direct</NuGetAuditMode>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+        <NoWarn>S101;S125;S1135</NoWarn>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Areas\SubjectAccessRequest\**" />
-    <Content Remove="Areas\SubjectAccessRequest\**" />
-    <EmbeddedResource Remove="Areas\SubjectAccessRequest\**" />
-    <None Remove="Areas\SubjectAccessRequest\**" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="Areas\SubjectAccessRequest\**" />
+        <Content Remove="Areas\SubjectAccessRequest\**" />
+        <EmbeddedResource Remove="Areas\SubjectAccessRequest\**" />
+        <None Remove="Areas\SubjectAccessRequest\**" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FamilyHubs.SharedKernel.Razor"/>
-    <PackageReference Include="Microsoft.ApplicationInsights" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-    <PackageReference Include="Microsoft.Data.SqlClient" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
-    <PackageReference Include="Serilog" />
-    <PackageReference Include="Serilog.AspNetCore" />
-    <PackageReference Include="Serilog.Extensions.Hosting" />
-    <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
-    <PackageReference Include="Serilog.Sinks.Console" />
-    <PackageReference Include="SonarAnalyzer.CSharp">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.ApplicationInsights" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+        <PackageReference Include="Microsoft.Data.SqlClient" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+        <PackageReference Include="Serilog" />
+        <PackageReference Include="Serilog.AspNetCore" />
+        <PackageReference Include="Serilog.Extensions.Hosting" />
+        <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
+        <PackageReference Include="Serilog.Sinks.Console" />
+        <PackageReference Include="SonarAnalyzer.CSharp">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Include="Pages\Error\500.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\shared\service-directory-shared\src\FamilyHubs.ServiceDirectory.Shared\FamilyHubs.ServiceDirectory.Shared.csproj" />
-    <ProjectReference Include="..\FamilyHubs.ServiceDirectory.Admin.Core\FamilyHubs.ServiceDirectory.Admin.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Pages\manage-services\Select-Location-Content-Top.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Pages\manage-services\Select-Location-Content-Top.cshtml" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="Pages\Error\500.cshtml" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\..\shared\service-directory-shared\src\FamilyHubs.ServiceDirectory.Shared\FamilyHubs.ServiceDirectory.Shared.csproj" />
+        <ProjectReference Include="..\..\..\..\shared\web-components\src\FamilyHubs.SharedKernel.Razor\FamilyHubs.SharedKernel.Razor.csproj" />
+        <ProjectReference Include="..\FamilyHubs.ServiceDirectory.Admin.Core\FamilyHubs.ServiceDirectory.Admin.Core.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <UpToDateCheckInput Remove="Pages\manage-services\Select-Location-Content-Top.cshtml" />
+    </ItemGroup>
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="Pages\manage-services\Select-Location-Content-Top.cshtml" />
+    </ItemGroup>
 </Project>

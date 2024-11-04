@@ -54,5 +54,6 @@ public enum ErrorId
     ManagePermissions_Delete_MissingSelection,
     AccountAdmin_TypeOfRole_MissingSelection,
     AccountAdmin_TypeOfUserLa_MissingSelection,
-    AccountAdmin_TypeOfUserVcs_MissingSelection
+    AccountAdmin_TypeOfUserVcs_MissingSelection,
+    Delete_Service__NeitherRadioButtonIsSelected
 }

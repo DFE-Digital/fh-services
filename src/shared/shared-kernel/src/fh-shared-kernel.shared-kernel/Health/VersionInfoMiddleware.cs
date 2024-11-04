@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
 
-namespace FamilyHubs.SharedKernel.Razor.Health;
+namespace FamilyHubs.SharedKernel.Health;
 
 public class VersionInfoMiddleware
 {

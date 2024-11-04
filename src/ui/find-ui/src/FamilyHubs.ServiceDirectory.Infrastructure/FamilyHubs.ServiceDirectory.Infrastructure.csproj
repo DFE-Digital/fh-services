@@ -1,26 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	
-	<PropertyGroup>
-		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<NuGetAuditMode>direct</NuGetAuditMode>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-		<NoWarn>1701;1702;S1135;S125</NoWarn>
-	</PropertyGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
-	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-	  <PackageReference Include="Microsoft.Extensions.Http.Polly" />
-	  <PackageReference Include="Polly.Contrib.WaitAndRetry" />
-	  <PackageReference Include="SonarAnalyzer.CSharp">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-	</ItemGroup>
+    <PropertyGroup>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <NuGetAuditMode>direct</NuGetAuditMode>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <NoWarn>1701;1702;S1135;S125</NoWarn>
+    </PropertyGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
-	  <ProjectReference Include="..\FamilyHubs.ServiceDirectory.Core\FamilyHubs.ServiceDirectory.Core.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Http.Polly" />
+        <PackageReference Include="Polly.Contrib.WaitAndRetry" />
+        <PackageReference Include="SonarAnalyzer.CSharp">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
+        <ProjectReference Include="..\FamilyHubs.ServiceDirectory.Core\FamilyHubs.ServiceDirectory.Core.csproj" />
+    </ItemGroup>
 
 </Project>

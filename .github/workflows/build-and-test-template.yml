@@ -9,14 +9,11 @@ on:
       dotnet_version:
         required: true
         type: string
-      runs_on:
-        required: true
-        type: string
 
 jobs:
   build_and_test:
     name: Build Project & Run Tests
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: 'ubuntu-22.04'
     defaults:
       run:
         working-directory: src/${{ inputs.working_directory }}
@@ -40,6 +37,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      - name: Install & Configure Spatialite
+        if: ${{ inputs.working_directory == 'service/service-directory-api' }}
+        shell: bash
+        run: |
+          sudo apt-get install libspatialite-dev libsqlite3-mod-spatialite -y
+          sudo ldconfig "/usr/lib/x86_64-linux-gnu/mod_spatialite.so"
+          
       - name: Restore Project
         shell: bash
         run: dotnet restore

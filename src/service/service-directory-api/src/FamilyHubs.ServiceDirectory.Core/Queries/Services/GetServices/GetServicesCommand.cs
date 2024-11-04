@@ -116,7 +116,9 @@ public class GetServicesCommandHandler : IRequestHandler<GetServicesCommand, Pag
             .Join(FhJoin.Type.Left, "[Schedules] ss", "s.Id = ss.ServiceId")
             .GroupBy("s.Id")
             .SetLimit(FhQueryLimit.FromPage(request.PageNumber, request.PageSize))
-            .AndWhen(
+            .And(
+                new StringCondition("s.Status", "Status", request.Status.ToString())
+            ).AndWhen(
                 request.ServiceType != ServiceType.NotSet,
                 new StringCondition("s.ServiceType", "ServiceType", request.ServiceType.ToString())
             ).AndNotNull(
