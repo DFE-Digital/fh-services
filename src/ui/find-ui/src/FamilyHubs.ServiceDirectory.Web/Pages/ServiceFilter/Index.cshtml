@@ -1,13 +1,14 @@
 ﻿@page
 @model ServiceFilterModel
 @{
+    const string title = "Services, groups and activities in this area";
     if (Model.Pagination.Show)
     {
-        ViewData["Title"] = $"Your local family hubs, services and activities (page {Model.Pagination.CurrentPage} of {Model.Pagination.TotalPages})";
+        ViewData["Title"] = $"{title} (page {Model.Pagination.CurrentPage} of {Model.Pagination.TotalPages})";
     }
     else
     {
-        ViewData["Title"] = "Your local family hubs, services and activities";
+        ViewData["Title"] = title;
     }
 }
 
@@ -30,7 +31,7 @@ else {
 
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-l govuk-!-margin-bottom-4">Your local family hubs, services and activities</h1>
+                <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@title</h1>
                 <span class="govuk-caption-m govuk-!-margin-bottom-2 govuk-!-margin-top-4">Showing results for: <a asp-page="/PostcodeSearch/Index">@Model.Postcode?.ToUpperInvariant()</a></span>
             </div>
         </div>

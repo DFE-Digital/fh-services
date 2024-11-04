@@ -21,13 +21,12 @@ public class PageFilterFactory : IPageFilterFactory
 
     public async Task<IEnumerable<IFilter>> GetDefaultFilters()
     {
-        return _filters ??= new IFilter[]
-        {
+        return _filters ??=
+        [
             new CategoryFilter((await _client.GetTaxonomies()).Items),
             new CostFilter(),
-            new ShowFilter(),
             new SearchWithinFilter(),
-            new ChildrenAndYoungPeopleFilter(),
-        };
+            new ChildrenAndYoungPeopleFilter()
+        ];
     }
 }
