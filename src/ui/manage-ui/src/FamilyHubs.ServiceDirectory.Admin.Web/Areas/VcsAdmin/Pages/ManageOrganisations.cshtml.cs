@@ -30,6 +30,8 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
 
         [BindProperty] public string SortBy { get; set; } = string.Empty;
 
+        [BindProperty] public string? OrganisationName { get; set; }
+
         public ManageOrganisationsModel(IServiceDirectoryClient serviceDirectoryClient, ICacheService cacheService)
         {
             _serviceDirectoryClient = serviceDirectoryClient;
@@ -42,8 +44,9 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
          * TODO: FHB-678 : 1. Filter Logic
          * TODO: FHB-678 : 2. Show Services on Organisation Page
          * TODO: FHB-678 : 3. Service Detail Page for each Service from TODO 2.
+         * TODO: FHB-678 : 4. Back Button on "Add an Organisation" screen is hardcoded to /Welcome
          */
-        public async Task OnGet(int? pageNumber, string? sortBy)
+        public async Task OnGet(int? pageNumber, string? sortBy, string? organisationName)
         {
             IsDfeAdmin = HttpContext.IsUserDfeAdmin();
 
@@ -52,6 +55,8 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
 
             if (!string.IsNullOrEmpty(sortBy))
                 SortBy = sortBy;
+
+            OrganisationName = organisationName;
 
             await SetPaginatedList();
             await CacheParametersToBackButton();
@@ -98,6 +103,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
 
             IEnumerable<OrganisationModel> vcsOrganisations = organisations
                 .Where(x => x.OrganisationType == Shared.Enums.OrganisationType.VCFS)
+                .Where(x => string.IsNullOrWhiteSpace(OrganisationName) || x.Name.Contains(OrganisationName, StringComparison.InvariantCultureIgnoreCase))
                 .Select(org => new OrganisationModel
                 {
                     OrganisationId = org.Id,
@@ -141,11 +147,18 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
 
         private object CreateQueryParameters()
         {
-            return new Dictionary<string, object>
+            Dictionary<string, object> queryParameters = new Dictionary<string, object>
             {
                 { "pageNumber", PageNum },
                 { "sortBy", SortBy }
             };
+
+            if (!string.IsNullOrWhiteSpace(OrganisationName))
+            {
+                queryParameters.Add("organisationName", OrganisationName);
+            }
+
+            return queryParameters;
         }
 
         /// <summary>

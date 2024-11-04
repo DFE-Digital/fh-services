@@ -6,7 +6,7 @@
 }
 
 @section Back {
-    <a asp-page="\Welcome" class="govuk-back-link">Back</a>
+    <a asp-page="/Welcome" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -18,9 +18,10 @@
 
 <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l">
 
-<form method="post">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-third">
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <form method="post">
             <div class="filters-component panel-component__content" id="filters-component" data-controller="filters">
                 <div class="filters-component__heading">
                     <h2 class="govuk-heading-m">Filter organisations</h2>
@@ -33,22 +34,24 @@
                                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                                         <h3 class="govuk-fieldset__heading">Organisation name</h3>
                                     </legend>
-                                    <label class="govuk-label govuk-visually-hidden" for="width-20">
+                                    <label class="govuk-label govuk-visually-hidden" for="search-box">
                                         Search by the name of the organisation
                                     </label>
-                                    <input class="govuk-input govuk-input--width-20" id="width-20" name="width-20" type="text"> @* TODO: FHB-678 : OnPost *@
+                                    <input asp-for="@Model.OrganisationName" class="govuk-input govuk-input--width-20" id="search-box" type="text"/>
                                 </fieldset>
                             </div>
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">Apply filters</button>
+                <button type="submit" class="govuk-button">Apply filters</button>
                 <p>
-                    <a href="">Clear filters</a> @* TODO: FHB-678 : OnPost *@
+                    <a asp-page="ManageOrganisations" asp-area="VcsAdmin">Clear filters</a>
                 </p>
             </div>
-        </div>
-        <div class="govuk-grid-column-two-thirds">
+        </form>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
             <table class="govuk-table">
 
                 <thead class="govuk-table__head">
@@ -80,6 +83,6 @@
                 </tbody>
             </table>
             <partial name="_LargeSetPaginationForm" model="Model.Pagination"/>
-        </div>
+        </form>
     </div>
-</form>
+</div>
