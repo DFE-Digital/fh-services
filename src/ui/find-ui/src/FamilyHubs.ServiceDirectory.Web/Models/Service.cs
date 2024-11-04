@@ -12,7 +12,7 @@ namespace FamilyHubs.ServiceDirectory.Web.Models
         IEnumerable<string> When,
         IEnumerable<string> Categories,
         IEnumerable<string> ServiceDeliveries,
-    string? AgeRange = null,
+        string? AgeRange = null,
         string? Phone = null,
         string? Email = null,
         string? WebsiteName = null,
