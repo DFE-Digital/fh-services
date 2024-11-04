@@ -31,13 +31,13 @@ public static class ServiceMapper
             name,
             service.Distance != null ? DistanceConverter.MetersToMiles(service.Distance.Value) : null,
             GetCost(service),
-            GetWhere(service.Locations),
+            GetLocations(service.Locations),
             GetCategories(service),
             GetDeliveryMethods(service.ServiceDeliveries),
             GetAgeRange(eligibility));
     }
 
-    private static IEnumerable<string> GetWhere(ICollection<LocationDto> locationDtoList)
+    private static IEnumerable<string> GetLocations(ICollection<LocationDto> locationDtoList)
         => locationDtoList.Count switch
         {
             0 => [],
