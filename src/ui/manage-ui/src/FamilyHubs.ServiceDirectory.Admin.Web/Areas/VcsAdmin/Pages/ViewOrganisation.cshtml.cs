@@ -8,6 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages;
 
+// TODO: FHB-678 : Move into own place
+public class Service()
+{
+    public long Id { get; set; }
+    public string Name { get; set; } = null!;
+}
+
 public class ViewOrganisationModel : HeaderPageModel
 {
     private readonly IServiceDirectoryClient _serviceDirectoryClient;
@@ -28,6 +35,8 @@ public class ViewOrganisationModel : HeaderPageModel
 
     public string BackPath { get; set; } = "/VcsAdmin/ManageOrganisations";
 
+    public IEnumerable<Service> Services { get; set; } = [];
+
     public bool CanSave { get; set; } = false;
 
     public ViewOrganisationModel(IServiceDirectoryClient serviceDirectoryClient, ICacheService cacheService, ILogger<ViewOrganisationModel> logger)
@@ -42,12 +51,14 @@ public class ViewOrganisationModel : HeaderPageModel
         await SetBackButton();
         var outcome = await SetOrganisationDetails(updated);
 
-        if (outcome.IsSuccess)
+        if (!outcome.IsSuccess)
         {
-            return Page();
+            return outcome.FailureResult!;
         }
 
-        return outcome.FailureResult!;
+        Services = await GetServicesBelongingToOrganisation();
+
+        return Page();
     }
 
     public async Task<IActionResult> OnPost()
@@ -68,7 +79,17 @@ public class ViewOrganisationModel : HeaderPageModel
         return outcome.FailureResult!;
     }
 
-    private async Task<Outcome<OrganisationDetailsDto,IActionResult>> SetOrganisationDetails(bool? updated = false)
+    // TODO: FHB-678 - Why is org id a string ????
+    private async Task<IEnumerable<Service>> GetServicesBelongingToOrganisation() =>
+        (await _serviceDirectoryClient.GetServiceSummaries(long.Parse(OrganisationId), null, 1, int.MaxValue))
+        .Items
+        .Select(x => new Service
+        {
+            Id = x.Id,
+            Name = x.Name
+        });
+
+    private async Task<Outcome<OrganisationDetailsDto, IActionResult>> SetOrganisationDetails(bool? updated = false)
     {
         var organisation = await _serviceDirectoryClient.GetOrganisationById(long.Parse(OrganisationId));
 
@@ -97,15 +118,17 @@ public class ViewOrganisationModel : HeaderPageModel
             return new Outcome<OrganisationDetailsDto, IActionResult>(RedirectToPage("/Error/403"));
         }
 
-        var localAuthority = await _serviceDirectoryClient.GetOrganisationById(organisation.AssociatedOrganisationId.Value);
+        var localAuthority =
+            await _serviceDirectoryClient.GetOrganisationById(organisation.AssociatedOrganisationId.Value);
 
         if (localAuthority == null)
         {
-            _logger.LogWarning("Organisation {OrganisationId} Parent {AssociatedOrganisationId} not found", OrganisationId, organisation.AssociatedOrganisationId);
+            _logger.LogWarning("Organisation {OrganisationId} Parent {AssociatedOrganisationId} not found",
+                OrganisationId, organisation.AssociatedOrganisationId);
             return new Outcome<OrganisationDetailsDto, IActionResult>(RedirectToPage("/Error/404"));
         }
 
-        if(updated.HasValue && updated.Value)
+        if (updated.HasValue && updated.Value)
         {
             OrganisationName = await _cacheService.RetrieveString(CacheKeyNames.UpdateOrganisationName);
             CanSave = true;
