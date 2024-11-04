@@ -7,7 +7,6 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FamilyHubs.SharedKernel.Razor" />
 		<PackageReference Include="AspNetCore.HealthChecks.AzureKeyVault" />
 		<PackageReference Include="AspNetCore.HealthChecks.OpenIdConnectServer" />
 		<PackageReference Include="SonarAnalyzer.CSharp">
@@ -16,4 +15,7 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
+	</ItemGroup>
 </Project>

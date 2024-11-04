@@ -45,7 +45,6 @@ jobs:
             job_name: "Test - IDAM API"
           - working_directory: service/service-directory-api
             job_name: "Test - Service Directory API"
-            runs_on_windows: true
           - working_directory: service/referral-api
             job_name: "Test - Referral API"
           - working_directory: service/report-api
@@ -76,4 +75,3 @@ jobs:
     with:
       working_directory: ${{ matrix.working_directory }}
       dotnet_version: ${{ vars.DOTNET_VERSION_V8 }}
-      runs_on: ${{ matrix.runs_on_windows && 'windows-2022' || 'ubuntu-22.04' }}

@@ -1,5 +1,4 @@
-﻿
-namespace FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options.HealthCheck;
+﻿namespace FamilyHubs.SharedKernel.Health.Options;
 
 public class HealthCheckDatabaseOptions
 {

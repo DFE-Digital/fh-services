@@ -1,5 +1,4 @@
 using System.Net;
-using FamilyHubs.Referral.Api.AcceptanceTests.Configuration;
 using FamilyHubs.Referral.Api.AcceptanceTests.Fixtures;
 using FluentAssertions;
 
@@ -8,27 +7,23 @@ namespace FamilyHubs.Referral.Api.AcceptanceTests.Tests.Steps;
 public class SharedSteps
 {
     private readonly BearerTokenGenerator _bearerTokenGenerator;
-    private HttpResponseMessage _lastResponse;
-
     public SharedSteps()
     {
-        _lastResponse = new HttpResponseMessage();
         _bearerTokenGenerator = new BearerTokenGenerator();
-        var config = ConfigAccessor.GetApplicationConfiguration();
     }
 
-    public string? bearerToken { get; private set; }
+    public string? BearerToken { get; private set; }
 
     #region Given
 
     public void GenerateBearerToken(string role)
     {
-        bearerToken = _bearerTokenGenerator.CreateBearerToken(role);
+        BearerToken = _bearerTokenGenerator.CreateBearerToken(role);
     }
 
     public void HaveAnInvalidBearerToken()
     {
-        bearerToken =
+        BearerToken =
             "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZb2xlIjoiRGZlQWRtaW4iLCJleHAiOjE4NzY0NzUxMTJ9.n26mqEewIpsNmhVMZKqXRjnrU2LYwFHu00LCphG3V2o";
     }
 

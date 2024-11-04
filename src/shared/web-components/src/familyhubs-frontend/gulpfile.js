@@ -4,16 +4,12 @@ const gulp = require("gulp"),
     rename = require('gulp-rename'),
     fs = require('fs');
 
-//todo: not working for the local reference (for now need to manually run gulp copy-familyhubs-frontend-js from node_modules/familyhubs-frontend)
-// return true if being installed from NPM, false if being run from the local repo (using file:)
 function remotelyInstalled() {
     return process.cwd().endsWith('node_modules\familyhubs-frontend');
 }
 
 function getWwwRootDir() {
-    //console.log(process.cwd());
-    //console.log(remotelyInstalled());
-    let baseDir = remotelyInstalled() ? '../..' : '../..';
+    let baseDir = remotelyInstalled() ? '../..' : process.env.npm_config_local_prefix;
 
     // Check if this is a NPM link situation
     //if (process.env.npm_lifecycle_event === 'link') {}

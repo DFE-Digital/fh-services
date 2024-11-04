@@ -1,6 +1,6 @@
 ﻿using FamilyHubs.ServiceDirectory.Infrastructure.Services.ServiceDirectory.Extensions;
 using FamilyHubs.ServiceDirectory.Web.Pages.ServiceFilter;
-using FamilyHubs.SharedKernel.Razor.Health;
+using FamilyHubs.SharedKernel.Health;
 using FamilyHubs.SharedKernel.Services.PostcodesIo;
 using FamilyHubs.SharedKernel.Services.PostcodesIo.Extensions;
 using FamilyHubs.SharedKernel.Telemetry;

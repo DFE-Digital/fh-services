@@ -8,3 +8,4 @@ Contains a collection of useful utility scripts to make developers' lives easier
 ## Scripts
 
 * `setup-local-nuget-src.ps1` - Sets up a local NuGet source used for local FH package development.
+* `npm-install.sh` - Runs npm install in every UI project which triggers wwwroot to be copied from web-components

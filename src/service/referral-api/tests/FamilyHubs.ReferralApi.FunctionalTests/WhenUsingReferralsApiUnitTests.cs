@@ -490,6 +490,36 @@ public class WhenUsingReferralsApiUnitTests : BaseWhenUsingOpenReferralApiUnitTe
     }
 
     [Theory]
+    [InlineData(1, 1)]
+    [InlineData(2, 0)]
+    public async Task Then_ReferralCount_ByServiceId_IsRetrieved(int serviceId, int expected)
+    {
+        if (!IsRunningLocally() || Client == null)
+        {
+            // Skip the test if not running locally
+            Assert.True(true, "Test skipped because it is not running locally.");
+            return;
+        }
+
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri(Client.BaseAddress + $"api/referral/count?serviceId={serviceId}"),
+        };
+
+        request.Headers.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", $"{new JwtSecurityTokenHandler().WriteToken(_tokenLaManager!)}");
+
+        using var response = await Client.SendAsync(request);
+
+        response.EnsureSuccessStatusCode();
+
+        int result = JsonSerializer.Deserialize<int>(await response.Content.ReadAsStringAsync());
+
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
     [InlineData("TestUser@email.com", default, "Email")]
     [InlineData("078873456", default, "Telephone")]
     [InlineData("078873456", default, "Textphone")]

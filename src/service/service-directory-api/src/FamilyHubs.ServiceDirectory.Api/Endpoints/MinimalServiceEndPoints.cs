@@ -145,7 +145,7 @@ public class MinimalServiceEndPoints
         }).WithMetadata(new SwaggerOperationAttribute("Create a Service", "Create a Service") { Tags = new[] { "Services" } });
         
         app.MapDelete("api/services/{id}",
-            [Authorize(Roles = $"{RoleTypes.DfeAdmin},{RoleTypes.LaManager},{RoleTypes.LaDualRole}")] async 
+            [Authorize(Roles = RoleGroups.AdminRole)] async
             (long id, 
             CancellationToken cancellationToken, 
             ISender mediator, 

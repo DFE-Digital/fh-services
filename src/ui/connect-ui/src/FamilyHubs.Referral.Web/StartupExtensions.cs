@@ -14,7 +14,7 @@ using FamilyHubs.Referral.Core;
 using FamilyHubs.Referral.Infrastructure.Health;
 using FamilyHubs.Referral.Infrastructure.Notifications;
 using FamilyHubs.SharedKernel.DataProtection;
-using FamilyHubs.SharedKernel.Razor.Health;
+using FamilyHubs.SharedKernel.Health;
 using FamilyHubs.SharedKernel.Telemetry;
 using FamilyHubs.SharedKernel.Services.PostcodesIo.Extensions;
 

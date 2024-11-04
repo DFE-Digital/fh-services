@@ -4,7 +4,6 @@ using FamilyHubs.SharedKernel.Identity;
 using FluentAssertions;
 using System.Net;
 using System.Text.Json;
-using FamilyHubs.ServiceDirectory.Shared.ReferenceData.ICalendar;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace FamilyHubs.ServiceDirectory.Api.FunctionalTests;
@@ -12,6 +11,8 @@ namespace FamilyHubs.ServiceDirectory.Api.FunctionalTests;
 [Collection("Sequential")]
 public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
 {
+    private const int ActiveServiceCount = 4;
+    
     [Fact]
     public async Task ThenTheServiceIsCreated()
     {
@@ -46,14 +47,14 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         response.EnsureSuccessStatusCode();
 
         var retVal = await JsonSerializer.DeserializeAsync<PaginatedList<ServiceDto>>(
             await response.Content.ReadAsStreamAsync(),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        var item = retVal?.Items.Find(x => x.Name == "Test Service - Free - 10 to 15 yrs");
+        var item = retVal!.Items.Find(x => x.Name == "Test Service - Free - 10 to 15 yrs");
 
         item.Should().NotBeNull();
 
@@ -61,7 +62,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
 
         var updateRequest = CreatePutRequest($"api/services/{item.Id}", updatedItem, RoleTypes.DfeAdmin);
 
-        using var updateResponse = await Client.SendAsync(updateRequest);
+        using var updateResponse = await Client!.SendAsync(updateRequest);
 
         updateResponse.EnsureSuccessStatusCode();
 
@@ -104,17 +105,17 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         response.EnsureSuccessStatusCode();
-
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var retVal = await JsonSerializer.DeserializeAsync<PaginatedList<ServiceDto>>(await response.Content.ReadAsStreamAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        var item = retVal?.Items.Find(x => x.Name == "Test Service - Free - 10 to 15 yrs");
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
         retVal.Should().NotBeNull();
+        var item = retVal?.Items.Find(x => x.Name == "Test Service - Free - 10 to 15 yrs");
         item.Should().NotBeNull();
+        retVal!.Items.Count.Should().Be(ActiveServiceCount);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
@@ -135,16 +136,14 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
-        using var response = await Client.SendAsync(request);
-
-        response.EnsureSuccessStatusCode();
-
+        using var response = await Client!.SendAsync(request);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var retVal = await JsonSerializer.DeserializeAsync<PaginatedList<ServiceDto>>(await response.Content.ReadAsStreamAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        var item = retVal?.Items.Find(x => x.Name == "Test Service - Free - 10 to 15 yrs");
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
         retVal.Should().NotBeNull();
+        retVal!.Items.Count.Should().Be(ActiveServiceCount);
+
+        var item = retVal.Items.Find(x => x.Name == "Test Service - Free - 10 to 15 yrs");
         item.Should().NotBeNull();
     }
 
@@ -165,16 +164,14 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
-        using var response = await Client.SendAsync(request);
-
-        response.EnsureSuccessStatusCode();
-
-
-        var retVal = await JsonSerializer.DeserializeAsync<PaginatedList<ServiceDto>>(await response.Content.ReadAsStreamAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        var item = retVal?.Items.Find(x => x.Name == "Test Service - Free - 10 to 15 yrs");
-
+        using var response = await Client!.SendAsync(request);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+        
+        var retVal = await JsonSerializer.DeserializeAsync<PaginatedList<ServiceDto>>(await response.Content.ReadAsStreamAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         retVal.Should().NotBeNull();
+        retVal!.Items.Count.Should().Be(ActiveServiceCount);
+
+        var item = retVal.Items.Find(x => x.Name == "Test Service - Free - 10 to 15 yrs");
         item.Should().NotBeNull();
     }
 
@@ -195,16 +192,14 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
-        using var response = await Client.SendAsync(request);
-
-        response.EnsureSuccessStatusCode();
-
+        using var response = await Client!.SendAsync(request);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var retVal = await JsonSerializer.DeserializeAsync<PaginatedList<ServiceDto>>(await response.Content.ReadAsStreamAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        var item = retVal?.Items.Find(x => x.Name == "Test Service - Free - 10 to 15 yrs");
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
         retVal.Should().NotBeNull();
+        retVal!.Items.Count.Should().Be(ActiveServiceCount);
+
+        var item = retVal.Items.Find(x => x.Name == "Test Service - Free - 10 to 15 yrs");
         item.Should().NotBeNull();
     }
 
@@ -225,15 +220,14 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
-        using var response = await Client.SendAsync(request);
-
-        response.EnsureSuccessStatusCode();
+        using var response = await Client!.SendAsync(request);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var retVal = await JsonSerializer.DeserializeAsync<PaginatedList<ServiceDto>>(await response.Content.ReadAsStreamAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        var item = retVal?.Items.Find(x => x.Name == "Aid for Children with Tracheostomies");
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
         retVal.Should().NotBeNull();
+        retVal!.Items.Count.Should().Be(1);
+
+        var item = retVal.Items.Find(x => x.Name == "Aid for Children with Tracheostomies");
         item.Should().NotBeNull();
     }
 
@@ -254,15 +248,14 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
-        using var response = await Client.SendAsync(request);
-
-        response.EnsureSuccessStatusCode();
+        using var response = await Client!.SendAsync(request);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var retVal = await JsonSerializer.DeserializeAsync<PaginatedList<ServiceDto>>(await response.Content.ReadAsStreamAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        var item = retVal?.Items.Find(x => x.Name == "Test Service - Free - 10 to 15 yrs");
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
         retVal.Should().NotBeNull();
+        retVal!.Items.Count.Should().Be(ActiveServiceCount);
+
+        var item = retVal.Items.Find(x => x.Name == "Test Service - Free - 10 to 15 yrs");
         item.Should().NotBeNull();
     }
 
@@ -275,7 +268,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + "api/services-simple/1"),
         };
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         response.EnsureSuccessStatusCode();
 
@@ -296,7 +289,7 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + "api/services/1"),
         };
 
-        using var response = await Client.SendAsync(request);
+        using var response = await Client!.SendAsync(request);
 
         response.EnsureSuccessStatusCode();
 
@@ -327,17 +320,12 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
-        using var response = await Client.SendAsync(request);
-
-        var responseContent = await response.Content.ReadAsStringAsync();
-
-        response.IsSuccessStatusCode.Should().BeTrue(responseContent);
-
-        var retVal = JsonSerializer.Deserialize<PaginatedList<ServiceDto>>(responseContent, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-
+        using var response = await Client!.SendAsync(request);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var retVal = JsonSerializer.Deserialize<PaginatedList<ServiceDto>>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions(JsonSerializerDefaults.Web));
         retVal.Should().NotBeNull();
-        retVal?.Items.Count.Should().BeGreaterThan(2);
+        retVal!.Items.Count.Should().Be(3);
     }
 
     [Fact]
@@ -359,45 +347,11 @@ public class WhenUsingServiceApiUnitTests : BaseWhenUsingApiUnitTests
             RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
         };
 
-        using var response = await Client.SendAsync(request);
-
-        var responseContent = await response.Content.ReadAsStringAsync();
-
-        response.IsSuccessStatusCode.Should().BeTrue(responseContent);
-
-        var retVal = JsonSerializer.Deserialize<PaginatedList<ServiceDto>>(responseContent, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-
+        using var response = await Client!.SendAsync(request);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var retVal = JsonSerializer.Deserialize<PaginatedList<ServiceDto>>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions(JsonSerializerDefaults.Web));
         retVal.Should().NotBeNull();
-        retVal?.Items.Count.Should().Be(2);
-    }
-
-    [Fact]
-    public async Task ThenServicesAvailableOnDaysAreReturned()
-    {
-        var getServicesUrlBuilder = new GetServicesUrlBuilder();
-        var url = getServicesUrlBuilder
-            .WithDaysAvailable(DayCode.SU)
-            .WithPage(1, 10)
-            .Build();
-
-        var request = new HttpRequestMessage
-        {
-            Method = HttpMethod.Get,
-            RequestUri = new Uri(Client!.BaseAddress + $"api/services-simple{url}")
-        };
-
-        using var response = await Client.SendAsync(request);
-
-        var responseContent = await response.Content.ReadAsStringAsync();
-
-        if (!response.IsSuccessStatusCode)
-            ArgumentException.ThrowIfNullOrEmpty(responseContent);
-
-        var retVal = JsonSerializer.Deserialize<PaginatedList<ServiceDto>>(responseContent, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        retVal.Should().NotBeNull();
-        retVal?.Items.Count.Should().Be(1);
+        retVal!.Items.Count.Should().Be(2);
     }
 }

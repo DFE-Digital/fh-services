@@ -1,5 +1,4 @@
 ﻿using FamilyHubs.Idam.Core.Exceptions;
-using FamilyHubs.Idam.Data.Entities;
 using FamilyHubs.Idam.Data.Repository;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FamilyHubs.Idam.Core.Commands.Delete;
 
-public class DeleteExpiredUserSessionsCommand : IRequest<bool>
-{
-}
+public class DeleteExpiredUserSessionsCommand : IRequest<bool>;
 
 public class DeleteExpiredUserSessionsCommandHandler : IRequestHandler<DeleteExpiredUserSessionsCommand, bool>
 {
@@ -31,19 +28,19 @@ public class DeleteExpiredUserSessionsCommandHandler : IRequestHandler<DeleteExp
         {
             _logger.LogInformation("DeleteExpiredUserSessionsCommand started");
 
-            int? cleanupInterval = _configuration.GetValue<int?>("ExpiredSessionCleanupInterval");
+            var cleanupInterval = _configuration.GetValue<int?>("ExpiredSessionCleanupInterval");
             if (cleanupInterval is null)
             {
                 _logger.LogError("ExpiredSessionCleanupInterval not configured.");
                 throw new IdamsException("ExpiredSessionCleanupInterval not configured.");
             }
-            DateTime sessionExpiryTime = DateTime.UtcNow.AddSeconds((int)-cleanupInterval);
-            List<UserSession> entities =
+            var sessionExpiryTime = DateTime.UtcNow.AddSeconds((int)-cleanupInterval);
+            var entities =
                 await _dbContext.UserSessions.Where(r => r.LastActive < sessionExpiryTime).ToListAsync(cancellationToken);
 
             _logger.LogInformation("Found: {CountExpired} expired sessions.", entities.Count);
 
-            if (entities.Any())
+            if (entities.Count > 0)
             {
                 _dbContext.UserSessions.RemoveRange(entities);
 

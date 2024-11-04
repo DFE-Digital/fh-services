@@ -1,0 +1,16 @@
+@page
+@model FamilyHubs.ServiceDirectory.Admin.Web.Pages.manage_services.DeleteServiceErrorModel
+
+@{
+    ViewData["Title"] = "You cannot delete this service yet";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">You cannot delete @Model.ServiceName yet</h1>
+
+        @await Html.PartialAsync(Model.IsUserDfEAdmin ? "_DeleteServiceErrorDfEAdmin" : "_DeleteServiceErrorVcfsAdmin", Model)
+
+        <a class="govuk-button" asp-page="/Welcome">Go to homepage</a>
+    </div>
+</div>

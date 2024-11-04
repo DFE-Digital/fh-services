@@ -12,6 +12,7 @@ using System.Text;
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient.Exceptions;
 using FamilyHubs.ServiceDirectory.Shared.CreateUpdateDto;
 using Microsoft.AspNetCore.WebUtilities;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 
@@ -48,6 +49,7 @@ public interface IServiceDirectoryClient
     Task<long> UpdateLocation(LocationDto location, CancellationToken cancellationToken = default);
     Task<PaginatedList<LocationDto>> GetLocations(bool isAscending, string orderByColumn, string? searchName, bool isFamilyHub, int pageNumber = 1, int pageSize = 10,  CancellationToken cancellationToken = default);
     Task<PaginatedList<LocationDto>> GetLocationsByOrganisationId(long organisationId,  bool? isAscending, string orderByColumn, string? searchName, bool? isFamilyHub, int pageNumber = 1, int pageSize = 10, CancellationToken cancellationToken = default);
+    Task DeleteService(long serviceId, CancellationToken cancellationToken = default);
 }
 
 public class ServiceDirectoryClient : ApiService, IServiceDirectoryClient
@@ -348,5 +350,18 @@ public class ServiceDirectoryClient : ApiService, IServiceDirectoryClient
         using var response = await Client.GetAsync($"{Client.BaseAddress}api/organisationlocations/{organisationId}?pageNumber={pageNumber}&pageSize={pageSize}&isAscending={isAscending}&orderByColumn={orderByColumn}&searchName={searchName}&isFamilyHub={isFamilyHub}", cancellationToken);
 
         return await Read<PaginatedList<LocationDto>>(response, cancellationToken);
+    }
+
+    public async Task DeleteService(long serviceId, CancellationToken cancellationToken = default)
+    {
+        HttpRequestMessage request = new()
+        {
+            Method = HttpMethod.Delete,
+            RequestUri = new Uri(Client.BaseAddress + $"api/services/{serviceId}")
+        };
+
+        using HttpResponseMessage response = await Client.SendAsync(request, cancellationToken);
+
+        response.EnsureSuccessStatusCode();
     }
 }

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Azure.Identity;
-using FamilyHubs.SharedKernel.Razor.Health;
+using FamilyHubs.SharedKernel.Health;
 
 namespace FamilyHubs.Referral.Infrastructure.Health;
 

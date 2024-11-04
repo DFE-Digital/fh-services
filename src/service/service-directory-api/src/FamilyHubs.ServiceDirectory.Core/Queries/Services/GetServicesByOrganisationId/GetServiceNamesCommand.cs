@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using FamilyHubs.ServiceDirectory.Data.Entities;
 using FamilyHubs.ServiceDirectory.Data.Repository;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
@@ -52,17 +53,7 @@ public class GetServiceNamesCommandHandler : IRequestHandler<GetServiceNamesComm
         int skip = (request.PageNumber - 1) * request.PageSize;
 
         //todo: do we need _context.ServiceNames?
-        var servicesQuery = _context.Services
-            .Where(s => s.Status != ServiceStatusType.Deleted);
-
-        if (request.OrganisationId != null)
-        {
-            servicesQuery = servicesQuery.Where(s => s.OrganisationId == request.OrganisationId);
-        }
-        if (!string.IsNullOrEmpty(request.ServiceNameSearch))
-        {
-            servicesQuery = servicesQuery.Where(s => s.Name.Contains(request.ServiceNameSearch));
-        }
+        var servicesQuery = GetBaseQuery(request);
 
         servicesQuery = request.Order == SortOrder.ascending
             ? servicesQuery.OrderBy(s => s.Name)
@@ -78,18 +69,25 @@ public class GetServiceNamesCommandHandler : IRequestHandler<GetServiceNamesComm
 
     private async Task<int> GetServicesCount(GetServiceNamesCommand request, CancellationToken cancellationToken)
     {
-        var serviceCountQuery = _context.Services
-            .Where(s => s.Status != ServiceStatusType.Deleted);
-
-        if (request.OrganisationId != null)
-        {
-            serviceCountQuery = serviceCountQuery.Where(s => s.OrganisationId == request.OrganisationId);
-        }
-        if (!string.IsNullOrEmpty(request.ServiceNameSearch))
-        {
-            serviceCountQuery = serviceCountQuery.Where(s => s.Name.Contains(request.ServiceNameSearch));
-        }
+        var serviceCountQuery = GetBaseQuery(request);
 
         return await serviceCountQuery.CountAsync(cancellationToken);
+    }
+
+    private IQueryable<Service> GetBaseQuery(GetServiceNamesCommand cmd)
+    {
+        var query = _context.Services
+            .Where(s => s.Status != ServiceStatusType.Defunct);
+
+        if (cmd.OrganisationId != null)
+        {
+            query = query.Where(s => s.OrganisationId == cmd.OrganisationId);
+        }
+        if (!string.IsNullOrEmpty(cmd.ServiceNameSearch))
+        {
+            query = query.Where(s => s.Name.Contains(cmd.ServiceNameSearch));
+        }
+
+        return query;
     }
 }

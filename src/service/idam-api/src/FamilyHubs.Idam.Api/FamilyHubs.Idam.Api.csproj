@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FamilyHubs.SharedKernel.Razor" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="MediatR" />
@@ -40,6 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FamilyHubs.Idam.Core\FamilyHubs.Idam.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>
