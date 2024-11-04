@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Http.Extensions
+﻿@using System.Web
+@using Microsoft.AspNetCore.Http.Extensions
 @model Service
 
 @* todo: use summary list tag helpers *@
@@ -6,7 +7,7 @@
 <div class="app-service">
     <div class="govuk-summary-list__row">
         <div class="govuk-summary-list__key">
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-0"><a asp-page="/ServiceDetail/Index" asp-route-serviceId="@Model.ServiceId" asp-route-fromUrl="@Context.Request.GetEncodedPathAndQuery()">@Model.Name</a> <span class="govuk-!-font-weight-regular"> (@Model.Distance?.ToString("0.0") miles)</span></h3>
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-0"><a asp-page="/ServiceDetail/Index" asp-route-serviceId="@Model.ServiceId" asp-route-fromUrl="@HttpUtility.UrlDecode(Context.Request.GetEncodedPathAndQuery())">@Model.Name</a> <span class="govuk-!-font-weight-regular"> (@Model.Distance?.ToString("0.0") miles)</span></h3>
         </div>
     </div>
 
