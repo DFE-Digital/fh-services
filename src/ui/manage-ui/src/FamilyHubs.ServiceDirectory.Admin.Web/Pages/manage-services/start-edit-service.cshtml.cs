@@ -24,7 +24,7 @@ public class start_edit_serviceModel : PageModel
         _serviceDirectoryClient = serviceDirectoryClient;
     }
 
-    public async Task<IActionResult> OnGetAsync(long? serviceId, CancellationToken cancellationToken)
+    public async Task<IActionResult> OnGetAsync(long? serviceId, ServiceDetailEntrance entryPoint, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(serviceId);
 
@@ -32,7 +32,7 @@ public class start_edit_serviceModel : PageModel
 
         var familyHubsUser = HttpContext.GetFamilyHubsUser();
 
-        var serviceModel = await CreateServiceModel(serviceId.Value, service, familyHubsUser.Role, cancellationToken);
+        var serviceModel = await CreateServiceModel(serviceId.Value, entryPoint, service, familyHubsUser.Role, cancellationToken);
 
         // the user's just starting the journey
         await _cache.SetAsync(familyHubsUser.Email, serviceModel);
@@ -42,6 +42,7 @@ public class start_edit_serviceModel : PageModel
 
     private async Task<ServiceModel> CreateServiceModel(
         long serviceId,
+        ServiceDetailEntrance entryPoint,
         ServiceDto service,
         string userRole,
         CancellationToken cancellationToken)
@@ -50,6 +51,7 @@ public class start_edit_serviceModel : PageModel
         {
             Id = serviceId,
             Name = service.Name,
+            EntryPoint = entryPoint,
             Description = service.Summary,
             MoreDetails = service.Description,
             ServiceType = GetServiceTypeArg(service),

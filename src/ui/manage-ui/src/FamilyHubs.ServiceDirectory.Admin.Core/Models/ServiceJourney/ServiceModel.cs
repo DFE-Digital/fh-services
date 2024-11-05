@@ -2,6 +2,12 @@
 
 namespace FamilyHubs.ServiceDirectory.Admin.Core.Models.ServiceJourney;
 
+public enum ServiceDetailEntrance
+{
+    FromManageServicesPage,
+    FromViewOrganisationsPage
+}
+
 public class ServiceModel : ServiceModel<object>
 {
 }
@@ -21,6 +27,8 @@ public class ServiceModel<TUserInput>
     /// When the user is a DfE admin, and they're adding or editing a VCS service, this will be the Local Authority Id (and OrganisationId will be the VCS's Id).
     /// </summary>
     public long? LaOrganisationId { get; set; }
+
+    public ServiceDetailEntrance? EntryPoint { get; init; }
 
     public ServiceTypeArg? ServiceType { get; set; }
     //todo: do we want bools to be nullable?

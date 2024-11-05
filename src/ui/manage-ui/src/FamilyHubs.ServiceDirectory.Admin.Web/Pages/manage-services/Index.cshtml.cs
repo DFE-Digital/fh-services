@@ -1,6 +1,7 @@
 using System.Web;
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models;
+using FamilyHubs.ServiceDirectory.Admin.Core.Models.ServiceJourney;
 using FamilyHubs.ServiceDirectory.Admin.Web.Pages.Shared;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Models;
@@ -28,7 +29,7 @@ public class Row : IRow<RowData>
         get
         {
             yield return new Cell(Item.Name);
-            yield return new Cell($"<a href=\"/manage-services/start-edit-service?serviceId={Item.Id}\">View</a>");
+            yield return new Cell($"<a href=\"/manage-services/start-edit-service?serviceId={Item.Id}&entryPoint={ServiceDetailEntrance.FromManageServicesPage}\">View</a>");
         }
     }
 }

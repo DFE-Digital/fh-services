@@ -1,5 +1,6 @@
 ﻿@page "{OrganisationId}"
 @using FamilyHubs.ServiceDirectory.Admin.Core.Models;
+@using FamilyHubs.ServiceDirectory.Admin.Core.Models.ServiceJourney
 @model FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages.ViewOrganisationModel
 @{
     ViewData["Title"] = Model.OrganisationName;
@@ -37,7 +38,7 @@
                     {
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
-                                <a asp-page="/manage-services/start-edit-service" asp-route-serviceId="@service.Id"><span class="govuk-visually-hidden">View</span>@service.Name</a>
+                                <a asp-page="/manage-services/start-edit-service" asp-route-serviceId="@service.Id" asp-route-entryPoint="@ServiceDetailEntrance.FromViewOrganisationsPage"><span class="govuk-visually-hidden">View</span>@service.Name</a>
                             </td>
                         </tr>
                     }
