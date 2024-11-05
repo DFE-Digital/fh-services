@@ -27,10 +27,12 @@
     int locationsCount = service.AllLocations.Count();
 
     ViewData["Title"] = title;
+
+    string changeLink = @Model.ReadOnly ? "" : "Change";
 }
 
 @section Back {
-    <a href="@Model.BackUrl" class="govuk-back-link">Back</a>
+    <a href="" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -44,26 +46,26 @@
             @if (Model.FamilyHubsUser.Role == RoleTypes.DfeAdmin)
             {
                 <summary-row key="Local authority"
-                             action1="Change" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Local_Authority, ServiceJourneyChangeFlow.LocalAuthority)">
+                             action1="@changeLink" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Local_Authority, ServiceJourneyChangeFlow.LocalAuthority)">
                     @Model.LaOrganisationName
                 </summary-row>
 
                 @if (service.ServiceType == ServiceTypeArg.Vcs)
                 {
                     <summary-row key="Organisation"
-                                 action1="Change" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Vcs_Organisation, ServiceJourneyChangeFlow.SinglePage)">
+                                 action1="@changeLink" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Vcs_Organisation, ServiceJourneyChangeFlow.SinglePage)">
                         @Model.OrganisationName
                     </summary-row>
                 }
             }
 
             <summary-row key="Name"
-                         action1="Change" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Service_Name, ServiceJourneyChangeFlow.SinglePage)">
+                         action1="@changeLink" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Service_Name, ServiceJourneyChangeFlow.SinglePage)">
                 @service.Name
             </summary-row>
 
             <summary-row key="Support it offers"
-                         action1="Change" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Support_Offered, ServiceJourneyChangeFlow.SinglePage)">
+                         action1="@changeLink" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Support_Offered, ServiceJourneyChangeFlow.SinglePage)">
                 @foreach (var categoryId in service.SelectedSubCategories)
                 {
                     var categoryName = Service_DetailModel.TaxonomyIdToName?[categoryId];
@@ -75,11 +77,11 @@
                 }
             </summary-row>
 
-            <summary-row key="Description" show-empty class="fh-pre-wrap" action1="Change"
+            <summary-row key="Description" show-empty class="fh-pre-wrap" action1="@changeLink"
                          action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Service_Description, ServiceJourneyChangeFlow.SinglePage)">@service.Description</summary-row>
 
             <summary-row key="Does support relate to children or young people?"
-                         action1="Change" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Who_For, ServiceJourneyChangeFlow.SinglePage)">
+                         action1="@changeLink" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Who_For, ServiceJourneyChangeFlow.SinglePage)">
                 @if (service.ForChildren == false)
                 {
                     <text>No</text>
@@ -92,7 +94,7 @@
             </summary-row>
 
             <summary-row key="Languages" show-empty
-                         action1="Change" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.What_Language, ServiceJourneyChangeFlow.SinglePage)">
+                         action1="@changeLink" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.What_Language, ServiceJourneyChangeFlow.SinglePage)">
                 @string.Join(", ", service.LanguageCodes!
                     .Select(lc => ServiceDirectory.Shared.ReferenceData.Languages.CodeToName[lc])
                     .OrderBy(name => name))
@@ -118,7 +120,7 @@
             </summary-row>
 
             <summary-row key="Cost"
-                         action1="Change" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Service_Cost, ServiceJourneyChangeFlow.SinglePage)">
+                         action1="@changeLink" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Service_Cost, ServiceJourneyChangeFlow.SinglePage)">
                 @if (service.HasCost == true)
                 {
                     <text>Yes - @service.CostDescription</text>
@@ -134,7 +136,7 @@
         <summary-list class="govuk-!-margin-bottom-9">
 
             <summary-row key="How this service is provided" show-empty
-                         action1="Change" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.How_Use, ServiceJourneyChangeFlow.HowUse)">
+                         action1="@changeLink" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.How_Use, ServiceJourneyChangeFlow.HowUse)">
                 @string.Join(", ", service.HowUse.Select(hu => hu.ToDescription()))
             </summary-row>
             
@@ -142,7 +144,12 @@
             {
                 string? locationAction;
                 ServiceJourneyPage? locationPage, backPage = null;
-                if (locationsCount == 0)
+                if (Model.ReadOnly)
+                {
+                    locationAction = "";
+                    locationPage = null;
+                }
+                else if (locationsCount == 0)
                 {
                     locationAction = "Add";
                     locationPage = ServiceJourneyPage.Select_Location;
@@ -153,7 +160,7 @@
                     locationAction = "Add or remove";
                     locationPage = ServiceJourneyPage.Locations_For_Service;
                 }
-                var redoLocationUrl = Model.GetServicePageUrl(locationPage.Value, ServiceJourneyChangeFlow.Location, backPage);
+                var redoLocationUrl = Model.ReadOnly ? "" : Model.GetServicePageUrl(locationPage!.Value, ServiceJourneyChangeFlow.Location, backPage);
 
                 <summary-row key="Locations" show-empty action1="@locationAction" action1-href="@redoLocationUrl">
                     @switch (locationsCount)
@@ -193,12 +200,12 @@
                     <summary-row key="Location details" show-empty class="fh-pre-wrap">@location.Description.GetDisplay()</summary-row>
                     
                     <summary-row key="Days service is available" show-empty
-                                 action1="Change" action1-href="@(Model.GetServicePageUrl(ServiceJourneyPage.Times_At_Location, ServiceJourneyChangeFlow.SinglePage))&locationId=@location.Id&redo=@redo">
+                                 action1="@changeLink" action1-href="@(Model.GetServicePageUrl(ServiceJourneyPage.Times_At_Location, ServiceJourneyChangeFlow.SinglePage))&locationId=@location.Id&redo=@redo">
                         @location.Times.GetDayNames()
                     </summary-row>
                     @*todo: same data, different key to location-for-service page*@
                     <summary-row key="Extra availability details" show-empty class="fh-pre-wrap"
-                                 action1="Change" action1-href="@(Model.GetServicePageUrl(ServiceJourneyPage.Time_Details_At_Location, ServiceJourneyChangeFlow.SinglePage))&locationId=@location.Id&redo=@redo">@location.TimeDescription.GetDisplay()</summary-row>
+                                 action1="@changeLink" action1-href="@(Model.GetServicePageUrl(ServiceJourneyPage.Time_Details_At_Location, ServiceJourneyChangeFlow.SinglePage))&locationId=@location.Id&redo=@redo">@location.TimeDescription.GetDisplay()</summary-row>
 
                 </summary-list>
             }
@@ -218,18 +225,18 @@
             <h3 class="govuk-heading-m">@string.Join(", ", howUse.Select(h => h.ToDescription()))</h3>
             <summary-list class="govuk-!-margin-bottom-9">
                 <summary-row key="Days service is available" show-empty
-                             action1="Change" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Times, ServiceJourneyChangeFlow.SinglePage)">
+                             action1="@changeLink" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Times, ServiceJourneyChangeFlow.SinglePage)">
                     @service.Times.GetDayNames()
                 </summary-row>
 
                 <summary-row key="Extra availability details" show-empty class="fh-pre-wrap"
-                             action1="Change" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Time_Details, ServiceJourneyChangeFlow.SinglePage)">@service.TimeDescription.GetDisplay()</summary-row>
+                             action1="@changeLink" action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Time_Details, ServiceJourneyChangeFlow.SinglePage)">@service.TimeDescription.GetDisplay()</summary-row>
             </summary-list>
         }
 
         <h2 class="govuk-heading-m">Further information</h2>
         <summary-list class="govuk-!-margin-bottom-9">
-            <summary-row key="Contact details" show-empty action1="Change"
+            <summary-row key="Contact details" show-empty action1="@changeLink"
                          action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Contact, ServiceJourneyChangeFlow.SinglePage)">
                 @if (service.HasEmail)
                 {
@@ -250,11 +257,11 @@
 
             </summary-row>
 
-            <summary-row key="More details" show-empty class="fh-pre-wrap" action1="Change"
+            <summary-row key="More details" show-empty class="fh-pre-wrap" action1="@changeLink"
                          action1-href="@Model.GetServicePageUrl(ServiceJourneyPage.Service_More_Details, ServiceJourneyChangeFlow.SinglePage)">@service.MoreDetails.GetDisplay()</summary-row>
         </summary-list>
         
-        @if (Model.Flow == JourneyFlow.Edit && Model.UserRoleCanDeleteService)
+        @if (!Model.ReadOnly && Model.Flow == JourneyFlow.Edit && Model.UserRoleCanDeleteService)
         {
             <h2 class="govuk-heading-m">Delete this service</h2>
             <p class="govuk-!-margin-bottom-9">You can <a asp-page="/manage-services/delete-service" asp-route-serviceId="@Model.ServiceModel.Id">delete this service</a> if you want to permanently remove it from the directory.</p>

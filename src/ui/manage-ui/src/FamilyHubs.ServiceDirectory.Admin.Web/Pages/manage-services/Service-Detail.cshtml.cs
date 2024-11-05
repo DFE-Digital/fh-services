@@ -26,6 +26,11 @@ public class Service_DetailModel : ServicePageModel
 
     public bool UserRoleCanDeleteService => RoleGroups.AdminRole.Contains(FamilyHubsUser.Role);
 
+    public bool ReadOnly => ServiceModel?.EntryPoint ==
+                            ServiceDetailEntrance.FromViewOrganisationsPage
+                            &&
+                            RoleGroups.LaManagerOrDualRole.Contains(FamilyHubsUser.Role);
+
     public Service_DetailModel(
         IRequestDistributedCache connectionRequestCache,
         IServiceDirectoryClient serviceDirectoryClient,

@@ -41,9 +41,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
         }
 
         /*
-         * TODO: FHB-678 : 1. Show Services on Organisation Page
-         * TODO: FHB-678 : 2. Service Detail Page for each Service from TODO 2.
-         * TODO: FHB-678 : 3. Back Button on "Add an Organisation" screen is hardcoded to /Welcome
+         * TODO: FHB-678 : 1. Back Button on "Add an Organisation" screen is hardcoded to /Welcome
          */
         public async Task OnGet(int? pageNumber, string? sortBy, string? organisationName)
         {
