@@ -37,8 +37,7 @@
                     {
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
-                                @* TODO: FHB-678 - <a> tag goes to service detail page for service *@
-                                <a href=""><span class="govuk-visually-hidden">View</span>@service.Name</a>
+                                <a asp-page="/manage-services/start-edit-service" asp-route-serviceId="@service.Id"><span class="govuk-visually-hidden">View</span>@service.Name</a>
                             </td>
                         </tr>
                     }
