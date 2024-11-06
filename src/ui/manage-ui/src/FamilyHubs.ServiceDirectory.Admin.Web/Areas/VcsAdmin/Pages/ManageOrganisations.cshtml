@@ -1,4 +1,6 @@
 ﻿@page
+@using System.Web
+@using Microsoft.AspNetCore.Http.Extensions
 @model FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages.ManageOrganisationsModel
 @{
     const string pageTitle = "Manage voluntary community sector organisations";
@@ -12,7 +14,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">@pageTitle</h1>
-        <p class="govuk-body">View, edit and delete organisations within your local authority area or <a asp-page="AddOrganisation">add an organisation</a>.</p>
+        <p class="govuk-body">View, edit and delete organisations within your local authority area or <a asp-page-handler="AddOrganisation" asp-route-fromUrl="@HttpUtility.UrlDecode(HttpContext.Request.GetEncodedPathAndQuery())">add an organisation</a>.</p>
     </div>
 </div>
 

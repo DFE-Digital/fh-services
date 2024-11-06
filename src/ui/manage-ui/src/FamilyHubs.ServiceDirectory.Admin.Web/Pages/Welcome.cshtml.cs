@@ -94,6 +94,6 @@ public class WelcomeModel : HeaderPageModel
         await _cacheService.StoreUserFlow("AddOrganisation");
         await _cacheService.ResetString(CacheKeyNames.LaOrganisationId);
         await _cacheService.ResetString(CacheKeyNames.AddOrganisationName);
-        return RedirectToPage("/AddOrganisationWhichLocalAuthority", new { area = "vcsAdmin" });
+        return RedirectToPage("/AddOrganisationWhichLocalAuthority", new { fromUrl = "/Welcome", area = "vcsAdmin" });
     }
 }

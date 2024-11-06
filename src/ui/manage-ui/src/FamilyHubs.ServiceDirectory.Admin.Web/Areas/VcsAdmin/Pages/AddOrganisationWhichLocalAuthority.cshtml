@@ -1,4 +1,6 @@
 ﻿@page
+@using System.Web
+@using Microsoft.AspNetCore.Http.Extensions
 @model FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages.AddOrganisationWhichLocalAuthorityModel
 @{
     ViewData["Title"] = "Which Local Authority";
@@ -6,6 +8,7 @@
 }
 
 <input type="hidden" id="modelLaOrganisationName" value="@Model.LaOrganisationName" />
+<input type="hidden" asp-for="@Model.FromUrl" value="@HttpUtility.UrlDecode(HttpContext.Request.GetEncodedPathAndQuery())"/>
 
 <div class="govuk-form-group">
     <label class="govuk-label" for="LaOrganisationName" aria-label="Organisation Name">

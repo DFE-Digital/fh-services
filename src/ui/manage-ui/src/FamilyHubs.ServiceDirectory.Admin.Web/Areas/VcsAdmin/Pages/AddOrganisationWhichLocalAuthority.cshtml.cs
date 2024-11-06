@@ -11,6 +11,9 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
         [BindProperty]
         public required string LaOrganisationName { get; set; } = string.Empty;
 
+        [BindProperty]
+        public string? FromUrl { get; set; }
+
         public required List<string> LocalAuthorities { get; set; } = new List<string>();
 
         private readonly ICacheService _cacheService;
@@ -23,11 +26,20 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
             _cacheService = cacheService;
             _serviceDirectoryClient = serviceDirectoryClient;
             PageHeading = "Which local authority is the organisation in?";
-            BackButtonPath = "/Welcome";
         }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGet(string fromUrl)
         {
+            /*
+             * TODO: FHB-678 .. DfE Admin
+             *
+             * This button needs to go back to the Add User flow if the journey is adding a user.
+             * But if it's accessed from the manage service place, it needs to go back there (with all the query stuff)
+             * Can technically also enter this page from the /Welcome screen specifically as dfe admin, so it needs to go there too .....
+             */
+            // todo: validate fromurl
+            BackButtonPath = fromUrl;
+
             if (!HttpContext.IsUserDfeAdmin())
             {
                 var userOrganisationId = HttpContext.GetUserOrganisationId();
@@ -62,7 +74,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
                 var laOrganisationId = laOrganisations.Single(l => l.Name == LaOrganisationName).Id;
                 await _cacheService.StoreString(CacheKeyNames.LaOrganisationId, laOrganisationId.ToString());
 
-                return RedirectToPage("/AddOrganisation");
+                return RedirectToPage("/AddOrganisation", new { FromUrl });
             }
 
             HasValidationError = true;
