@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using FamilyHubs.ServiceDirectory.Shared.Models;
 using NSubstitute;
 using Xunit;
 
@@ -37,6 +38,20 @@ public class ViewOrganisationTests
     [Fact]
     public async Task OnGet_ReturnsPage()
     {
+        _mockServiceDirectoryClient.GetServiceSummaries(Arg.Any<long>(), Arg.Any<string>(), Arg.Any<int>(), Arg.Any<int>())
+            .Returns(new PaginatedList<ServiceNameDto>
+            {
+                Items = [new ServiceNameDto
+                    {
+                        Id = 1,
+                        Name = "Service",
+                    }
+                ],
+                PageNumber = 1,
+                TotalCount = 1,
+                TotalPages = 1
+            });
+
         //  Arrange
         var mockHttpContext = GetHttpContext(RoleTypes.DfeAdmin, -1);
         var sut = new ViewOrganisationModel(_mockServiceDirectoryClient, _mockCacheService, _mockLogger)

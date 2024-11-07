@@ -41,7 +41,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
             };
 
             //  Act
-            await sut.OnGet(null, null);
+            await sut.OnGet(null, null, null);
 
             //  Assert
             Assert.Equal(3, sut.PaginatedOrganisations.Items.Count);
@@ -63,7 +63,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
             };
 
             //  Act
-            await sut.OnGet(null, null);
+            await sut.OnGet(null, null, null);
 
             //  Assert
             Assert.Equal(3, sut.PaginatedOrganisations.Items.Count);
