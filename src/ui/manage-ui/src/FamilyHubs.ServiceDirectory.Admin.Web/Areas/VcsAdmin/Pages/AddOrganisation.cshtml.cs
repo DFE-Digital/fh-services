@@ -37,7 +37,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
                 BackButtonPath = $"/AccountAdmin/WhichVcsOrganisation/{cacheId}";
             }else if (isLaManager)
             {
-                BackButtonPath = "/Welcome";
+                BackButtonPath = "/VcsAdmin/ManageOrganisations";
             } 
             else
             {
