@@ -35,6 +35,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests
         {
             var organisation = fixture.Create<OrganisationDto>();
             organisation.Id = id;
+            organisation.Name = "OrgName " + id ;
             organisation.AssociatedOrganisationId = parentId;
             organisation.OrganisationType = organisationType;
             return organisation;

@@ -40,7 +40,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
             Pagination = new DontShowPagination();
         }
 
-        public async Task OnGet(int? pageNumber, string? sortBy, string? searchQueryOrganisationName)
+        public async Task OnGet(int? pageNumber, string? sortBy, string? organisationName)
         {
             IsDfeAdmin = HttpContext.IsUserDfeAdmin();
 
@@ -50,7 +50,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
             if (!string.IsNullOrEmpty(sortBy))
                 SortBy = sortBy;
 
-            SearchQueryOrganisationName = searchQueryOrganisationName;
+            SearchQueryOrganisationName = organisationName;
 
             await SetPaginatedList();
             await CacheParametersToBackButton();

@@ -7,6 +7,7 @@ using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
@@ -67,6 +68,30 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.VcsAdmin
 
             //  Assert
             Assert.Equal(3, sut.PaginatedOrganisations.Items.Count);
+        }
+
+        [Fact]
+        public async Task OnGet_SearchFilterOrganisationName_Returns_MatchingResults()
+        {
+            // Arrange
+            HttpContext httpContext = GetHttpContext(RoleTypes.LaManager, 1);
+            List<OrganisationDto> organisations = GetTestOrganisations();
+
+            _mockServiceDirectoryClient.GetOrganisationByAssociatedOrganisation(1)
+                .Returns(Task.FromResult(organisations));
+
+            ManageOrganisationsModel pageModel =
+                new ManageOrganisationsModel(_mockServiceDirectoryClient, _mockCacheService)
+                {
+                    PageContext = { HttpContext = httpContext }
+                };
+
+            // Act
+            // Organisations are named "OrgName X" where X is the ID of the Org.
+            await pageModel.OnGet(null, null, "OrgName 3");
+
+            // Assert
+            pageModel.PaginatedOrganisations.Items.Count.Should().Be(1);
         }
 
         private static HttpContext GetHttpContext(string role, long organisationId)

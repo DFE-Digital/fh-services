@@ -67,6 +67,33 @@ public class ViewOrganisationTests
         Assert.IsType<PageResult>(response);
     }
 
+    [Fact]
+    public async Task OnGet_WithNoServicesAttachedToAnOrganisation_ReturnsPage()
+    {
+        _mockServiceDirectoryClient.GetServiceSummaries(Arg.Any<long>(), Arg.Any<string>(), Arg.Any<int>(), Arg.Any<int>())
+            .Returns(new PaginatedList<ServiceNameDto>
+            {
+                Items = [],
+                PageNumber = 1,
+                TotalCount = 0,
+                TotalPages = 1
+            });
+
+        //  Arrange
+        var mockHttpContext = GetHttpContext(RoleTypes.DfeAdmin, -1);
+        var sut = new ViewOrganisationModel(_mockServiceDirectoryClient, _mockCacheService, _mockLogger)
+        {
+            PageContext = { HttpContext = mockHttpContext },
+            OrganisationId = OrganisationId.ToString()
+        };
+
+        //  Act
+        var response = await sut.OnGet();
+
+        //  Assert
+        Assert.IsType<PageResult>(response);
+    }
+
     [Theory]
     [InlineData("5", "Organisation 5 not found")]
     [InlineData("1", "Organisation 1 is not a VCS organisation")]
