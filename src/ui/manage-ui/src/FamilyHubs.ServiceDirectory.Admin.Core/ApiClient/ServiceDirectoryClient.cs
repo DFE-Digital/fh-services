@@ -253,7 +253,6 @@ public class ServiceDirectoryClient : ApiService, IServiceDirectoryClient
         return await Read<ServiceDto>(response, cancellationToken);
     }
 
-    // TODO: FHB-678 : No pagination for org details page, should probs make another version of this that just grabs everything for PR
     public async Task<PaginatedList<ServiceNameDto>> GetServiceSummaries(
         long? organisationId = null,
         string? serviceNameSearch = null,

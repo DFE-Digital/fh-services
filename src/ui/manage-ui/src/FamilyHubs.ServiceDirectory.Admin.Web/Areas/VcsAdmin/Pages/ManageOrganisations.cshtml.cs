@@ -40,9 +40,6 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
             Pagination = new DontShowPagination();
         }
 
-        /*
-         * TODO: FHB-678 : 1. Back Button on "Add an Organisation" screen is hardcoded to /Welcome
-         */
         public async Task OnGet(int? pageNumber, string? sortBy, string? organisationName)
         {
             IsDfeAdmin = HttpContext.IsUserDfeAdmin();

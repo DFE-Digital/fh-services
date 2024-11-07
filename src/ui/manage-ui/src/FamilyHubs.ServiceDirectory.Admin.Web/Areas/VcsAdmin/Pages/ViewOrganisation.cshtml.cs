@@ -1,5 +1,6 @@
 using FamilyHubs.ServiceDirectory.Admin.Core;
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
+using FamilyHubs.ServiceDirectory.Admin.Core.Models.OrganisationDetail;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
 using FamilyHubs.ServiceDirectory.Admin.Web.Pages.Shared;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
@@ -7,13 +8,6 @@ using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages;
-
-// TODO: FHB-678 : Move into own place
-public class Service()
-{
-    public long Id { get; set; }
-    public string Name { get; set; } = null!;
-}
 
 public class ViewOrganisationModel : HeaderPageModel
 {
@@ -79,7 +73,6 @@ public class ViewOrganisationModel : HeaderPageModel
         return outcome.FailureResult!;
     }
 
-    // TODO: FHB-678 - Why is org id a string ????
     private async Task<IEnumerable<Service>> GetServicesBelongingToOrganisation() =>
         (await _serviceDirectoryClient.GetServiceSummaries(long.Parse(OrganisationId), null, 1, int.MaxValue))
         .Items
