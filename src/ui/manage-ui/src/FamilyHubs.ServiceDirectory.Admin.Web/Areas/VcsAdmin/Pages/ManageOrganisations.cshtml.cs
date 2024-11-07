@@ -30,7 +30,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
 
         [BindProperty] public string SortBy { get; set; } = string.Empty;
 
-        [BindProperty] public string? OrganisationName { get; set; }
+        [BindProperty] public string? SearchQueryOrganisationName { get; set; }
 
         public ManageOrganisationsModel(IServiceDirectoryClient serviceDirectoryClient, ICacheService cacheService)
         {
@@ -40,7 +40,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
             Pagination = new DontShowPagination();
         }
 
-        public async Task OnGet(int? pageNumber, string? sortBy, string? organisationName)
+        public async Task OnGet(int? pageNumber, string? sortBy, string? searchQueryOrganisationName)
         {
             IsDfeAdmin = HttpContext.IsUserDfeAdmin();
 
@@ -50,7 +50,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
             if (!string.IsNullOrEmpty(sortBy))
                 SortBy = sortBy;
 
-            OrganisationName = organisationName;
+            SearchQueryOrganisationName = searchQueryOrganisationName;
 
             await SetPaginatedList();
             await CacheParametersToBackButton();
@@ -106,7 +106,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
 
             IEnumerable<OrganisationModel> vcsOrganisations = organisations
                 .Where(x => x.OrganisationType == Shared.Enums.OrganisationType.VCFS)
-                .Where(x => string.IsNullOrWhiteSpace(OrganisationName) || x.Name.Contains(OrganisationName, StringComparison.InvariantCultureIgnoreCase))
+                .Where(x => string.IsNullOrWhiteSpace(SearchQueryOrganisationName) || x.Name.Contains(SearchQueryOrganisationName, StringComparison.InvariantCultureIgnoreCase))
                 .Select(org => new OrganisationModel
                 {
                     OrganisationId = org.Id,
@@ -156,9 +156,9 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
                 { "sortBy", SortBy }
             };
 
-            if (!string.IsNullOrWhiteSpace(OrganisationName))
+            if (!string.IsNullOrWhiteSpace(SearchQueryOrganisationName))
             {
-                queryParameters.Add("organisationName", OrganisationName);
+                queryParameters.Add("organisationName", SearchQueryOrganisationName);
             }
 
             return queryParameters;
