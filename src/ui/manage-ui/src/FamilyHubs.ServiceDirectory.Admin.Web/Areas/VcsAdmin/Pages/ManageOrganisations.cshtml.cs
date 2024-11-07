@@ -25,8 +25,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
         public PaginatedList<OrganisationModel> PaginatedOrganisations { get; set; }
 
         [BindProperty]
-        public int PageNum { get; set; } =
-            1; // Do not change variable name, this is what is posted by the pagination partial
+        public int PageNum { get; set; } = 1; // Do not change variable name, this is what is posted by the pagination partial
 
         [BindProperty] public string SortBy { get; set; } = string.Empty;
 
