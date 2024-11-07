@@ -24,27 +24,29 @@
                 @await Html.PartialAsync("_checkDetailRow", new CheckDetailsRowModel("Type", Model.OrganisationType, "OrganisationType"))
             </dl>
 
-            @if (Model.Services.Any())
-            {
-                <table class="govuk-table govuk-!-margin-bottom-9" data-module="moj-sortable-table">
-                    <caption class="govuk-table__caption govuk-table__caption--m">Services</caption>
-                    <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header" aria-sort="none" style="width: 100%">Service</th>
-                    </tr>
-                    </thead>
+            <table class="govuk-table govuk-!-margin-bottom-9" data-module="moj-sortable-table">
+                <caption class="govuk-table__caption govuk-table__caption--m">Services</caption>
+                <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header" aria-sort="none" style="width: 100%">Service</th>
+                </tr>
+                </thead>
+                @if (Model.Services.Any())
+                {
                     <tbody class="govuk-table__body">
                     @foreach (Service service in Model.Services)
                     {
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
-                                <a asp-page="/manage-services/start-edit-service" asp-route-serviceId="@service.Id" asp-route-entryPoint="@ServiceDetailEntrance.FromViewOrganisationsPage"><span class="govuk-visually-hidden">View</span>@service.Name</a>
+                                <a asp-page="/manage-services/start-edit-service" asp-route-serviceId="@service.Id" asp-route-entryPoint="@ServiceDetailEntrance.FromViewOrganisationsPage">
+                                    <span class="govuk-visually-hidden">View</span>@service.Name
+                                </a>
                             </td>
                         </tr>
                     }
                     </tbody>
-                </table>
-            }
+                }
+            </table>
 
             @if (Model.CanSave)
             {
