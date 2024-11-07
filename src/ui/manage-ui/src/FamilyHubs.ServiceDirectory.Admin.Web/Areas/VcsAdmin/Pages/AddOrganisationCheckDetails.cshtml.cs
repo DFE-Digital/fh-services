@@ -30,14 +30,13 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
         public AddOrganisationCheckDetailsModel(ICacheService cacheService, IServiceDirectoryClient serviceDirectoryClient)
         {
             _cacheService = cacheService;
-            _serviceDirectoryClient = serviceDirectoryClient;
+            _serviceDirectoryClient = serviceDirectoryClient;   
         }
 
-        public async Task OnGet(string fromUrl)
+        public async Task OnGet()
         {
-            string pathWithCacheId = string.IsNullOrEmpty(CacheId) ? "" : $"&cacheId={CacheId}";
-            //BackButtonPath = "/VcsAdmin/AddOrganisation?changeName=true" + cashIdPath;
-            BackButtonPath = fromUrl + pathWithCacheId;
+            var cashIdPath = string.IsNullOrEmpty(CacheId) ? "" : $"&cacheId={CacheId}";
+            BackButtonPath = "/VcsAdmin/AddOrganisation?changeName=true" + cashIdPath;
 
             OrganisationName = await _cacheService.RetrieveString(CacheKeyNames.AddOrganisationName);
             await SetLocalAuthority();

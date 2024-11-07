@@ -59,15 +59,6 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
             await CacheParametersToBackButton();
         }
 
-        public async Task<IActionResult> OnGetAddOrganisation(string fromUrl)
-        {
-            await _cacheService.StoreUserFlow("AddOrganisation");
-            await _cacheService.ResetString(CacheKeyNames.LaOrganisationId);
-            await _cacheService.ResetString(CacheKeyNames.AddOrganisationName);
-
-            return RedirectToPage(HttpContext.IsUserDfeAdmin() ? "AddOrganisationWhichLocalAuthority" : "AddOrganisation", new { fromUrl, area = "vcsAdmin" });
-        }
-
         public IActionResult OnPost()
         {
             var query = CreateQueryParameters();

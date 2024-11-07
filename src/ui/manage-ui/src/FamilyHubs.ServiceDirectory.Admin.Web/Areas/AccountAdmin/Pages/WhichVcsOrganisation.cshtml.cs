@@ -56,7 +56,7 @@ public class WhichVcsOrganisation : AccountAdminViewModel
         return Page();
     }
 
-    public async Task<IActionResult> OnGetAddOrganisation(string fromUrl)
+    public async Task<IActionResult> OnGetAddOrganisation()
     {
         var permissionModel = await CacheService.GetPermissionModel(CacheId);
         var laOrganisations = await _serviceDirectoryClient.GetCachedLaOrganisations();   
@@ -65,6 +65,6 @@ public class WhichVcsOrganisation : AccountAdminViewModel
         await CacheService.StoreString(CacheKeyNames.AdminAreaCode, laOrganisation.AdminAreaCode);
         await CacheService.StoreString(CacheKeyNames.LaOrganisationId, laOrganisation.Id.ToString());
 
-        return RedirectToPage("/AddOrganisation", new { fromUrl, area = "VcsAdmin", cacheId = CacheId });
+        return RedirectToPage("/AddOrganisation", new { area = "VcsAdmin", cacheId = CacheId });
     }
 }
