@@ -361,16 +361,8 @@ public class ServicePageModel<TInput> : HeaderPageModel
             return "/Welcome";
         }
 
-        return ServiceModel?.EntryPoint switch
-        {
-            ServiceDetailEntrance.FromManageServicesPage =>
-                //todo: if the user is a dfe admin, they could have initially come from the welcome or services list pages, so ideally we should send them back to where they came from
-                $"/manage-services{(serviceType != null ? $"?serviceType={serviceType}" : "")}",
-            ServiceDetailEntrance.FromViewOrganisationsPage =>
-                $"/VcsAdmin/ViewOrganisation/{ServiceModel.OrganisationId}",
-            _ => throw new ServiceDetailException(
-                $"Cannot generate back button URL as the entry point to the page is unknown: {ServiceModel?.EntryPoint}")
-        };
+        //todo: if the user is a dfe admin, they could have initially come from the welcome or services list pages, so ideally we should send them back to where they came from
+        return $"/manage-services{(serviceType != null ? $"?serviceType={serviceType}" : "")}";
     }
 
     //todo: naming?
