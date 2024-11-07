@@ -1,7 +1,7 @@
 ﻿@page "{OrganisationId}"
 @using FamilyHubs.ServiceDirectory.Admin.Core.Models;
-@using FamilyHubs.ServiceDirectory.Admin.Core.Models.OrganisationDetail
 @using FamilyHubs.ServiceDirectory.Admin.Core.Models.ServiceJourney
+@using FamilyHubs.ServiceDirectory.Shared.Dto
 @model FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages.ViewOrganisationModel
 @{
     ViewData["Title"] = Model.OrganisationName;
@@ -35,7 +35,7 @@
                 @if (Model.Services.Any())
                 {
                     <tbody class="govuk-table__body">
-                    @foreach (Service service in Model.Services)
+                    @foreach (ServiceNameDto service in Model.Services)
                     {
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">

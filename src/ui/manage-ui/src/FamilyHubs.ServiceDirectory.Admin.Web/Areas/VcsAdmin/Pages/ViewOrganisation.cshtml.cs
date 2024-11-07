@@ -1,6 +1,5 @@
 using FamilyHubs.ServiceDirectory.Admin.Core;
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
-using FamilyHubs.ServiceDirectory.Admin.Core.Models.OrganisationDetail;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
 using FamilyHubs.ServiceDirectory.Admin.Web.Pages.Shared;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
@@ -29,7 +28,7 @@ public class ViewOrganisationModel : HeaderPageModel
 
     public string BackPath { get; set; } = "/VcsAdmin/ManageOrganisations";
 
-    public IEnumerable<Service> Services { get; set; } = [];
+    public IEnumerable<ServiceNameDto> Services { get; set; } = [];
 
     public bool CanSave { get; set; } = false;
 
@@ -73,14 +72,12 @@ public class ViewOrganisationModel : HeaderPageModel
         return outcome.FailureResult!;
     }
 
-    private async Task<IEnumerable<Service>> GetServicesBelongingToOrganisation() =>
-        (await _serviceDirectoryClient.GetServiceSummaries(long.Parse(OrganisationId), null, 1, int.MaxValue))
-        .Items
-        .Select(x => new Service
-        {
-            Id = x.Id,
-            Name = x.Name
-        });
+    private async Task<IEnumerable<ServiceNameDto>> GetServicesBelongingToOrganisation()
+    {
+        var serviceSummaries = await _serviceDirectoryClient.GetServiceSummaries(long.Parse(OrganisationId), null, 1, int.MaxValue);
+
+        return serviceSummaries.Items;
+    }
 
     private async Task<Outcome<OrganisationDetailsDto, IActionResult>> SetOrganisationDetails(bool? updated = false)
     {
