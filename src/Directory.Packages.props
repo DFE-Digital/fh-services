@@ -145,8 +145,8 @@
     <PackageVersion Include="System.Linq" Version="4.3.0" />
     <PackageVersion Include="TestStack.BDDfy" Version="4.3.2" />
     <PackageVersion Include="TestStack.BDDfy.Xunit" Version="1.2.0" />
-    <PackageVersion Include="xunit" Version="2.9.0" />
-    <PackageVersion Include="xunit.analyzers" Version="1.16.0">
+    <PackageVersion Include="xunit" Version="2.9.2" />
+    <PackageVersion Include="xunit.analyzers" Version="1.17.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
