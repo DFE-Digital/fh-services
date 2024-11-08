@@ -1,9 +1,10 @@
 # Web Browser Performance Testing with K6
 
 Here we have written performance tests for the three services in Family Hubs: Find, Connect, Manage.
+
 # Prerequisites
 
-- Install k6 locally
+- Install k6 locally from https://grafana.com/docs/k6/latest/set-up/install-k6/
 - Run data seed scripts
 - Navigate to folder of service under test (i.e. find-tests, connect-tests, or manage-tests)
 NOTE: Playwright is not required as we use K6 with playwright under the hood.
