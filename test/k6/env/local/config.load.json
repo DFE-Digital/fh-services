@@ -5,7 +5,7 @@
   "scenarios": {
     "ui": {
       "executor": "per-vu-iterations",
-      "vus": 1,
+      "vus": 400,
       
       "iterations": 1,
       "options": {
