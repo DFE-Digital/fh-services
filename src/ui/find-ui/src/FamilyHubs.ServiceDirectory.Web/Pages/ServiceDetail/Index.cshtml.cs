@@ -17,6 +17,11 @@ public class Index : PageModel
 
     public string BackUrl { get; set; } = null!;
     public ServiceDetailModel Service { get; set; } = null!;
+    public bool HasContactDetails => 
+        !string.IsNullOrEmpty(Service.Contact.Email) || 
+        !string.IsNullOrEmpty(Service.Contact.Phone) ||
+        !string.IsNullOrEmpty(Service.Contact.TextMessage) || 
+        !string.IsNullOrEmpty(Service.Contact.Website);
 
     public Index(IServiceDirectoryClient serviceDirectoryClient)
     {

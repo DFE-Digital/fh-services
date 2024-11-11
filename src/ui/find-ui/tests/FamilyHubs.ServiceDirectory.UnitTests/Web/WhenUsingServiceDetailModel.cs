@@ -72,6 +72,19 @@ public class WhenUsingServiceDetailModel
         
         Assert.Equal(expected, _serviceDetailModel.Service);
     }
+    
+    [Fact]
+    public async Task ShouldHaveHas_ContactDetailsTrue_IfAnyContactDetailsArePresent()
+    {
+        _serviceDirectoryClient.GetServiceById(Arg.Any<long>(), Arg.Any<CancellationToken>())
+            .Returns(TestData.ExampleServices.First());
+
+        // Act
+        await _serviceDetailModel.OnGetAsync(1, "/ServiceFilter");
+
+        // Assert
+        Assert.True(_serviceDetailModel.HasContactDetails);
+    }
 
     [Fact]
     public async Task FailsOnInvalidReturnUrl()

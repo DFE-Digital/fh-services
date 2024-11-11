@@ -173,52 +173,55 @@
             <p class="govuk-body govuk-!-margin-bottom-9">@Model.Service.MoreDetails</p>
         }
 
-        <h2 class="govuk-heading-m">Contact details</h2>
-        <div class="govuk-summary-list govuk-!-margin-bottom-9">
-            @if (!string.IsNullOrWhiteSpace(Model.Service.Contact.Email))
-            {
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Email
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        <a href="mailto:@Model.Service.Contact.Email">@Model.Service.Contact.Email</a>
-                    </dd>
-                </div>
-            }
-            @if (!string.IsNullOrWhiteSpace(Model.Service.Contact.Phone))
-            {
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Phone
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        <a href="tel:@Model.Service.Contact.Phone">@Model.Service.Contact.Phone</a>
-                    </dd>
-                </div>
-            }
-            @if (!string.IsNullOrWhiteSpace(Model.Service.Contact.Website))
-            {
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Website
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        <a href="@Model.Service.Contact.Website">@Model.Service.Contact.Website</a>
-                    </dd>
-                </div>
-            }
-            @if (!string.IsNullOrWhiteSpace(Model.Service.Contact.TextMessage))
-            {
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Text message
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        <a href="tel:@Model.Service.Contact.TextMessage">@Model.Service.Contact.TextMessage</a>
-                    </dd>
-                </div>
-            }
-        </div>
+        @if (Model.HasContactDetails)
+        {
+            <h2 class="govuk-heading-m">Contact details</h2>
+            <div class="govuk-summary-list govuk-!-margin-bottom-9">
+                @if (!string.IsNullOrWhiteSpace(Model.Service.Contact.Email))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Email
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a href="mailto:@Model.Service.Contact.Email">@Model.Service.Contact.Email</a>
+                        </dd>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Service.Contact.Phone))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Phone
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a href="tel:@Model.Service.Contact.Phone">@Model.Service.Contact.Phone</a>
+                        </dd>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Service.Contact.Website))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Website
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a href="@Model.Service.Contact.Website">@Model.Service.Contact.Website</a>
+                        </dd>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Service.Contact.TextMessage))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Text message
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a href="tel:@Model.Service.Contact.TextMessage">@Model.Service.Contact.TextMessage</a>
+                        </dd>
+                    </div>
+                }
+            </div>
+        }
     </div>
 </div>
