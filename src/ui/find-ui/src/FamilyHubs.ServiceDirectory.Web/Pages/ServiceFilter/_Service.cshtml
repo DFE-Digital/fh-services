@@ -16,10 +16,7 @@
         <partial name="_SummaryListRows" model='("Category", Model.Categories)' />
         <partial name="_SummaryListRow" model='("Age range", Model.AgeRange)' />
 
-        @if (Model.Where.Any())
-        {
-            <partial name="_SummaryListRows" model='("Where", Model.Where)' />
-        }
+        <partial name="_SummaryListRows" model='("Where", Model.Where)' />
 
         <partial name="_SummaryListRows" model='("Delivery method", Model.DeliveryMethods)' />
 
