@@ -17,83 +17,104 @@
         <h2 class="govuk-heading-m">Service details</h2>
 
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Support it offers
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    <ul class="govuk-list">
-                        @foreach (string supportOffered in Model.Service.Categories)
-                        {
-                            <li>@supportOffered</li>
-                        }
-                    </ul>
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Does support relate to children or young people?
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.Service.Eligibility
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Languages
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    <ul class="govuk-list">
-                        @foreach (string language in Model.Service.Languages)
-                        {
-                            <li>@language</li>
-                        }
-                    </ul>
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Cost
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.Service.Cost
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    How this service is provided
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.Service.AttendingTypes
-                </dd>
-            </div>
-        </dl>
-
-        @for (int i = 0; i < Model.Service.Locations.Count; i++)
-        {
-            Location location = Model.Service.Locations[i];
-            <h2 class="govuk-heading-m">Location @(i + 1)</h2>
-            <dl class="govuk-summary-list govuk-!-margin-bottom-9" id="replace-commas">
+           @if (Model.Service.Categories.Any())
+           {
+               <div class="govuk-summary-list__row">
+                   <dt class="govuk-summary-list__key">
+                       Support it offers
+                   </dt>
+                   <dd class="govuk-summary-list__value">
+                       <ul class="govuk-list">
+                           @foreach (var supportOffered in Model.Service.Categories)
+                           {
+                               <li>@supportOffered</li>
+                           }
+                       </ul>
+                   </dd>
+               </div>
+           }
+            @if (!string.IsNullOrEmpty(Model.Service.Eligibility))
+            {
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        Address
+                        Does support relate to children or young people?
                     </dt>
                     <dd class="govuk-summary-list__value">
-                    <ul class="govuk-list">
-                        @foreach (string addressSegment in location.Address)
-                        {
-                            <li>@addressSegment</li>
-                        }
-                    </ul>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Family hub
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @location.IsFamilyHub
+                        @Model.Service.Eligibility
                     </dd>
                 </div>
+            }
+            @if (Model.Service.Languages.Any())
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Languages
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <ul class="govuk-list">
+                            @foreach (var language in Model.Service.Languages)
+                            {
+                                <li>@language</li>
+                            }
+                        </ul>
+                    </dd>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.Service.Cost))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Cost
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.Service.Cost
+                    </dd>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.Service.AttendingTypes))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        How this service is provided
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.Service.AttendingTypes
+                    </dd>
+                </div>
+            }
+        </dl>
+
+        @for (var i = 0; i < Model.Service.Locations.Count; i++)
+        {
+            var location = Model.Service.Locations[i];
+            <h2 class="govuk-heading-m">Location @(i + 1)</h2>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9" id="replace-commas">
+                @if (location.Address.Any())
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Address
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                        <ul class="govuk-list">
+                            @foreach (var addressSegment in location.Address)
+                            {
+                                <li>@addressSegment</li>
+                            }
+                        </ul>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(location.IsFamilyHub))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Family hub
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @location.IsFamilyHub
+                        </dd>
+                    </div>
+                }
                 @if (location.Accessibilities.Any())
                 {
                     <div class="govuk-summary-list__row">
@@ -101,7 +122,7 @@
                             Accessibility details
                         </dt>
                         <ul class="govuk-list">
-                            @foreach (string accessibility in location.Accessibilities)
+                            @foreach (var accessibility in location.Accessibilities)
                             {
                                 <li>@accessibility</li>
                             }
@@ -148,22 +169,28 @@
         {
             <h2 class="govuk-heading-m">@Model.Service.OnlineTelephone</h2>
             <dl class="govuk-summary-list govuk-!-margin-bottom-9" id="replace-commas">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Days service is available
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.Service.Schedule.DaysAvailable
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Extra availability details
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @Model.Service.Schedule.ExtraAvailabilityDetails
-                    </dd>
-                </div>
+                @if (!string.IsNullOrWhiteSpace(Model.Service.Schedule.DaysAvailable))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Days service is available
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.Service.Schedule.DaysAvailable
+                        </dd>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Service.Schedule.ExtraAvailabilityDetails))
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Extra availability details
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Model.Service.Schedule.ExtraAvailabilityDetails
+                        </dd>
+                    </div>
+                }
             </dl>
         }
 
