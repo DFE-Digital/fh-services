@@ -5,16 +5,18 @@ export async function searchResultsTest(data) {
 
     try {
         await page.goto(`${data.SETTINGS.baseUrl}`);
-        const startButton = await page.locator('//*[@id="main-content"]/div/div/a');
+        const startButton = await page.locator('[data-testid="start-button"]');
 
         await Promise.all([startButton.click()]);
         await page.locator('[name="postcode"]').type('E1 2EN');
 
-        const submitButton = await page.locator('//*[@id="main-content"]/div/div/form/button');
+        const submitButton = await page.locator('[data-testid="search-button"]');
 
         await Promise.all([submitButton.click()]);
 
         const title = await page.locator('title').textContent();
+        
+        TODO: Update when data is seeded        
         await check(title, {
             title: title === 'Services, groups and activities in this area (page 1 of 45) - Find support for your family - GOV.UK',
         });
@@ -30,12 +32,12 @@ export async function filterSearchResultsTest(data) {
 
     try {
         await page.goto(`${data.SETTINGS.baseUrl}`);
-        const startButton = await page.locator('//*[@id="main-content"]/div/div/a');
+        const startButton = await page.locator('[data-testid="start-button"]');
 
         await Promise.all([startButton.click()]);
         await page.locator('[name="postcode"]').type('E1 2EN');
 
-        const submitButton = await page.locator('//*[@id="main-content"]/div/div/form/button');
+        const submitButton = await page.locator('[data-testid="search-button"]');
 
         await Promise.all([submitButton.click()]);
 
@@ -58,12 +60,12 @@ export async function serviceDetailsTest(data) {
 
     try {
         await page.goto(`${data.SETTINGS.baseUrl}`);
-        const startButton = await page.locator('//*[@id="main-content"]/div/div/a');
+        const startButton = await page.locator('[data-testid="start-button"]');
 
         await Promise.all([startButton.click()]);
         await page.locator('[name="postcode"]').type('E1 2EN');
 
-        const submitButton = await page.locator('//*[@id="main-content"]/div/div/form/button');
+        const submitButton = await page.locator('[data-testid="search-button"]');
 
         await Promise.all([submitButton.click()]);
 
