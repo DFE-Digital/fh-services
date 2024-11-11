@@ -41,11 +41,11 @@ export async function filterSearchResultsTest(data) {
 
         const activitiesFilter = await page.locator('[id="activities-10"]');
         const freeFilter = await page.locator('[id="cost-free"]');
-        const tenMileFilter = await page.locator('[id="search_within-10]');
+        const tenMileFilter = await page.locator('[id="search_within-1]');
 
         await Promise.all([activitiesFilter.click()], [freeFilter.click()], [tenMileFilter.click()]);
 
-
+        sleep(1);
 
     } finally {
         await page.close();
@@ -67,7 +67,7 @@ export async function serviceDetailsTest(data) {
 
         await Promise.all([submitButton.click()]);
 
-        const firstSearchResult = await page.locator('//*[@id="results"]/div[1]/div/div/h3/a');
+        const firstSearchResult = await page.locator('//*[@id="results"]/div[1]/div');
 
         await Promise.all([firstSearchResult.click()]);
 
@@ -79,9 +79,14 @@ export async function serviceDetailsTest(data) {
 
 export async function verifyStatusCodeTest(data) {
     const page = await browser.newPage();
-    const res = await page.goto(`${data.SETTINGS.baseUrl}/ServiceFilter?postcode=E1%202EN&adminarea=E09000030&latitude=51.517612&longitude=-0.056838&frompostcodesearch=True')`);
+    try {
+        const res = await page.goto(`${data.SETTINGS.baseUrl}/ServiceFilter?postcode=E1%202EN&adminarea=E09000030&latitude=51.517612&longitude=-0.056838&frompostcodesearch=True')`);
 
-    check(res, {
-        'status is 200': (r) => r.status === 200,
-    });
+        check(res, {
+            'status is 200': (r) => r.status === 200,
+        });
+    } finally {
+        await page.close();
+    }
+    sleep(1);
 }
