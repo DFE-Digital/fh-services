@@ -47,7 +47,9 @@ public static class ServiceMapper
 
     private static string? GetAgeRange(EligibilityDto? eligibility)
     {
-        return eligibility == null ? null : $"{AgeDisplayExtensions.AgeToString(eligibility.MinimumAge)} to {AgeDisplayExtensions.AgeToString(eligibility.MaximumAge)}";
+        return eligibility == null 
+            ? null 
+            : $"{AgeDisplayExtensions.AgeToString(eligibility.MinimumAge)} to {AgeDisplayExtensions.AgeToString(eligibility.MaximumAge)} years old";
     }
 
     private static IEnumerable<string> GetCategories(ServiceDto service)
