@@ -38,7 +38,7 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Install & Configure Spatialite
-        if: ${{ inputs.working_directory == 'service/service-directory-api' }}
+        if: ${{ inputs.working_directory == 'service/service-directory-api' || inputs.working_directory == 'service/referral-api' }}
         shell: bash
         run: |
           sudo apt-get install libspatialite-dev libsqlite3-mod-spatialite -y
