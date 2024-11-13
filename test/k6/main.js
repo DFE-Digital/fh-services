@@ -16,10 +16,9 @@ if  (__ENV.OPTIONS_SET) {
 
 // #region LOAD TESTS
 // Import tests
-import { searchResultsTest } from './tests/find-tests.js';
-import { verifyStatusCodeTest } from './tests/find-tests.js';
+import {searchResultsTest, serviceDetailsTest, verifyStatusCodeTest, filterSearchResultsTest } from './tests/find-tests.js';
 
-let TESTS = [ searchResultsTest, verifyStatusCodeTest ];
+let TESTS = [ searchResultsTest, verifyStatusCodeTest, filterSearchResultsTest, serviceDetailsTest];
 // #endregion
 
 // #region k6 OPTIONS
@@ -53,9 +52,3 @@ export function handleSummary(data) {
         "testResults.json": JSON.stringify(data)
     };
 }
-
-// TODO: data teardown step
-//export function teardown(data) {
-    // teardown code
-//}
-

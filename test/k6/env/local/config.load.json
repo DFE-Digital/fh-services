@@ -5,9 +5,9 @@
   "scenarios": {
     "ui": {
       "executor": "per-vu-iterations",
-      "vus": 1,
+      "vus": 400,
       
-      "iterations": 400,
+      "iterations": 1,
       "options": {
         "browser": {
           "type": "chromium"
@@ -16,8 +16,8 @@
     }
   },
   "thresholds": {
-    "http_req_failed": ["rate<0.01"],
-    "http_req_duration": ["p(95)<200"],
+    "http_req_failed": ["rate < 0.01"],
+    "http_req_duration": ["p(95) < 200"],
 
     "browser_web_vital_lcp": ["p(90) < 1000"],
     "browser_web_vital_inp": ["p(90) < 80"],

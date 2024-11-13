@@ -139,14 +139,9 @@ public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
         TestDbContext.Database.EnsureDeleted();
         TestDbContext.Database.EnsureCreated();
         TestDbContext.Database.ExecuteSqlRaw($"UPDATE geometry_columns SET srid = {GeoPoint.WGS84} WHERE f_table_name = 'locations';");
-
-        var organisationSeedData = new OrganisationSeedData(TestDbContext);
-
-        if (!TestDbContext.Taxonomies.Any())
-            organisationSeedData.SeedTaxonomies().GetAwaiter().GetResult();
-
-        if (!TestDbContext.Organisations.Any())
-            organisationSeedData.SeedOrganisations().GetAwaiter().GetResult();
+        var seedData = new OrganisationSeedData(TestDbContext);
+        seedData.SeedTaxonomies();
+        seedData.SeedOrganisations();
     }
 
     private ServiceProvider CreateNewServiceProvider()

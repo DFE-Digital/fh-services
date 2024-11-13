@@ -110,7 +110,7 @@ public static class StartupExtensions
         services.AddTransient<ExceptionHandlingMiddleware>();
     }
 
-    public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration, bool isProduction)
+    public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<ITelemetryInitializer, IdamsTelemetryPiiRedactor>();
         services.AddApplicationInsightsTelemetry();
@@ -132,7 +132,7 @@ public static class StartupExtensions
         services.AddFamilyHubsHealthChecks(configuration);
     }
 
-    public static async Task ConfigureWebApplication(this WebApplication webApplication)
+    public static void ConfigureWebApplication(this WebApplication webApplication)
     {
         webApplication.UseSerilogRequestLogging();
 
@@ -148,28 +148,5 @@ public static class StartupExtensions
         webApplication.MapControllers();
 
         webApplication.MapFamilyHubsHealthChecks(typeof(StartupExtensions).Assembly);
-
-        await webApplication.InitialiseDatabase();
-    }
-
-    private static async Task InitialiseDatabase(this WebApplication webApplication)
-    {
-        using var scope = webApplication.Services.CreateScope();
-
-        // Seed Database
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var shouldRestDatabaseOnRestart = webApplication.Configuration.GetValue<bool>("ShouldRestDatabaseOnRestart");
-        
-        if (!webApplication.Environment.IsProduction())
-        {
-
-            if (shouldRestDatabaseOnRestart) 
-                await dbContext.Database.EnsureDeletedAsync();
-
-            if(dbContext.Database.IsSqlServer())
-                await dbContext.Database.MigrateAsync();
-            else
-                await dbContext.Database.EnsureCreatedAsync();
-        }
     }
 }

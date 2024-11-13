@@ -4346,7 +4346,11 @@ resource "azurerm_monitor_metric_alert" "failedalt-03" {
 }
 
 # Create Defender Protection for App Services
+# Note: We only want to manage this on the initial resources created in each subscription as this happens at subscription level
+# hence the count block
+# This ticket: https://dfedigital.atlassian.net.mcas.ms/browse/FHB-906 will handle removing this
 resource "azurerm_security_center_subscription_pricing" "app_services" {
+  count = var.prefix == "s181d01" || var.prefix == "s181t01" || var.prefix == "s181p01" ? 1 : 0
   tier = var.defender_app_services_tier
   resource_type = "AppServices"
 }

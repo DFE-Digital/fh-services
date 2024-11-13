@@ -13,7 +13,7 @@ public class OrganisationSeedData
         _dbContext = dbContext;
     }
 
-    public async Task SeedTaxonomies()
+    public void SeedTaxonomies()
     {
         var activity = new Taxonomy { Name = "Activities, clubs and groups", TaxonomyType = TaxonomyType.ServiceCategory };
         var support = new Taxonomy { Name = "Family support", TaxonomyType = TaxonomyType.ServiceCategory };
@@ -33,7 +33,7 @@ public class OrganisationSeedData
         };
 
         _dbContext.Taxonomies.AddRange(parentTaxonomies);
-        await _dbContext.SaveChangesAsync();
+        _dbContext.SaveChanges();
 
         var taxonomies = new List<Taxonomy>
         {
@@ -89,10 +89,10 @@ public class OrganisationSeedData
         };
 
         _dbContext.Taxonomies.AddRange(taxonomies);
-        await _dbContext.SaveChangesAsync();
+        _dbContext.SaveChanges();
     }
 
-    public async Task SeedOrganisations()
+    public void SeedOrganisations()
     {
         const OrganisationType organisationType = OrganisationType.LA;
         var organisations = new List<Organisation>
@@ -190,7 +190,7 @@ public class OrganisationSeedData
         };
 
         _dbContext.Organisations.AddRange(organisations);
-        await _dbContext.SaveChangesAsync();
+        _dbContext.SaveChanges();
     }
 }
 #pragma warning restore S1075

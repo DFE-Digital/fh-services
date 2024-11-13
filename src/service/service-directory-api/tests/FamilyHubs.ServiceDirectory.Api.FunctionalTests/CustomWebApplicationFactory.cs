@@ -42,6 +42,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
         builder.UseEnvironment("Development");
     }
+
     public void SetupTestDatabaseAndSeedData()
     {
         using var scope = Services.CreateScope();
@@ -52,6 +53,15 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         try
         {
             var context = scopedServices.GetRequiredService<ApplicationDbContext>();
+
+            // I wish I could just call Migrate() but our migrations don't work on sqlite?
+            context.Database.EnsureCreated();
+            var seedData = new OrganisationSeedData(context);
+            seedData.SeedTaxonomies();
+            seedData.SeedOrganisations();
+
+            if (!context.Database.IsSqlServer())
+                context.Database.ExecuteSqlRaw("UPDATE geometry_columns SET srid = 4326 WHERE f_table_name = 'locations';");
 
             var testOrganisations = context.Organisations.Select(o => new { o.Id, o.Name })
                 .Where(o => o.Name == "Bristol County Council" || o.Name == "Salford City Council")

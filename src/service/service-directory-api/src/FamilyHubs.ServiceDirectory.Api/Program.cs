@@ -21,11 +21,11 @@ public class Program
 
             builder.Services.RegisterApplicationComponents(builder.Configuration);
 
-            builder.Services.ConfigureServices(builder.Configuration, builder.Environment.IsProduction());
+            builder.Services.ConfigureServices(builder.Configuration);
             
             var webApplication = builder.Build();
 
-            await webApplication.ConfigureWebApplication();
+            webApplication.ConfigureWebApplication();
 
             await webApplication.RunAsync();
         }

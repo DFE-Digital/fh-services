@@ -56,6 +56,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         {
             var context = scopedServices.GetRequiredService<ApplicationDbContext>();
 
+            context.Database.EnsureCreated();
             context.Accounts.Add(TestDataProvider.GetTestAccount(many));
 
             context.SaveChanges();

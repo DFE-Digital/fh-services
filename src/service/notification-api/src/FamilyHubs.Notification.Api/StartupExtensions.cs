@@ -101,7 +101,6 @@ public static class StartupExtensions
     private static void RegisterAppDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<AuditableEntitySaveChangesInterceptor>();
-        services.AddTransient<ApplicationDbContextInitialiser>();
 
         var connectionString = configuration.GetConnectionString("NotificationConnection");
         ArgumentException.ThrowIfNullOrEmpty(connectionString);
@@ -151,7 +150,7 @@ public static class StartupExtensions
         services.AddTransient<ExceptionHandlingMiddleware>();
     }
 
-    public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration, bool isProduction)
+    public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddApplicationInsightsTelemetry();
 
@@ -167,7 +166,7 @@ public static class StartupExtensions
         });
     }
 
-    public static async Task ConfigureWebApplication(this WebApplication webApplication)
+    public static void ConfigureWebApplication(this WebApplication webApplication)
     {
         webApplication.UseSerilogRequestLogging();
 
@@ -184,29 +183,14 @@ public static class StartupExtensions
 
         webApplication.MapFamilyHubsHealthChecks(typeof(StartupExtensions).Assembly);
 
-        await RegisterEndPoints(webApplication);
+        RegisterEndPoints(webApplication);
     }
 
-    private static async Task RegisterEndPoints(this WebApplication app)
+    private static void RegisterEndPoints(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
 
         var notifyApi = scope.ServiceProvider.GetService<MinimalNotifyEndPoints>();
         notifyApi?.RegisterMinimalNotifyEndPoints(app);
-
-        try
-        {
-            if (!app.Environment.IsProduction())
-            {
-                // Seed Database
-                var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
-                var shouldRestDatabaseOnRestart = app.Configuration.GetValue<bool>("ShouldRestDatabaseOnRestart");
-                await initialiser.InitialiseAsync(app.Environment.IsProduction(), shouldRestDatabaseOnRestart);
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "An error occurred seeding the DB. {exceptionMessage}", ex.Message);
-        }
     }
 }

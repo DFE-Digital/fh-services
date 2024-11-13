@@ -1,6 +1,6 @@
 prefix = "s181p02"
 environment = "Prod"
-
+defender_app_services_tier = "Standard"
 vnet_address_space = ["10.0.4.0/24"] # Range is 10.0.4.0 - 10.0.3.255
 ag_address_space = ["10.0.4.0/26"] # Range is 10.0.4.0 - 10.0.4.63
 vnetint_address_space = ["10.0.4.80/28"] # Range is 10.0.4.80 - 10.0.4.95

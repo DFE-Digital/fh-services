@@ -77,7 +77,6 @@ public static class StartupExtensions
     private static void RegisterAppDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<AuditableEntitySaveChangesInterceptor>();
-        services.AddTransient<ApplicationDbContextInitialiser>();
 
         var connectionString = configuration.GetConnectionString("ServiceDirectoryConnection");
         ArgumentException.ThrowIfNullOrEmpty(connectionString);
@@ -126,7 +125,7 @@ public static class StartupExtensions
         services.AddTransient<ExceptionHandlingMiddleware>();
     }
 
-    public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration, bool isProduction)
+    public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<ITelemetryInitializer, ConnectTelemetryPiiRedactor>();
         services.AddApplicationInsightsTelemetry();
@@ -147,7 +146,7 @@ public static class StartupExtensions
         services.AddFamilyHubsHealthChecks(configuration);
     }
 
-    public static async Task ConfigureWebApplication(this WebApplication webApplication)
+    public static void ConfigureWebApplication(this WebApplication webApplication)
     {
         webApplication.UseSerilogRequestLogging();
 
@@ -162,10 +161,10 @@ public static class StartupExtensions
         webApplication.MapControllers();
         webApplication.MapFamilyHubsHealthChecks(typeof(StartupExtensions).Assembly);
 
-        await RegisterEndPoints(webApplication);
+        RegisterEndPoints(webApplication);
     }
 
-    private static async Task RegisterEndPoints(this WebApplication webApplication)
+    private static void RegisterEndPoints(this WebApplication webApplication)
     {
         using var scope = webApplication.Services.CreateScope();
 
@@ -183,17 +182,5 @@ public static class StartupExtensions
 
         var metricsEndPoints = scope.ServiceProvider.GetService<MinimalMetricsEndPoints>();
         metricsEndPoints?.RegisterMetricsEndPoints(webApplication);
-
-        try
-        {
-            // Seed Database
-            var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
-            var shouldRestDatabaseOnRestart = webApplication.Configuration.GetValue<bool>("ShouldRestDatabaseOnRestart");
-            await initialiser.InitialiseAsync(webApplication.Environment.IsProduction(), shouldRestDatabaseOnRestart);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "An error occurred seeding the DB. {ExceptionMessage}", ex.Message);
-        }
     }
 }
