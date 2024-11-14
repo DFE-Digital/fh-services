@@ -1,4 +1,5 @@
 ﻿@import "overrides";
-@import "../node_modules/familyhubs-frontend/styles/all";
+@import "../node_modules/familyhubs-frontend/styles/all.scss";
+@import "./components/SortHeaderComponent";
 @import "site";
 @import "global";
