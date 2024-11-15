@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "dependencies": {
-    "govuk-frontend": "^5.7.1",
+    "govuk-frontend": "^5.2.0",
     "familyhubs-frontend": "file:../../../../shared/web-components/src/familyhubs-frontend"
   },
   "devDependencies": {
