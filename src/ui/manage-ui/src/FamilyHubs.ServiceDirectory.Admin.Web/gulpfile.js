@@ -1,9 +1,9 @@
 ﻿/// <binding ProjectOpened='js:watch, sass-to-min-css:watch' />
 "use strict";
 
-var tsScriptsSrc = './scripts/**';
+const tsScriptsSrc = './scripts/**';
 
-var gulp = require("gulp"),
+let gulp = require("gulp"),
     sass = require('gulp-sass')(require('sass')),
     sourcemaps = require('gulp-sourcemaps'),
     csso = require('gulp-csso'),
@@ -35,7 +35,7 @@ gulp.task('sass-to-min-css:watch', function () {
 
 //todo: clean to delete files in dest? & tmp folder
 
-var tsProject;
+let tsProject;
 
 gulp.task('transpile-ts', function () {
 
@@ -53,9 +53,9 @@ gulp.task('transpile-ts', function () {
 
     //console.log(`TypeScript version: ${typescript.version}`);
 
-    var reporter = ts.reporter.fullReporter();
+    const reporter = ts.reporter.fullReporter();
 
-    var tsResult = gulp.src(tsScriptsSrc)
+    const tsResult = gulp.src(tsScriptsSrc)
         .pipe(sourcemaps.init())
         .pipe(tsProject(reporter));
 
