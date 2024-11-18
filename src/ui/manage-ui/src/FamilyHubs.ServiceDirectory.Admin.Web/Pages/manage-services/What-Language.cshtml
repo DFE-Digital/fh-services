@@ -16,7 +16,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        <div data-module="fh-add-another" data-fh-add-another-callback="setupLanguageAutocompleteWhenAddAnother">
+        <div id="fh-add-another-id" data-module="fh-add-another" data-fh-add-another-callback="setupLanguageAutocompleteWhenAddAnother">
             <h1 class="govuk-heading-l fh-add-another__heading" tabindex="-1">Which language is the service offered in?</h1>
             <form method="post">
                 @foreach (var (item, index) in Model.UserLanguageOptions.Select((item, index) => (item, index)))

@@ -103,13 +103,10 @@ function setupLanguageAutocompleteWhenAddAnother(element: HTMLElement) {
         if (childListMutation || attributesMutation) {
             /*todo: create list of input ids outside of observer? */
             languageSelects.forEach(function (select) {
-                //console.log(select.id);
                 const input = document.getElementById(select.id.replace('-select', '')) as HTMLInputElement;
-                //console.log(input);
 
                 // input should never be null now we're observing the DOM for changes, but we check it for extra safety
                 if (!input) {
-                    //console.log('no input found for select')
                     return;
                 }
 
@@ -141,9 +138,57 @@ function addGovUkClasses(input: HTMLInputElement, errorState: boolean) {
     }
 }
 
+/**
+ * This function is used to update the "Remove" button text in the "Add another" component
+ * and update the label text for each item in the "Add another" component when adding a new language item to the DOM.
+ * 
+ * NOTE: Adding of DOM elements is done in the familyhubs-frontend FamilyHubsFrontend.AddAnother.prototype list.
+ * Doing this UI update here as it makes sense being that it's only for the language page.
+ */
+function handleUpdatingLanguageAddAnother(){
+    function updateAllRemoveButtonText() {
+        const items = document.querySelectorAll('.fh-add-another__item');
+
+        items.forEach((item, index) => {
+            const button = item.querySelector('.fh-add-another__remove-button') as HTMLButtonElement;
+            if (button) {
+                button.textContent = `Remove ${(index + 1)}`;
+            }
+        });
+    }
+
+    function updateAllLanguageLabelText() {
+        const items = document.querySelectorAll('.fh-add-another__item');
+
+        items.forEach((item, index) => {
+            const label = item.querySelector('label');
+            if(label) {
+                label.textContent = `Enter language ${(index + 1)}`;
+            }
+        });
+    }
+
+    // Observe DOM changes to react to new items being added
+    const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList')
+            {
+                updateAllRemoveButtonText();
+                updateAllLanguageLabelText();
+            }
+        }
+    });
+
+    const container = document.getElementById('fh-add-another-id');
+    if(container) {
+        observer.observe(container, { childList: true, subtree: true});
+    }
+    
+}
+
 //todo: this is a hack - we want setupLanguageAutocompleteWhenAddAnother to be in the generated js file.
 // if we export it, it includes the export keyword in the generated js file
 // (but we use export in the other ts files, without the js containing export!)
 // so as a workaround we call it where it no-ops
 setupLanguageAutocompleteWhenAddAnother(null);
-//});
+handleUpdatingLanguageAddAnother();
