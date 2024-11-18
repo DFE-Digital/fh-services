@@ -34,7 +34,7 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
             .ToArray();
     }
 
-    public IEnumerable<SelectListItem> UserLanguageOptions { get; set; } = Enumerable.Empty<SelectListItem>();
+    public IEnumerable<SelectListItem> UserLanguageOptions { get; set; } = [];
 
     [BindProperty]
     public bool TranslationServices { get; set; }
@@ -71,26 +71,27 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
     protected override void OnGetWithModel()
     {
         // we've redirected to self with user input and no errors, so javascript must be disabled
-        if (ServiceModel?.UserInput != null)
+        
+        // redirectingToSelf is only set when adding a new field
+        if(ServiceModel?.UserInput != null && Request.Query.TryGetValue("redirectingToSelf", out var redirectToSelf) && redirectToSelf == "true")
         {
             SetFormData();
+            return;
         }
-
+        
         // default to no language selected
         UserLanguageOptions = LanguageOptions.Take(1);
-
         if (ServiceModel!.LanguageCodes?.Any() == true)
         {
-            UserLanguageOptions = ServiceModel!.LanguageCodes.Select(l =>
+            UserLanguageOptions = ServiceModel!.LanguageCodes.Select(lang =>
             {
                 //todo: put into method
-                bool codeFound = Languages.CodeToName.TryGetValue(l, out string? name);
-                return new SelectListItem(name, codeFound ? l : InvalidNameValue);
+                var codeFound = Languages.CodeToName.TryGetValue(lang, out var name);
+                return new SelectListItem(name, codeFound ? lang : InvalidNameValue);
             });
         }
         TranslationServices = ServiceModel.TranslationServices ?? false;
         BritishSignLanguage = ServiceModel.BritishSignLanguage ?? false;
-
         UserLanguageOptions = UserLanguageOptions.OrderBy(sli => sli.Text);
     }
 
@@ -177,12 +178,15 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
             }
             else if (button.StartsWith("remove"))
             {
-                int indexToRemove = int.Parse(button.Substring("remove-".Length));
-                languageCodes = languageCodes.Where((_, i) => i != indexToRemove);
-
-                if (!languageCodes.Any())
+                var indexToRemove = int.Parse(button.Substring("remove-".Length));
+                if (indexToRemove < languageCodes.Count())
                 {
-                    languageCodes = languageCodes.Append(NoLanguageValue);
+                    languageCodes = languageCodes.Where((_, i) => i != indexToRemove);
+
+                    if (!languageCodes.Any())
+                    {
+                        languageCodes = languageCodes.Append(NoLanguageValue);
+                    }
                 }
             }
 
