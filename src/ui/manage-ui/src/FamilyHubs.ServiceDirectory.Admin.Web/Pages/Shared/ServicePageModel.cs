@@ -422,14 +422,11 @@ public class ServicePageModel<TInput> : HeaderPageModel
 
     private IActionResult RedirectToSelfInternal(IDictionary<string, StringValues>? queryCollection, params ErrorId[] errors)
     {
-        //todo: have this as a helper method
-        //// truncate at some large value, to stop a denial of service attack
-        //var safeInvalidUserInput = invalidUserInput != null
-        //    ? new[] { invalidUserInput[..Math.Min(invalidUserInput.Length, 4500)] }
-        //    : null;
-
-        //todo: throw if model null?
-        ServiceModel!.AddErrorState(CurrentPage, errors);
+        // check error length as some pages direct back to selves without errors.
+        if (errors.Length > 0)
+        {
+            ServiceModel!.AddErrorState(CurrentPage, errors);    
+        }
 
         string extraQueries = queryCollection != null
             ? $"&{(string.Join("&", queryCollection.Select(q => $"{q.Key}={q.Value}")))}"
