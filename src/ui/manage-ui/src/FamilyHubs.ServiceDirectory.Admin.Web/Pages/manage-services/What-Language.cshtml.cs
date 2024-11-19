@@ -102,22 +102,11 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
 
             if (button is "add")
             {
-                //todo: if javascript is disabled, we *could* keep a count the number of empty language inputs, or have a different name for each select with each having a hidden field
-                // but it's a lot of effort for probably little or no users
                 languageCodes = languageCodes.Append(NoLanguageValue);
             }
-            else if (button.StartsWith("remove"))
+            else if (button.StartsWith("remove") && int.TryParse(button.AsSpan("remove-".Length), out var index))
             {
-                var indexToRemove = int.Parse(button.Substring("remove-".Length));
-                if (indexToRemove < languageCodes.Count())
-                {
-                    languageCodes = languageCodes.Where((_, i) => i != indexToRemove);
-
-                    if (!languageCodes.Any())
-                    {
-                        languageCodes = languageCodes.Append(NoLanguageValue);
-                    }
-                }
+                languageCodes = RemoveLanguageAtIndex(index, languageCodes);
             }
 
             viewModel.Languages = languageCodes
@@ -161,6 +150,22 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
         ServiceModel.BritishSignLanguage = BritishSignLanguage;
 
         return NextPage();
+    }
+    
+    /// <summary>
+    /// Removes the language at the specified index from the list of language codes.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="languageCodes">The list of language codes.</param>
+    /// <returns>A new list of language codes with the specified index removed.</returns>
+    private static IEnumerable<string> RemoveLanguageAtIndex(int index, IEnumerable<string> languageCodes)
+    {
+        var updatedList = languageCodes.ToList();
+        if (index < updatedList.Count)
+        {
+            updatedList = updatedList.Where((_, i) => i != index).ToList();
+        }
+        return updatedList;
     }
 
     private void SetFormServiceModelData()
