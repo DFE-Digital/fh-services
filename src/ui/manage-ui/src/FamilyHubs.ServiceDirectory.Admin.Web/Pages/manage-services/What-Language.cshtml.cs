@@ -11,7 +11,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Pages.manage_services;
 
 public class WhatLanguageViewModel
 {
-    public IEnumerable<string> Languages { get; set; } = Enumerable.Empty<string>();
+    public IEnumerable<string> Languages { get; set; } = [];
     public bool TranslationServices { get; set; }
     public bool BritishSignLanguage { get; set; }
     public AddAnotherAutocompleteErrorChecker? ErrorIndexes { get; set; }
@@ -51,7 +51,7 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
 
     protected override void OnGetWithError()
     {
-        SetFormData();
+        SetFormUserInputData();
 
         if (ServiceModel?.UserInput?.ErrorIndexes == null)
         {
@@ -70,84 +70,16 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
 
     protected override void OnGetWithModel()
     {
-        // we've redirected to self with user input and no errors, so javascript must be disabled
-        
-        // redirectingToSelf is only set when adding a new field
+        // redirectingToSelf is only set when adding a new field. Javascript is disabled
         if(ServiceModel?.UserInput != null && Request.Query.TryGetValue("redirectingToSelf", out var redirectToSelf) && redirectToSelf == "true")
         {
-            SetFormData();
-            return;
-        }
-        
-        // default to no language selected
-        UserLanguageOptions = LanguageOptions.Take(1);
-        if (ServiceModel!.LanguageCodes?.Any() == true)
-        {
-            UserLanguageOptions = ServiceModel!.LanguageCodes.Select(lang =>
-            {
-                //todo: put into method
-                var codeFound = Languages.CodeToName.TryGetValue(lang, out var name);
-                return new SelectListItem(name, codeFound ? lang : InvalidNameValue);
-            });
-        }
-        TranslationServices = ServiceModel.TranslationServices ?? false;
-        BritishSignLanguage = ServiceModel.BritishSignLanguage ?? false;
-        UserLanguageOptions = UserLanguageOptions.OrderBy(sli => sli.Text);
-    }
-
-    private void SetFormData()
-    {
-        UserLanguageOptions = ServiceModel!.UserInput!.Languages
-            .Select(name =>
-            {
-                if (name == NoLanguageText)
-                {
-                    return new SelectListItem(NoLanguageText, NoLanguageValue);
-                }
-
-                bool nameFound = Languages.NameToCode.TryGetValue(name, out string? code);
-                return new SelectListItem(name, nameFound ? code : InvalidNameValue);
-            });
-
-        TranslationServices = ServiceModel.UserInput.TranslationServices;
-        BritishSignLanguage = ServiceModel.UserInput.BritishSignLanguage;
-    }
-
-    private void AddToErrorLookups(ErrorId errorId, IEnumerable<int> indexes)
-    {
-        var error = Errors.GetErrorIfTriggered((int)errorId);
-        if (error == null)
-        {
+            SetFormUserInputData();
             return;
         }
 
-        ErrorIdToFirstSelectIndex!.Add(error.Id, indexes.First());
-        foreach (int index in indexes)
-        {
-            SelectIndexToError!.Add(index, error);
-        }
+        SetFormServiceModelData();
     }
-
-    private void AddDuplicatesToErrorLookups(ErrorId errorId, IEnumerable<IEnumerable<int>> setIndexes)
-    {
-        var error = Errors.GetErrorIfTriggered((int)errorId);
-        if (error == null)
-        {
-            return;
-        }
-
-        ErrorIdToFirstSelectIndex!.Add(error.Id,
-            setIndexes.SelectMany(si => si.Skip(1).Take(1)).Min());
-
-        foreach (var indexes in setIndexes)
-        {
-            foreach (int index in indexes.Skip(1))
-            {
-                SelectIndexToError!.Add(index, error);
-            }
-        }
-    }
-
+    
     protected override IActionResult OnPostWithModel()
     {
         //todo: do we want to split the calls in base to have OnPostErrorChecksAsync and OnPostUpdateAsync? (or something)
@@ -163,7 +95,7 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
         };
 
         // handle add/remove buttons first. if there are any validation errors, we'll ignore then until they click continue
-        string? button = Request.Form["button"].FirstOrDefault();
+        var button = Request.Form["button"].FirstOrDefault();
 
         if (button != null)
         {
@@ -233,13 +165,99 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
         return NextPage();
     }
 
+    private void SetFormServiceModelData()
+    {
+        SetServiceModelLanguageOptions();
+        
+        TranslationServices = ServiceModel!.TranslationServices ?? false;
+        BritishSignLanguage = ServiceModel!.BritishSignLanguage ?? false;
+        
+    }
+
+    private void SetFormUserInputData()
+    {
+        // Override with the languages that are already selected
+        SetUserInputLanguageOptions();
+
+        TranslationServices = ServiceModel!.UserInput?.TranslationServices ?? false;
+        BritishSignLanguage = ServiceModel!.UserInput?.BritishSignLanguage ?? false;
+    }
+    
+    private void SetServiceModelLanguageOptions()
+    {
+        // default to no language selected
+        UserLanguageOptions = LanguageOptions.Take(1);
+        if (ServiceModel!.LanguageCodes?.Any() == true)
+        {
+            UserLanguageOptions = ServiceModel!.LanguageCodes.Select(lang =>
+            {
+                //todo: put into method
+                var codeFound = Languages.CodeToName.TryGetValue(lang, out var name);
+                return new SelectListItem(name, codeFound ? lang : InvalidNameValue);
+            });
+        }
+        UserLanguageOptions = UserLanguageOptions.OrderBy(sli => sli.Text);
+    }
+
+    private void SetUserInputLanguageOptions()
+    {
+        UserLanguageOptions =  ServiceModel!.UserInput!.Languages
+            .Select(name =>
+            {
+                if (name == NoLanguageText)
+                {
+                    return new SelectListItem(NoLanguageText, NoLanguageValue);
+                }
+
+                var nameFound = Languages.NameToCode.TryGetValue(name, out var code);
+                return new SelectListItem(name, nameFound ? code : InvalidNameValue);
+            });
+    }
+
+    private void AddToErrorLookups(ErrorId errorId, IEnumerable<int> indexes)
+    {
+        var error = Errors.GetErrorIfTriggered((int)errorId);
+        if (error == null)
+        {
+            return;
+        }
+
+        ErrorIdToFirstSelectIndex!.Add(error.Id, indexes.First());
+        foreach (var index in indexes)
+        {
+            SelectIndexToError!.Add(index, error);
+        }
+    }
+
+    private void AddDuplicatesToErrorLookups(ErrorId errorId, IEnumerable<IEnumerable<int>> setIndexes)
+    {
+        var error = Errors.GetErrorIfTriggered((int)errorId);
+        if (error == null)
+        {
+            return;
+        }
+
+        ErrorIdToFirstSelectIndex!.Add(error.Id,
+            setIndexes.SelectMany(si => si.Skip(1).Take(1)).Min());
+
+        foreach (var indexes in setIndexes)
+        {
+            foreach (var index in indexes.Skip(1))
+            {
+                SelectIndexToError!.Add(index, error);
+            }
+        }
+    }
+
+    
+
     // updated only *needs* to be set if in edit flow. do we want to check?
     private bool HaveLanguagesBeenUpdated(IEnumerable<string> languageCodes)
     {
-        bool languagesAreEqual = ServiceModel!.LanguageCodes != null && 
-                        ServiceModel.LanguageCodes
-                            .OrderBy(x => x)
-                            .SequenceEqual(languageCodes.OrderBy(x => x));
+        var languagesAreEqual = ServiceModel!.LanguageCodes != null && 
+                                ServiceModel.LanguageCodes
+                                    .OrderBy(x => x)
+                                    .SequenceEqual(languageCodes.OrderBy(x => x));
 
         return !languagesAreEqual
                || ServiceModel.TranslationServices != TranslationServices
