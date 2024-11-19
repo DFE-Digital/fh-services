@@ -71,7 +71,7 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
     protected override void OnGetWithModel()
     {
         // redirectingToSelf is only set when adding a new field. Javascript is disabled
-        if(ServiceModel?.UserInput is not null && Request.Query.TryGetValue("redirectingToSelf", out var redirectToSelf) && redirectToSelf == "true")
+        if(ServiceModel?.UserInput is not null && RedirectingToSelf)
         {
             SetFormUserInputData();
             return;
@@ -194,7 +194,6 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
         {
             UserLanguageOptions = ServiceModel!.LanguageCodes.Select(lang =>
             {
-                //todo: put into method
                 var codeFound = Languages.CodeToName.TryGetValue(lang, out var name);
                 return new SelectListItem(name, codeFound ? lang : InvalidNameValue);
             });
