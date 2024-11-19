@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Core.Models;
 
@@ -22,8 +21,6 @@ public class JourneyCacheModel<TJourneyPage, TErrorId, TUserInput>
 
     public void PopulateUserInput()
     {
-        Debug.Assert(UserInput == null);
-
         if (UserInputType != null && UserInputJson != null
             && UserInputType == typeof(TUserInput).FullName)
         {
