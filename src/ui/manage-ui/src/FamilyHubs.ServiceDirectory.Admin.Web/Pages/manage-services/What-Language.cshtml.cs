@@ -71,7 +71,7 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
     protected override void OnGetWithModel()
     {
         // redirectingToSelf is only set when adding a new field. Javascript is disabled
-        if(ServiceModel?.UserInput != null && Request.Query.TryGetValue("redirectingToSelf", out var redirectToSelf) && redirectToSelf == "true")
+        if(ServiceModel?.UserInput is not null && Request.Query.TryGetValue("redirectingToSelf", out var redirectToSelf) && redirectToSelf == "true")
         {
             SetFormUserInputData();
             return;
@@ -83,8 +83,6 @@ public class What_LanguageModel : ServicePageModel<WhatLanguageViewModel>
     protected override IActionResult OnPostWithModel()
     {
         //todo: do we want to split the calls in base to have OnPostErrorChecksAsync and OnPostUpdateAsync? (or something)
-
-        //todo: language to languageCode
 
         IEnumerable<string> languageCodes = Request.Form["language"];
         var viewModel = new WhatLanguageViewModel
