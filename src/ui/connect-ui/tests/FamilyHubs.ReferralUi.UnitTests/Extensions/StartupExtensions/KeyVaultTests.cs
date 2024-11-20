@@ -1,7 +1,6 @@
 using Azure.Security.KeyVault.Secrets;
-using FamilyHubs.SharedKernel.Extensions;
 
-namespace FamilyHubs.ReferralUi.UnitTests.Extensions;
+namespace FamilyHubs.ReferralUi.UnitTests.Extensions.StartupExtensions;
 
 public class KeyVaultTests
 {
@@ -11,7 +10,7 @@ public class KeyVaultTests
         // Arrange
         const string prefix = "test-prefix";
         var secretProperties = new SecretProperties($"{prefix}-secret-name");
-        var manager = new StartupExtensions.PrefixKeyVaultSecretManager(prefix);
+        var manager = new SharedKernel.Extensions.StartupExtensions.PrefixKeyVaultSecretManager(prefix);
 
         // Act
         var result = manager.Load(secretProperties);
@@ -26,7 +25,7 @@ public class KeyVaultTests
         // Arrange
         const string prefix = "test-prefix";
         var secretProperties = new SecretProperties("other-secret-name");
-        var manager = new StartupExtensions.PrefixKeyVaultSecretManager(prefix);
+        var manager = new SharedKernel.Extensions.StartupExtensions.PrefixKeyVaultSecretManager(prefix);
 
         // Act
         var result = manager.Load(secretProperties);
@@ -42,7 +41,7 @@ public class KeyVaultTests
         const string prefix = "test-prefix";
         var secretName = $"{prefix}-secret--name";
         var secret = new KeyVaultSecret(secretName, "secret-value");
-        var manager = new StartupExtensions.PrefixKeyVaultSecretManager(prefix);
+        var manager = new SharedKernel.Extensions.StartupExtensions.PrefixKeyVaultSecretManager(prefix);
 
         // Act
         var result = manager.GetKey(secret);
