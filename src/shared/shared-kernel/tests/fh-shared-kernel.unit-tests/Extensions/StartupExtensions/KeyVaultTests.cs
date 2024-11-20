@@ -1,6 +1,6 @@
 using Azure.Security.KeyVault.Secrets;
 
-namespace FamilyHubs.ReferralUi.UnitTests.Extensions.StartupExtensions;
+namespace FamilyHubs.SharedKernel.UnitTests.Extensions.StartupExtensions;
 
 public class KeyVaultTests
 {

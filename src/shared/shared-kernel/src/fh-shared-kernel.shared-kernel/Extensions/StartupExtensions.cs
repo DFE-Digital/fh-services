@@ -24,9 +24,7 @@ public static class StartupExtensions
     public sealed class PrefixKeyVaultSecretManager(string prefix) : KeyVaultSecretManager
     {
         private readonly string _prefix = $"{prefix}-";
-
-        // SD-API-CONNECTIONSTRINGS-SERVICEDIRECTORYCONNECTION
-
+        
         public override bool Load(SecretProperties secret)
             => secret.Name.StartsWith(_prefix);
 
