@@ -1,4 +1,5 @@
 using FamilyHubs.Notification.Api;
+using FamilyHubs.SharedKernel.Extensions;
 using Serilog;
 
 namespace FamilyHubs.Notification.Api;
@@ -19,6 +20,8 @@ public class Program
         try
         {
             var builder = WebApplication.CreateBuilder(args);
+            
+            builder.Configuration.ConfigureAzureKeyVault();
 
             builder.ConfigureHost();
 

@@ -6,6 +6,7 @@ using FamilyHubs.Report.Core.Queries.ServiceSearchFacts;
 using FamilyHubs.Report.Core.Queries.ServiceSearchFacts.Validators;
 using FamilyHubs.Report.Data;
 using FamilyHubs.Report.Data.Repository;
+using FamilyHubs.SharedKernel.Extensions;
 using FamilyHubs.SharedKernel.GovLogin.AppStart;
 using FamilyHubs.SharedKernel.Health;
 using FluentValidation;
@@ -22,6 +23,7 @@ public class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        builder.Configuration.ConfigureAzureKeyVault();
         AddServices(builder.Services, builder.Configuration);
         ConfigureAppInsights(builder);
 

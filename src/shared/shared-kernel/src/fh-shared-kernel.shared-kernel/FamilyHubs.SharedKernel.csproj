@@ -55,6 +55,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+	  <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" />
+	  <PackageReference Include="Microsoft.Extensions.Configuration" />
   </ItemGroup>
 
 	<ItemGroup>

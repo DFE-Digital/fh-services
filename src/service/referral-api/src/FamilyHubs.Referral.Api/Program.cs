@@ -1,3 +1,4 @@
+using FamilyHubs.SharedKernel.Extensions;
 using Serilog;
 
 namespace FamilyHubs.Referral.Api;
@@ -18,6 +19,8 @@ public class Program
         try
         {
             var builder = WebApplication.CreateBuilder(args);
+            
+            builder.Configuration.ConfigureAzureKeyVault();
 
             builder.ConfigureHost();
 

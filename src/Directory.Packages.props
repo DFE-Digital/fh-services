@@ -28,6 +28,7 @@
     <PackageVersion Include="AutoMapper" Version="12.0.1" />
     <PackageVersion Include="AutoMapper.Collection.EntityFrameworkCore" Version="9.0.0" />
     <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageVersion Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.2" />
     <PackageVersion Include="Azure.Extensions.AspNetCore.DataProtection.Keys" Version="1.2.4" />
     <PackageVersion Include="Azure.Identity" Version="1.12.0" />
     <PackageVersion Include="Azure.Messaging.EventGrid" Version="4.25.0" />
