@@ -11,21 +11,21 @@ public class BearerTokenGenerator
 
     public BearerTokenGenerator()
     {
-        ConfigModel config = ConfigAccessor.GetApplicationConfiguration();
+        var config = ConfigAccessor.GetApplicationConfiguration();
         _bearerTokenSigningKey = config.BearerTokenSigningKey;
     }
 
     public string CreateBearerToken(string role)
     {
-        List<Claim> claims = new List<Claim> { new("role", role) };
-        ClaimsIdentity identity = new ClaimsIdentity(claims, "Test");
-        ClaimsPrincipal user = new ClaimsPrincipal(identity);
+        var claims = new List<Claim> { new("role", role) };
+        var identity = new ClaimsIdentity(claims, "Test");
+        var user = new ClaimsPrincipal(identity);
 
-        SymmetricSecurityKey key =
+        var key =
             new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(_bearerTokenSigningKey));
-        SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
-        JwtSecurityToken token = new JwtSecurityToken(
+        var token = new JwtSecurityToken(
             claims: user.Claims,
             signingCredentials: creds,
             expires: DateTime.UtcNow.AddMinutes(5)
