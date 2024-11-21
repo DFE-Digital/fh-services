@@ -1,3 +1,4 @@
+using FamilyHubs.SharedKernel.Extensions;
 using Microsoft.Extensions.Configuration;
 
 namespace FamilyHubs.Referral.Api.AcceptanceTests.Configuration;
@@ -8,10 +9,14 @@ public class ConfigAccessor
 
     private static IConfigurationRoot GetIConfigurationRoot()
     {
-        return _root ??= new ConfigurationBuilder()
+        var builder = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: false)
-            .AddEnvironmentVariables()
-            .Build();
+            .AddUserSecrets<ConfigAccessor>()
+            .AddEnvironmentVariables();
+        
+        builder.ConfigureAzureKeyVault();
+
+        return _root ??= builder.Build();
     }
 
     public static ConfigModel GetApplicationConfiguration()
