@@ -18,5 +18,14 @@ The test use the builder pattern and HTTPClient to send requests to the API endp
 3. To run tests via terminal run dotnet test
 4. To run tests via extension: install C# Dev Kit or .NET Core Test Explorer, navigate to testing tab and run tests.
 
+### Test Setup
+Use secrets to configure the variables, but you can ignore to not use key vault:
+```json
+"AppConfiguration": {
+    "KeyVaultIdentifier": "",
+    "KeyVaultPrefix": ""
+}
+'''
+
 ## Run tests in Github
 The tests run in Github flow after deployment of fh-services to test1 or test2 env. At the moment the pipeline does not stop us from deploying to production if there is a failure.

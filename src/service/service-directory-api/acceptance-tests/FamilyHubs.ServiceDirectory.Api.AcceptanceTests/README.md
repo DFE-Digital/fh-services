@@ -17,6 +17,15 @@ The test use the builder pattern and HTTPClient to send requests to the API endp
 2. Run dotnet build
 3. Run dotnet tests
 
+### Test Setup
+Use secrets to configure the variables, but you can ignore to not use key vault:
+```json
+"AppConfiguration": {
+    "KeyVaultIdentifier": "",
+    "KeyVaultPrefix": ""
+}
+'''
+
 ### VS Code specific
 - To run tests via extension: install C# Dev Kit or .NET Core Test Explorer, navigate to testing tab and run tests.
 
