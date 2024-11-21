@@ -5,6 +5,7 @@
     <IsTestProject>true</IsTestProject>
     <NuGetAuditMode>direct</NuGetAuditMode>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <UserSecretsId>fe65ab7c-0721-4d09-8287-11e19f23264c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
