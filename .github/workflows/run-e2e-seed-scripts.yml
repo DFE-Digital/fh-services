@@ -72,7 +72,7 @@ jobs:
           CONNECTION_STRING_REPORT='${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}'
           ENCRYPTION_KEY='${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}'
           INITIALISATION_VECTOR='${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}'
-          EXAMPLE_SEED='True'
+          EXAMPLE_SEED='False'
           EOF
 
       - name: Get Workflow Runner IP
