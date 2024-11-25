@@ -7,9 +7,6 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push: # TODO: Temporary for testing
-    branches:
-      - "FHB-792"
   workflow_dispatch: # TODO: Temporary for testing
     inputs:
       environment:
@@ -75,6 +72,7 @@ jobs:
         run: npm run setup:dev
 
   run-teardown-script:
+    needs: [run-setup-script]
     if: ${{ inputs.teardown == 'True' }}
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
