@@ -1,4 +1,4 @@
-import * as Database from "../../../core/service-directory-db-context.js";
+import * as Database from "../../core/service-directory-db-context.js";
 
 /**
  * This class contains the implementation of the seeding data for the Service Directory Db.
