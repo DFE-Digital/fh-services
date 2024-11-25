@@ -72,6 +72,10 @@ jobs:
           EXAMPLE_SEED='True'
           EOF
 
+      - name: Get Workflow Runner IP
+        id: runner-ip
+        uses: ./.github/actions/get-runner-ip-address
+
       - name: Azure CLI Login
         uses: azure/login@v2
         with:
@@ -144,6 +148,10 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get Workflow Runner IP
+        id: runner-ip
+        uses: ./.github/actions/get-runner-ip-address
 
       - name: Add Azure Firewall Rule
         uses: ./.github/actions/azure-firewall-ip
