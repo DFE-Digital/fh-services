@@ -9,7 +9,7 @@ concurrency:
 on:
   push: # TODO: Temporary for testing
     branches:
-      - "FHB-795"
+      - "FHB-792"
   workflow_dispatch: # TODO: Temporary for testing
     inputs:
       environment:
