@@ -31,6 +31,11 @@ on:
         options:
           - "True"
           - "False"
+
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   run-setup-script:
     if: ${{ inputs.setup == 'True' }}
