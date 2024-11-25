@@ -67,9 +67,35 @@ jobs:
           EXAMPLE_SEED='True'
           EOF
 
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Add Azure Firewall Rule
+        uses: ./.github/actions/azure-firewall-ip
+        with:
+          ip_address: ${{ steps.runner-ip.outputs.ip_address }}
+          action: "Add"
+          az_resource_group: ${{ env.RESOURCE_GROUP }}
+          az_sql_server_name: ${{ env.SQL_SERVER }}
+          az_firewall_rule_name: e2e-seed-script
+
       - name: Run Setup
         shell: bash
         run: npm run setup:dev
+
+      - name: Remove Azure Firewall Rule
+        if: always()
+        uses: ./.github/actions/azure-firewall-ip
+        with:
+          ip_address: ${{ steps.runner-ip.outputs.ip_address }}
+          action: "Remove"
+          az_resource_group: ${{ env.RESOURCE_GROUP }}
+          az_sql_server_name: ${{ env.SQL_SERVER }}
+          az_firewall_rule_name: e2e-seed-script
 
   run-teardown-script:
     needs: [run-setup-script]
@@ -107,6 +133,32 @@ jobs:
           EXAMPLE_SEED='True'
           EOF
 
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Add Azure Firewall Rule
+        uses: ./.github/actions/azure-firewall-ip
+        with:
+          ip_address: ${{ steps.runner-ip.outputs.ip_address }}
+          action: "Add"
+          az_resource_group: ${{ env.RESOURCE_GROUP }}
+          az_sql_server_name: ${{ env.SQL_SERVER }}
+          az_firewall_rule_name: e2e-seed-script
+
       - name: Run Teardown
         shell: bash
         run: npm run teardown:dev
+
+      - name: Remove Azure Firewall Rule
+        if: always()
+        uses: ./.github/actions/azure-firewall-ip
+        with:
+          ip_address: ${{ steps.runner-ip.outputs.ip_address }}
+          action: "Remove"
+          az_resource_group: ${{ env.RESOURCE_GROUP }}
+          az_sql_server_name: ${{ env.SQL_SERVER }}
+          az_firewall_rule_name: e2e-seed-script
