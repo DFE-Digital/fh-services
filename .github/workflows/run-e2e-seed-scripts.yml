@@ -7,6 +7,9 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  push: # TODO: Temporary for testing
+    branches:
+      - "FHB-795"
   workflow_dispatch: # TODO: Temporary for testing
     inputs:
       environment:
