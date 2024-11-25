@@ -1,0 +1,111 @@
+name: Run E2E Test Seed Scripts (Temporary)
+
+# TODO: Move this into a reusable action to be called elsewhere rather than a workflow.. But for now this is good for testing
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch: # TODO: Temporary for testing
+    inputs:
+      environment:
+        description: The environment target for running the seed scripts
+        default: "Development"
+        type: choice
+        options:
+          - "Development"
+          - "Test"
+          - "Test2"
+      setup: # TODO: Temporary for testing
+        description: Run the setup script
+        default: "True"
+        type: choice
+        options:
+          - "True"
+          - "False"
+      teardown: # TODO: Temporary for testing
+        description: Run the teardown script
+        default: "True"
+        type: choice
+        options:
+          - "True"
+          - "False"
+jobs:
+  run-setup-script:
+    if: ${{ inputs.setup == 'True' }}
+    runs-on: ubuntu-22.04
+    environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: "test/e2e-seed-data-framework"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Install Node.JS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/Jod"
+
+      - name: Install NPM Packages
+        shell: bash
+        run: npm i
+
+      - name: Initialise Environment Variables
+        shell: bash
+        run: |
+          cat <<EOF>> .env
+          IDS_START_FROM=1000000
+          CONNECTION_STRING_SERVICEDIRECTORY='${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}'
+          CONNECTION_STRING_REFERRAL='${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}'
+          CONNECTION_STRING_REPORT='${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}'
+          ENCRYPTION_KEY='${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}'
+          INITIALISATION_VECTOR='${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}'
+          EXAMPLE_SEED='True'
+          EOF
+
+      - name: Run Setup
+        shell: bash
+        run: npm run setup:dev
+
+  run-teardown-script:
+    if: ${{ inputs.teardown == 'True' }}
+    runs-on: ubuntu-22.04
+    environment: ${{ inputs.environment }}
+    defaults:
+      run:
+        working-directory: "test/e2e-seed-data-framework"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Install Node.JS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/Jod"
+
+      - name: Install NPM Packages
+        shell: bash
+        run: npm i
+
+      - name: Initialise Environment Variables
+        shell: bash
+        run: |
+          cat <<EOF>> .env
+          IDS_START_FROM=1000000
+          CONNECTION_STRING_SERVICEDIRECTORY='${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}'
+          CONNECTION_STRING_REFERRAL='${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}'
+          CONNECTION_STRING_REPORT='${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}'
+          ENCRYPTION_KEY='${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}'
+          INITIALISATION_VECTOR='${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}'
+          EXAMPLE_SEED='True'
+          EOF
+
+      - name: Run Teardown
+        shell: bash
+        run: npm run teardown:dev
