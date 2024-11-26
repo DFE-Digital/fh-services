@@ -10,14 +10,14 @@ on:
     inputs:
       environment:
         description: The environment target for deployment
-        default: 'Development'
+        default: "Development"
         type: choice
         options:
-          - 'Development'
-          - 'Test'
-          - 'Test2'
-          - 'Pre-production'
-          - 'Production'
+          - "Development"
+          - "Test"
+          - "Test2"
+          - "Pre-production"
+          - "Production"
 
 permissions:
   id-token: write
@@ -29,19 +29,21 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        project: [ src/service/idam-api/,
-                   src/service/notification-api/,
-                   src/service/referral-api/,
-                   src/service/report-api/,
-                   src/service/service-directory-api/,
-                   src/service/mock-hsda-api/,
-                   src/function/open-referral-function/,
-                   src/ui/connect-dashboard-ui/,
-                   src/ui/connect-ui/,
-                   src/ui/find-ui/,
-                   src/ui/idam-maintenance-ui/,
-                   src/ui/manage-ui/
-        ]
+        project:
+          [
+            src/service/idam-api/,
+            src/service/notification-api/,
+            src/service/referral-api/,
+            src/service/report-api/,
+            src/service/service-directory-api/,
+            src/service/mock-hsda-api/,
+            src/function/open-referral-function/,
+            src/ui/connect-dashboard-ui/,
+            src/ui/connect-ui/,
+            src/ui/find-ui/,
+            src/ui/idam-maintenance-ui/,
+            src/ui/manage-ui/,
+          ]
         include:
           - project: src/service/idam-api/
             publish_project: FamilyHubs.Idam.Api
@@ -90,17 +92,18 @@ jobs:
   reset-databases:
     if: startsWith(inputs.environment, 'Test')
     name: Reset the ${{ matrix.display_name }} database
-    needs: [ build-projects-upload-artifacts ]
+    needs: [build-projects-upload-artifacts]
     strategy:
       matrix:
-        databases: [
-          idam-database,
-          notification-database,
-          open-referral-mock-database,
-          referral-database,
-          report-database,
-          service-directory-database
-        ]
+        databases:
+          [
+            idam-database,
+            notification-database,
+            open-referral-mock-database,
+            referral-database,
+            report-database,
+            service-directory-database,
+          ]
         include:
           - databases: idam-database
             display_name: IDAM
@@ -120,7 +123,7 @@ jobs:
             sql_file_path: ./test/reset-scripts/reset-database.sql
           - databases: report-database
             display_name: Report
-            keyvault_secret_name: REPORT-API-CONNECTIONSTRINGS-REPORTCONNECTION  
+            keyvault_secret_name: REPORT-API-CONNECTIONSTRINGS-REPORTCONNECTION
             sql_file_path: ./test/reset-scripts/reset-database.sql
           - databases: service-directory-database
             display_name: Service Directory
@@ -133,20 +136,22 @@ jobs:
       keyvault_secret_name: ${{ matrix.keyvault_secret_name }}
       sql_file_path: ${{ matrix.sql_file_path }}
     secrets: inherit
-    
+
   deploy-api-services:
     if: always() && (needs.reset-databases.result == 'success' || needs.reset-databases.result == 'skipped')
     name: ${{ matrix.job_name }}
-    needs: [ reset-databases ]
+    needs: [reset-databases]
     strategy:
       matrix:
-        artifact_name: [ idam-api,
-                         notification-api,
-                         referral-api,
-                         report-api,
-                         service-directory-api,
-                         mock-hsda-api
-        ]
+        artifact_name:
+          [
+            idam-api,
+            notification-api,
+            referral-api,
+            report-api,
+            service-directory-api,
+            mock-hsda-api,
+          ]
         include:
           - artifact_name: idam-api
             job_name: Deploy - IDAM API
@@ -201,19 +206,21 @@ jobs:
       project_type: service
       azure_app_name: ${{ matrix.azure_app_name }}
     secrets: inherit
-    
+
   deploy-ui-services:
     if: always() && needs.deploy-api-services.result == 'success' && (needs.reset-databases.result == 'success' || needs.reset-databases.result == 'skipped')
     name: ${{ matrix.job_name }}
-    needs: [ deploy-api-services ]
+    needs: [deploy-api-services]
     strategy:
       matrix:
-        artifact_name: [ connect-dashboard-ui,
-                         connect-ui,
-                         find-ui,
-                         idam-maintenance-ui,
-                         manage-ui
-        ]
+        artifact_name:
+          [
+            connect-dashboard-ui,
+            connect-ui,
+            find-ui,
+            idam-maintenance-ui,
+            manage-ui,
+          ]
         include:
           - artifact_name: connect-dashboard-ui
             job_name: Deploy - Connect Dashboard UI
@@ -257,12 +264,10 @@ jobs:
   deploy-functions:
     if: always() && (needs.reset-databases.result == 'success' || needs.reset-databases.result == 'skipped')
     name: ${{ matrix.job_name }}
-    needs: [ reset-databases ]
+    needs: [reset-databases]
     strategy:
       matrix:
-        artifact_name: [
-          open-referral-function
-        ]
+        artifact_name: [open-referral-function]
         include:
           - artifact_name: open-referral-function
             job_name: Deploy - Open Referral Function
@@ -276,21 +281,22 @@ jobs:
       keyvault_prefix: ${{ matrix.keyvault_prefix }}
       azure_app_name: ${{ matrix.azure_app_name }}
     secrets: inherit
-  
+
   seed-databases:
     if: startsWith(inputs.environment, 'Test')
     name: Seed the ${{ matrix.display_name }} database
-    needs: [ deploy-api-services, deploy-ui-services, deploy-functions ]
+    needs: [deploy-api-services, deploy-ui-services, deploy-functions]
     strategy:
       matrix:
-        databases: [ 
-          idam-database, 
-          notification-database, 
-          open-referral-mock-database, 
-          referral-database, 
-          report-database, 
-          service-directory-database 
-        ]
+        databases:
+          [
+            idam-database,
+            notification-database,
+            open-referral-mock-database,
+            referral-database,
+            report-database,
+            service-directory-database,
+          ]
         include:
           - databases: idam-database
             display_name: IDAM
@@ -323,18 +329,25 @@ jobs:
       keyvault_secret_name: ${{ matrix.keyvault_secret_name }}
       sql_file_path: ${{ matrix.sql_file_path }}
     secrets: inherit
-    
+
+    # TODO: Change to 'Test'
+  seed-databases-automated-e2e-tests:
+    if: startsWith(inputs.environment, 'Development')
+    name: Seed Each Database For E2E Automated Testing
+    runs-on: ubuntu-22.04
+    uses: ./.github/workflows/run-e2e-seed-scripts.yml
+    with:
+      environment: ${{ inputs.environment }}
+      action: "Setup"
+    secrets: inherit
+
   run-api-acceptance-tests:
     if: startsWith(inputs.environment, 'Test')
     name: ${{ matrix.job_name }}
-    needs: [ seed-databases ]
+    needs: [seed-databases, seed-databases-automated-e2e-tests]
     strategy:
       matrix:
-        project_name: [
-          report-api,
-          referral-api,
-          service-directory-api
-        ]
+        project_name: [report-api, referral-api, service-directory-api]
         include:
           - project_name: report-api
             job_name: Test - Report API
