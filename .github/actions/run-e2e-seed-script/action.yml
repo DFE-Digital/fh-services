@@ -23,6 +23,12 @@ inputs:
   initialisation_vector:
     required: true
     description: The column initialisation vector for the Referral Db
+  azure_client_id:
+    required: true
+  azure_tenant_id:
+    required: true
+  azure_subscription_id:
+    required: true
   action:
     required: true
     type: choice
@@ -63,17 +69,17 @@ runs:
     - name: Azure CLI Login
       uses: azure/login@v2
       with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        client-id: ${{ inputs.azure_client_id }}
+        tenant-id: ${{ inputs.azure_tenant_id }}
+        subscription-id: ${{ inputs.azure_subscription_id }}
 
     - name: Add Azure Firewall Rule
       uses: ./.github/actions/azure-firewall-ip
       with:
         ip_address: ${{ steps.runner-ip.outputs.ip_address }}
         action: "Add"
-        az_resource_group: ${{ inputs.RESOURCE_GROUP }}
-        az_sql_server_name: ${{ inputs.SQL_SERVER }}
+        az_resource_group: ${{ inputs.resource_group }}
+        az_sql_server_name: ${{ inputs.sql_server }}
         az_firewall_rule_name: e2e-seed-script
 
     - name: Run Setup
@@ -92,6 +98,6 @@ runs:
       with:
         ip_address: ${{ steps.runner-ip.outputs.ip_address }}
         action: "Remove"
-        az_resource_group: ${{ inputs.RESOURCE_GROUP }}
-        az_sql_server_name: ${{ inputs.SQL_SERVER }}
+        az_resource_group: ${{ inputs.resource_group }}
+        az_sql_server_name: ${{ inputs.sql_server }}
         az_firewall_rule_name: e2e-seed-script
