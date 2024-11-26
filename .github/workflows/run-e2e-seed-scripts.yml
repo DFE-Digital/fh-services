@@ -6,6 +6,15 @@ concurrency:
 
 on:
   workflow_call:
+    inputs:
+      environment:
+        description: The environment target for running the seed scripts
+        required: true
+        type: string
+      action:
+        description: Script(s) to run, choices are -> "Setup", "Teardown" or "Setup & Teardown"
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       environment:
