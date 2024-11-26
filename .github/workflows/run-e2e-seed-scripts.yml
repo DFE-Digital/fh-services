@@ -30,15 +30,15 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  WORKING_DIRECTORY: "test/e2e-seed-data-framework"
+
 jobs:
   run-pre-setup-teardown:
     if: ${{ startsWith(inputs.action, 'Setup') }}
     name: Run Pre-Setup Teardown
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
-    defaults:
-      run:
-        working-directory: "test/e2e-seed-data-framework"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -58,6 +58,7 @@ jobs:
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          working_directory: ${{ env.WORKING_DIRECTORY }}
           action: "Teardown"
 
   run-setup:
@@ -66,9 +67,6 @@ jobs:
     name: Run Setup
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
-    defaults:
-      run:
-        working-directory: "test/e2e-seed-data-framework"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -88,6 +86,7 @@ jobs:
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          working_directory: ${{ env.WORKING_DIRECTORY }}
           action: "Setup"
 
   run-teardown:
@@ -96,9 +95,6 @@ jobs:
     name: Run Teardown
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
-    defaults:
-      run:
-        working-directory: "test/e2e-seed-data-framework"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -118,4 +114,5 @@ jobs:
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
           azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          working_directory: ${{ env.WORKING_DIRECTORY }}
           action: "Teardown"

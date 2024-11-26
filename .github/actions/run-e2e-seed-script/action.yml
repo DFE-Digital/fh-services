@@ -29,6 +29,9 @@ inputs:
     required: true
   azure_subscription_id:
     required: true
+  working_directory:
+    required: true
+    description: The working directory where the scripts are located
   action:
     required: true
     type: choice
@@ -44,6 +47,10 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: "lts/Jod" # Jod is the codename for 22 LTS
+
+    - name: CD into Working Directory
+      shell: bash
+      run: cd ${{ inputs.working_directory }}
 
     - name: Install NPM Packages
       shell: bash
