@@ -334,11 +334,25 @@ jobs:
   seed-databases-automated-e2e-tests:
     if: startsWith(inputs.environment, 'Development')
     name: Seed Each Database For E2E Automated Testing
-    runs-on: ubuntu-22.04
     uses: ./.github/workflows/run-e2e-seed-scripts.yml
     with:
       environment: ${{ inputs.environment }}
       action: "Setup"
+    secrets: inherit
+
+  # TODO: Playwright E2E Tests Go Here
+
+  # TODO: Change to 'Test'
+  teardown-databases-automated-e2e-tests:
+    needs: [seed-databases-automated-e2e-tests] # TODO: Temporary while we don't have E2E tests, below are what will be implemented at the time.
+    # if: ${{ always() && needs.playwright-e2e-tests == 'success' }}
+    # needs: [playwright-e2e-tests]
+    if: startsWith(inputs.environment, 'Development')
+    name: Teardown Each Database After E2E Automated Testing
+    uses: ./.github/workflows/run-e2e-seed-scripts.yml
+    with:
+      environment: ${{ inputs.environment }}
+      action: "Teardown"
     secrets: inherit
 
   run-api-acceptance-tests:
