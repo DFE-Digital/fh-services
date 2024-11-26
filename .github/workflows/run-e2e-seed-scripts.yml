@@ -1,13 +1,12 @@
 name: Run E2E Test Seed Scripts
 
-# TODO: Move this into a reusable action to be called elsewhere rather than a workflow.. But for now this is good for testing
-
 concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: true
 
 on:
-  workflow_dispatch: # TODO: Temporary for testing
+  workflow_call:
+  workflow_dispatch:
     inputs:
       environment:
         description: The environment target for running the seed scripts
@@ -36,7 +35,7 @@ env:
 jobs:
   run-pre-setup-teardown:
     if: ${{ startsWith(inputs.action, 'Setup') }}
-    name: Run Pre-Setup Teardown
+    name: Run Pre-Setup Teardown Script
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
     steps:
@@ -45,7 +44,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Run Teardown
+      - name: Run Teardown Script
         uses: ./.github/actions/run-e2e-seed-script
         with:
           resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
@@ -64,7 +63,7 @@ jobs:
   run-setup:
     needs: [run-pre-setup-teardown]
     if: ${{ startsWith(inputs.action, 'Setup') }}
-    name: Run Setup
+    name: Run Setup Script
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
     steps:
@@ -73,7 +72,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Run Setup
+      - name: Run Setup Script
         uses: ./.github/actions/run-e2e-seed-script
         with:
           resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
@@ -92,7 +91,7 @@ jobs:
   run-teardown:
     needs: [run-setup]
     if: ${{ always() && (endsWith(inputs.action, 'Teardown') && ( needs.run-setup.result == 'success' || needs.run-setup.result == 'skipped' ))}}
-    name: Run Teardown
+    name: Run Teardown Script
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
     steps:
@@ -101,7 +100,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Run Teardown
+      - name: Run Teardown Script
         uses: ./.github/actions/run-e2e-seed-script
         with:
           resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
