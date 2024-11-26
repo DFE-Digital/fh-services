@@ -48,17 +48,16 @@ runs:
       with:
         node-version: "lts/Jod" # Jod is the codename for 22 LTS
 
-    - name: CD into Working Directory
-      shell: bash
-      run: cd ${{ inputs.working_directory }}
-
     - name: Install NPM Packages
       shell: bash
-      run: npm i
+      run: |
+        cd ${{ inputs.working_directory }}
+        npm i
 
     - name: Create Environment Variables
       shell: bash
       run: |
+        cd ${{ inputs.working_directory }}
         cat <<EOF>> .env
         IDS_START_FROM=1000000
         CONNECTION_STRING_SERVICEDIRECTORY='${{ inputs.connection_string_service_directory }}'
@@ -92,12 +91,16 @@ runs:
     - name: Run Setup
       if: ${{ inputs.action == 'Setup' }}
       shell: bash
-      run: npm run setup:dev
+      run: |
+        cd ${{ inputs.working_directory }}
+        npm run setup:dev
 
     - name: Run Teardown
       if: ${{ inputs.action == 'Teardown' }}
       shell: bash
-      run: npm run teardown:dev
+      run: |
+        cd ${{ inputs.working_directory }}
+        npm run teardown:dev
 
     - name: Remove Azure Firewall Rule
       if: always()
