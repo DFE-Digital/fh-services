@@ -47,11 +47,17 @@ jobs:
         with:
           resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
           sql_server: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
+          connection_string_service_directory: ${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}
+          connection_string_referral: ${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}
+          connection_string_report: ${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}
+          encryption_key: ${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}
+          initialisation_vector: ${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}
           action: "Teardown"
 
   run-setup:
     needs: [run-pre-setup-teardown]
     if: ${{ startsWith(inputs.action, 'Setup') }}
+    name: Run Setup
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
     steps:
@@ -65,11 +71,17 @@ jobs:
         with:
           resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
           sql_server: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
+          connection_string_service_directory: ${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}
+          connection_string_referral: ${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}
+          connection_string_report: ${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}
+          encryption_key: ${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}
+          initialisation_vector: ${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}
           action: "Setup"
 
   run-teardown:
     needs: [run-setup]
     if: ${{ always() && (endsWith(inputs.action, 'Teardown') && ( needs.run-setup.result == 'success' || needs.run-setup.result == 'skipped' ))}}
+    name: Run Teardown
     runs-on: ubuntu-22.04
     environment: ${{ inputs.environment }}
     steps:
@@ -83,4 +95,9 @@ jobs:
         with:
           resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
           sql_server: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
+          connection_string_service_directory: ${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}
+          connection_string_referral: ${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}
+          connection_string_report: ${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}
+          encryption_key: ${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}
+          initialisation_vector: ${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}
           action: "Teardown"

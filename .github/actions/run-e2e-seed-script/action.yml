@@ -8,6 +8,21 @@ inputs:
   sql_server:
     required: true
     description: Name of the SQL Server to run the seed script(s) against
+  connection_string_service_directory:
+    required: true
+    description: The connection string to the Service Directory Db
+  connection_string_referral:
+    required: true
+    description: The connection string to the Referral Db
+  connection_string_report:
+    required: true
+    description: The connection string to the Report Db
+  encryption_key:
+    required: true
+    description: The column encryption key for the Referral Db
+  initialisation_vector:
+    required: true
+    description: The column initialisation vector for the Referral Db
   action:
     required: true
     type: choice
@@ -33,11 +48,11 @@ runs:
       run: |
         cat <<EOF>> .env
         IDS_START_FROM=1000000
-        CONNECTION_STRING_SERVICEDIRECTORY='${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}'
-        CONNECTION_STRING_REFERRAL='${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}'
-        CONNECTION_STRING_REPORT='${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}'
-        ENCRYPTION_KEY='${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}'
-        INITIALISATION_VECTOR='${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}'
+        CONNECTION_STRING_SERVICEDIRECTORY='${{ inputs.connection_string_service_directory }}'
+        CONNECTION_STRING_REFERRAL='${{ inputs.connection_string_referral }}'
+        CONNECTION_STRING_REPORT='${{ inputs.connection_string_report }}'
+        ENCRYPTION_KEY='${{ inputs.encryption_key }}'
+        INITIALISATION_VECTOR='${{ inputs.initialisation_vector }}'
         EXAMPLE_SEED='False'
         EOF
 
