@@ -2,6 +2,7 @@ using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
 using FamilyHubs.ServiceDirectory.Admin.Web.Pages.Shared;
 using FamilyHubs.SharedKernel.Identity;
+using FamilyHubs.SharedKernel.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,9 +22,9 @@ public enum MenuPage
 public class WelcomeModel : HeaderPageModel
 {
     public MenuPage MenuPage { get; set; }
-
     public string? Heading { get; set; }
-    public string? SubHeading { get; set; }
+    public string? CaptionText { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     private readonly ICacheService _cacheService;
     private readonly IServiceDirectoryClient _serviceDirectoryClient;
@@ -39,48 +40,64 @@ public class WelcomeModel : HeaderPageModel
     public async Task OnGet()
     {
         var familyHubsUser = HttpContext.GetFamilyHubsUser();
-        SetVisibleSections(familyHubsUser.Role);
-
-        Heading = familyHubsUser.FullName;
-        //todo: no magic strings
-        if (familyHubsUser.OrganisationId == "-1")
-        {
-            SubHeading = "Department for Education";
-        }
-        else
-        {
-            if (long.TryParse(familyHubsUser.OrganisationId, out var organisationId))
-            {
-                //todo: looks like we get the organisation with *all* it's services, just so that we can use the name!
-                var organisation = await _serviceDirectoryClient.GetOrganisationById(organisationId);
-                SubHeading = organisation.Name;
-            }
-        }
+        await SetModelPropertiesBasedOnRole(familyHubsUser);
 
         await _cacheService.ResetLastPageName();
     }
 
-    private void SetVisibleSections(string role)
+    private async Task SetModelPropertiesBasedOnRole(FamilyHubsUser familyHubsUser)
     {
-        switch (role)
+        switch (familyHubsUser.Role)
         {
             case RoleTypes.DfeAdmin:
-                MenuPage = MenuPage.Dfe;
+                SetDfeAdminProperties(familyHubsUser);
                 break;
-
-            case RoleTypes.LaDualRole:
             case RoleTypes.LaManager:
-                MenuPage = MenuPage.La;
+            case RoleTypes.LaDualRole:
+                await SetLaAdminProperties(familyHubsUser);
                 break;
-
-            case RoleTypes.VcsDualRole:
             case RoleTypes.VcsManager:
-                MenuPage = MenuPage.Vcs;
+            case RoleTypes.VcsDualRole:
+                await SetVcsAdminProperties(familyHubsUser);
                 break;
-
             default:
-                throw new InvalidOperationException($"Unknown role: {role}");
+                throw new InvalidOperationException($"Unknown role: {familyHubsUser.Role}");
         }
+    }
+    
+    private void SetDfeAdminProperties(FamilyHubsUser familyHubsUser)
+    {
+        Heading = familyHubsUser.FullName;
+        CaptionText = "Department for Education";
+        Description = "Manage users, services, locations and organisations and view performance data.";
+        MenuPage = MenuPage.Dfe;
+    }
+    
+    private async Task SetLaAdminProperties(FamilyHubsUser familyHubsUser)
+    {
+        CaptionText = await TryGetOrganisationName(familyHubsUser);
+        Description = "Manage users, services, locations and organisations and view performance data.";
+        Heading = familyHubsUser.FullName;
+        MenuPage = MenuPage.La;
+    }
+    
+    private async Task SetVcsAdminProperties(FamilyHubsUser familyHubsUser)
+    {
+        CaptionText = await TryGetOrganisationName(familyHubsUser);
+        Description = "Manage services, locations and organisations and view performance data.";
+        Heading = familyHubsUser.FullName;
+        MenuPage = MenuPage.Vcs;
+    }
+
+    private async Task<string> TryGetOrganisationName(FamilyHubsUser familyHubsUser)
+    {
+        if (!long.TryParse(familyHubsUser.OrganisationId, out var organisationId))
+        {
+            return "";
+        }
+        
+        var org = await _serviceDirectoryClient.GetOrganisationById(organisationId);
+        return org.Name;
     }
 
     public IActionResult OnGetAddPermissionFlow()
