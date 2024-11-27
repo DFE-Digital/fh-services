@@ -50,7 +50,7 @@ public class WelcomeModel : HeaderPageModel
         switch (familyHubsUser.Role)
         {
             case RoleTypes.DfeAdmin:
-                SetDfeAdminProperties(familyHubsUser);
+                await SetDfeAdminProperties(familyHubsUser);
                 break;
             case RoleTypes.LaManager:
             case RoleTypes.LaDualRole:
@@ -65,35 +65,41 @@ public class WelcomeModel : HeaderPageModel
         }
     }
     
-    private void SetDfeAdminProperties(FamilyHubsUser familyHubsUser)
+    private async Task SetDfeAdminProperties(FamilyHubsUser familyHubsUser)
     {
         Heading = familyHubsUser.FullName;
-        CaptionText = "Department for Education";
+        CaptionText = await GetOrganisationName(familyHubsUser);
         Description = "Manage users, services, locations and organisations and view performance data.";
         MenuPage = MenuPage.Dfe;
     }
     
     private async Task SetLaAdminProperties(FamilyHubsUser familyHubsUser)
     {
-        CaptionText = await TryGetOrganisationName(familyHubsUser);
-        Description = "Manage users, services, locations and organisations and view performance data.";
         Heading = familyHubsUser.FullName;
+        CaptionText = await GetOrganisationName(familyHubsUser);
+        Description = "Manage users, services, locations and organisations and view performance data.";
         MenuPage = MenuPage.La;
     }
     
     private async Task SetVcsAdminProperties(FamilyHubsUser familyHubsUser)
     {
-        CaptionText = await TryGetOrganisationName(familyHubsUser);
-        Description = "Manage services, locations and organisations and view performance data.";
         Heading = familyHubsUser.FullName;
+        CaptionText = await GetOrganisationName(familyHubsUser);
+        Description = "Manage services, locations and organisations and view performance data.";
         MenuPage = MenuPage.Vcs;
     }
 
-    private async Task<string> TryGetOrganisationName(FamilyHubsUser familyHubsUser)
+    private async Task<string> GetOrganisationName(FamilyHubsUser familyHubsUser)
     {
-        if (!long.TryParse(familyHubsUser.OrganisationId, out var organisationId))
+        if(familyHubsUser.Role == RoleTypes.DfeAdmin)
         {
-            return "";
+            return "Department for Education";
+        }
+        
+        var parseOrgId = long.TryParse(familyHubsUser.OrganisationId, out var organisationId);
+        if (!parseOrgId)
+        {
+            throw new InvalidOperationException($"Could not parse OrganisationId from claim: {organisationId}");
         }
         
         var org = await _serviceDirectoryClient.GetOrganisationById(organisationId);

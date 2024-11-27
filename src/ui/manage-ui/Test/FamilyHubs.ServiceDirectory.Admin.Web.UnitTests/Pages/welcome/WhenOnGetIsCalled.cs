@@ -129,6 +129,24 @@ public class WhenOnGetIsCalled
         // Assert
         Assert.Equal(expected, welcomeModel.MenuPage);
     }
+
+    [Fact]
+    public async Task ShouldThrowException_WhenOrganisationIdIsNotANumber()
+    {
+        // Arrange
+        var welcomeModel = new WelcomeModel(_cacheService, _serviceDirectoryClient);
+        var claims = new List<Claim>
+        {
+            new(FamilyHubsClaimTypes.FullName, "Dfe Admin"),
+            new(FamilyHubsClaimTypes.Role, RoleTypes.LaManager),
+            new(FamilyHubsClaimTypes.OrganisationId, "NotANumber")
+        };
+        _httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims));
+        welcomeModel.PageContext = new PageContext { HttpContext = _httpContext };
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => welcomeModel.OnGet());
+    }
     
     private static OrganisationDetailsDto CreateTestOrganisationDetailsDto(string nameOfOrg)
     {
