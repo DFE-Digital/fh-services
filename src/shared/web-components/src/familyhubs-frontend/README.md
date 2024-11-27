@@ -5,7 +5,7 @@ This package is designed to work in conjunction with the [FamilyHubs.SharedKerne
 It builds on top of these packages:
 * [GOV.UK Design System](https://www.npmjs.com/package/govuk-frontend)
 * [Ministry of Justice Frontend](https://www.npmjs.com/package/@ministryofjustice/frontend)
-* [DfE Frontend](https://www.npmjs.com/package/dfe-frontend-alpha)
+* [DfE Frontend](https://www.npmjs.com/package/dfe-frontend)
 * [Accessible autocomplete](https://github.com/alphagov/accessible-autocomplete)
 
 The package contains:
@@ -108,9 +108,9 @@ The version of the FamilyHubs.SharedKernel.Razor package is given in its FamilyH
 
 ## familyhubs-frontend
 
-To publish this npm package, you’ll need to follow these steps:
+To publish this npm package, you will need to follow these steps:
 
-* Create a user account on the npm website if you don’t already have one.
+* Create a user account on the npm website if you do not already have one.
 * In your terminal or command prompt, navigate to the `familyhubs-frontend` directory, containing the package files.
 * Run the `npm login` command and enter your npm username, password, and email when prompted.
 * Update the package.json file in the package directory with the version number synced to the FamilyHubs.SharedKernel.Razor version.
@@ -140,7 +140,7 @@ Create a new Razor Page. Inject ICookiePage into the PageModel's constructor, st
 
 To add support for users running without Javascript, add an OnPost method as per the example.
 
-E.g.
+e.g.
 
 ```
 public class IndexModel : PageModel

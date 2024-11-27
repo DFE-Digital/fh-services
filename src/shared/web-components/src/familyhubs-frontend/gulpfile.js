@@ -57,7 +57,7 @@ gulp.task('copy-govuk-frontend-js', function () {
 });
 
 gulp.task('copy-dfe-frontend-js', function () {
-    return copyPackageJsToWwwroot('dfe-frontend-alpha', 'dist/dfefrontend.min.js');
+    return copyPackageJsToWwwroot('dfe-frontend', 'dist/dfefrontend.min.js');
 });
 
 gulp.task('copy-moj-frontend-js', function () {
