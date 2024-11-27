@@ -47,46 +47,29 @@ public class WelcomeModel : HeaderPageModel
 
     private async Task SetModelPropertiesBasedOnRole(FamilyHubsUser familyHubsUser)
     {
+        Heading = familyHubsUser.FullName;
+        CaptionText = await GetOrganisationName(familyHubsUser);
+        const string dfeAndLaAdminDescription = "Manage users, services, locations and organisations and view performance data.";
+        
         switch (familyHubsUser.Role)
         {
             case RoleTypes.DfeAdmin:
-                await SetDfeAdminProperties(familyHubsUser);
+                Description = dfeAndLaAdminDescription;
+                MenuPage = MenuPage.Dfe;
                 break;
             case RoleTypes.LaManager:
             case RoleTypes.LaDualRole:
-                await SetLaAdminProperties(familyHubsUser);
+                Description = dfeAndLaAdminDescription;
+                MenuPage = MenuPage.La;
                 break;
             case RoleTypes.VcsManager:
             case RoleTypes.VcsDualRole:
-                await SetVcsAdminProperties(familyHubsUser);
+                Description = "Manage services, locations and organisations and view performance data.";
+                MenuPage = MenuPage.Vcs;
                 break;
             default:
                 throw new InvalidOperationException($"Unknown role: {familyHubsUser.Role}");
         }
-    }
-    
-    private async Task SetDfeAdminProperties(FamilyHubsUser familyHubsUser)
-    {
-        Heading = familyHubsUser.FullName;
-        CaptionText = await GetOrganisationName(familyHubsUser);
-        Description = "Manage users, services, locations and organisations and view performance data.";
-        MenuPage = MenuPage.Dfe;
-    }
-    
-    private async Task SetLaAdminProperties(FamilyHubsUser familyHubsUser)
-    {
-        Heading = familyHubsUser.FullName;
-        CaptionText = await GetOrganisationName(familyHubsUser);
-        Description = "Manage users, services, locations and organisations and view performance data.";
-        MenuPage = MenuPage.La;
-    }
-    
-    private async Task SetVcsAdminProperties(FamilyHubsUser familyHubsUser)
-    {
-        Heading = familyHubsUser.FullName;
-        CaptionText = await GetOrganisationName(familyHubsUser);
-        Description = "Manage services, locations and organisations and view performance data.";
-        MenuPage = MenuPage.Vcs;
     }
 
     private async Task<string> GetOrganisationName(FamilyHubsUser familyHubsUser)
