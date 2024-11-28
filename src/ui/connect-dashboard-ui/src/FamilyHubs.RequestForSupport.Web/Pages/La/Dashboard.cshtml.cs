@@ -1,17 +1,19 @@
+using FamilyHubs.Referral.Core.ApiClients;
 using FamilyHubs.ReferralService.Shared.Dto;
 using FamilyHubs.ReferralService.Shared.Enums;
 using FamilyHubs.ReferralService.Shared.Models;
-using FamilyHubs.RequestForSupport.Core.ApiClients;
 using FamilyHubs.RequestForSupport.Web.LaDashboard;
 using FamilyHubs.RequestForSupport.Web.Models;
 using FamilyHubs.RequestForSupport.Web.Pages.Shared;
 using FamilyHubs.RequestForSupport.Web.Security;
 using FamilyHubs.SharedKernel.Identity;
+using FamilyHubs.SharedKernel.Identity.Models;
 using FamilyHubs.SharedKernel.Razor.Dashboard;
 using FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options;
 using FamilyHubs.SharedKernel.Razor.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
+using IReferralClientService = FamilyHubs.RequestForSupport.Core.ApiClients.IReferralClientService;
 
 namespace FamilyHubs.RequestForSupport.Web.Pages.La;
 
@@ -32,9 +34,13 @@ public class DashboardModel : HeaderPageModel, IDashboard<ReferralDto>
 
     private readonly IReferralClientService _referralClientService;
     private readonly FamilyHubsUiOptions _familyHubsUiOptions;
+    private readonly IOrganisationClientService _organisationClientService;
 
     string? IDashboard<ReferralDto>.TableClass => "app-la-dashboard";
 
+    public string Title => "My requests";
+    public string SubTitle => "Connection requests sent to services";
+    public string? CaptionText { get; set; }
     public IPagination Pagination { get; set; }
 
     public const int PageSize = 20;
@@ -46,10 +52,12 @@ public class DashboardModel : HeaderPageModel, IDashboard<ReferralDto>
 
     public DashboardModel(
         IReferralClientService referralClientService,
-        IOptions<FamilyHubsUiOptions> familyHubsUiOptions)
+        IOptions<FamilyHubsUiOptions> familyHubsUiOptions,
+        IOrganisationClientService organisationClientService)
     {
         _referralClientService = referralClientService;
         _familyHubsUiOptions = familyHubsUiOptions.Value;
+        _organisationClientService = organisationClientService;
         Pagination = IPagination.DontShow;
     }
 
@@ -74,6 +82,20 @@ public class DashboardModel : HeaderPageModel, IDashboard<ReferralDto>
         _rows = searchResults.Items.Select(r => new LaDashboardRow(r, thisWebBaseUrl));
 
         Pagination = new LargeSetLinkPagination<Column>(laDashboardUrl, searchResults.TotalPages, currentPage.Value, column, sort);
+        
+        CaptionText = await GetOrganisationName(user);
+    }
+    
+    private async Task<string> GetOrganisationName(FamilyHubsUser familyHubsUser)
+    {
+        var parseOrgId = long.TryParse(familyHubsUser.OrganisationId, out var organisationId);
+        if (!parseOrgId)
+        {
+            throw new InvalidOperationException($"Could not parse OrganisationId from claim: {organisationId}");
+        }
+
+        var org = await _organisationClientService.GetOrganisationDtoByIdAsync(organisationId);
+        return org?.Name ?? "";
     }
 
     private async Task<PaginatedList<ReferralDto>> GetConnections(
