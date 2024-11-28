@@ -13,7 +13,6 @@ using FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options;
 using FamilyHubs.SharedKernel.Razor.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
-using IReferralClientService = FamilyHubs.RequestForSupport.Core.ApiClients.IReferralClientService;
 
 namespace FamilyHubs.RequestForSupport.Web.Pages.La;
 

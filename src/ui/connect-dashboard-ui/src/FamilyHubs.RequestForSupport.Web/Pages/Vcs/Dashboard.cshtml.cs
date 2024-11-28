@@ -13,7 +13,6 @@ using FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options;
 using Microsoft.Extensions.Options;
 using FamilyHubs.RequestForSupport.Web.Pages.Shared;
 using FamilyHubs.SharedKernel.Identity.Models;
-using IReferralClientService = FamilyHubs.RequestForSupport.Core.ApiClients.IReferralClientService;
 
 namespace FamilyHubs.RequestForSupport.Web.Pages.Vcs;
 
