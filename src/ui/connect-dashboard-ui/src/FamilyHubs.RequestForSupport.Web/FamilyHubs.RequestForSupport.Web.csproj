@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\connect-ui\src\FamilyHubs.Referral.Core\FamilyHubs.Referral.Core.csproj" />
     <ProjectReference Include="..\FamilyHubs.RequestForSupport.Core\FamilyHubs.RequestForSupport.Core.csproj" />
     <ProjectReference Include="..\FamilyHubs.RequestForSupport.Infrastructure\FamilyHubs.RequestForSupport.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\..\service\notification-api\src\FamilyHubs.Notification.Api.Client\FamilyHubs.Notification.Api.Client.csproj" />

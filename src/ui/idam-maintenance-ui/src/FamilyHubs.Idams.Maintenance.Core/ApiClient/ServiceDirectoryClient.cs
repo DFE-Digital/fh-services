@@ -24,6 +24,12 @@ public class ServiceDirectoryClient : ApiService<ServiceDirectoryClient>, IServi
 #endif
     }
 
+    public ServiceDirectoryClient(HttpClient client, ILogger<ServiceDirectoryClient> logger)
+        : base(client, logger)
+    {
+        
+    }
+
     public async Task<OrganisationDetailsDto?> GetOrganisationById(long id)
     {
         var request = new HttpRequestMessage();
