@@ -8,7 +8,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 using Serilog;
 using Serilog.Events;
 using System.Diagnostics.CodeAnalysis;
-using FamilyHubs.Referral.Core.ApiClients;
+using FamilyHubs.RequestForSupport.Core.ApiClients;
 using FamilyHubs.RequestForSupport.Infrastructure.Health;
 using FamilyHubs.SharedKernel.Health;
 using IReferralClientService = FamilyHubs.RequestForSupport.Core.ApiClients.IReferralClientService;
@@ -71,12 +71,12 @@ public static class StartupExtensions
 
     public static void AddHttpClients(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSecuredTypedHttpClient<IReferralClientService, ReferralClientService>((serviceProvider, httpClient) =>
+        services.AddSecuredTypedHttpClient<IReferralClientService, ReferralClientService>((_, httpClient) =>
         {
             httpClient.BaseAddress = new Uri(configuration.GetValue<string>("ReferralApiUrl")!);
         });
         
-        services.AddSecuredTypedHttpClient<IOrganisationClientService, OrganisationClientService>((serviceProvider, httpClient) =>
+        services.AddSecuredTypedHttpClient<IOrganisationClientService, OrganisationClientService>((_, httpClient) =>
         {
             httpClient.BaseAddress = new Uri(configuration.GetValue<string>("ServiceDirectoryUrl")!);
         });

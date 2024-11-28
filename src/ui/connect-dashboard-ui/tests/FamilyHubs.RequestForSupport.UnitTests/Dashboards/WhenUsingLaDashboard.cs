@@ -2,7 +2,6 @@ using FamilyHubs.ReferralService.Shared.Dto;
 using FamilyHubs.ReferralService.Shared.Enums;
 using FamilyHubs.ReferralService.Shared.Models;
 using FamilyHubs.RequestForSupport.Web.Pages.La;
-using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.SharedKernel.Razor.Dashboard;
 using FluentAssertions;
 using NSubstitute;
@@ -34,13 +33,11 @@ public class WhenUsingLaDashboard : BaseDashboard<DashboardModel>
     {
         // Arrange
         OrganisationClientService.GetOrganisationDtoByIdAsync(1).Returns(
-            new ServiceDirectory.Shared.Dto.OrganisationDto
+            new OrganisationDto
             {
                 Id = 1,
-                OrganisationType = OrganisationType.NotSet,
                 Name = "VCS org name",
                 Description = "some descript",
-                AdminAreaCode = "abc",
             });
 
         // Act
