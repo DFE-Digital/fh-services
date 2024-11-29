@@ -61,6 +61,6 @@ public class BaseDashboard<T> where T : PageModel
             .Returns(familyHubsUiOptions);
         
         PageModel = Activator.CreateInstance(typeof(T), ReferralClientService, FamilyHubsUiOptions, OrganisationClientService) as T;
-        if (PageModel != null) PageModel.PageContext = basePageContext;
+        PageModel!.PageContext = basePageContext;
     }
 }
