@@ -10,6 +10,11 @@ public interface IOrganisationClientService
 
 public class OrganisationClientService : ApiService, IOrganisationClientService
 {
+    private static readonly JsonSerializerOptions Options = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+    
     public OrganisationClientService(HttpClient client) : base(client)
     {
     }
@@ -26,6 +31,7 @@ public class OrganisationClientService : ApiService, IOrganisationClientService
 
         response.EnsureSuccessStatusCode();
 
-        return await JsonSerializer.DeserializeAsync<OrganisationDto>(await response.Content.ReadAsStreamAsync(), options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        var contentStream = await response.Content.ReadAsStreamAsync();
+        return await JsonSerializer.DeserializeAsync<OrganisationDto>(contentStream, Options);
     }
 }
