@@ -47,10 +47,12 @@ public class WhenOnGetIsCalled
         // Assert
         Assert.Equal("Dfe Admin", welcomeModel.Heading);
         Assert.Equal("Department for Education", welcomeModel.CaptionText);
-        Assert.Equal("Manage users, services, locations and organisations and view performance data.", welcomeModel.Description);
+        Assert.Equal("Manage users, services, locations, organisations and view performance data.", welcomeModel.Description);
     }
 
-    [Theory] [InlineData(RoleTypes.LaManager)] [InlineData(RoleTypes.LaDualRole)]
+    [Theory] 
+    [InlineData(RoleTypes.LaManager)] 
+    [InlineData(RoleTypes.LaDualRole)]
     public async Task ShouldSetTextualPropertiesToLaAdmin_WhenUserIsLaAdmin(string role)
     {
         // Arrange
@@ -72,7 +74,7 @@ public class WhenOnGetIsCalled
         // Assert
         Assert.Equal("La Admin", welcomeModel.Heading);
         Assert.Equal("Local Authority Name", welcomeModel.CaptionText);
-        Assert.Equal("Manage users, services, locations and organisations and view performance data.", welcomeModel.Description);
+        Assert.Equal("Manage users, services, locations, organisations and view performance data.", welcomeModel.Description);
     }
     
     [Theory]
@@ -99,7 +101,7 @@ public class WhenOnGetIsCalled
         // Assert
         Assert.Equal("Vcs Admin", welcomeModel.Heading);
         Assert.Equal("Vcs organisation name", welcomeModel.CaptionText);
-        Assert.Equal("Manage services, locations and organisations and view performance data.", welcomeModel.Description);
+        Assert.Equal("Manage services, locations and view performance data.", welcomeModel.Description);
     }
 
     [Theory]

@@ -49,7 +49,7 @@ public class WelcomeModel : HeaderPageModel
     {
         Heading = familyHubsUser.FullName;
         CaptionText = await GetOrganisationName(familyHubsUser);
-        const string dfeAndLaAdminDescription = "Manage users, services, locations and organisations and view performance data.";
+        const string dfeAndLaAdminDescription = "Manage users, services, locations, organisations and view performance data.";
         
         switch (familyHubsUser.Role)
         {
@@ -64,7 +64,7 @@ public class WelcomeModel : HeaderPageModel
                 break;
             case RoleTypes.VcsManager:
             case RoleTypes.VcsDualRole:
-                Description = "Manage services, locations and organisations and view performance data.";
+                Description = "Manage services, locations and view performance data.";
                 MenuPage = MenuPage.Vcs;
                 break;
             default:
