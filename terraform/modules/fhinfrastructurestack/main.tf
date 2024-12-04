@@ -1995,15 +1995,20 @@ resource "azurerm_mssql_server_vulnerability_assessment" "sqlserver_db_vulnerabi
 
 # SQL Server Instance
 resource "azurerm_mssql_server" "sqlserver" {
-    name = "${var.prefix}-as-fh-sql-server"
-    resource_group_name = local.resource_group_name
-    location = var.location
-    version = "12.0"
+  name = "${var.prefix}-as-fh-sql-server"
+  resource_group_name = local.resource_group_name
+  location = var.location
+  version = "12.0"
 
-    administrator_login = var.sql_server_user
-    administrator_login_password = var.sql_server_pwd
+  administrator_login = var.sql_server_user
+  administrator_login_password = var.sql_server_pwd
 
-    tags = local.tags
+  azuread_administrator {
+    login_username = "s181-growingupwell-Delivery Team USR"
+    object_id      = var.service_principals.delivery_team_user_group_object_id
+  }
+  
+  tags = local.tags
 }
 
 # SQL Server Databases
