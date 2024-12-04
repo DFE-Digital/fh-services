@@ -20,7 +20,7 @@ inputs:
   az_firewall_rule_name:
     required: true
     type: string
-  general_key_vault:
+  admin_key_vault:
     required: true
     type: string
   keyvault_prefix:
@@ -47,9 +47,8 @@ runs:
     - name: Apply Database Migration
       shell: pwsh
       run:  |-
-        dotnet user-secrets set "AppConfiguration:KeyVaultIdentifier" "${{ inputs.general_key_vault }}" --project ${{ inputs.startup_project_path }}
-        dotnet user-secrets set "AppConfiguration:KeyVaultPrefix" "${{ inputs.keyvault_prefix }}" --project ${{ inputs.startup_project_path }}
-        dotnet ef database update -c ${{ inputs.db_context }} --project ${{ inputs.data_project_path }} --startup-project ${{ inputs.startup_project_path }}
+        $ConnectionString = az keyvault secret show --name PIPELINE-${{ inputs.keyvault_prefix }}-ConnectionString --vault-name ${{ inputs.admin_key_vault }} --query value --output tsv
+        dotnet ef database update -c ${{ inputs.db_context }} --project ${{ inputs.data_project_path }} --startup-project ${{ inputs.startup_project_path }} --connection $ConnectionString
 
     - name: Remove Azure Firewall Rule
       if: always()

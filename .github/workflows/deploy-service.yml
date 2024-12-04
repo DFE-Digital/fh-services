@@ -9,9 +9,12 @@ on:
       artifact_name:
         required: true
         type: string
-      keyvault_prefix:
+      keyvault_app_prefix:
         required: true
         type: string
+      keyvault_db_prefix:
+        required: true
+        type: string  
       project_name:
         required: true
         type: string
@@ -77,14 +80,14 @@ jobs:
           azure_resource_group: ${{ env.RESOURCE_GROUP }}
           azure_sql_server_resource_name: ${{ env.SQL_SERVER }}
           az_firewall_rule_name: ${{ inputs.artifact_name }}
-          general_key_vault: ${{ env.KEYVAULT }}
-          keyvault_prefix: ${{ inputs.keyvault_prefix }}
+          admin_key_vault: ${{ env.KEYVAULT }}
+          keyvault_prefix: ${{ inputs.keyvault_db_prefix }}
 
       - name: Fetch Publish Profile
         id: fetch_profile
         shell: pwsh
         run: |-
-          $PublishProfile = az keyvault secret show --name ${{ inputs.keyvault_prefix }}-AZURE-WEBAPP-PUBLISH-PROFILE --vault-name ${{ env.KEYVAULT }} --query value --output tsv
+          $PublishProfile = az keyvault secret show --name ${{ inputs.keyvault_app_prefix }}-AZURE-WEBAPP-PUBLISH-PROFILE --vault-name ${{ env.KEYVAULT }} --query value --output tsv
           Write-Output "publish_profile=$PublishProfile" >> $env:GITHUB_OUTPUT
             
       - name: Deploy Artifact to Azure

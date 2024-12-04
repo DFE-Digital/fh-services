@@ -5,11 +5,12 @@ resource "azurerm_windows_web_app" "fh_report_api" {
   app_settings = {
     ApplicationInsightsAgent_EXTENSION_VERSION  = "~3"
     XDT_MicrosoftApplicationInsights_Mode       = "Recommended"
-    ASPNETCORE_ENVIRONMENT                      = "${var.asp_netcore_environment}"
+    ASPNETCORE_ENVIRONMENT                      = var.asp_netcore_environment
     WEBSITE_RUN_FROM_PACKAGE                    = "1"
     APPLICATIONINSIGHTS_CONNECTION_STRING       = azurerm_application_insights.app_insights.connection_string
     "AppConfiguration:KeyVaultIdentifier"       = "${var.prefix}-kv-fh-admin"
     "AppConfiguration:KeyVaultPrefix"           = "REPORT-API"
+    "ConnectionStrings:ReportConnection"        = local.report_db_connection
   }
   name                                          = "${var.prefix}-as-fh-report-api"
   resource_group_name                           = local.resource_group_name
@@ -25,8 +26,8 @@ resource "azurerm_windows_web_app" "fh_report_api" {
     ftps_state                                  = "Disabled"
     health_check_path                           = "/api/health"
     application_stack {
-      current_stack                               = "${var.current_stack}"
-      dotnet_version                              = "${var.dotnet_version_general}"
+      current_stack                               = var.current_stack
+      dotnet_version                              = var.dotnet_version_general
     }
     ip_restriction {
       name       = "AllowAppAccess"
@@ -94,7 +95,7 @@ resource "azurerm_private_endpoint" "reportapi" {
 
   ip_configuration {
     name                       = "${var.prefix}-as-fh-report-api"
-    private_ip_address         = "${var.private_endpoint_ip_address.report_api_ip}"
+    private_ip_address         = var.private_endpoint_ip_address.report_api_ip
     subresource_name           = "sites" 
   }
 

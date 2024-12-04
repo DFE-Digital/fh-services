@@ -18,6 +18,7 @@ resource "azurerm_windows_function_app" "open_referral_function_app" {
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.app_insights.connection_string
     "AppConfiguration:KeyVaultIdentifier" = "${var.prefix}-kv-fh-admin"
     "AppConfiguration:KeyVaultPrefix" = "OPEN-REFERRAL-FUNC"
+    "ServiceDirectoryConnection" = local.service_directory_db_connection
   }
   identity {
     type = "SystemAssigned"
