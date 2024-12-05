@@ -9,6 +9,11 @@ resource "azurerm_mssql_server" "reporting_sql_server" {
   administrator_login = var.sql_server_reporting_user
   administrator_login_password = var.sql_server_reporting_pwd
 
+  azuread_administrator {
+    login_username = "s181-growingupwell-Delivery Team USR"
+    object_id      = var.service_principals.delivery_team_user_group_object_id
+  }
+  
   tags = local.tags
 }
 
