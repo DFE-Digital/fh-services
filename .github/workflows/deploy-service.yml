@@ -78,8 +78,7 @@ jobs:
           azure_sql_server_resource_name: ${{ env.SQL_SERVER }}
           az_firewall_rule_name: ${{ inputs.artifact_name }}
           admin_key_vault: ${{ env.KEYVAULT }}
-          keyvault_prefix: ${{ inputs.keyvault_prefix }}
-          keyvault_connection_string_name: 
+          keyvault_prefix: PIPELINE-${{ inputs.keyvault_prefix }}
 
       - name: Fetch Publish Profile
         id: fetch_profile
