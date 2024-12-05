@@ -77,8 +77,9 @@ jobs:
           azure_resource_group: ${{ env.RESOURCE_GROUP }}
           azure_sql_server_resource_name: ${{ env.SQL_SERVER }}
           az_firewall_rule_name: ${{ inputs.artifact_name }}
-          general_key_vault: ${{ env.KEYVAULT }}
+          admin_key_vault: ${{ env.KEYVAULT }}
           keyvault_prefix: ${{ inputs.keyvault_prefix }}
+          keyvault_connection_string_name: 
 
       - name: Fetch Publish Profile
         id: fetch_profile

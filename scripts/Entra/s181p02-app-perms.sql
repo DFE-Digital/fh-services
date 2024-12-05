@@ -8,7 +8,6 @@ IF  EXISTS (SELECT * FROM sys.database_principals WHERE name = N's181p02-as-fh-s
 BEGIN
 	DROP USER [s181p02-as-fh-sd-api]
 END
-DROP USER [s181p02-as-fh-sd-api]
 CREATE USER [s181p02-as-fh-sd-api] FROM EXTERNAL PROVIDER;
 ALTER ROLE db_datareader ADD MEMBER [s181p02-as-fh-sd-api];
 ALTER ROLE db_datawriter ADD MEMBER [s181p02-as-fh-sd-api];

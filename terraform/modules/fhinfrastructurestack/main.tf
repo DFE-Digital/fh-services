@@ -399,8 +399,6 @@ resource "azurerm_windows_web_app" "fh_sd_api" {
     APPLICATIONINSIGHTS_CONNECTION_STRING       = azurerm_application_insights.app_insights.connection_string
     "AppConfiguration:KeyVaultIdentifier"       = "${var.prefix}-kv-fh-admin"
     "AppConfiguration:KeyVaultPrefix"           = "SD-API"
-    #"ConnectionStrings:ServiceDirectoryConnection" = "Server=tcp:s181t02-as-fh-sql-server.database.windows.net,1433;Database=s181t02-fh-service-directory-db;Authentication=Active Directory Default;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-    #"ConnectionStrings:ServiceDirectoryConnection2" = "Server=tcp:${azurerm_mssql_server.sqlserver.fully_qualified_domain_name};" +
     "ConnectionStrings:ServiceDirectoryConnection" = format(local.database_connection_format, azurerm_mssql_server.sqlserver.fully_qualified_domain_name, "${var.prefix}-fh-service-directory-db")
   }
   name                                          = "${var.prefix}-as-fh-sd-api"
