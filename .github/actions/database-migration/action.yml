@@ -47,7 +47,7 @@ runs:
     - name: Apply Database Migration
       shell: pwsh
       run:  |-
-        $ConnectionString = az keyvault secret show --name ${{ inputs.keyvault_prefix }}-ConnectionString --vault-name ${{ inputs.admin_key_vault }} --query value --output tsv
+        $ConnectionString = az keyvault secret show --name PIPELINE-${{ inputs.keyvault_prefix }}-ConnectionString --vault-name ${{ inputs.admin_key_vault }} --query value --output tsv
         dotnet ef database update -c ${{ inputs.db_context }} --project ${{ inputs.data_project_path }} --startup-project ${{ inputs.startup_project_path }} --connection $ConnectionString
 
     - name: Remove Azure Firewall Rule

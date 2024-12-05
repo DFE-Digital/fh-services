@@ -14,10 +14,6 @@ on:
         type: choice
         options:
           - 'Development'
-          - 'Test'
-          - 'Test2'
-          - 'Pre-production'
-          - 'Production'
 
 permissions:
   id-token: write
@@ -29,153 +25,27 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        project: [ src/service/idam-api/,
-                   src/service/notification-api/,
-                   src/service/referral-api/,
-                   src/service/report-api/,
-                   src/service/service-directory-api/,
-                   src/service/mock-hsda-api/,
-                   src/function/open-referral-function/,
-                   src/ui/connect-dashboard-ui/,
-                   src/ui/connect-ui/,
-                   src/ui/find-ui/,
-                   src/ui/idam-maintenance-ui/,
-                   src/ui/manage-ui/
+        project: [ src/service/service-directory-api/
         ]
         include:
-          - project: src/service/idam-api/
-            publish_project: FamilyHubs.Idam.Api
-            job_name: Build - IDAM API
-          - project: src/service/notification-api/
-            publish_project: FamilyHubs.Notification.Api
-            job_name: Build - Notification API
-          - project: src/service/referral-api/
-            publish_project: FamilyHubs.Referral.Api
-            job_name: Build - Referral API
-          - project: src/service/report-api/
-            publish_project: FamilyHubs.Report.Api
-            job_name: Build - Report API
           - project: src/service/service-directory-api/
             publish_project: FamilyHubs.ServiceDirectory.Api
             job_name: Build - Service Directory API
-          - project: src/service/mock-hsda-api/
-            publish_project: FamilyHubs.Mock-Hsda.Api
-            job_name: Build - Mock HSDA API
-            dotnet_version_override: "8.0.x"
-          - project: src/function/open-referral-function/
-            publish_project: FamilyHubs.OpenReferral.Function
-            job_name: Build - Open Referral Function
-            dotnet_version_override: "8.0.x"
-          - project: src/ui/connect-dashboard-ui/
-            publish_project: FamilyHubs.RequestForSupport.Web
-            job_name: Build - Connect Dashboard UI
-          - project: src/ui/connect-ui/
-            publish_project: FamilyHubs.Referral.Web
-            job_name: Build - Connect UI
-          - project: src/ui/find-ui/
-            publish_project: FamilyHubs.ServiceDirectory.Web
-            job_name: Build - Find UI
-          - project: src/ui/idam-maintenance-ui/
-            publish_project: FamilyHubs.Idams.Maintenance.UI
-            job_name: Build - IDAM Maintenance UI
-          - project: src/ui/manage-ui/
-            publish_project: FamilyHubs.ServiceDirectory.Admin.Web
-            job_name: Build - Manage UI
     uses: ./.github/workflows/build-upload-artifact.yml
     with:
       project: ${{ matrix.project }}
       publish_project: ${{ matrix.publish_project }}
       dotnet_version: ${{ matrix.dotnet_version_override || vars.DOTNET_VERSION }}
 
-  reset-databases:
-    if: startsWith(inputs.environment, 'Test')
-    name: Reset the ${{ matrix.display_name }} database
+  deploy-api-services:
+    name: ${{ matrix.job_name }}
     needs: [ build-projects-upload-artifacts ]
     strategy:
       matrix:
-        databases: [
-          idam-database,
-          notification-database,
-          open-referral-mock-database,
-          referral-database,
-          report-database,
-          service-directory-database
+        artifact_name: [ 
+                         service-directory-api
         ]
         include:
-          - databases: idam-database
-            display_name: IDAM
-            keyvault_secret_name: IDAM-API-CONNECTIONSTRINGS-IDAMCONNECTION
-            sql_file_path: ./test/reset-scripts/reset-database.sql
-          - databases: notification-database
-            display_name: Notification
-            keyvault_secret_name: NOTIFICATIONS-API-CONNECTIONSTRINGS-NOTIFICATIONCONNECTION
-            sql_file_path: ./test/reset-scripts/reset-database.sql
-          - databases: open-referral-mock-database
-            display_name: Open Referral Mock
-            keyvault_secret_name: MOCK-HSDA-API-CONNECTIONSTRINGS-HSDAMOCKRESPONSESCONNECTION
-            sql_file_path: ./test/reset-scripts/reset-database.sql
-          - databases: referral-database
-            display_name: Referral
-            keyvault_secret_name: REFERRAL-API-CONNECTIONSTRINGS-REFERRALCONNECTION
-            sql_file_path: ./test/reset-scripts/reset-database.sql
-          - databases: report-database
-            display_name: Report
-            keyvault_secret_name: REPORT-API-CONNECTIONSTRINGS-REPORTCONNECTION  
-            sql_file_path: ./test/reset-scripts/reset-database.sql
-          - databases: service-directory-database
-            display_name: Service Directory
-            keyvault_secret_name: SD-API-CONNECTIONSTRINGS-SERVICEDIRECTORYCONNECTION
-            sql_file_path: ./test/reset-scripts/reset-database.sql
-    uses: ./.github/workflows/run-sql-script.yml
-    with:
-      environment: ${{ inputs.environment }}
-      display_name: ${{ matrix.display_name }}
-      keyvault_secret_name: ${{ matrix.keyvault_secret_name }}
-      sql_file_path: ${{ matrix.sql_file_path }}
-    secrets: inherit
-    
-  deploy-api-services:
-    if: always() && (needs.reset-databases.result == 'success' || needs.reset-databases.result == 'skipped')
-    name: ${{ matrix.job_name }}
-    needs: [ reset-databases ]
-    strategy:
-      matrix:
-        artifact_name: [ idam-api,
-                         notification-api,
-                         referral-api,
-                         report-api,
-                         service-directory-api,
-                         mock-hsda-api
-        ]
-        include:
-          - artifact_name: idam-api
-            job_name: Deploy - IDAM API
-            keyvault_prefix: IDAM-API
-            project_name: FamilyHubs.Idam.Api
-            data_project_name: FamilyHubs.Idam.Data
-            database_context: ApplicationDbContext
-            azure_app_name: as-fh-idam-api
-          - artifact_name: notification-api
-            job_name: Deploy - Notification API
-            keyvault_prefix: NOTIFICATIONS-API
-            project_name: FamilyHubs.Notification.Api
-            data_project_name: FamilyHubs.Notification.Data
-            database_context: ApplicationDbContext
-            azure_app_name: as-fh-notification-api
-          - artifact_name: referral-api
-            job_name: Deploy - Referral API
-            keyvault_prefix: REFERRAL-API
-            project_name: FamilyHubs.Referral.Api
-            data_project_name: FamilyHubs.Referral.Data
-            database_context: ApplicationDbContext
-            azure_app_name: as-fh-referral-api
-          - artifact_name: report-api
-            job_name: Deploy - Report API
-            keyvault_prefix: REPORT-API
-            project_name: FamilyHubs.Report.Api
-            data_project_name: FamilyHubs.Report.Data
-            database_context: ReportDbContext
-            azure_app_name: as-fh-report-api
           - artifact_name: service-directory-api
             job_name: Deploy - Service Directory API
             keyvault_prefix: SD-API
@@ -183,13 +53,6 @@ jobs:
             data_project_name: FamilyHubs.ServiceDirectory.Data
             database_context: ApplicationDbContext
             azure_app_name: as-fh-sd-api
-          - artifact_name: mock-hsda-api
-            job_name: Deploy - Mock HSDA API
-            keyvault_prefix: MOCK-HSDA-API
-            project_name: FamilyHubs.Mock-Hsda.Api
-            data_project_name: FamilyHubs.Mock-Hsda.Api
-            database_context: MockDbContext
-            azure_app_name: as-fh-open-referral-mock-api
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
@@ -200,163 +63,4 @@ jobs:
       database_context: ${{ matrix.database_context }}
       project_type: service
       azure_app_name: ${{ matrix.azure_app_name }}
-    secrets: inherit
-    
-  deploy-ui-services:
-    if: always() && needs.deploy-api-services.result == 'success' && (needs.reset-databases.result == 'success' || needs.reset-databases.result == 'skipped')
-    name: ${{ matrix.job_name }}
-    needs: [ deploy-api-services ]
-    strategy:
-      matrix:
-        artifact_name: [ connect-dashboard-ui,
-                         connect-ui,
-                         find-ui,
-                         idam-maintenance-ui,
-                         manage-ui
-        ]
-        include:
-          - artifact_name: connect-dashboard-ui
-            job_name: Deploy - Connect Dashboard UI
-            keyvault_prefix: CONNECT-DASHBOARD-UI
-            project_name: FamilyHubs.RequestForSupport.Web
-            azure_app_name: as-fh-ref-dash-ui
-
-          - artifact_name: connect-ui
-            job_name: Deploy - Connect UI
-            keyvault_prefix: CONNECT-UI
-            project_name: FamilyHubs.Referral.Web
-            azure_app_name: as-fh-referral-ui
-
-          - artifact_name: find-ui
-            job_name: Deploy - Find UI
-            keyvault_prefix: FIND-UI
-            project_name: FamilyHubs.ServiceDirectory.Web
-            azure_app_name: as-fh-sd-ui
-
-          - artifact_name: idam-maintenance-ui
-            job_name: Deploy - IDAM Maintenance UI
-            keyvault_prefix: IDAM-MAINTENANCE-UI
-            project_name: FamilyHubs.Idams.Maintenance.UI
-            azure_app_name: as-fh-idam-maintenance-ui
-
-          - artifact_name: manage-ui
-            job_name: Deploy - Manage UI
-            keyvault_prefix: MANAGE-UI
-            project_name: FamilyHubs.ServiceDirectory.Admin.Web
-            azure_app_name: as-fh-sd-admin-ui
-    uses: ./.github/workflows/deploy-service.yml
-    with:
-      environment: ${{ inputs.environment }}
-      artifact_name: ${{ matrix.artifact_name }}
-      keyvault_prefix: ${{ matrix.keyvault_prefix }}
-      project_name: ${{ matrix.project_name }}
-      project_type: ui
-      azure_app_name: ${{ matrix.azure_app_name }}
-    secrets: inherit
-
-  deploy-functions:
-    if: always() && (needs.reset-databases.result == 'success' || needs.reset-databases.result == 'skipped')
-    name: ${{ matrix.job_name }}
-    needs: [ reset-databases ]
-    strategy:
-      matrix:
-        artifact_name: [
-          open-referral-function
-        ]
-        include:
-          - artifact_name: open-referral-function
-            job_name: Deploy - Open Referral Function
-            keyvault_prefix: OPEN-REFERRAL-FUNC
-            azure_app_name: fa-fh-open-referral
-
-    uses: ./.github/workflows/deploy-function.yml
-    with:
-      environment: ${{ inputs.environment }}
-      artifact_name: ${{ matrix.artifact_name }}
-      keyvault_prefix: ${{ matrix.keyvault_prefix }}
-      azure_app_name: ${{ matrix.azure_app_name }}
-    secrets: inherit
-  
-  seed-databases:
-    if: startsWith(inputs.environment, 'Test')
-    name: Seed the ${{ matrix.display_name }} database
-    needs: [ deploy-api-services, deploy-ui-services, deploy-functions ]
-    strategy:
-      matrix:
-        databases: [ 
-          idam-database, 
-          notification-database, 
-          open-referral-mock-database, 
-          referral-database, 
-          report-database, 
-          service-directory-database 
-        ]
-        include:
-          - databases: idam-database
-            display_name: IDAM
-            keyvault_secret_name: IDAM-API-CONNECTIONSTRINGS-IDAMCONNECTION
-            sql_file_path: ./test/seed-scripts/test/idam-data.sql
-          - databases: notification-database
-            display_name: Notification
-            keyvault_secret_name: NOTIFICATIONS-API-CONNECTIONSTRINGS-NOTIFICATIONCONNECTION
-            sql_file_path: ./test/seed-scripts/test/notification-data.sql
-          - databases: open-referral-mock-database
-            display_name: Open Referral Mock
-            keyvault_secret_name: MOCK-HSDA-API-CONNECTIONSTRINGS-HSDAMOCKRESPONSESCONNECTION
-            sql_file_path: ./test/seed-scripts/test/open-referral-mock-data.sql
-          - databases: referral-database
-            display_name: Referral
-            keyvault_secret_name: REFERRAL-API-CONNECTIONSTRINGS-REFERRALCONNECTION
-            sql_file_path: ./test/seed-scripts/test/referral-data.sql
-          - databases: report-database
-            display_name: Report
-            keyvault_secret_name: REPORT-API-CONNECTIONSTRINGS-REPORTCONNECTION
-            sql_file_path: ./test/seed-scripts/test/report-data.sql
-          - databases: service-directory-database
-            display_name: Service Directory
-            keyvault_secret_name: SD-API-CONNECTIONSTRINGS-SERVICEDIRECTORYCONNECTION
-            sql_file_path: ./test/seed-scripts/test/service-directory-data.sql
-    uses: ./.github/workflows/run-sql-script.yml
-    with:
-      environment: ${{ inputs.environment }}
-      display_name: ${{ matrix.display_name }}
-      keyvault_secret_name: ${{ matrix.keyvault_secret_name }}
-      sql_file_path: ${{ matrix.sql_file_path }}
-    secrets: inherit
-    
-  run-api-acceptance-tests:
-    if: startsWith(inputs.environment, 'Test')
-    name: ${{ matrix.job_name }}
-    needs: [ seed-databases ]
-    strategy:
-      matrix:
-        project_name: [
-          report-api,
-          referral-api,
-          service-directory-api
-        ]
-        include:
-          - project_name: report-api
-            job_name: Test - Report API
-            keyvault_prefix: TEST-REPORT-API
-            app_name: as-fh-report-api
-            test_project_name: FamilyHubs.Report.Api.AcceptanceTests
-          - project_name: referral-api
-            job_name: Test - Referral API
-            keyvault_prefix: TEST-REFERRAL-API
-            app_name: as-fh-referral-api
-            test_project_name: FamilyHubs.Referral.Api.AcceptanceTests
-          - project_name: service-directory-api
-            job_name: Test - Service Directory API
-            keyvault_prefix: TEST-SERVICE-DIRECTORY-API
-            app_name: as-fh-sd-api
-            test_project_name: FamilyHubs.ServiceDirectory.Api.AcceptanceTests
-    uses: ./.github/workflows/run-acceptance-tests.yml
-    with:
-      environment: ${{ inputs.environment }}
-      project_name: ${{ matrix.project_name }}
-      keyvault_prefix: ${{ matrix.keyvault_prefix }}
-      app_name: ${{ matrix.app_name }}
-      test_project_name: ${{ matrix.test_project_name }}
-      project_type: service
     secrets: inherit
