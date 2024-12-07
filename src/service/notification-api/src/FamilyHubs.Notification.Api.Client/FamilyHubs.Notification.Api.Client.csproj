@@ -2,12 +2,9 @@
 
   <PropertyGroup>
 	  <PackageId>FamilyHubs.Notification.Api.Client</PackageId>
-	  <VersionPrefix>1.1.1</VersionPrefix>
 	  <PackageReadmeFile>readme.md</PackageReadmeFile>
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
-	  <RepositoryUrl>https://github.com/DFE-Digital/fh-notification-api</RepositoryUrl>
 	  <PackageTags>govuk dfe family-hub notification client</PackageTags>
-	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <NoWarn>S1135</NoWarn>
 	  <NuGetAuditMode>direct</NuGetAuditMode>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
