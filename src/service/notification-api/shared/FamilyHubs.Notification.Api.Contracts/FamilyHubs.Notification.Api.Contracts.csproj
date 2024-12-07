@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>1.0.3</VersionPrefix>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>FamilyHubs.Notification.Api.Contracts</Title>
   </PropertyGroup>
 
