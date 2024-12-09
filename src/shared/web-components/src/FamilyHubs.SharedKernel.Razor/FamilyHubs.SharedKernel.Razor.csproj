@@ -3,12 +3,9 @@
   <PropertyGroup>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
       <PackageId>FamilyHubs.SharedKernel.Razor</PackageId>
-      <VersionPrefix>9.5.1</VersionPrefix>
       <PackageReadmeFile>readme.md</PackageReadmeFile>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
-      <RepositoryUrl>https://github.com/DFE-Digital/fh-shared-kernel</RepositoryUrl>
       <PackageTags>govuk frontend design-system dfe family-hub</PackageTags>
-      <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
       <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
       <NoWarn>S1135,S125;S2325</NoWarn>
       <NuGetAuditMode>direct</NuGetAuditMode>
