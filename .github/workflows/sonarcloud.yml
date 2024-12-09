@@ -1,0 +1,111 @@
+name: Run SonarCloud Analysis
+
+on:
+  push:
+    branches: ["main", "release-*"]
+    paths:
+      - 'src/**'
+  pull_request:
+    paths:
+      - '.github/workflows/sonarcloud.yml' # Run it on PR only if the PR is changing this workflow specifically.
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  build-test-analyse:
+    name: Build, Test & Analyse Solution
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: 'src/'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - name: NuGet Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Setup .NET ${{ vars.DOTNET_VERSION_V8 }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION_V8 }}
+
+      # For SonarCloud Scanner
+      - name: Setup Java ${{ vars.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: "microsoft"
+          java-version: ${{ vars.JAVA_VERSION }}
+
+      - name: Install SonarCloud Scanner
+        shell: bash
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      - name: Install DotNet Coverage
+        shell: bash
+        run: dotnet tool install --global dotnet-coverage
+
+      - name: Install Liquid Test Reports
+        shell: bash
+        run: dotnet tool install --global LiquidTestReports.Cli --version 2.0.0-beta.2
+
+      - name: Install & Configure Spatialite
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install libspatialite-dev libsqlite3-mod-spatialite -y
+          sudo ldconfig "/usr/lib/x86_64-linux-gnu/mod_spatialite.so"
+
+      - name: Start SonarCloud Scanner
+        shell: bash
+        run: |
+          dotnet-sonarscanner begin \
+          /k:"DFE-Digital_fh-services" \
+          /o:"dfe-digital" \
+          /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
+          /d:sonar.host.url="https://sonarcloud.io" \
+          /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml \
+          /d:sonar.coverage.exclusions=**/*.html,**/*.json,**/*.sql,**/*.js,**/*.ts,**/*.scss,**/wwwroot/** \
+          /d:sonar.exclusions=**/*.html,**/*.json,**/*.sql,**/*.js,**/*.ts,**/*.scss,**/wwwroot/**,**/bin/**,**/obj/** \
+          /d:sonar.scanner.skipJreProvisioning=true \
+          /d:sonar.dotnet.excludeTestProjects=true \
+          /d:sonar.scanner.scanAll=false
+
+      - name: Restore Solution
+        shell: bash
+        run: dotnet restore
+
+      - name: Build Solution
+        shell: bash
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test Solution
+        shell: bash
+        run: dotnet test --configuration Release --filter 'FullyQualifiedName!~AcceptanceTest' --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage" --verbosity minimal --no-restore --no-build
+
+      - name: Compile Test Results
+        if: always()
+        shell: bash
+        run: dotnet-coverage merge **/*coverage.cobertura.xml -f xml -o "coverage.xml" -s "coverage.settings.xml"
+
+      - name: End SonarCloud Scanner
+        if: always()
+        shell: bash
+        run: dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
+      - name: Generate Test Report
+        if: always()
+        shell: bash
+        run: |
+          liquid --inputs "File=**/*test-results.trx" --output-file results.md
+          cat results.md >> $GITHUB_STEP_SUMMARY
