@@ -150,42 +150,48 @@ jobs:
         include:
           - artifact_name: idam-api
             job_name: Deploy - IDAM API
-            keyvault_prefix: IDAM-API
+            keyvault_app_prefix: IDAM-API
+            keyvault_db_prefix: IDAM-DB
             project_name: FamilyHubs.Idam.Api
             data_project_name: FamilyHubs.Idam.Data
             database_context: ApplicationDbContext
             azure_app_name: as-fh-idam-api
           - artifact_name: notification-api
             job_name: Deploy - Notification API
-            keyvault_prefix: NOTIFICATIONS-API
+            keyvault_app_prefix: NOTIFICATIONS-API
+            keyvault_db_prefix: NOTIFICATIONS-DB
             project_name: FamilyHubs.Notification.Api
             data_project_name: FamilyHubs.Notification.Data
             database_context: ApplicationDbContext
             azure_app_name: as-fh-notification-api
           - artifact_name: referral-api
             job_name: Deploy - Referral API
-            keyvault_prefix: REFERRAL-API
+            keyvault_app_prefix: REFERRAL-API
+            keyvault_db_prefix: REFERRAL-DB
             project_name: FamilyHubs.Referral.Api
             data_project_name: FamilyHubs.Referral.Data
             database_context: ApplicationDbContext
             azure_app_name: as-fh-referral-api
           - artifact_name: report-api
             job_name: Deploy - Report API
-            keyvault_prefix: REPORT-API
+            keyvault_app_prefix: REPORT-API
+            keyvault_db_prefix: REPORT-DB
             project_name: FamilyHubs.Report.Api
             data_project_name: FamilyHubs.Report.Data
             database_context: ReportDbContext
             azure_app_name: as-fh-report-api
           - artifact_name: service-directory-api
             job_name: Deploy - Service Directory API
-            keyvault_prefix: SD-API
+            keyvault_app_prefix: SD-API
+            keyvault_db_prefix: SD-DB
             project_name: FamilyHubs.ServiceDirectory.Api
             data_project_name: FamilyHubs.ServiceDirectory.Data
             database_context: ApplicationDbContext
             azure_app_name: as-fh-sd-api
           - artifact_name: mock-hsda-api
             job_name: Deploy - Mock HSDA API
-            keyvault_prefix: MOCK-HSDA-API
+            keyvault_app_prefix: MOCK-HSDA-API
+            keyvault_db_prefix: MOCK-HSDA-DB
             project_name: FamilyHubs.Mock-Hsda.Api
             data_project_name: FamilyHubs.Mock-Hsda.Api
             database_context: MockDbContext
@@ -194,7 +200,8 @@ jobs:
     with:
       environment: ${{ inputs.environment }}
       artifact_name: ${{ matrix.artifact_name }}
-      keyvault_prefix: ${{ matrix.keyvault_prefix }}
+      keyvault_app_prefix: ${{ matrix.keyvault_app_prefix }}
+      keyvault_db_prefix: ${{ matrix.keyvault_db_prefix }}
       project_name: ${{ matrix.project_name }}
       data_project_name: ${{ matrix.data_project_name }}
       database_context: ${{ matrix.database_context }}
@@ -217,38 +224,38 @@ jobs:
         include:
           - artifact_name: connect-dashboard-ui
             job_name: Deploy - Connect Dashboard UI
-            keyvault_prefix: CONNECT-DASHBOARD-UI
+            keyvault_app_prefix: CONNECT-DASHBOARD-UI
             project_name: FamilyHubs.RequestForSupport.Web
             azure_app_name: as-fh-ref-dash-ui
 
           - artifact_name: connect-ui
             job_name: Deploy - Connect UI
-            keyvault_prefix: CONNECT-UI
+            keyvault_app_prefix: CONNECT-UI
             project_name: FamilyHubs.Referral.Web
             azure_app_name: as-fh-referral-ui
 
           - artifact_name: find-ui
             job_name: Deploy - Find UI
-            keyvault_prefix: FIND-UI
+            keyvault_app_prefix: FIND-UI
             project_name: FamilyHubs.ServiceDirectory.Web
             azure_app_name: as-fh-sd-ui
 
           - artifact_name: idam-maintenance-ui
             job_name: Deploy - IDAM Maintenance UI
-            keyvault_prefix: IDAM-MAINTENANCE-UI
+            keyvault_app_prefix: IDAM-MAINTENANCE-UI
             project_name: FamilyHubs.Idams.Maintenance.UI
             azure_app_name: as-fh-idam-maintenance-ui
 
           - artifact_name: manage-ui
             job_name: Deploy - Manage UI
-            keyvault_prefix: MANAGE-UI
+            keyvault_app_prefix: MANAGE-UI
             project_name: FamilyHubs.ServiceDirectory.Admin.Web
             azure_app_name: as-fh-sd-admin-ui
     uses: ./.github/workflows/deploy-service.yml
     with:
       environment: ${{ inputs.environment }}
       artifact_name: ${{ matrix.artifact_name }}
-      keyvault_prefix: ${{ matrix.keyvault_prefix }}
+      keyvault_app_prefix: ${{ matrix.keyvault_app_prefix }}
       project_name: ${{ matrix.project_name }}
       project_type: ui
       azure_app_name: ${{ matrix.azure_app_name }}
