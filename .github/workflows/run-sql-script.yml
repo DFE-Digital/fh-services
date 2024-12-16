@@ -55,7 +55,7 @@ jobs:
           action: "Add"
           az_resource_group: ${{ env.RESOURCE_GROUP }}
           az_sql_server_name: ${{ env.SQL_SERVER }}
-          az_firewall_rule_name: "${{ env.SQL_FIREWALL_NAME }}"
+          az_firewall_rule_name: '"${{ env.SQL_FIREWALL_NAME }}"'
           
       - name: Run SQL Script PowerShell
         uses: ./.github/actions/run-sql-script
@@ -72,4 +72,4 @@ jobs:
           action: "Remove"
           az_resource_group: ${{ env.RESOURCE_GROUP }}
           az_sql_server_name: ${{ env.SQL_SERVER }}
-          az_firewall_rule_name: "${{ env.SQL_FIREWALL_NAME }}"   
+          az_firewall_rule_name: '"${{ env.SQL_FIREWALL_NAME }}"'   
