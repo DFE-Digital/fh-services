@@ -1,10 +1,16 @@
+using System.Diagnostics.CodeAnalysis;
 using FamilyHubs.SharedKernel.Extensions;
 using Serilog;
 
 namespace FamilyHubs.Idams.Maintenance.UI;
 
-public static class Program
+[ExcludeFromCodeCoverage]
+public class Program
 {
+    private Program()
+    {
+    }
+    
     public static async Task Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()

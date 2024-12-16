@@ -1,4 +1,5 @@
-﻿using FamilyHubs.Idams.Maintenance.Data.Entities;
+﻿using System.Diagnostics.CodeAnalysis;
+using FamilyHubs.Idams.Maintenance.Data.Entities;
 using FamilyHubs.ReferralService.Shared.Dto;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +9,7 @@ using System.Text;
 
 namespace FamilyHubs.Idams.Maintenance.Core.Commands;
 
+[ExcludeFromCodeCoverage]
 public class SendEventGridMessageCommand : IRequest<string>
 {
     public SendEventGridMessageCommand(Account account)
@@ -17,6 +19,7 @@ public class SendEventGridMessageCommand : IRequest<string>
     public Account Account { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class SendEventGridMessageCommandHandler : IRequestHandler<SendEventGridMessageCommand, string>
 {
     private readonly IConfiguration _configuration;

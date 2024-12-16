@@ -1,46 +1,33 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Text.Json;
+// ReSharper disable StaticMemberInGenericType
 
 namespace FamilyHubs.Idams.Maintenance.Core.ApiClient;
 
-public interface IApiService
-{
-
-}
-
-public class ApiService<TApiService> : IApiService
+public abstract class ApiService<TApiService>
 {
     protected readonly HttpClient Client;
     protected readonly ILogger<TApiService> Logger;
-    private readonly JsonSerializerOptions _caseInsensitive;
+    private static readonly JsonSerializerOptions CaseInsensitive = new() { PropertyNameCaseInsensitive = true };
 
     protected ApiService(HttpClient client, ILogger<TApiService> logger)
     {
         Client = client;
         Logger = logger;
-        _caseInsensitive = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
 
     protected async Task<T?> DeserializeResponse<T>(HttpResponseMessage response, CancellationToken? cancellationToken = null)
     {
         try
         {
-            T? result;
-
-            if (cancellationToken != null)
-            {
-                result = await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync(cancellationToken.Value), _caseInsensitive, cancellationToken.Value);
-            }
-            else
-            {
-                result = await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync(), _caseInsensitive);
-            }
-
-            return result;
+            var contents = cancellationToken is not null 
+                ? await response.Content.ReadAsStringAsync(cancellationToken.Value) 
+                : await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<T>(contents, CaseInsensitive);
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
-            Logger.LogError($"Failed to DeserializeResponse StatusCode:{response.StatusCode} Error:{ex.Message}");
+            Logger.LogError("Failed to DeserializeResponse StatusCode:{StatusCode} Error:{Error}", response.StatusCode, exception.Message);
             throw;
         }
     }

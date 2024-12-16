@@ -14,12 +14,12 @@ public class GetAccountClaimsByIdCommand : IRequest<List<AccountClaim>>
 
 public class GetAccountClaimsByEmailCommandHandler : IRequestHandler<GetAccountClaimsByIdCommand, List<AccountClaim>>
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IRepository _repository;
     private readonly ILogger<GetAccountClaimsByEmailCommandHandler> _logger;
 
-    public GetAccountClaimsByEmailCommandHandler(ApplicationDbContext dbContext, ILogger<GetAccountClaimsByEmailCommandHandler> logger)
+    public GetAccountClaimsByEmailCommandHandler(IRepository repository, ILogger<GetAccountClaimsByEmailCommandHandler> logger)
     {
-        _dbContext = dbContext;
+        _repository = repository;
         _logger = logger;
     }
 
@@ -29,7 +29,7 @@ public class GetAccountClaimsByEmailCommandHandler : IRequestHandler<GetAccountC
 
         try
         {
-            var account = await _dbContext.Accounts.FirstOrDefaultAsync(r => r.Id == request.AccountId, cancellationToken);
+            var account = await _repository.Accounts.FirstOrDefaultAsync(r => r.Id == request.AccountId, cancellationToken);
 
             if (account == null)
             {

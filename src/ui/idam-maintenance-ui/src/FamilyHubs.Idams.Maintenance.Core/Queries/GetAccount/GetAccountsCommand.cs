@@ -35,12 +35,12 @@ public class GetAccountsCommand : IRequest<PaginatedList<Account>>
 
 public class GetAccountsCommandHandler : IRequestHandler<GetAccountsCommand, PaginatedList<Account>>
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IRepository _repository;
     private readonly ILogger<GetAccountsCommandHandler> _logger;
 
-    public GetAccountsCommandHandler(ApplicationDbContext dbContext, ILogger<GetAccountsCommandHandler> logger)
+    public GetAccountsCommandHandler(IRepository repository, ILogger<GetAccountsCommandHandler> logger)
     {
-        _dbContext = dbContext;
+        _repository = repository;
         _logger = logger;
     }
 
@@ -48,7 +48,7 @@ public class GetAccountsCommandHandler : IRequestHandler<GetAccountsCommand, Pag
     {
         try
         {
-            IQueryable<Account> query = _dbContext.Accounts;
+            IQueryable<Account> query = _repository.Accounts;
 
             if (!string.IsNullOrEmpty(request.UserName) || !string.IsNullOrEmpty(request.Email))
             {
@@ -103,7 +103,7 @@ public class GetAccountsCommandHandler : IRequestHandler<GetAccountsCommand, Pag
      */
     private async Task<IQueryable<Account>> FilterByNameOrEmail(IQueryable<Account> query, string? userName, string? email, CancellationToken cancellationToken)
     {
-        int rowCount = await _dbContext.Accounts.CountAsync(cancellationToken);
+        int rowCount = await _repository.Accounts.CountAsync(cancellationToken);
         int batch = 0;
         const int batchSize = 500;
         int batchTotal = (int)Math.Ceiling((double)rowCount / batchSize);
@@ -112,7 +112,7 @@ public class GetAccountsCommandHandler : IRequestHandler<GetAccountsCommand, Pag
 
         while (batch < batchTotal)
         {
-            IEnumerable<long> accountBatch = (await _dbContext.Accounts
+            IEnumerable<long> accountBatch = (await _repository.Accounts
                     .Skip(batchSize * batch)
                     .Take(batchSize)
                     .Select(account => new {account.Id, account.Name, account.Email})

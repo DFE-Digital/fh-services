@@ -36,22 +36,27 @@ public class AddDfEAdminAccountModel : HeaderPageModel
 
     public async Task<IActionResult> OnPost()
     {
-
         if (!string.IsNullOrWhiteSpace(PhoneNumber) && !Regex.IsMatch(PhoneNumber, @"^[A-Za-z0-9]*$"))
         {
             ModelState.AddModelError("PhoneNumber", "Please Enter a valid phone number");
             ValidationValid = false;
         }
 
-        if (string.IsNullOrWhiteSpace(Email) || !IsValidEmailAddress(Email))
+        if (string.IsNullOrWhiteSpace(Email) || !MailAddress.TryCreate(Email, out _))
         {
             ModelState.AddModelError("Email", "Please Enter a valid email address");
             ValidationValid = false;
         }
 
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            ModelState.AddModelError("Name", "Please Enter a valid name");
+            ValidationValid = false;
+        }
+        
         if (!ModelState.IsValid || !ValidationValid)
         {
-            FormPropertyErrors = GetErrors(nameof(Name), nameof(Email), nameof(PhoneNumber)).ToArray();
+            FormPropertyErrors = GetErrors().ToArray();
             return Page();
         }
 
@@ -65,26 +70,17 @@ public class AddDfEAdminAccountModel : HeaderPageModel
 
         long accountId = await _idamService.GetAccountIdByEmail(result);
 
-        return RedirectToPage($"AddDfEAccountConfirmation", new { accountId });
+        return RedirectToPage("AddDfEAccountConfirmation", new { accountId });
     }
 
-    private IEnumerable<FormPropertyError> GetErrors(params string[] propertyNames)
+    private IEnumerable<FormPropertyError> GetErrors()
     {
-        return propertyNames.Select(p => (propertyName: p, entry: ModelState[p]))
-            .Where(t => t.entry!.ValidationState == ModelValidationState.Invalid)
-            .Select(t => new FormPropertyError(t.propertyName, t.entry!.Errors[0].ErrorMessage));
-    }
-
-    private static bool IsValidEmailAddress(string email)
-    {
-        try
+        foreach (var modelError in ModelState)
         {
-            MailAddress mailAddress = new(email);
-            return true;
-        }
-        catch (FormatException)
-        {
-            return false;
+            if (modelError.Value is { ValidationState: ModelValidationState.Invalid, Errors.Count: > 0 })
+            {
+                yield return new FormPropertyError(modelError.Key, modelError.Value.Errors[0].ErrorMessage);
+            }
         }
     }
 }

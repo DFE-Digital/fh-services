@@ -17,12 +17,12 @@ public class GetAccountByEmailCommand : IRequest<Account?>
 
 public class GetAccountByEmailCommandHandler : IRequestHandler<GetAccountByEmailCommand, Account?>
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IRepository _repository;
     private readonly ILogger<GetAccountByEmailCommandHandler> _logger;
 
-    public GetAccountByEmailCommandHandler(ApplicationDbContext dbContext, ILogger<GetAccountByEmailCommandHandler> logger)
+    public GetAccountByEmailCommandHandler(IRepository repository, ILogger<GetAccountByEmailCommandHandler> logger)
     {
-        _dbContext = dbContext;
+        _repository = repository;
         _logger = logger;
     }
 
@@ -30,7 +30,7 @@ public class GetAccountByEmailCommandHandler : IRequestHandler<GetAccountByEmail
     {
         try
         {
-            var account = await _dbContext.Accounts.FirstOrDefaultAsync(r => r.Email == request.Email, cancellationToken);
+            var account = await _repository.Accounts.FirstOrDefaultAsync(r => r.Email == request.Email, cancellationToken);
             return account;
         }
         catch (Exception ex)

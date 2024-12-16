@@ -14,12 +14,12 @@ public class DeleteAccountCommand : IRequest<bool>
 
 public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand, bool>
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IRepository _repository;
     private readonly ILogger<DeleteAccountCommandHandler> _logger;
 
-    public DeleteAccountCommandHandler(ApplicationDbContext dbContext, ILogger<DeleteAccountCommandHandler> logger)
+    public DeleteAccountCommandHandler(IRepository repository, ILogger<DeleteAccountCommandHandler> logger)
     {
-        _dbContext = dbContext;
+        _repository = repository;
         _logger = logger;
     }
 
@@ -27,7 +27,7 @@ public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand,
     {
         try
         {
-            var entity = await _dbContext.Accounts
+            var entity = await _repository.Accounts
                 .Where(r => r.Id == request.AccountId)
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -37,9 +37,9 @@ public class DeleteAccountCommandHandler : IRequestHandler<DeleteAccountCommand,
                 throw new NotFoundException(nameof(Account), request.AccountId.ToString());
             }
 
-            _dbContext.Accounts.Remove(entity);
+            _repository.Remove(entity);
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            await _repository.SaveChangesAsync(cancellationToken);
             _logger.LogInformation($"Account with Id: {request.AccountId} deleted");
 
             return true;

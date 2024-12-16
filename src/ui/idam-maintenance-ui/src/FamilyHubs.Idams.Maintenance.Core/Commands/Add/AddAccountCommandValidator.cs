@@ -1,9 +1,10 @@
-using FamilyHubs.Idams.Maintenance.Data.Entities;
-using FamilyHubs.SharedKernel.Identity;
+using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
 
 namespace FamilyHubs.Idams.Maintenance.Core.Commands.Add;
 
+// ReSharper disable once UnusedType.Global - Mediator
+[ExcludeFromCodeCoverage]
 public class AddAccountCommandValidator : AbstractValidator<AddAccountCommand>
 {
     public AddAccountCommandValidator()
