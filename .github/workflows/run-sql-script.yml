@@ -30,7 +30,7 @@ jobs:
       ADMIN_KEY_VAULT_NAME: ${{ vars.AZURE_RESOURCE_PREFIX }}-kv-fh-admin
       RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
       SQL_SERVER: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
-      SQL_FIREWALL_NAME: SQL ${{ inputs.display_name }} Rule
+      SQL_FIREWALL_NAME: "SQL ${{ inputs.display_name }} Rule"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
