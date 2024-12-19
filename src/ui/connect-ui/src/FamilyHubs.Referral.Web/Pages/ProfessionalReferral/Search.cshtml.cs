@@ -9,7 +9,6 @@ namespace FamilyHubs.Referral.Web.Pages.ProfessionalReferral;
 
 //todo: it would be better to look up and store the postcode once here, rather than each time on the results page
 
-[Authorize(Roles = RoleGroups.LaOrVcsProfessionalOrDualRole)]
 public class SearchModel : HeaderPageModel
 {
     private readonly IPostcodeLookup _postcodeLookup;
