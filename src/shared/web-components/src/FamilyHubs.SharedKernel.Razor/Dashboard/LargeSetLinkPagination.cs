@@ -13,7 +13,7 @@ namespace FamilyHubs.SharedKernel.Razor.Dashboard;
 public class LargeSetLinkPagination<TColumn> : LargeSetPagination, ILinkPagination
     where TColumn : struct, Enum
 {
-    private readonly string _dashboardPath;
+    private readonly string? _dashboardPath;
     private readonly TColumn _column;
     private readonly SortOrder _sort;
     private readonly string? _extraQueryParams;
@@ -30,7 +30,7 @@ public class LargeSetLinkPagination<TColumn> : LargeSetPagination, ILinkPaginati
     }
 
     public LargeSetLinkPagination(
-        string dashboardPath,
+        string? dashboardPath,
         int totalPages,
         int currentPage,
         TColumn column,

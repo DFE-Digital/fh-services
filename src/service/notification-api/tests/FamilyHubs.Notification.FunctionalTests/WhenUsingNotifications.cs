@@ -52,7 +52,7 @@ public class WhenUsingNotifications : BaseWhenUsingOpenReferralApiUnitTests
             ApiKeyType = ApiKeyType.ConnectKey,
             NotificationEmails = new List<string> { EmailRecipient! },
             TemplateId = Templates[key],
-            TemplateTokens = new Dictionary<string, string>
+            TemplateTokens = new Dictionary<string, string?>
             {
                 { "reference number", "0001" },
                 { "RequestNumber", "0001" },

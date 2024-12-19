@@ -16,7 +16,7 @@ public class WhenValidatingNotificationCommands
             ApiKeyType = ApiKeyType.ConnectKey,
             NotificationEmails = ["someone@email.com"],
             TemplateId = "12e7463d-dbb5-4beb-a321-3ea5b55bb642",
-            TemplateTokens = new Dictionary<string, string>
+            TemplateTokens = new Dictionary<string, string?>
             {
                 {  "Key1", "Value1" }
             }
@@ -40,7 +40,7 @@ public class WhenValidatingNotificationCommands
             ApiKeyType = ApiKeyType.ConnectKey,
             NotificationEmails = [],
             TemplateId = "12e7463d-dbb5-4beb-a321-3ea5b55bb642",
-            TemplateTokens = new Dictionary<string, string>
+            TemplateTokens = new Dictionary<string, string?>
             {
                 {  "Key1", "Value1" }
             }
@@ -63,7 +63,7 @@ public class WhenValidatingNotificationCommands
             ApiKeyType = ApiKeyType.ConnectKey,
             NotificationEmails = ["someone@email.com"],
             TemplateId = string.Empty,
-            TemplateTokens = new Dictionary<string, string>
+            TemplateTokens = new Dictionary<string, string?>
             {
                 {  "Key1", "Value1" }
             }

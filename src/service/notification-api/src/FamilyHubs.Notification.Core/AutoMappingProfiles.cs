@@ -30,7 +30,7 @@ public class AutoMappingProfiles : Profile
         return notifieds;
     }
 
-    private List<TokenValue> CreateTokenValues(long id, Dictionary<string,string> tokens)
+    private List<TokenValue> CreateTokenValues(long id, Dictionary<string,string?> tokens)
     {
         List<TokenValue> tokenValues = new List<TokenValue>();
         foreach (var token in tokens) 
@@ -45,9 +45,9 @@ public class AutoMappingProfiles : Profile
         return tokenValues;
     }
 
-    private static Dictionary<string,string> CreateTokenDictionary(IList<TokenValue> tokenValues)
+    private static Dictionary<string,string?> CreateTokenDictionary(IList<TokenValue> tokenValues)
     {
-        Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
+        var keyValuePairs = new Dictionary<string, string?>();
         foreach (var  token in tokenValues)
         {
             keyValuePairs[token.Key] = token.Value;

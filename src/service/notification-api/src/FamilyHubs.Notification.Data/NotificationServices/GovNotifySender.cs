@@ -23,7 +23,7 @@ public class GovNotifySender : IGovNotifySender
             ?? throw new InvalidOperationException($"Client for ApiKeyType {messageDto.ApiKeyType} not found");
 
         var personalisation = messageDto.TemplateTokens
-            .ToDictionary(pair => pair.Key, pair => (dynamic)pair.Value);
+            .ToDictionary(pair => pair.Key, dynamic? (pair) => pair.Value);
 
         foreach(var emailAddress in messageDto.NotificationEmails) 
         {

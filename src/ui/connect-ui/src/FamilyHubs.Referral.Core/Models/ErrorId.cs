@@ -16,7 +16,10 @@ public enum ErrorId
     ContactByPhone_NoContactSelected,
     ContactByPhone_NoTelephoneNumber,
     ContactByPhone_InvalidTelephoneNumber,
-    ChangeName_EnterAName
+    ChangeName_EnterAName,
+    VcsRequestDetails_SelectAResponse,
+    VcsRequestDetails_EnterReasonForDeclining,
+    VcsRequestDetails_ReasonForDecliningTooLong
 }
 
 public enum AdHocErrorId

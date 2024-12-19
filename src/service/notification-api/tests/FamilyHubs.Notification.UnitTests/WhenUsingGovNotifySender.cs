@@ -40,7 +40,7 @@ public class WhenUsingGovNotifySender
             ApiKeyType = apiKeyType,
             NotificationEmails = ["someone@email.com"],
             TemplateId = Guid.NewGuid().ToString(),
-            TemplateTokens = new Dictionary<string, string>
+            TemplateTokens = new Dictionary<string, string?>
             {
                 {"Key1", "Value1"},
                 {"Key2", "Value2"}

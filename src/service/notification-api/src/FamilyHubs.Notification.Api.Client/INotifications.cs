@@ -7,7 +7,7 @@ public interface INotifications
     Task SendEmailsAsync(
         IEnumerable<string> emailAddresses,
         string templateId,
-        IDictionary<string, string> tokens,
+        IDictionary<string, string?> tokens,
         ApiKeyType apiKeyType = ApiKeyType.ConnectKey,
         CancellationToken cancellationToken = default);
 }

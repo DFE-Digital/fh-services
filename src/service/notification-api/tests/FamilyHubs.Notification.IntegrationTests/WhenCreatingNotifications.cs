@@ -22,7 +22,7 @@ public class WhenCreatingNotifications : DataIntegrationTestBase
             ApiKeyType = apiKeyType,
             NotificationEmails = ["firstperson@aol.com", "secondperson@aol.com"],
             TemplateId = "05d38535-a5c3-443e-bfde-54f2abdd5c78",
-            TemplateTokens = new Dictionary<string, string>
+            TemplateTokens = new Dictionary<string, string?>
             {
                 { "Key1", "Value1" },
                 { "Key2", "Value2" }

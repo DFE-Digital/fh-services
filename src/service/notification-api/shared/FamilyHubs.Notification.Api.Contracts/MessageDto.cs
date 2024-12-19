@@ -5,7 +5,7 @@ public record MessageDto : DtoBase<long>
     public required ApiKeyType ApiKeyType { get; set; }
     public required List<string> NotificationEmails { get; set; }
     public required string TemplateId { get; set; }
-    public Dictionary<string, string> TemplateTokens { get; set; } = new Dictionary<string, string>();
+    public Dictionary<string, string?> TemplateTokens { get; set; } = new();
     public DateTime? Created { get; set; }
 
     public override int GetHashCode()
@@ -13,7 +13,7 @@ public record MessageDto : DtoBase<long>
         int result = 0;
         foreach (var token in TemplateTokens)
         {
-            result += EqualityComparer<KeyValuePair<string, string>>.Default.GetHashCode(token);
+            result += EqualityComparer<KeyValuePair<string, string?>>.Default.GetHashCode(token);
         }
 
         result +=
@@ -25,7 +25,7 @@ public record MessageDto : DtoBase<long>
         {
             result +=
             EqualityComparer<string?>.Default.GetHashCode(token.Key) * -1521134295 +
-            EqualityComparer<string?>.Default.GetHashCode(token.Value) * -1521134295;
+            (token.Value != null ? EqualityComparer<string?>.Default.GetHashCode(token.Value) : 0) * -1521134295;
         }
 
         return result;

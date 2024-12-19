@@ -20,13 +20,13 @@ public class NotificationsApi : INotifications //todo: , IHealthCheckUrlGroup
     public async Task SendEmailsAsync(
         IEnumerable<string> emailAddresses,
         string templateId,
-        IDictionary<string, string> tokens,
+        IDictionary<string, string?> tokens,
         ApiKeyType apiKeyType = ApiKeyType.ConnectKey,
         CancellationToken cancellationToken = default)
     {
         var httpClient = _httpClientFactory.CreateClient(HttpClientName);
 
-        var tokenDic = tokens as Dictionary<string, string>
+        var tokenDic = tokens as Dictionary<string, string?>
                        ?? tokens.ToDictionary(x => x.Key, x => x.Value);
 
         var message = new MessageDto

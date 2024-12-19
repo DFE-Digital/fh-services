@@ -36,7 +36,6 @@ jobs:
                    src/service/service-directory-api/,
                    src/service/mock-hsda-api/,
                    src/function/open-referral-function/,
-                   src/ui/connect-dashboard-ui/,
                    src/ui/connect-ui/,
                    src/ui/find-ui/,
                    src/ui/idam-maintenance-ui/,
@@ -66,9 +65,6 @@ jobs:
             publish_project: FamilyHubs.OpenReferral.Function
             job_name: Build - Open Referral Function
             dotnet_version_override: "8.0.x"
-          - project: src/ui/connect-dashboard-ui/
-            publish_project: FamilyHubs.RequestForSupport.Web
-            job_name: Build - Connect Dashboard UI
           - project: src/ui/connect-ui/
             publish_project: FamilyHubs.Referral.Web
             job_name: Build - Connect UI
@@ -166,19 +162,12 @@ jobs:
     needs: [ deploy-api-services ]
     strategy:
       matrix:
-        artifact_name: [ connect-dashboard-ui,
-                         connect-ui,
+        artifact_name: [ connect-ui,
                          find-ui,
                          idam-maintenance-ui,
                          manage-ui
         ]
         include:
-          - artifact_name: connect-dashboard-ui
-            job_name: Deploy - Connect Dashboard UI
-            keyvault_app_prefix: CONNECT-DASHBOARD-UI
-            project_name: FamilyHubs.RequestForSupport.Web
-            azure_app_name: as-fh-ref-dash-ui
-
           - artifact_name: connect-ui
             job_name: Deploy - Connect UI
             keyvault_app_prefix: CONNECT-UI
