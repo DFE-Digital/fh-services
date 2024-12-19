@@ -12,10 +12,10 @@ on:
         required: true
         type: string
         description: The database being updated  
-      keyvault_secret_name:
+      keyvault_db_prefix:
         required: true
         type: string
-        description: Name of the secret containing the database connection string
+        description: Key vault prefix omitting the PIPELINE- to get a connection string
       sql_file_path:
         required: true
         type: string
@@ -23,13 +23,14 @@ on:
 
 jobs:
   run-script-against-database:
-    name: Runs the SQL script against the ${{ inputs.display_name }}
+    name: Runs the SQL script against the ${{ inputs.display_name }} Database
     runs-on: windows-2022
     environment: ${{ inputs.environment }}
     env:
-      KEYVAULT_NAME: ${{ vars.AZURE_RESOURCE_PREFIX }}-kv-fh-general
+      ADMIN_KEY_VAULT_NAME: ${{ vars.AZURE_RESOURCE_PREFIX }}-kv-fh-admin
       RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
       SQL_SERVER: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
+      SQL_FIREWALL_NAME: '"SQL ${{ inputs.display_name }} Rule"'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -54,13 +55,13 @@ jobs:
           action: "Add"
           az_resource_group: ${{ env.RESOURCE_GROUP }}
           az_sql_server_name: ${{ env.SQL_SERVER }}
-          az_firewall_rule_name: sql-script-rule
+          az_firewall_rule_name: ${{ env.SQL_FIREWALL_NAME }}
           
       - name: Run SQL Script PowerShell
         uses: ./.github/actions/run-sql-script
         with:
-          keyvault_name: ${{ env.KEYVAULT_NAME }}
-          keyvault_secret_name: ${{ inputs.keyvault_secret_name }}
+          admin_key_vault: ${{ env.ADMIN_KEY_VAULT_NAME }}
+          keyvault_db_prefix: ${{ inputs.keyvault_db_prefix }}
           sql_file_path: ${{ inputs.sql_file_path }}
         
       - name: Remove Azure Firewall Rule
@@ -71,4 +72,4 @@ jobs:
           action: "Remove"
           az_resource_group: ${{ env.RESOURCE_GROUP }}
           az_sql_server_name: ${{ env.SQL_SERVER }}
-          az_firewall_rule_name: sql-script-rule    
+          az_firewall_rule_name: ${{ env.SQL_FIREWALL_NAME }}

@@ -1,3 +1,4 @@
+subscription_id = "56c128b8-5ca9-4328-bb24-a11c829f4af9"
 prefix = "s181d01"
 asp_netcore_environment = "Development"
 environment = "Dev"

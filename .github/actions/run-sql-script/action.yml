@@ -2,24 +2,23 @@ name: Runs SQL Scripts
 description: Runs SQL script specified by the path provided against the database
 
 inputs:
-  keyvault_name:
+  admin_key_vault:
     required: true
     description: Name of the key vault to get the secret from
-  keyvault_secret_name:
+  keyvault_db_prefix:
     required: true
-    description: Name of the secret containing the database connection string
+    description: Prefix of connection string omitting the PIPELINE-
   sql_file_path:
     required: true
     description: Path to the SQL file
 
 runs:
   using: composite
-
   steps:
     - name: Run SQL Script in PowerShell
       shell: pwsh
       run: |-
-        $ConnectionString = az keyvault secret show --name ${{ inputs.keyvault_secret_name }} --vault-name ${{ inputs.keyvault_name }} --query value --output tsv
+        $ConnectionString = az keyvault secret show --name PIPELINE-${{ inputs.keyvault_db_prefix }}-ConnectionString --vault-name ${{ inputs.admin_key_vault }} --query value --output tsv
         
         $Logs = @()
         $SqlFile = Get-ChildItem -Path ${{ inputs.sql_file_path }} -File -Filter *.sql

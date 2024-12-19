@@ -1,0 +1,75 @@
+name: Migrate Database
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      artifact_name:
+        required: true
+        type: string
+      keyvault_app_prefix:
+        required: true
+        type: string
+      keyvault_db_prefix:
+        required: false
+        type: string  
+      project_name:
+        required: true
+        type: string
+      data_project_name:
+        required: false
+        type: string
+      database_context:
+        required: false
+        type: string
+      project_type:
+        required: true
+        type: string
+
+jobs:
+  migrate-database:
+    name: Apply Migrations to Database
+    runs-on: ubuntu-22.04
+    environment: ${{ inputs.environment }}
+    env:
+      KEYVAULT: ${{ vars.AZURE_RESOURCE_PREFIX }}-kv-fh-admin
+      RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
+      SQL_SERVER: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Setup .NET ${{ vars.DOTNET_VERSION_V8 }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION_V8 }}
+
+      - name: Install Entity Framework
+        if: ${{ inputs.data_project_name != '' && inputs.database_context != ''}}
+        shell: bash
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Apply Database Migration
+        if: ${{ inputs.data_project_name != '' && inputs.database_context != ''}}
+        uses: ./.github/actions/database-migration
+        with:
+          db_context: ${{ inputs.database_context }}
+          data_project_path: ${{ github.workspace }}/src/${{ inputs.project_type }}/${{ inputs.artifact_name }}/src/${{ inputs.data_project_name }}
+          startup_project_path: ${{ github.workspace }}/src/${{ inputs.project_type }}/${{ inputs.artifact_name }}/src/${{ inputs.project_name }}
+          azure_resource_group: ${{ env.RESOURCE_GROUP }}
+          azure_sql_server_resource_name: ${{ env.SQL_SERVER }}
+          az_firewall_rule_name: ${{ inputs.artifact_name }}
+          admin_key_vault: ${{ env.KEYVAULT }}
+          keyvault_app_prefix: ${{ inputs.keyvault_app_prefix }}
+          keyvault_db_prefix: ${{ inputs.keyvault_db_prefix }}

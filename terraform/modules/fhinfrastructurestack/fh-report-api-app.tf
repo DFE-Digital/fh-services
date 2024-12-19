@@ -25,6 +25,7 @@ resource "azurerm_windows_web_app" "fh_report_api" {
     always_on                                   = true
     ftps_state                                  = "Disabled"
     health_check_path                           = "/api/health"
+    health_check_eviction_time_in_min           = 5 # How long to be removed from LB if unhealthy
     application_stack {
       current_stack                               = var.current_stack
       dotnet_version                              = var.dotnet_version_general
@@ -151,6 +152,7 @@ resource "azurerm_storage_account" "storage_rep_api_logs" {
   public_network_access_enabled = local.public_network_access_enabled_storage
   account_replication_type = local.account_replication_type
   infrastructure_encryption_enabled = local.infrastructure_encryption_enabled
+  cross_tenant_replication_enabled = false
   blob_properties {
     versioning_enabled     = local.versioning_enabled
     change_feed_enabled    = local.change_feed_enabled

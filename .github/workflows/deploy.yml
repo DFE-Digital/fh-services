@@ -18,10 +18,6 @@ on:
           - 'Test2'
           - 'Pre-production'
           - 'Production'
-      reset_and_reseed_databases:
-        description: Choose to reset all the databases and reseed
-        default: true
-        type: boolean
 
 permissions:
   id-token: write
@@ -90,58 +86,10 @@ jobs:
       project: ${{ matrix.project }}
       publish_project: ${{ matrix.publish_project }}
       dotnet_version: ${{ matrix.dotnet_version_override || vars.DOTNET_VERSION }}
-
-  reset-databases:
-    if: startsWith(inputs.environment, 'Test') && inputs.reset_and_reseed_databases
-    name: Reset the ${{ matrix.display_name }} database
-    needs: [ build-projects-upload-artifacts ]
-    strategy:
-      matrix:
-        databases: [
-          idam-database,
-          notification-database,
-          open-referral-mock-database,
-          referral-database,
-          report-database,
-          service-directory-database
-        ]
-        include:
-          - databases: idam-database
-            display_name: IDAM
-            keyvault_secret_name: IDAM-API-CONNECTIONSTRINGS-IDAMCONNECTION
-            sql_file_path: ./test/reset-scripts/reset-database.sql
-          - databases: notification-database
-            display_name: Notification
-            keyvault_secret_name: NOTIFICATIONS-API-CONNECTIONSTRINGS-NOTIFICATIONCONNECTION
-            sql_file_path: ./test/reset-scripts/reset-database.sql
-          - databases: open-referral-mock-database
-            display_name: Open Referral Mock
-            keyvault_secret_name: MOCK-HSDA-API-CONNECTIONSTRINGS-HSDAMOCKRESPONSESCONNECTION
-            sql_file_path: ./test/reset-scripts/reset-database.sql
-          - databases: referral-database
-            display_name: Referral
-            keyvault_secret_name: REFERRAL-API-CONNECTIONSTRINGS-REFERRALCONNECTION
-            sql_file_path: ./test/reset-scripts/reset-database.sql
-          - databases: report-database
-            display_name: Report
-            keyvault_secret_name: REPORT-API-CONNECTIONSTRINGS-REPORTCONNECTION  
-            sql_file_path: ./test/reset-scripts/reset-database.sql
-          - databases: service-directory-database
-            display_name: Service Directory
-            keyvault_secret_name: SD-API-CONNECTIONSTRINGS-SERVICEDIRECTORYCONNECTION
-            sql_file_path: ./test/reset-scripts/reset-database.sql
-    uses: ./.github/workflows/run-sql-script.yml
-    with:
-      environment: ${{ inputs.environment }}
-      display_name: ${{ matrix.display_name }}
-      keyvault_secret_name: ${{ matrix.keyvault_secret_name }}
-      sql_file_path: ${{ matrix.sql_file_path }}
-    secrets: inherit
     
   deploy-api-services:
-    if: always() && (needs.reset-databases.result == 'success' || needs.reset-databases.result == 'skipped')
     name: ${{ matrix.job_name }}
-    needs: [ reset-databases ]
+    needs: [ build-projects-upload-artifacts ]
     strategy:
       matrix:
         artifact_name: [ idam-api,
@@ -214,7 +162,6 @@ jobs:
     secrets: inherit
     
   deploy-ui-services:
-    if: always() && needs.deploy-api-services.result == 'success' && (needs.reset-databases.result == 'success' || needs.reset-databases.result == 'skipped')
     name: ${{ matrix.job_name }}
     needs: [ deploy-api-services ]
     strategy:
@@ -266,9 +213,8 @@ jobs:
     secrets: inherit
 
   deploy-functions:
-    if: always() && (needs.reset-databases.result == 'success' || needs.reset-databases.result == 'skipped')
     name: ${{ matrix.job_name }}
-    needs: [ reset-databases ]
+    needs: [ build-projects-upload-artifacts ]
     strategy:
       matrix:
         artifact_name: [
@@ -288,57 +234,10 @@ jobs:
       azure_app_name: ${{ matrix.azure_app_name }}
     secrets: inherit
   
-  seed-databases:
-    if: startsWith(inputs.environment, 'Test') && inputs.reset_and_reseed_databases
-    name: Seed the ${{ matrix.display_name }} database
-    needs: [ deploy-api-services, deploy-ui-services, deploy-functions ]
-    strategy:
-      matrix:
-        databases: [ 
-          idam-database, 
-          notification-database, 
-          open-referral-mock-database, 
-          referral-database, 
-          report-database, 
-          service-directory-database 
-        ]
-        include:
-          - databases: idam-database
-            display_name: IDAM
-            keyvault_secret_name: IDAM-API-CONNECTIONSTRINGS-IDAMCONNECTION
-            sql_file_path: ./test/seed-scripts/test/idam-data.sql
-          - databases: notification-database
-            display_name: Notification
-            keyvault_secret_name: NOTIFICATIONS-API-CONNECTIONSTRINGS-NOTIFICATIONCONNECTION
-            sql_file_path: ./test/seed-scripts/test/notification-data.sql
-          - databases: open-referral-mock-database
-            display_name: Open Referral Mock
-            keyvault_secret_name: MOCK-HSDA-API-CONNECTIONSTRINGS-HSDAMOCKRESPONSESCONNECTION
-            sql_file_path: ./test/seed-scripts/test/open-referral-mock-data.sql
-          - databases: referral-database
-            display_name: Referral
-            keyvault_secret_name: REFERRAL-API-CONNECTIONSTRINGS-REFERRALCONNECTION
-            sql_file_path: ./test/seed-scripts/test/referral-data.sql
-          - databases: report-database
-            display_name: Report
-            keyvault_secret_name: REPORT-API-CONNECTIONSTRINGS-REPORTCONNECTION
-            sql_file_path: ./test/seed-scripts/test/report-data.sql
-          - databases: service-directory-database
-            display_name: Service Directory
-            keyvault_secret_name: SD-API-CONNECTIONSTRINGS-SERVICEDIRECTORYCONNECTION
-            sql_file_path: ./test/seed-scripts/test/service-directory-data.sql
-    uses: ./.github/workflows/run-sql-script.yml
-    with:
-      environment: ${{ inputs.environment }}
-      display_name: ${{ matrix.display_name }}
-      keyvault_secret_name: ${{ matrix.keyvault_secret_name }}
-      sql_file_path: ${{ matrix.sql_file_path }}
-    secrets: inherit
-    
   run-api-acceptance-tests:
     if: startsWith(inputs.environment, 'Test')
     name: ${{ matrix.job_name }}
-    needs: [ seed-databases ]
+    needs: [ deploy-api-services ]
     strategy:
       matrix:
         project_name: [

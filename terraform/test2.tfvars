@@ -1,3 +1,4 @@
+subscription_id = "779425ba-87e7-47c3-9481-d15b47d37020"
 prefix = "s181t02"
 environment = "Test"
 

@@ -1,0 +1,181 @@
+name: Reseed Databases
+run-name: Reseed databases in ${{ inputs.environment }}
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}-${{ inputs.environment }}"
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: The environment target for database reseeding
+        default: 'Test'
+        type: choice
+        options:
+          - 'Test'
+          - 'Test2'
+          
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  reset-databases:
+    name: Reset the ${{ matrix.display_name }} database
+    strategy:
+      matrix:
+        databases: [
+          idam-database,
+          notification-database,
+          open-referral-mock-database,
+          referral-database,
+          report-database,
+          service-directory-database
+        ]
+        include:
+          - databases: idam-database
+            display_name: IDAM
+            keyvault_db_prefix: IDAM-DB
+            sql_file_path: ./test/reset-scripts/reset-database.sql
+          - databases: notification-database
+            display_name: Notification
+            keyvault_db_prefix: NOTIFICATIONS-DB
+            sql_file_path: ./test/reset-scripts/reset-database.sql
+          - databases: open-referral-mock-database
+            display_name: Open Referral Mock
+            keyvault_db_prefix: MOCK-HSDA-DB
+            sql_file_path: ./test/reset-scripts/reset-database.sql
+          - databases: referral-database
+            display_name: Referral
+            keyvault_db_prefix: REFERRAL-DB
+            sql_file_path: ./test/reset-scripts/reset-database.sql
+          - databases: report-database
+            display_name: Report
+            keyvault_db_prefix: REPORT-DB
+            sql_file_path: ./test/reset-scripts/reset-database.sql
+          - databases: service-directory-database
+            display_name: Service Directory
+            keyvault_db_prefix: SD-DB
+            sql_file_path: ./test/reset-scripts/reset-database.sql
+    uses: ./.github/workflows/run-sql-script.yml
+    with:
+      environment: ${{ inputs.environment }}
+      display_name: ${{ matrix.display_name }}
+      keyvault_db_prefix: ${{ matrix.keyvault_db_prefix }}
+      sql_file_path: ${{ matrix.sql_file_path }}
+    secrets: inherit
+    
+  migrate-databases:
+    name: ${{ matrix.job_name }}
+    needs: [ reset-databases ]
+    strategy:
+      matrix:
+        artifact_name: [ 
+          idam-api,
+          notification-api,
+          referral-api,
+          report-api,
+          service-directory-api,
+          mock-hsda-api
+        ]
+        include:
+          - artifact_name: idam-api
+            job_name: Migrate the IDAM Database
+            keyvault_app_prefix: IDAM-API
+            keyvault_db_prefix: IDAM-DB
+            project_name: FamilyHubs.Idam.Api
+            data_project_name: FamilyHubs.Idam.Data
+            database_context: ApplicationDbContext
+          - artifact_name: notification-api
+            job_name: Migrate the Notification Database
+            keyvault_app_prefix: NOTIFICATIONS-API
+            keyvault_db_prefix: NOTIFICATIONS-DB
+            project_name: FamilyHubs.Notification.Api
+            data_project_name: FamilyHubs.Notification.Data
+            database_context: ApplicationDbContext
+          - artifact_name: referral-api
+            job_name: Migrate the Referral Database
+            keyvault_app_prefix: REFERRAL-API
+            keyvault_db_prefix: REFERRAL-DB
+            project_name: FamilyHubs.Referral.Api
+            data_project_name: FamilyHubs.Referral.Data
+            database_context: ApplicationDbContext
+          - artifact_name: report-api
+            job_name: Migrate the Report Database
+            keyvault_app_prefix: REPORT-API
+            keyvault_db_prefix: REPORT-DB
+            project_name: FamilyHubs.Report.Api
+            data_project_name: FamilyHubs.Report.Data
+            database_context: ReportDbContext
+          - artifact_name: service-directory-api
+            job_name: Migrate the Service Directory Database
+            keyvault_app_prefix: SD-API
+            keyvault_db_prefix: SD-DB
+            project_name: FamilyHubs.ServiceDirectory.Api
+            data_project_name: FamilyHubs.ServiceDirectory.Data
+            database_context: ApplicationDbContext
+          - artifact_name: mock-hsda-api
+            job_name: Migrate the Mock HSDA Database
+            keyvault_app_prefix: MOCK-HSDA-API
+            keyvault_db_prefix: MOCK-HSDA-DB
+            project_name: FamilyHubs.Mock-Hsda.Api
+            data_project_name: FamilyHubs.Mock-Hsda.Api
+            database_context: MockDbContext
+    uses: ./.github/workflows/migrate-database.yml
+    with:
+      environment: ${{ inputs.environment }}
+      artifact_name: ${{ matrix.artifact_name }}
+      keyvault_app_prefix: ${{ matrix.keyvault_app_prefix }}
+      keyvault_db_prefix: ${{ matrix.keyvault_db_prefix }}
+      project_name: ${{ matrix.project_name }}
+      data_project_name: ${{ matrix.data_project_name }}
+      database_context: ${{ matrix.database_context }}
+      project_type: service
+    secrets: inherit
+
+  seed-databases:
+    name: Seed the ${{ matrix.display_name }} database
+    needs: [ migrate-databases ]
+    strategy:
+      matrix:
+        databases: [ 
+          idam-database, 
+          notification-database, 
+          open-referral-mock-database, 
+          referral-database, 
+          report-database, 
+          service-directory-database 
+        ]
+        include:
+          - databases: idam-database
+            display_name: IDAM
+            keyvault_db_prefix: IDAM-DB
+            sql_file_path: ./test/seed-scripts/test/idam-data.sql
+          - databases: notification-database
+            display_name: Notification
+            keyvault_db_prefix: NOTIFICATIONS-DB
+            sql_file_path: ./test/seed-scripts/test/notification-data.sql
+          - databases: open-referral-mock-database
+            display_name: Open Referral Mock
+            keyvault_db_prefix: MOCK-HSDA-DB
+            sql_file_path: ./test/seed-scripts/test/open-referral-mock-data.sql
+          - databases: referral-database
+            display_name: Referral
+            keyvault_db_prefix: REFERRAL-DB
+            sql_file_path: ./test/seed-scripts/test/referral-data.sql
+          - databases: report-database
+            display_name: Report
+            keyvault_db_prefix: REPORT-DB
+            sql_file_path: ./test/seed-scripts/test/report-data.sql
+          - databases: service-directory-database
+            display_name: Service Directory
+            keyvault_db_prefix: SD-DB
+            sql_file_path: ./test/seed-scripts/test/service-directory-data.sql
+    uses: ./.github/workflows/run-sql-script.yml
+    with:
+      environment: ${{ inputs.environment }}
+      display_name: ${{ matrix.display_name }}
+      keyvault_db_prefix: ${{ matrix.keyvault_db_prefix }}
+      sql_file_path: ${{ matrix.sql_file_path }}
+    secrets: inherit
