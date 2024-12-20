@@ -1133,15 +1133,15 @@ resource "azurerm_application_gateway" "ref_ui_app_gateway" {
     target_listener_name = "${var.prefix}-${local.appgw_listener_https_referral_ui_name}"
   }
 
-  request_routing_rule {
-    name                       = "${var.prefix}-${local.appgw_routing_https_referral_ui_name}"
-    backend_address_pool_name  = "${var.prefix}-${local.appgw_bep_referral_ui_name}"
-    backend_http_settings_name = "${var.prefix}-${local.appgw_backend_referral_ui_name}"
-    http_listener_name         = "${var.prefix}-${local.appgw_listener_https_referral_ui_name}"
-    priority                   = 1
-    rule_type                  = "PathBasedRouting"
-    rewrite_rule_set_name      = "${var.prefix}-${local.appgw_rewrites_referral_ui_name}"
-  }
+  #request_routing_rule {
+  #  name                       = "${var.prefix}-${local.appgw_routing_https_referral_ui_name}"
+  #  backend_address_pool_name  = "${var.prefix}-${local.appgw_bep_referral_ui_name}"
+  #  backend_http_settings_name = "${var.prefix}-${local.appgw_backend_referral_ui_name}"
+  #  http_listener_name         = "${var.prefix}-${local.appgw_listener_https_referral_ui_name}"
+  #  priority                   = 1
+  #  rule_type                  = "PathBasedRouting"
+  #  rewrite_rule_set_name      = "${var.prefix}-${local.appgw_rewrites_referral_ui_name}"
+  #}
 
   request_routing_rule {
     name                       = "${var.prefix}-fh-routing-http-referral-ui"
