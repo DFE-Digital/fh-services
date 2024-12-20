@@ -2,7 +2,7 @@
 
 public record LocalOfferFilter
 {
-    public string ServiceType { get; set; } = default!;
+    public string? ServiceType { get; set; }
     public string Status { get; set; } = default!;
     public bool? AllChildrenYoungPeople { get; init; }
     public int? GivenAge { get; init; }
