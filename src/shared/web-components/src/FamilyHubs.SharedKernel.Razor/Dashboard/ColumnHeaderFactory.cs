@@ -8,11 +8,11 @@ public class ColumnHeaderFactory
     private readonly string _sortedColumnName;
     private readonly SortOrder _sort;
     private readonly string? _extraQueryParams;
-    private readonly string _pagePath;
+    private readonly string? _pagePath;
 
     public ColumnHeaderFactory(
         IEnumerable<ColumnImmutable> columnsImmutable,
-        string pagePath,
+        string? pagePath,
         string sortedColumnName,
         SortOrder sort,
         IReadOnlyDictionary<string, string> extraQueryParams)
@@ -23,7 +23,7 @@ public class ColumnHeaderFactory
 
     public ColumnHeaderFactory(
         IEnumerable<ColumnImmutable> columnsImmutable,
-        string pagePath,
+        string? pagePath,
         string sortedColumnName,
         SortOrder sort,
         string? extraQueryParams = null)

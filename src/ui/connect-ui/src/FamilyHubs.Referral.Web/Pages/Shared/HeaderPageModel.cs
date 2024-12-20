@@ -8,11 +8,16 @@ namespace FamilyHubs.Referral.Web.Pages.Shared;
 
 public class HeaderPageModel : PageModel, IFamilyHubsHeader
 {
-    private readonly bool _highlightSearchForService;
+    private readonly string? _selectedLinkText;
 
-    public HeaderPageModel(bool highlightSearchForService = true)
+    public HeaderPageModel(bool highlightSearchForService = true, bool highlightRequests = false)
     {
-        _highlightSearchForService = highlightSearchForService;
+        _selectedLinkText = highlightSearchForService switch
+        {
+            true => "Search for service",
+            false when (highlightRequests) => "My requests",
+            _ => null
+        };
     }
 
     public bool ShowActionLinks => IsAuthenticatedAndTermsAccepted;
@@ -21,12 +26,9 @@ public class HeaderPageModel : PageModel, IFamilyHubsHeader
     private bool IsAuthenticatedAndTermsAccepted =>
         User.Identity?.IsAuthenticated == true
         && HttpContext.TermsAndConditionsAccepted();
- 
-    LinkStatus IFamilyHubsHeader.GetStatus(IFhRenderLink link)
-    {
-        return _highlightSearchForService
-        && link.Text == "Search for service" ? LinkStatus.Active : LinkStatus.Visible;
-    }
+
+    LinkStatus IFamilyHubsHeader.GetStatus(IFhRenderLink link) =>
+        link.Text == _selectedLinkText ? LinkStatus.Active : LinkStatus.Visible;
 
     IEnumerable<IFhRenderLink> IFamilyHubsHeader.NavigationLinks(
         FhLinkOptions[] navigationLinks,

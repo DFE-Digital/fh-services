@@ -37,13 +37,11 @@ graph LR
 
     PublicUsers[Public Users] -->|Use| Find[Find UI]
     ProfessionalUsers[Professional Users] -->|Authenticate using| GovOneLogin[Gov One Login] -->|Use| Connect[Connect UI]
-    ProfessionalUsers[Professional Users] -->|Authenticate using| GovOneLogin -->|Use| ConnectDashboard[Connect Dashboard UI]
     AdministrativeUsers[Administrative Users] -->|Authenticate using| GovOneLogin -->|Use| Manage[Manage UI]    
     FamilyHubsDev[Family Hubs Developers] -->|Use| IdAMMaintenanceUI[IdAM Maintenance UI]
 
     style Find fill:#F0EFEB,stroke:#333
     style Connect fill:#F0EFEB,stroke:#333
-    style ConnectDashboard fill:#F0EFEB,stroke:#333
     style Manage fill:#F0EFEB,stroke:#333
     style IdAMMaintenanceUI fill:#F0EFEB,stroke:#333
 
@@ -63,11 +61,6 @@ graph LR
             Connect -->|Connects to| IdAMAPI[IdAM API]
             Connect -->|Connects to| ReferralAPI[Referral API]
             Connect -->|Connects to| NotificationAPI[Notification API]
-
-            ConnectDashboard -->|Connects to| ServiceDirectoryAPI
-            ConnectDashboard -->|Connects to| IdAMAPI[IdAM API]
-            ConnectDashboard -->|Connects to| ReferralAPI[Referral API]
-            ConnectDashboard -->|Connects to| NotificationAPI[Notification API]
 
             Manage -->|Connects to| ServiceDirectoryAPI
             Manage -->|Connects to| IdAMAPI
@@ -138,7 +131,6 @@ Family Hubs consists of the following services:
 
 - **Find:** lets users find services in their area through a postcode search
 - **Connect:** allows LAs to connect families with services through connection requests
-- **Connect Dashboard:** allows LA and VS users to send/receive connection requests. Is built to be visually indistinguishable from the main Connect side, appearing as just another section of Connect.
 - **Manage:** allows LA and VCS users to manage their data, view metrics, and other administrative tasks
 - **IdAM Maintenance:** allows members of the Family Hubs team to add new DfE Admin, LA and VCS users
 

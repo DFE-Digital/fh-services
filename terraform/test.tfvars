@@ -30,7 +30,6 @@ private_endpoint_ip_address = {
   service_directory_ui = "10.0.1.103"
   service_directory_admin_ui = "10.0.1.104"
   notification_api = "10.0.1.105"
-  referral_dashboard_ui = "10.0.1.106"
   idam_api = "10.0.1.107"
   report_api_ip = "10.0.1.108"
   open_referral_mock = "10.0.1.110"
