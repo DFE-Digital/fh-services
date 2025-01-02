@@ -8,7 +8,7 @@ This is a Serenity/JS with Playwright Framework using a screenplay pattern.
 - Run data seed scripts
 - Navigate to folder of service under test (i.e. find-e2e-tests, connect-e2e-tests or manage-e2e-tests)
 - Install all required dependencies: npm install
-- Ensure to create a .env file containing the baseURL for the environment you plan to test.
+- Ensure to create a .env file containing the baseURL, usernames, and password for the environment you plan to test.
 
 # How to run the tests locally (against the test environment)
 
