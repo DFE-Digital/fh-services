@@ -1,8 +1,10 @@
-﻿using FluentValidation;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentValidation;
 using MediatR;
 
 namespace FamilyHubs.Idams.Maintenance.UI.Middleware;
 
+[ExcludeFromCodeCoverage]
 public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : class, IRequest<TResponse>
 {

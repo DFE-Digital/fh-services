@@ -2,7 +2,6 @@
 @model FamilyHubs.Idams.Maintenance.UI.Pages.WelcomeModel
 @{
     ViewData["Title"] = "Welcome";
-    var organisationName = Model.FamilyHubsUser.OrganisationId == "-1" ? "Department for Education" : Model.OrganisationViewModel.Name;
 }
 
 <component type="typeof(Components.SectionBreakHeaderComponent)" param-Header='"Accounts"' render-mode="Static" />
@@ -16,13 +15,13 @@
     </div>
     <div class="card">
         <h3 class="govuk-heading-s">
-            <a asp-page-handler="ChangeUserPermissions">Manage User Role and Organisation</a>
+            <a asp-page-handler="ChangeUserPermissions" id="change-user-permissions">Manage User Role and Organisation</a>
         </h3>
         <p class="govuk-body-s">View and Manage User Role and Organisation.</p>
     </div>
     <div class="card">
         <h3 class="govuk-heading-s">
-            <a asp-page-handler="CreateEncryptionKeys">Create New Encryption Keys</a>
+            <a asp-page-handler="CreateEncryptionKeys" id="create-encryption-keys">Create New Encryption Keys</a>
         </h3>
         <p class="govuk-body-s">Create New Database Encryption Keys.</p>
     </div>

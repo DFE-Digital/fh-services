@@ -1,12 +1,15 @@
-﻿using FamilyHubs.Idams.Maintenance.Data.Entities;
+﻿using System.Diagnostics.CodeAnalysis;
+using FamilyHubs.Idams.Maintenance.Data.Entities;
 using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace FamilyHubs.Idams.Maintenance.Data.Interceptors;
 
+[ExcludeFromCodeCoverage]
 public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
 {
 
@@ -59,6 +62,7 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
     }
 }
 
+[ExcludeFromCodeCoverage]
 public static class Extensions
 {
     public static bool HasChangedOwnedEntities(this EntityEntry entry) =>

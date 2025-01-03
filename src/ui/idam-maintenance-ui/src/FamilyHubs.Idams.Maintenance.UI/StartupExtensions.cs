@@ -1,6 +1,6 @@
-﻿using FamilyHubs.Idams.Maintenance.Core.ApiClient;
+﻿using System.Diagnostics.CodeAnalysis;
+using FamilyHubs.Idams.Maintenance.Core.ApiClient;
 using FamilyHubs.Idams.Maintenance.Core.Commands.Add;
-using FamilyHubs.Idams.Maintenance.Core.DistributedCache;
 using FamilyHubs.Idams.Maintenance.Core.Services;
 using FamilyHubs.Idams.Maintenance.Data.Interceptors;
 using FamilyHubs.Idams.Maintenance.Data.Repository;
@@ -11,17 +11,16 @@ using FamilyHubs.SharedKernel.Security;
 using FluentValidation;
 using MediatR;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.DataEncryption.Providers;
-using Microsoft.Extensions.Caching.Distributed;
 using Serilog;
 using Serilog.Events;
 
 namespace FamilyHubs.Idams.Maintenance.UI;
 
+[ExcludeFromCodeCoverage]
 public static class StartupExtensions
 {
     public static void ConfigureHost(this WebApplicationBuilder builder)
@@ -45,10 +44,6 @@ public static class StartupExtensions
     public static void ConfigureServices(this IServiceCollection services, ConfigurationManager configuration)
     {
         services.AddApplicationInsightsTelemetry();
-#if MABUSE_DistributedCache
-        services.AddSingleton<ICacheService, CacheService>();
-#endif
-        services.AddScoped<ICorrelationService, CorrelationService>();
         services.AddTransient<IIdamService, IdamService>();
 
         services.AddSingleton((serviceProvider) =>
@@ -60,19 +55,13 @@ public static class StartupExtensions
         });
 
         services.AddClientServices(configuration);
-#if MABUSE_DistributedCache
-        services.AddWebUiServices(configuration);
-#endif
 
 #if USE_Authorization
         services.AddAndConfigureGovUkAuthentication(configuration);
 #endif
 
 
-        services.AddRazorPages(options =>
-        {
-
-        });
+        services.AddRazorPages();
 
 #if USE_Authorization
 
@@ -88,11 +77,7 @@ public static class StartupExtensions
                 || claim.Value == RoleTypes.LaDualRole)
             )));
 #endif
-
-#if MABUSE_DistributedCache
-        services.AddDistributedCache(configuration);
-#endif
-
+        
         services.AddFamilyHubs(configuration);
         services.AddFamilyHubsUi(configuration);
     }
@@ -124,85 +109,12 @@ public static class StartupExtensions
         services.AddTransient<CorrelationMiddleware>();
         services.AddTransient<ExceptionHandlingMiddleware>();
     }
-
-#if MABUSE_DistributedCache
-    public static IServiceCollection AddDistributedCache(this IServiceCollection services, ConfigurationManager configuration)
-    {
-        var cacheConnection = configuration.GetValue<string>("CacheConnection");
-
-        if (string.IsNullOrWhiteSpace(cacheConnection))
-        {
-            services.AddDistributedMemoryCache();
-        }
-        else
-        {
-            var tableName = "IdamMaintenanceCache";
-            CheckCreateCacheTable(tableName, cacheConnection);
-            services.AddDistributedSqlServerCache(options =>
-            {
-                options.ConnectionString = cacheConnection;
-                options.TableName = tableName;
-                options.SchemaName = "dbo";
-            });
-        }
-
-        services.AddTransient<ICacheService, CacheService>();
-
-        services.AddTransient<ICacheKeys, CacheKeys>();
-
-        // there's currently only one, so this should be fine
-        services.AddSingleton(new DistributedCacheEntryOptions
-        {
-            SlidingExpiration = TimeSpan.FromMinutes(configuration.GetValue<int>("SessionTimeOutMinutes"))
-        });
-
-        return services;
-    }
-
-    private static void CheckCreateCacheTable(string tableNam, string cacheConnectionString)
-    {
-        try
-        {
-            using var sqlConnection = new SqlConnection(cacheConnectionString);
-            sqlConnection.Open();
-
-            var checkTableExistsCommandText = $"IF EXISTS(SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='{tableNam}') SELECT 1 ELSE SELECT 0";
-            var checkCmd = new SqlCommand(checkTableExistsCommandText, sqlConnection);
-
-            // IF EXISTS returns the SELECT 1 if the table exists or SELECT 0 if not
-            var tableExists = Convert.ToInt32(checkCmd.ExecuteScalar());
-            if (tableExists == 1) return;
-
-            var createTableExistsCommandText = @$"
-            CREATE TABLE [dbo].[{tableNam}](
-                [Id] [nvarchar](449) NOT NULL,
-                [Value] [varbinary](max) NOT NULL,
-                [ExpiresAtTime] [datetimeoffset] NOT NULL,
-                [SlidingExpirationInSeconds] [bigint] NULL,
-                [AbsoluteExpiration] [datetimeoffset] NULL,
-                INDEX Ix_{tableNam}_ExpiresAtTime NONCLUSTERED ([ExpiresAtTime]),
-                CONSTRAINT Pk_{tableNam}_Id PRIMARY KEY CLUSTERED ([Id] ASC) WITH 
-                    (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF,
-                     IGNORE_DUP_KEY = OFF,
-                     ALLOW_ROW_LOCKS = ON,
-                     ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-            ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY];";
-
-            var createCmd = new SqlCommand(createTableExistsCommandText, sqlConnection);
-            createCmd.ExecuteNonQuery();
-            sqlConnection.Close();
-        }
-        catch (Exception e)
-        {
-            Log.Fatal(e, "An unhandled exception occurred during setting up Sql Cache");
-            throw;
-        }
-    }
-#endif
+    
     private static void RegisterAppDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<AuditableEntitySaveChangesInterceptor>();
-
+        services.AddTransient<IRepository, ApplicationRepository>();
+        
         var connectionString = configuration.GetConnectionString("IdamConnection");
         ArgumentException.ThrowIfNullOrEmpty(connectionString);
 
@@ -231,42 +143,13 @@ public static class StartupExtensions
         });
     }
 
-#if MABUSE_DistributedCache
-    private static void AddWebUiServices(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddHttpContextAccessor();
-
-        // Customise default API behaviour
-        services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
-
-        string? connectionString = configuration["SqlServerCache:Connection"];
-        string? schemaName = configuration["SqlServerCache:SchemaName"];
-        string? tableName = configuration["SqlServerCache:TableName"];
-
-        if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(schemaName) ||
-            string.IsNullOrEmpty(tableName))
-        {
-            //todo: config exception?
-            throw new InvalidOperationException("Missing config in SqlServerCache section");
-        }
-
-        services.AddSqlServerDistributedCache(
-            connectionString,
-            int.Parse(configuration["SqlServerCache:SlidingExpirationInMinutes"] ?? "240"),
-            schemaName, tableName);
-        services.AddTransient<IConnectionRequestDistributedCache, ConnectionRequestDistributedCache>();
-
-    }
-#endif
-
     public static IServiceCollection AddClientServices(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.AddClient<IServiceDirectoryClient>(configuration, "ServiceDirectoryApiBaseUrl", (httpClient, serviceProvider) =>
         {
-            var cacheService = serviceProvider.GetService<ICacheService>();
             var logger = serviceProvider.GetService<ILogger<ServiceDirectoryClient>>();
 
-            return new ServiceDirectoryClient(httpClient, cacheService!, logger!);
+            return new ServiceDirectoryClient(httpClient, logger!);
         });
 
         return serviceCollection;
@@ -289,14 +172,12 @@ public static class StartupExtensions
         services.AddScoped<T>(s =>
         {
             var clientFactory = s.GetService<IHttpClientFactory>();
-            var correlationService = s.GetService<ICorrelationService>();
 
             var httpClient = clientFactory?.CreateClient(name);
 
             ArgumentNullException.ThrowIfNull(httpClient);
-            ArgumentNullException.ThrowIfNull(correlationService);
 
-            httpClient.DefaultRequestHeaders.Add("X-Correlation-ID", correlationService.CorrelationId);
+            httpClient.DefaultRequestHeaders.Add("X-Correlation-ID", Guid.NewGuid().ToString());
             return instance.Invoke(httpClient, s);
         });
     }

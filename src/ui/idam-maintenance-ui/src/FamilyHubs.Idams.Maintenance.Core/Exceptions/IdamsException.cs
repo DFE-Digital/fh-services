@@ -1,6 +1,9 @@
 ﻿
+using System.Diagnostics.CodeAnalysis;
+
 namespace FamilyHubs.Idams.Maintenance.Core.Exceptions;
 
+[ExcludeFromCodeCoverage]
 public class IdamsException : Exception
 {
     public string Title { get; set; } = "Server Error";

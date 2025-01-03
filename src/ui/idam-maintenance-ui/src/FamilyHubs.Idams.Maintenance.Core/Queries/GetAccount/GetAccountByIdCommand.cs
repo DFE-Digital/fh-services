@@ -14,12 +14,12 @@ public class GetAccountByIdCommand : IRequest<Account?>
 
 public class GetAccountByIdCommandHandler : IRequestHandler<GetAccountByIdCommand, Account?>
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IRepository _repository;
     private readonly ILogger<GetAccountByIdCommandHandler> _logger;
 
-    public GetAccountByIdCommandHandler(ApplicationDbContext dbContext, ILogger<GetAccountByIdCommandHandler> logger)
+    public GetAccountByIdCommandHandler(IRepository repository, ILogger<GetAccountByIdCommandHandler> logger)
     {
-        _dbContext = dbContext;
+        _repository = repository;
         _logger = logger;
     }
 
@@ -27,7 +27,7 @@ public class GetAccountByIdCommandHandler : IRequestHandler<GetAccountByIdComman
     {
         try
         {
-            var account = await _dbContext.Accounts.FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
+            var account = await _repository.Accounts.FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
             return account;
         }
         catch (Exception ex)

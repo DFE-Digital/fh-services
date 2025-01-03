@@ -15,20 +15,20 @@ public class AddUserSessionCommand : IRequest<string>
 
 public class AddUserSessionCommandHandler : IRequestHandler<AddUserSessionCommand, string>
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IRepository _repository;
     private readonly ILogger<AddUserSessionCommandHandler> _logger;
 
     public AddUserSessionCommandHandler(
-        ApplicationDbContext dbContext,
+        IRepository repository,
         ILogger<AddUserSessionCommandHandler> logger)
     {
-        _dbContext = dbContext;
+        _repository = repository;
         _logger = logger;
     }
 
     public async Task<string> Handle(AddUserSessionCommand request, CancellationToken cancellationToken)
     {
-        var userSession = await _dbContext.UserSessions
+        var userSession = await _repository.UserSessions
             .FirstOrDefaultAsync(r => r.Sid.ToLower() == request.Sid.ToLower(), cancellationToken);
 
         if (userSession is not null)
@@ -47,9 +47,9 @@ public class AddUserSessionCommandHandler : IRequestHandler<AddUserSessionComman
                 LastActive = DateTime.UtcNow
             };
 
-            await _dbContext.UserSessions.AddAsync(entity, cancellationToken);
+            await _repository.AddAsync(entity, cancellationToken);
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            await _repository.SaveChangesAsync(cancellationToken);
             _logger.LogInformation("UserSession {Sid} saved to DB", request.Sid);
 
             return request.Sid;

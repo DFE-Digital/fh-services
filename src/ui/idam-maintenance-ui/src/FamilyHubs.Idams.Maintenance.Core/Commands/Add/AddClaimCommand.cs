@@ -16,18 +16,18 @@ public class AddClaimCommand : IRequest<long>
 
 public class AddClaimCommandHandler : IRequestHandler<AddClaimCommand, long>
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IRepository _repository;
     private readonly ILogger<AddClaimCommandHandler> _logger;
 
-    public AddClaimCommandHandler(ApplicationDbContext dbContext, ILogger<AddClaimCommandHandler> logger)
+    public AddClaimCommandHandler(IRepository repository, ILogger<AddClaimCommandHandler> logger)
     {
-        _dbContext = dbContext;
+        _repository = repository;
         _logger = logger;
     }
 
     public async Task<long> Handle(AddClaimCommand request, CancellationToken cancellationToken)
     {
-        var accountClaim = await _dbContext.AccountClaims
+        var accountClaim = await _repository.AccountClaims
             .FirstOrDefaultAsync(r => r.AccountId == request.AccountId && r.Name == request.Name, cancellationToken);
 
         if (accountClaim is not null)
@@ -40,9 +40,9 @@ public class AddClaimCommandHandler : IRequestHandler<AddClaimCommand, long>
         {
             var entity = new AccountClaim { AccountId = request.AccountId, Name = request.Name, Value = request.Value };
 
-            await _dbContext.AccountClaims.AddAsync(entity, cancellationToken);
+            await _repository.AddAsync(entity, cancellationToken);
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            await _repository.SaveChangesAsync(cancellationToken);
             _logger.LogInformation("Account Claim {claim} saved to DB", request.Name);
 
             return entity.AccountId;

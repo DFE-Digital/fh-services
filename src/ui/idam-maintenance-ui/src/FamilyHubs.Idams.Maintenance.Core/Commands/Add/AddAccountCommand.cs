@@ -17,17 +17,17 @@ public class AddAccountCommand : IRequest<string>
 
 public class AddAccountCommandHandler : IRequestHandler<AddAccountCommand, string>
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IRepository _repository;
     private readonly ISender _sender;
     private readonly ILogger<AddAccountCommandHandler> _logger;
 
     public AddAccountCommandHandler(
-        ApplicationDbContext dbContext,
+        IRepository repository,
         ISender sender,
         ILogger<AddAccountCommandHandler> logger
     )
     {
-        _dbContext = dbContext;
+        _repository = repository;
         _sender = sender;
         _logger = logger;
     }
@@ -51,9 +51,9 @@ public class AddAccountCommandHandler : IRequestHandler<AddAccountCommand, strin
                 Claims = request.Claims
             };
 
-            await _dbContext.Accounts.AddAsync(entity, cancellationToken);
+            await _repository.AddAsync(entity, cancellationToken);
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            await _repository.SaveChangesAsync(cancellationToken);
             _logger.LogInformation("Account {email} saved to DB", request.Email);
 
             _logger.LogInformation("Account {email} sending an event grid message", request.Email);
@@ -76,6 +76,6 @@ public class AddAccountCommandHandler : IRequestHandler<AddAccountCommand, strin
         CancellationToken cancellationToken
     )
     {
-        return await _dbContext.Accounts.AnyAsync(account => account.Email == email, cancellationToken);
+        return await _repository.Accounts.AnyAsync(account => account.Email == email, cancellationToken);
     }
 }

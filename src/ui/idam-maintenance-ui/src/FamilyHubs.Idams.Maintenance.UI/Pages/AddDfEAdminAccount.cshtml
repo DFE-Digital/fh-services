@@ -58,11 +58,11 @@
                         </p>
 
                         <input asp-for="Name" class="govuk-input" type="text" autocomplete="off"
-                               aria-describedby="Name-error">
+                               aria-describedby="Name-error" data-testid="name">
                     }
                     else
                     {
-                        <input asp-for="Name" class="govuk-input" type="text" autocomplete="off">
+                        <input asp-for="Name" class="govuk-input" type="text" autocomplete="off" data-testid="name">
                     }
                 </div>
                 @{
@@ -79,11 +79,11 @@
                         </p>
 
                         <input asp-for="Email" class="govuk-input govuk-!-width-two-thirds" type="text" autocomplete="off"
-                               aria-describedby="Email-error">
+                               aria-describedby="Email-error" data-testid="email">
                     }
                     else
                     {
-                        <input asp-for="Email" class="govuk-input govuk-!-width-two-thirds" type="text" autocomplete="off">
+                        <input asp-for="Email" class="govuk-input govuk-!-width-two-thirds" type="text" autocomplete="off" data-testid="email">
                     }
                 </div>
                 @{
@@ -100,15 +100,15 @@
                         </p>
 
                         <input asp-for="PhoneNumber" class="govuk-input govuk-input--width-10" type="text" autocomplete="off"
-                               aria-describedby="PhoneNumber-error">
+                               aria-describedby="PhoneNumber-error" data-testid="phone-number">
                     }
                     else
                     {
-                        <input asp-for="PhoneNumber" class="govuk-input govuk-input--width-10" type="text" autocomplete="off">
+                        <input asp-for="PhoneNumber" class="govuk-input govuk-input--width-10" type="text" autocomplete="off" data-testid="phone-number">
                     }
                 </div>
             </fieldset>
-            <button type="submit" class="govuk-button" data-module="govuk-button">
+            <button type="submit" class="govuk-button" data-module="govuk-button" data-testid="continue">
                 Continue
             </button>
         </form>
