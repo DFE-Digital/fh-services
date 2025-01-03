@@ -1,23 +1,31 @@
 /// <binding ProjectOpened='js:watch, sass-to-min-css:watch' />
 "use strict";
+const del = import("del");
 
 var tsScriptsSrc = './scripts/**';
 
-var gulp = require("gulp"),
+let gulp = require("gulp"),
     sass = require('gulp-sass')(require('sass')),
     sourcemaps = require('gulp-sourcemaps'),
     csso = require('gulp-csso'),
     terser = require('gulp-terser'),
     ts = require("gulp-typescript"),
     //typescript = require('typescript'),
-    rollup = require('gulp-better-rollup'),
+    rollup = require('gulp-better-rollup');
     //concat = require('gulp-concat'),
-    del = require('del');
+
+// Use node_modules from familyhubs-frontend
+let sassPaths = [
+    './node_modules/familyhubs-frontend',
+    './node_modules/familyhubs-frontend/node_modules/govuk-frontend/dist'
+];
 
 gulp.task('sass-to-min-css', async function () {
     return gulp.src('./styles/application.scss')
         .pipe(sourcemaps.init())
-        .pipe(sass().on('error', sass.logError))
+        .pipe(sass({
+            includePaths: sassPaths
+        }).on('error', sass.logError))
         .pipe(csso())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./wwwroot/css'));

@@ -21,5 +21,8 @@ public static class PossibleErrors
         .Add(ErrorId.ContactMethods_TooLong, "How the service can engage with the family must be 500 characters or less")
         .Add(ErrorId.ContactDetails_NoContactMethodsSelected, "Select a contact method")
         .Add(ErrorId.ChangeName_EnterAName, "Enter a name")
+        .Add(ErrorId.VcsRequestDetails_SelectAResponse, "You must select a response")
+        .Add(ErrorId.VcsRequestDetails_EnterReasonForDeclining, "Enter a reason for declining")
+        .Add(ErrorId.VcsRequestDetails_ReasonForDecliningTooLong, "Reason for declining must be 500 characters or less")
         ;
 }

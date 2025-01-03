@@ -111,6 +111,11 @@ public static class StartupExtensions
         {
             httpClient.BaseAddress = new Uri(configuration.GetValue<string>("ReferralApiUrl")!);
         });
+        
+        services.AddSecuredTypedHttpClient<IReferralDashboardClientService, ReferralClientService>((serviceProvider, httpClient) =>
+        {
+            httpClient.BaseAddress = new Uri(configuration.GetValue<string>("ReferralApiUrl")!);
+        });
     }
 
     public static IServiceCollection AddSecuredTypedHttpClient<TClient, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImplementation>(

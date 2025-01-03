@@ -5,13 +5,13 @@ namespace FamilyHubs.SharedKernel.Razor.Dashboard;
 internal class ColumnHeader : IColumnHeader
 {
     private readonly ColumnImmutable _columnImmutable;
-    private readonly string _pagePath;
+    private readonly string? _pagePath;
     private readonly string? _extraQueryParams;
 
     public ColumnHeader(
         ColumnImmutable columnImmutable,
         SortOrder? sort,
-        string pagePath,
+        string? pagePath,
         string? extraQueryParams = null)
     {
         Sort = sort;

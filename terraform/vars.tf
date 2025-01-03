@@ -191,7 +191,6 @@ variable "private_endpoint_ip_address" {
     service_directory_ui = string
     service_directory_admin_ui = string
     notification_api = string
-    referral_dashboard_ui = string
     idam_api = string
     report_api_ip = string
     open_referral_mock = string

@@ -11,6 +11,8 @@ namespace FamilyHubs.Referral.Infrastructure.Notifications;
 
 public enum NotificationType
 {
+    ProfessionalAcceptedRequest,
+    ProfessionalDeclinedRequest,
     ProfessionalSentRequest,
     VcsNewRequest
 }
