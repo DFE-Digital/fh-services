@@ -1001,7 +1001,6 @@ resource "azurerm_web_application_firewall_policy" "sd_ui_appgwwafp" {
 }
 
 # Application Gateways
-/* FHB-728
 resource "azurerm_application_gateway" "ref_ui_app_gateway" {
   name                = "${var.prefix}-fh-appgw-referral-ui"
   firewall_policy_id  =  azurerm_web_application_firewall_policy.ref_ui_appgwwafp.id
@@ -1167,7 +1166,6 @@ resource "azurerm_application_gateway" "ref_ui_app_gateway" {
     ignore_changes = [request_routing_rule]
   }
 }
-*/
 
 resource "azurerm_application_gateway" "sd_admin_ui_app_gateway" {
   name                = "${var.prefix}-fh-appgw-sd-admin-ui"
@@ -1518,7 +1516,7 @@ resource "azurerm_monitor_diagnostic_setting" "sd_ui_gw_law_logs" {
     enabled = false
   }
 }
-/* FHB-728
+
 resource "azurerm_monitor_diagnostic_setting" "ref_ui_gw_law_logs" {
   name = "LAW_Profile"
   target_resource_id = azurerm_application_gateway.ref_ui_app_gateway.id
@@ -1532,8 +1530,6 @@ resource "azurerm_monitor_diagnostic_setting" "ref_ui_gw_law_logs" {
     enabled = false
   }
 }
-
- */
 
 # Key Vaults, Secrets, Certs & Keys
 data "azurerm_client_config" "current" {}
@@ -3017,7 +3013,6 @@ resource "azurerm_monitor_metric_alert" "response-04" {
   tags = local.tags
 }
 
-/* FHB-728
 resource "azurerm_monitor_metric_alert" "backend01" {
   name                  = "${var.prefix}-fh-backend-appgtway-alert-ref-ui-app"
   resource_group_name   = local.resource_group_name
@@ -3036,8 +3031,6 @@ resource "azurerm_monitor_metric_alert" "backend01" {
   }
   tags = local.tags
 }
-
- */
 
 resource "azurerm_monitor_metric_alert" "backend02" {
   name                  = "${var.prefix}-fh-backend-appgtway-alert-sd-admin-ui-app"
@@ -3077,7 +3070,6 @@ resource "azurerm_monitor_metric_alert" "backend03" {
   tags = local.tags
 }
 
-/* FHB-728
 resource "azurerm_monitor_metric_alert" "failedalt-01" {
   name                  = "${var.prefix}-fh-failedrequests-appgtway-alert-ref-ui-app"
   resource_group_name   = local.resource_group_name
@@ -3096,8 +3088,6 @@ resource "azurerm_monitor_metric_alert" "failedalt-01" {
   }
   tags = local.tags
 }
-
- */
 
 resource "azurerm_monitor_metric_alert" "failedalt-02" {
   name                  = "${var.prefix}-fh-failedrequests-appgtway-alert-sd-admin-ui-app"
