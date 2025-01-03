@@ -20,7 +20,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FamilyHubs.Referral.Web.Pages.ProfessionalReferral;
 
-[Authorize(Roles = RoleGroups.LaOrVcsProfessionalOrDualRole)]
 public class LocalOfferResultsModel : HeaderPageModel
 {
     private readonly IPostcodeLookup _postcodeLookup;
@@ -245,7 +244,7 @@ public class LocalOfferResultsModel : HeaderPageModel
         var localOfferFilter = new LocalOfferFilter
         {
             CanFamilyChooseLocation = CanFamilyChooseLocation,
-            ServiceType = "InformationSharing",
+            ServiceType = null,
             Status = "Active",
             PageSize = PageSize,
             IsPaidFor = isPaidFor,
