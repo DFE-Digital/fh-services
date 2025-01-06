@@ -1,6 +1,7 @@
 name: Run Playwright E2E Tests
 
 on:
+  pull_request: 
   workflow_call: 
     inputs:
       environment:
