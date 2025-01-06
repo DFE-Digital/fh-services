@@ -1,7 +1,7 @@
 name: Run Playwright E2E Tests
 
 on:
-  workflow_call: 
+  workflow_call:
     inputs:
       environment:
         type: string
@@ -25,98 +25,106 @@ concurrency:
 permissions:
   id-token: write
   contents: read
-  
+
 env:
-  WORKING_DIRECTORY: "test/e2e-seed-data-framework"
-  
+  SEED_SCRIPT_WORKING_DIRECTORY: "test/e2e-seed-data-framework"
+
 jobs:
-  pre-test-database-teardown:
+  setup-database-run-tests:
     if: ${{ inputs.environment != 'Production' }}
-    name: Pre-Test Database Teardown
-    runs-on: ubuntu-24.04    
-    environment: ${{ inputs.environment }}
+    name: Setup Database & Run ${{ matrix.job_name }}
+    strategy: 
+      fail-fast: false
+      matrix:
+        suite: [ find-e2e-tests, manage-e2e-tests ]
+        include:
+          - suite: find-e2e-tests
+            job_name: "Find E2E Test Suite"
+          - suite: manage-e2e-tests
+            job_name: "Manage E2E Test Suite"
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
+          
+      - name: Install NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/Jod" # 22 LTS
+          
+      - name: Install NPM Packages
+        shell: bash
+        run: |
+          cd ${{ env.SEED_SCRIPT_WORKING_DIRECTORY }}
+          npm i
+          
+      - name: Get Workflow Runner IP
+        id: runner-ip
+        uses: ./.github/actions/get-runner-ip-address
+
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Add Azure Firewall Rule
+        uses: ./.github/actions/azure-firewall-ip
+        with:
+          ip_address: ${{ steps.runner-ip.outputs.ip_address }}
+          action: "Add"
+          az_resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
+          az_sql_server_name: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
+          az_firewall_rule_name: E2E-SEED-SCRIPT
+          
+      - name: Initialise Seed Script Environment Variables
+        shell: bash
+        run: |
+          cd ${{ env.SEED_SCRIPT_WORKING_DIRECTORY }}
+          cat <<EOF>> .env
+          IDS_START_FROM=1000000
+          CONNECTION_STRING_SERVICEDIRECTORY='${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}'
+          CONNECTION_STRING_REFERRAL='${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}'
+          CONNECTION_STRING_REPORT='${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}'
+          ENCRYPTION_KEY='${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}'
+          INITIALISATION_VECTOR='${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}'
+          EXAMPLE_SEED='False'
+          EOF
 
       - name: Run Teardown Script
-        uses: ./.github/actions/run-e2e-seed-script
-        with:
-          resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
-          sql_server: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
-          connection_string_service_directory: ${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}
-          connection_string_referral: ${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}
-          connection_string_report: ${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}
-          encryption_key: ${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}
-          initialisation_vector: ${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}
-          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          working_directory: ${{ env.WORKING_DIRECTORY }}
-          action: "Teardown"
-          
-  database-setup:
-    needs: [ pre-test-database-teardown ]
-    name: Database Setup
-    runs-on: ubuntu-24.04
-    environment: ${{ inputs.environment }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
+        run: |
+          cd ${{ env.SEED_SCRIPT_WORKING_DIRECTORY }}
+          npm run teardown:dev
 
       - name: Run Setup Script
-        uses: ./.github/actions/run-e2e-seed-script
-        with:
-          resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
-          sql_server: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
-          connection_string_service_directory: ${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}
-          connection_string_referral: ${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}
-          connection_string_report: ${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}
-          encryption_key: ${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}
-          initialisation_vector: ${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}
-          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          working_directory: ${{ env.WORKING_DIRECTORY }}
-          action: "Setup"
-          
-  run-test-suite:
-    needs: [ database-setup ]
-    name: Run Test Suite
-    runs-on: ubuntu-24.04
-    environment: ${{ inputs.environment }}
-    steps:
-      - name: Fail
+        run: |
+          cd ${{ env.SEED_SCRIPT_WORKING_DIRECTORY }}
+          npm run setup:dev
+
+      # TODO: CD into test folder & npm install
+
+      # TODO: Install Playwright Browsers
+
+      # TODO: Initialise Test Suite Environment Variables
+    
+      - name: Run Test Suite
         shell: bash
-        run: exit 1
-  
-  database-teardown:
-    needs: [ run-test-suite ]
-    name: Database Teardown
-    runs-on: ubuntu-24.04
-    environment: ${{ inputs.environment }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
+        run: exit 0 # Exit 0 simulates success, Exit 1 simulates fail
 
       - name: Run Teardown Script
-        uses: ./.github/actions/run-e2e-seed-script
+        run: |
+          cd ${{ env.SEED_SCRIPT_WORKING_DIRECTORY }}
+          npm run teardown:dev
+          
+      - name: Remove Azure Firewall Rule
+        if: always()
+        uses: ./.github/actions/azure-firewall-ip
         with:
-          resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
-          sql_server: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
-          connection_string_service_directory: ${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}
-          connection_string_referral: ${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}
-          connection_string_report: ${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}
-          encryption_key: ${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}
-          initialisation_vector: ${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}
-          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          working_directory: ${{ env.WORKING_DIRECTORY }}
-          action: "Teardown"
+          ip_address: ${{ steps.runner-ip.outputs.ip_address }}
+          action: "Remove"
+          az_resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
+          az_sql_server_name: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
+          az_firewall_rule_name: E2E-SEED-SCRIPT
