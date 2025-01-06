@@ -105,7 +105,7 @@ jobs:
 
       - name: Run Test Suite
         shell: bash
-        run: exit 0 # Exit 0 simulates success, Exit 1 simulates fail
+        run: exit 1 # Exit 0 simulates success, Exit 1 simulates fail
   
   post-test-teardown:
     needs: [ run-test-suites ]

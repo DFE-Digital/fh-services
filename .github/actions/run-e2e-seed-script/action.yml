@@ -86,7 +86,7 @@ runs:
         action: "Add"
         az_resource_group: ${{ inputs.resource_group }}
         az_sql_server_name: ${{ inputs.sql_server }}
-        az_firewall_rule_name: e2e-seed-script
+        az_firewall_rule_name: E2E-SEED-SCRIPT
 
     - name: Run Setup
       if: ${{ inputs.action == 'Setup' }}
@@ -110,4 +110,4 @@ runs:
         action: "Remove"
         az_resource_group: ${{ inputs.resource_group }}
         az_sql_server_name: ${{ inputs.sql_server }}
-        az_firewall_rule_name: e2e-seed-script
+        az_firewall_rule_name: E2E-SEED-SCRIPT
