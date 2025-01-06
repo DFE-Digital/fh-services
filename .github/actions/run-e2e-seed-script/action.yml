@@ -1,0 +1,113 @@
+name: Run E2E Seed Script
+description: Run either the Setup or Teardown script for the E2E test seeding
+
+inputs:
+  resource_group:
+    required: true
+    description: Name of the resource group linked to the SQL Server
+  sql_server:
+    required: true
+    description: Name of the SQL Server to run the seed script(s) against
+  connection_string_service_directory:
+    required: true
+    description: The connection string to the Service Directory Db
+  connection_string_referral:
+    required: true
+    description: The connection string to the Referral Db
+  connection_string_report:
+    required: true
+    description: The connection string to the Report Db
+  encryption_key:
+    required: true
+    description: The column encryption key for the Referral Db
+  initialisation_vector:
+    required: true
+    description: The column initialisation vector for the Referral Db
+  azure_client_id:
+    required: true
+  azure_tenant_id:
+    required: true
+  azure_subscription_id:
+    required: true
+  working_directory:
+    required: true
+    description: The working directory where the scripts are located
+  action:
+    required: true
+    type: choice
+    options:
+      - "Setup"
+      - "Teardown"
+
+runs:
+  using: composite
+  
+  steps:
+    - name: Install NodeJS
+      uses: actions/setup-node@v4
+      with:
+        node-version: "lts/Jod" # 22 LTS
+
+    - name: Install NPM Packages
+      shell: bash
+      run: |
+        cd ${{ inputs.working_directory }}
+        npm i
+
+    - name: Create Environment Variables
+      shell: bash
+      run: |
+        cd ${{ inputs.working_directory }}
+        cat <<EOF>> .env
+        IDS_START_FROM=1000000
+        CONNECTION_STRING_SERVICEDIRECTORY='${{ inputs.connection_string_service_directory }}'
+        CONNECTION_STRING_REFERRAL='${{ inputs.connection_string_referral }}'
+        CONNECTION_STRING_REPORT='${{ inputs.connection_string_report }}'
+        ENCRYPTION_KEY='${{ inputs.encryption_key }}'
+        INITIALISATION_VECTOR='${{ inputs.initialisation_vector }}'
+        EXAMPLE_SEED='False'
+        EOF
+
+    - name: Get Workflow Runner IP
+      id: runner-ip
+      uses: ./.github/actions/get-runner-ip-address
+
+    - name: Azure CLI Login
+      uses: azure/login@v2
+      with:
+        client-id: ${{ inputs.azure_client_id }}
+        tenant-id: ${{ inputs.azure_tenant_id }}
+        subscription-id: ${{ inputs.azure_subscription_id }}
+
+    - name: Add Azure Firewall Rule
+      uses: ./.github/actions/azure-firewall-ip
+      with:
+        ip_address: ${{ steps.runner-ip.outputs.ip_address }}
+        action: "Add"
+        az_resource_group: ${{ inputs.resource_group }}
+        az_sql_server_name: ${{ inputs.sql_server }}
+        az_firewall_rule_name: e2e-seed-script
+
+    - name: Run Setup
+      if: ${{ inputs.action == 'Setup' }}
+      shell: bash
+      run: |
+        cd ${{ inputs.working_directory }}
+        npm run setup:dev
+
+    - name: Run Teardown
+      if: ${{ inputs.action == 'Teardown' }}
+      shell: bash
+      run: |
+        cd ${{ inputs.working_directory }}
+        npm run teardown:dev
+
+    - name: Remove Azure Firewall Rule
+      if: always()
+      uses: ./.github/actions/azure-firewall-ip
+      with:
+        ip_address: ${{ steps.runner-ip.outputs.ip_address }}
+        action: "Remove"
+        az_resource_group: ${{ inputs.resource_group }}
+        az_sql_server_name: ${{ inputs.sql_server }}
+        az_firewall_rule_name: e2e-seed-script
