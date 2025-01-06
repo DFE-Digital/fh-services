@@ -27,48 +27,48 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
-#        
-#      - name: Get Workflow Runner IP
-#        id: runner-ip
-#        uses: ./.github/actions/get-runner-ip-address
-#
-#      - name: Azure CLI Login
-#        uses: azure/login@v2
-#        with:
-#          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-#          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-#          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-#          
-#      - name: Add Azure Firewall Rule
-#        uses: ./.github/actions/azure-firewall-ip
-#        with:
-#          ip_address: ${{ steps.runner-ip.outputs.ip_address }}
-#          action: "Add"
-#          az_resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
-#          az_sql_server_name: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
-#          az_firewall_rule_name: E2E-SEED-SCRIPT
-#          
-#      - name: Create Environment Variables
-#        shell: bash
-#        run: |
-#          cat <<EOF>> .env
-#          IDS_START_FROM=1000000
-#          CONNECTION_STRING_SERVICEDIRECTORY='${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}'
-#          CONNECTION_STRING_REFERRAL='${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}'
-#          CONNECTION_STRING_REPORT='${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}'
-#          ENCRYPTION_KEY='${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}'
-#          INITIALISATION_VECTOR='${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}'
-#          EXAMPLE_SEED='False'
-#          EOF
-#
-#      - name: Install NodeJS
-#        uses: actions/setup-node@v4
-#        with:
-#          node-version: "lts/Jod" # 22 LTS
-#
-#      - name: Install NPM Packages
-#        shell: bash
-#        run: npm i
+
+      - name: Get Workflow Runner IP
+        id: runner-ip
+        uses: ./.github/actions/get-runner-ip-address
+
+      - name: Azure CLI Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Add Azure Firewall Rule
+        uses: ./.github/actions/azure-firewall-ip
+        with:
+          ip_address: ${{ steps.runner-ip.outputs.ip_address }}
+          action: "Add"
+          az_resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
+          az_sql_server_name: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
+          az_firewall_rule_name: E2E-SEED-SCRIPT
+
+      - name: Create Environment Variables
+        shell: bash
+        run: |
+          cat <<EOF>> .env
+          IDS_START_FROM=1000000
+          CONNECTION_STRING_SERVICEDIRECTORY='${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}'
+          CONNECTION_STRING_REFERRAL='${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}'
+          CONNECTION_STRING_REPORT='${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}'
+          ENCRYPTION_KEY='${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}'
+          INITIALISATION_VECTOR='${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}'
+          EXAMPLE_SEED='False'
+          EOF
+
+      - name: Install NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/Jod" # 22 LTS
+
+      - name: Install NPM Packages
+        shell: bash
+        run: npm i
           
       - name: Run ${{ inputs.action }}
         shell: bash
@@ -76,12 +76,12 @@ jobs:
           SCRIPT=$(tr '[:upper:]' '[:lower:]' <<< "${{ inputs.action }}")
           npm run $SCRIPT:dev
 
-#      - name: Remove Azure Firewall Rule
-#        if: always()
-#        uses: ./.github/actions/azure-firewall-ip
-#        with:
-#          ip_address: ${{ steps.runner-ip.outputs.ip_address }}
-#          action: "Remove"
-#          az_resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
-#          az_sql_server_name: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
-#          az_firewall_rule_name: E2E-SEED-SCRIPT
+      - name: Remove Azure Firewall Rule
+        if: always()
+        uses: ./.github/actions/azure-firewall-ip
+        with:
+          ip_address: ${{ steps.runner-ip.outputs.ip_address }}
+          action: "Remove"
+          az_resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
+          az_sql_server_name: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
+          az_firewall_rule_name: E2E-SEED-SCRIPT
