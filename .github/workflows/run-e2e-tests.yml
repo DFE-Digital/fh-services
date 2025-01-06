@@ -31,7 +31,7 @@ env:
   
 jobs:
   pre-test-database-teardown:
-    if: ${{ inputs.environment != 'Production' }}
+    if: ${{ inputs.environment != 'Test' }}
     name: Pre-Test Database Teardown
     runs-on: ubuntu-24.04    
     environment: ${{ inputs.environment }}
