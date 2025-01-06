@@ -30,58 +30,22 @@ env:
 
 jobs:
   pre-test-teardown:
-    if: ${{ inputs.environment != 'Production' }}
+    if: ${{ inputs.environment != 'Production' }} # TODO: Guard clause can be moved to deploy.yml
     name: Pre-Test Database Teardown
-    runs-on: ubuntu-24.04
-    environment: ${{ inputs.environment }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-
-      - name: Run Teardown Script
-        uses: ./.github/actions/run-e2e-seed-script
-        with:
-          resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
-          sql_server: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
-          connection_string_service_directory: ${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}
-          connection_string_referral: ${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}
-          connection_string_report: ${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}
-          encryption_key: ${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}
-          initialisation_vector: ${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}
-          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          working_directory: ${{ env.SEED_SCRIPT_WORKING_DIRECTORY }}
-          action: "Teardown"
+    uses: ./.github/workflows/e2e-seed-database.yml
+    with:
+      environment: ${{ inputs.environment }}
+      action: 'Teardown'
+    secrets: inherit
   
   pre-test-setup:
     needs: [ pre-test-teardown ]
     name: Pre-Test Database Setup
-    runs-on: ubuntu-24.04
-    environment: ${{ inputs.environment }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-
-      - name: Run Setup Script
-        uses: ./.github/actions/run-e2e-seed-script
-        with:
-          resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
-          sql_server: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
-          connection_string_service_directory: ${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}
-          connection_string_referral: ${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}
-          connection_string_report: ${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}
-          encryption_key: ${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}
-          initialisation_vector: ${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}
-          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          working_directory: ${{ env.SEED_SCRIPT_WORKING_DIRECTORY }}
-          action: "Setup"
+    uses: ./.github/workflows/e2e-seed-database.yml
+    with:
+      environment: ${{ inputs.environment }}
+      action: 'Setup'
+    secrets: inherit
   
   run-test-suites:
     needs: [ pre-test-setup ]
@@ -108,34 +72,16 @@ jobs:
         shell: bash
         run: exit 0
         
-      - name: Fail Test
+      - name: Pass Test
         if: ${{ matrix.suite == 'manage-e2e-tests' }}
         shell: bash
-        run: exit 1
+        run: exit 0
   
   post-test-teardown:
     needs: [ run-test-suites ]
     name: Post-Test Database Teardown
-    runs-on: ubuntu-24.04
-    environment: ${{ inputs.environment }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-
-      - name: Run Teardown Script
-        uses: ./.github/actions/run-e2e-seed-script
-        with:
-          resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
-          sql_server: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
-          connection_string_service_directory: ${{ secrets.CONNECTION_STRING_SERVICE_DIRECTORY_DATABASE }}
-          connection_string_referral: ${{ secrets.CONNECTION_STRING_REFERRAL_DATABASE }}
-          connection_string_report: ${{ secrets.CONNECTION_STRING_REPORT_DATABASE }}
-          encryption_key: ${{ secrets.REFERRAL_COLUMN_ENCRYPTION_KEY }}
-          initialisation_vector: ${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}
-          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          working_directory: ${{ env.SEED_SCRIPT_WORKING_DIRECTORY }}
-          action: "Teardown"
+    uses: ./.github/workflows/e2e-seed-database.yml
+    with:
+      environment: ${{ inputs.environment }}
+      action: 'Teardown'
+    secrets: inherit
