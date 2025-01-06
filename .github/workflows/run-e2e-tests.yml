@@ -21,6 +21,14 @@ concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: true
 
+
+permissions:
+  id-token: write
+  contents: read
+  
+env:
+  WORKING_DIRECTORY: "test/e2e-seed-data-framework"
+  
 jobs:
   pre-test-database-teardown:
     if: ${{ inputs.environment != 'Production' }}
