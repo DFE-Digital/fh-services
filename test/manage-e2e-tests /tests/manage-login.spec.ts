@@ -4,7 +4,7 @@ import {
     navigateToManage,
     clickOnTheStartButton,
     loginToManage,
-    loginToTestEnvironment, isTheManageHomepageDisplayed
+    loginToTestEnvironment, isTheManageHomepageDisplayed, acceptManageTermsAndConditions
 } from './serenity-tools/manage-index';
 
 describe('Manage Tests', () => {
@@ -15,6 +15,7 @@ describe('Manage Tests', () => {
             navigateToManage(),
             clickOnTheStartButton(),
             loginToManage('DFE_ADMIN_USER'),
+            acceptManageTermsAndConditions(),
             isTheManageHomepageDisplayed()
         );
     });

@@ -23,4 +23,4 @@ export const passwordField = () =>
 export const continueButton = () =>
     PageElement
         .located(By.css("form > .govuk-button"))
-        .describedAs('start Now Button');
+        .describedAs('Continue Button');

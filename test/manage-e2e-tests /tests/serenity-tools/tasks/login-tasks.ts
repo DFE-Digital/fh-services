@@ -1,6 +1,7 @@
-import { Answerable, Task } from '@serenity-js/core';
-import { Navigate, Click, Enter } from '@serenity-js/web';
-import {startButton, continueButton, emailField, passwordField, signInButton} from "./gov-login-page-objects";
+import {Answerable, Check, Task} from '@serenity-js/core';
+import {Navigate, Click, Enter, isVisible} from '@serenity-js/web';
+import {startButton, continueButton, emailField, passwordField, signInButton} from "../page-objects/gov-login-page-objects";
+import {acceptCookiesButton, agreeButton} from "../page-objects/manage-page-objects";
 
 export const loginToTestEnvironment = (): Task =>
     Task.where( `#actor logs into test environment with ${process.env.USER_NAME} and ${process.env.USER_NAME}`,
@@ -26,9 +27,21 @@ export const loginToManage = (userType: Answerable<string>): Task =>
         Click.on(continueButton()),
     );
 
-export const acceptManageTermsAndConditions = (userType: Answerable<string>): Task =>
+export const acceptManageTermsAndConditions = (): Task =>
     Task.where(
-        `#actor access terms and conditions`,
-        Click.on(signInButton()),
+        `#actor accepts terms and conditions`,
+        Check.whether(agreeButton(), isVisible())
+            .andIfSo(
+                Click.on(agreeButton()),
+            )
+    );
+
+export const acceptCookies = (): Task =>
+    Task.where(
+        `#actor accepts cookies`,
+        Check.whether(acceptCookiesButton(), isVisible())
+            .andIfSo(
+                Click.on(acceptCookiesButton()),
+            )
     );
 
