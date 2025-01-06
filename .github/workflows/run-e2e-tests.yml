@@ -31,7 +31,7 @@ env:
   
 jobs:
   pre-test-database-teardown:
-    if: ${{ inputs.environment != 'Test' }}
+    if: ${{ inputs.environment != 'Production' }}
     name: Pre-Test Database Teardown
     runs-on: ubuntu-24.04    
     environment: ${{ inputs.environment }}
@@ -90,9 +90,9 @@ jobs:
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
     steps:
-      - name: Success
+      - name: Fail
         shell: bash
-        run: exit 0
+        run: exit 1
   
   database-teardown:
     needs: [ run-test-suite ]
