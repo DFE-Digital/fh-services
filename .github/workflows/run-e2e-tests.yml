@@ -103,9 +103,15 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - name: Run Test Suite
+      - name: Pass Test
+        if: ${{ matrix.suite == 'find-e2e-tests' }}
         shell: bash
-        run: exit 1 # Exit 0 simulates success, Exit 1 simulates fail
+        run: exit 0
+        
+      - name: Fail Test
+        if: ${{ matrix.suite == 'manage-e2e-tests' }}
+        shell: bash
+        run: exit 1
   
   post-test-teardown:
     needs: [ run-test-suites ]
