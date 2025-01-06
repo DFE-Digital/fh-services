@@ -73,7 +73,8 @@ jobs:
       - name: Run ${{ inputs.action }}
         shell: bash
         run: |
-          SCRIPT=${${{ inputs.action }},,}
+          bash --version
+          SCRIPT=${'"${{ inputs.action }}"',,}
           npm run $SCRIPT:dev
 
       - name: Remove Azure Firewall Rule
