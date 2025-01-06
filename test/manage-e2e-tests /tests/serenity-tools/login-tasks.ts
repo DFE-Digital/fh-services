@@ -26,3 +26,9 @@ export const loginToManage = (userType: Answerable<string>): Task =>
         Click.on(continueButton()),
     );
 
+export const acceptManageTermsAndConditions = (userType: Answerable<string>): Task =>
+    Task.where(
+        `#actor access terms and conditions`,
+        Click.on(signInButton()),
+    );
+
