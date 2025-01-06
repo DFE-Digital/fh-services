@@ -43,31 +43,6 @@ runs:
   using: composite
   
   steps:
-    - name: Install NodeJS
-      uses: actions/setup-node@v4
-      with:
-        node-version: "lts/Jod" # 22 LTS
-
-    - name: Install NPM Packages
-      shell: bash
-      run: |
-        cd ${{ inputs.working_directory }}
-        npm i
-
-    - name: Create Environment Variables
-      shell: bash
-      run: |
-        cd ${{ inputs.working_directory }}
-        cat <<EOF>> .env
-        IDS_START_FROM=1000000
-        CONNECTION_STRING_SERVICEDIRECTORY='${{ inputs.connection_string_service_directory }}'
-        CONNECTION_STRING_REFERRAL='${{ inputs.connection_string_referral }}'
-        CONNECTION_STRING_REPORT='${{ inputs.connection_string_report }}'
-        ENCRYPTION_KEY='${{ inputs.encryption_key }}'
-        INITIALISATION_VECTOR='${{ inputs.initialisation_vector }}'
-        EXAMPLE_SEED='False'
-        EOF
-
     - name: Get Workflow Runner IP
       id: runner-ip
       uses: ./.github/actions/get-runner-ip-address
@@ -87,6 +62,31 @@ runs:
         az_resource_group: ${{ inputs.resource_group }}
         az_sql_server_name: ${{ inputs.sql_server }}
         az_firewall_rule_name: E2E-SEED-SCRIPT
+        
+    - name: Create Environment Variables
+      shell: bash
+      run: |
+        cd ${{ inputs.working_directory }}
+        cat <<EOF>> .env
+        IDS_START_FROM=1000000
+        CONNECTION_STRING_SERVICEDIRECTORY='${{ inputs.connection_string_service_directory }}'
+        CONNECTION_STRING_REFERRAL='${{ inputs.connection_string_referral }}'
+        CONNECTION_STRING_REPORT='${{ inputs.connection_string_report }}'
+        ENCRYPTION_KEY='${{ inputs.encryption_key }}'
+        INITIALISATION_VECTOR='${{ inputs.initialisation_vector }}'
+        EXAMPLE_SEED='False'
+        EOF
+        
+    - name: Install NodeJS
+      uses: actions/setup-node@v4
+      with:
+        node-version: "lts/Jod" # 22 LTS
+
+    - name: Install NPM Packages
+      shell: bash
+      run: |
+        cd ${{ inputs.working_directory }}
+        npm i
 
     - name: Run Setup
       if: ${{ inputs.action == 'Setup' }}
