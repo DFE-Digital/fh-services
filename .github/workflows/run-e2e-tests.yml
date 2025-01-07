@@ -1,5 +1,5 @@
 name: Run Playwright E2E Tests
-run-name: Run Playwright E2E Tests Against ${{ inputs.environment }}
+run-name: Run Playwright E2E Tests on ${{ inputs.environment }}
 
 on:
   workflow_call:
