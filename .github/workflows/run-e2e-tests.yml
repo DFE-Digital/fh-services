@@ -106,7 +106,7 @@ jobs:
         shell: bash
         run: |
           cat <<EOF>> .env
-          BASE_URL='${{ matrix.base_url }}'
+          BASE_URL='${{ vars.PLAYWRIGHT_ENVIRONMENT_PREFIX }}${{ matrix.base_url }}'
           USER_NAME='${{ secrets.PLAYWRIGHT_USER_NAME }}'
           PASSWORD='${{ secrets.PLAYWRIGHT_PASSWORD }}'
           DFE_ADMIN_USER='${{ secrets.PLAYWRIGHT_GOVLOGIN_DFE_ADMIN_USER }}'
