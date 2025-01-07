@@ -57,8 +57,10 @@ jobs:
         include:
           - suite: find-e2e-tests
             job_name: "Find E2E Test Suite"
+            base_url: ${{ vars.PLAYWRIGHT_FIND_BASE_URL }}
           - suite: manage-e2e-tests
             job_name: "Manage E2E Test Suite"
+            base_url: ${{ vars.PLAYWRIGHT_MANAGE_BASE_URL }}
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
     defaults: 
@@ -104,7 +106,7 @@ jobs:
         shell: bash
         run: |
           cat <<EOF>> .env
-          BASE_URL='${{ vars.PLAYWRIGHT_BASE_URL }}'
+          BASE_URL='${{ matrix.base_url }}'
           USER_NAME='${{ secrets.PLAYWRIGHT_USER_NAME }}'
           PASSWORD='${{ secrets.PLAYWRIGHT_PASSWORD }}'
           DFE_ADMIN_USER='${{ secrets.PLAYWRIGHT_GOVLOGIN_DFE_ADMIN_USER }}'
