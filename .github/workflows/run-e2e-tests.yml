@@ -84,6 +84,7 @@ jobs:
         run: |
           ARRAY=($(npx playwright --version))
           echo VERSION="${ARRAY[1]}" >> GITHUB_OUTPUT
+          echo $VERSION
         
       - name: Cache Playwright Browsers
         uses: actions/cache@v4
@@ -102,11 +103,11 @@ jobs:
         shell: bash
         run: |
           cat <<EOF>> .env
-          BASE_URL=${{ vars.PLAYWRIGHT_BASE_URL }}
-          USER_NAME=${{ secrets.PLAYWRIGHT_USER_NAME }}
-          PASSWORD=${{ secrets.PLAYWRIGHT_PASSWORD }}
-          DFE_ADMIN_USER=${{ secrets.PLAYWRIGHT_GOVLOGIN_DFE_ADMIN_USER }}
-          GOV_LOGIN_PASSWORD=${{ secrets.PLAYWRIGHT_GOVLOGIN_PASSWORD }}
+          BASE_URL='${{ vars.PLAYWRIGHT_BASE_URL }}'
+          USER_NAME='${{ secrets.PLAYWRIGHT_USER_NAME }}'
+          PASSWORD='${{ secrets.PLAYWRIGHT_PASSWORD }}'
+          DFE_ADMIN_USER='${{ secrets.PLAYWRIGHT_GOVLOGIN_DFE_ADMIN_USER }}'
+          GOV_LOGIN_PASSWORD='${{ secrets.PLAYWRIGHT_GOVLOGIN_PASSWORD }}'
           EOF
           
       - name: Run Playwright Test Suite
