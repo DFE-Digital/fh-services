@@ -87,7 +87,7 @@ jobs:
         run: |
           ARRAY=($(npx playwright --version))
           VERSION=${ARRAY[1]}
-          echo VERSION=$VERSION >> GITHUB_OUTPUT
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
         
       - name: Playwright Browser Cache
         id: playwright-cache
