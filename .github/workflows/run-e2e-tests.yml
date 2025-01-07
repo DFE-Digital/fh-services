@@ -80,13 +80,21 @@ jobs:
       - name: Install NPM Packages
         shell: bash
         run: npm i
+      
+      - name: Get Playwright Version
+        id: playwright-version
+        shell: bash
+        run: |
+          ARRAY=($(npx playwright --version))
+          VERSION=${ARRAY[1]}
+          echo VERSION=$VERSION >> GITHUB_OUTPUT
         
       - name: Playwright Browser Cache
         id: playwright-cache
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright
+          key: ${{ runner.os }}-PlayWright-${{ steps.playwright-version.outputs.VERSION }}
         
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
