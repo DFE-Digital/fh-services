@@ -1,14 +1,14 @@
 import {Ensure, equals} from "@serenity-js/assertions";
-import {Page} from "@serenity-js/web";
+import {Text, Page} from "@serenity-js/web";
+import {Answerable} from "@serenity-js/core";
+import {userNameInUserList} from "../page-objects/accounts-page-objects";
 
 export const isUserCreatedPageDisplayed = () =>
     Ensure.that(
         Page.current().title().describedAs('User created page'),
-        equals(''),
+        equals('Account Confirmed - Manage family support services and accounts - GOV.UK'),
     )
 
-export const isUserFoundInUserList = () =>
-    Ensure.that(
-        Page.current().title().describedAs('Manage Homepage'),
-        equals('Dfe Admin - Manage family support services and accounts - GOV.UK'),
+export const isUserFoundInUserList = (fullName: Answerable<string>) =>
+    Ensure.that(Text.of(userNameInUserList()), equals(fullName)
     ) 

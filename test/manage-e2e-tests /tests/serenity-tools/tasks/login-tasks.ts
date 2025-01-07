@@ -19,7 +19,7 @@ export const clickOnTheStartButton = (): Task =>
     );
 export const loginToManage = (userType: Answerable<string>): Task =>
     Task.where(
-        `#actor logs into manage with a gov login email ${userType} and password ${process.env.GOV_LOGIN_PASSWORD}`,
+        `#actor logs into manage with a gov login email and password`,
         Click.on(signInButton()),
         Enter.theValue(process.env.DFE_ADMIN_USER).into(emailField()),
         Click.on(continueButton()),

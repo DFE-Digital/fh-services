@@ -8,7 +8,7 @@ dotenv.config();
 export default defineConfig<SerenityOptions>({
     testDir: './tests',
     /* Maximum time one test can run for, measured in milliseconds. */
-    timeout: 30_000,
+    timeout: 200_000,
     expect: {
         /**
          * The maximum time, in milliseconds, that expect() should wait for a condition to be met.

@@ -22,7 +22,7 @@ import {
     getRandomFullName, clickContinue
 } from './serenity-tools/manage-index';
 
-describe('Manage Tests', () => {
+describe('Add a User - Manage Tests', () => {
 
     test.use({
         defaultActorName: 'DFE_ADMIN_user',
@@ -59,6 +59,6 @@ describe('Manage Tests', () => {
             clickConfirmDetails(),
             isUserCreatedPageDisplayed(),
             searchForUserByName(fullName),
-            isUserFoundInUserList());
+            isUserFoundInUserList(fullName));
     });
 });

@@ -32,10 +32,15 @@ export const fullNameInputBox = () =>
 
 export const continueButton = () =>
     PageElement
-        .located(By.css("#main-content > div > div > form > button"))
+        .located(By.css("[data-testid='buttonContinue']"))
         .describedAs('Continue Button');
 
 export const confirmDetailsButton = () =>
     PageElement
-.located(By.css("#main-content > div > div > fieldset > form > button"))
-.describedAs('Confirm details button')
+        .located(By.css("[data-testid='confirm-button']"))
+        .describedAs('Confirm details button')
+
+export const userNameInUserList = () =>
+    PageElement
+        .located(By.css("#main-content > form > div > div.govuk-grid-column-two-thirds > table > tbody > tr:nth-child(1) > td:nth-child(1)"))
+        .describedAs('Name of user in user list')
