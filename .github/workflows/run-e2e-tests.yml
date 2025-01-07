@@ -96,7 +96,7 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.VERSION }}
         
       - name: Install Playwright Browsers
-        if: ${{ steps.playwright-cache.outputs.cache-hit == 'false' }}
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         shell: bash
         run: npx playwright install --with-deps
           
