@@ -20,10 +20,10 @@ public class Organization : BaseHsdsEntity
     public string? Website { get; init; }
 
     [JsonPropertyName("year_incorporated")]
-    public required short YearIncorporated { get; init; }
+    public short? YearIncorporated { get; init; }
 
     [JsonPropertyName("legal_status")]
-    public required string LegalStatus { get; init; }
+    public string? LegalStatus { get; init; }
 
     [JsonPropertyName("logo")]
     public string? Logo { get; init; }
