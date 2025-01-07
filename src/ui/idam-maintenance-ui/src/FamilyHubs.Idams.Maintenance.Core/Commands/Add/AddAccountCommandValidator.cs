@@ -1,11 +1,11 @@
-using FamilyHubs.Idams.Maintenance.Data.Entities;
-using FamilyHubs.SharedKernel.Identity;
 using FluentValidation;
 
 namespace FamilyHubs.Idams.Maintenance.Core.Commands.Add;
 
 public class AddAccountCommandValidator : AbstractValidator<AddAccountCommand>
 {
+    public const int NameMaxLength = 255;
+    
     public AddAccountCommandValidator()
     {
         RuleFor(v => v.Email)
@@ -13,7 +13,7 @@ public class AddAccountCommandValidator : AbstractValidator<AddAccountCommand>
             .NotEmpty();
 
         RuleFor(v => v.Name)
-            .MaximumLength(255)
+            .MaximumLength(NameMaxLength)
             .NotNull()
             .NotEmpty();
     }

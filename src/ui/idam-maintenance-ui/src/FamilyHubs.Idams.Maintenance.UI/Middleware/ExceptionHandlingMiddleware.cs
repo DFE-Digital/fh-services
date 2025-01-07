@@ -1,4 +1,5 @@
-﻿using FamilyHubs.Idams.Maintenance.Core.Exceptions;
+﻿using System.Diagnostics.CodeAnalysis;
+using FamilyHubs.Idams.Maintenance.Core.Exceptions;
 using FamilyHubs.SharedKernel.Exceptions;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -7,6 +8,7 @@ using ValidationException = FluentValidation.ValidationException;
 
 namespace FamilyHubs.Idams.Maintenance.UI.Middleware;
 
+[ExcludeFromCodeCoverage]
 internal sealed class ExceptionHandlingMiddleware : IMiddleware
 {
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
