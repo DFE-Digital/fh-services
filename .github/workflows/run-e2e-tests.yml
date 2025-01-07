@@ -49,7 +49,7 @@ jobs:
   
   run-test-suites:
     needs: [ pre-test-setup ]
-    name: Run ${{ matrix.job_name }}
+    name: ${{ matrix.job_name }}
     strategy:
       fail-fast: false
       matrix:
@@ -61,21 +61,49 @@ jobs:
             job_name: "Manage E2E Test Suite"
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
+    defaults: 
+      run: 
+        working-directory: "test/${{ matrix.suite }}"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
+          
+      - name: Install NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/Jod" # 22 LTS
 
-      - name: Pass Test
-        if: ${{ matrix.suite == 'find-e2e-tests' }}
+      - name: Install NPM Packages
         shell: bash
-        run: exit 0
+        run: npm i
         
-      - name: Pass Test
-        if: ${{ matrix.suite == 'manage-e2e-tests' }}
+      - name: Install Playwright Browsers
         shell: bash
-        run: exit 0
+        run: npx playwright install --with-deps
+          
+      - name: Create Environment Variables
+        shell: bash
+        run: |
+          cat <<EOF>> .env
+          BASE_URL=${{ vars.PLAYWRIGHT_BASE_URL }}
+          USER_NAME=${{ secrets.PLAYWRIGHT_USER_NAME }}
+          PASSWORD=${{ secrets.PLAYWRIGHT_PASSWORD }}
+          DFE_ADMIN_USER=${{ secrets.PLAYWRIGHT_GOVLOGIN_DFE_ADMIN_USER }}
+          GOV_LOGIN_PASSWORD=${{ secrets.PLAYWRIGHT_GOVLOGIN_PASSWORD }}
+          EOF
+          
+      - name: Run Playwright Test Suite
+        shell: bash
+        run: npx playwright test
+        
+      - name: Upload Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
   
   post-test-teardown:
     needs: [ run-test-suites ]
