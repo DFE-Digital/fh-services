@@ -1,7 +1,9 @@
-﻿using FamilyHubs.SharedKernel.Identity;
+﻿using System.Diagnostics.CodeAnalysis;
+using FamilyHubs.SharedKernel.Identity;
 
 namespace FamilyHubs.Idams.Maintenance.UI.Middleware;
 
+[ExcludeFromCodeCoverage]
 public class CorrelationMiddleware : IMiddleware
 {
     private readonly ILogger<CorrelationMiddleware> _logger;

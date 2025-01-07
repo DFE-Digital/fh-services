@@ -4,7 +4,8 @@ import {
     navigateToManage,
     clickOnTheStartButton,
     loginToManage,
-    loginToTestEnvironment, isTheManageHomepageDisplayed
+    loginToTestEnvironment, 
+    isTheManageHomepageDisplayed
 } from './serenity-tools/manage-index';
 
 describe('Manage Tests', () => {
