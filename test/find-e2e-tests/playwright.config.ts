@@ -60,26 +60,26 @@ export default defineConfig<SerenityOptions>({
 
     /* Configure projects for major browsers */
     projects: [
-        {
-            name: 'chromium',
-            use: {
-                ...devices['Desktop Chrome'],
-            },
-        },
-
-        {
-            name: 'firefox',
-            use: {
-                ...devices['Desktop Firefox'],
-            },
-        },
-
-        {
-            name: 'webkit',
-            use: {
-                ...devices['Desktop Safari'],
-            },
-        },
+        // {
+        //     name: 'chromium',
+        //     use: {
+        //         ...devices['Desktop Chrome'],
+        //     },
+        // },
+        //
+        // {
+        //     name: 'firefox',
+        //     use: {
+        //         ...devices['Desktop Firefox'],
+        //     },
+        // },
+        //
+        // {
+        //     name: 'webkit',
+        //     use: {
+        //         ...devices['Desktop Safari'],
+        //     },
+        // },
 
         /* Test against mobile viewports. */
         // {
@@ -102,12 +102,12 @@ export default defineConfig<SerenityOptions>({
         //     channel: 'msedge',
         //   },
         // },
-        // {
-        //   name: 'Google Chrome',
-        //   use: {
-        //     channel: 'chrome',
-        //   },
-        // },
+        {
+          name: 'Google Chrome',
+          use: {
+            channel: 'chrome',
+          },
+        },
     ],
 
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
