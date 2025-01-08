@@ -29,7 +29,7 @@ on:
 jobs:
   test-find:
     name: Run Find E2E Test Suite
-    if: ${{ inputs.test-find == 'true' }}
+    if: ${{ inputs.test-find == true }}
     uses: ./.github/workflows/run-e2e-test.yml
     with:
       environment: ${{ inputs.environment }}
@@ -37,7 +37,7 @@ jobs:
 
   test-manage:
     name: Run Manage E2E Test Suite
-    if: ${{ inputs.test-manage == 'true' }}
+    if: ${{ inputs.test-manage == true }}
     uses: ./.github/workflows/run-e2e-test.yml
     with:
       environment: ${{ inputs.environment }}
