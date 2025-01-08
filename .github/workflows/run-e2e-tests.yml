@@ -28,14 +28,16 @@ on:
 
 jobs:
   test-find:
-    if: ${{ inputs.test-find == true }}
+    name: Run Find E2E Test Suite
+    if: ${{ inputs.test-find == 'true' }}
     uses: ./.github/workflows/run-e2e-test.yml
     with:
       environment: ${{ inputs.environment }}
       suite: 'find-e2e-tests'
 
   test-manage:
-    if: ${{ inputs.test-manage == true }}
+    name: Run Manage E2E Test Suite
+    if: ${{ inputs.test-manage == 'true' }}
     uses: ./.github/workflows/run-e2e-test.yml
     with:
       environment: ${{ inputs.environment }}

@@ -28,10 +28,6 @@ on:
       action:
         required: true
         type: string
-          
-concurrency:
-  group: "${{ github.workflow }}-${{ github.ref }}-${{ inputs.environment }}-seed"
-  cancel-in-progress: true
   
 permissions:
   id-token: write
