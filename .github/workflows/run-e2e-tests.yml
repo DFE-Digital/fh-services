@@ -42,7 +42,7 @@ jobs:
     secrets: inherit
   
   run-test-suite:
-#    needs: [ pre-test-setup ]
+    needs: [ pre-test-setup ]
     name: ${{ matrix.job_name }}
     strategy:
       fail-fast: false
