@@ -81,6 +81,10 @@ jobs:
       - name: Install NPM Packages
         shell: bash
         run: npm i
+        
+      - name: Install Playwright Dependencies
+        shell: bash
+        run: npx playwright install-deps
       
       - name: Get Playwright Version
         id: playwright-version
@@ -101,8 +105,8 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
-          npx playwright install --with-deps
-          npx playwright install msedge
+          npx playwright install
+          PLAYWRIGHT_BROWSERS_PATH=~/.cache/ms-playwright npx playwright install msedge
           
       - name: Create Environment Variables
         shell: bash
