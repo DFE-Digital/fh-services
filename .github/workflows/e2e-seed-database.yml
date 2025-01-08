@@ -1,4 +1,5 @@
 name: Seed Database with E2E Test Data
+run-name: Seed ${{ inputs.environment }} Database with E2E Test Data 
 
 on:
   workflow_dispatch: 
