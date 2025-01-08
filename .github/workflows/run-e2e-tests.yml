@@ -1,44 +1,121 @@
 name: Run E2E Test Suite
 run-name: Run E2E Test Suite on ${{ inputs.environment }}
 
-concurrency:
-  group: "${{ github.workflow }}-${{ github.ref }}-${{ inputs.environment }}-e2e"
-  cancel-in-progress: true
-
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       environment:
-        description: The environment to run the E2E tests on
-        default: 'Development'
-        type: choice
-        options:
-          - 'Development'
-          - 'Test'
-          - 'Test2'
-          - 'Pre-production'
-      test-find:
-        description: Find
-        default: true
-        type: boolean
-      test-manage:
-        description: Manage
-        default: true
-        type: boolean
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
-  test-find:
-    name: Run Find E2E Test Suite
-    if: ${{ inputs.test-find == true }}
-    uses: ./.github/workflows/run-e2e-test.yml
+  pre-test-teardown:
+    name: Pre-Test Database Teardown
+    uses: ./.github/workflows/e2e-seed-database.yml
     with:
       environment: ${{ inputs.environment }}
-      suite: 'find-e2e-tests'
+      action: 'Teardown'
+    secrets: inherit
+  
+  pre-test-setup:
+    needs: [ pre-test-teardown ]
+    name: Pre-Test Database Setup
+    uses: ./.github/workflows/e2e-seed-database.yml
+    with:
+      environment: ${{ inputs.environment }}
+      action: 'Setup'
+    secrets: inherit
+  
+  run-test-suite:
+    needs: [ pre-test-setup ]
+    name: ${{ matrix.job_name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [ find-e2e-tests, manage-e2e-tests ]
+        include:
+          - suite: find-e2e-tests
+            job_name: E2E - Find UI
+            base_url: ${{ vars.PLAYWRIGHT_FIND_BASE_URL }}
+          - suite: manage-e2e-tests
+            job_name: E2E - Manage UI
+            base_url: ${{ vars.PLAYWRIGHT_MANAGE_BASE_URL }}
+    runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
+    defaults: 
+      run: 
+        working-directory: "test/${{ matrix.suite }}"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          
+      - name: Install NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/Jod" # 22 LTS
 
-  test-manage:
-    name: Run Manage E2E Test Suite
-    if: ${{ inputs.test-manage == true }}
-    uses: ./.github/workflows/run-e2e-test.yml
+      - name: Install NPM Packages
+        shell: bash
+        run: npm i
+        
+      - name: Install Playwright Dependencies
+        shell: bash
+        run: npx playwright install-deps
+      
+      - name: Get Playwright Version
+        id: playwright-version
+        shell: bash
+        run: |
+          ARRAY=($(npx playwright --version))
+          VERSION=${ARRAY[1]}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        
+      - name: Playwright Browser Cache
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-PlayWright-${{ steps.playwright-version.outputs.VERSION }}
+        
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: npx playwright install
+          
+      - name: Create Environment Variables
+        shell: bash
+        run: |
+          cat <<'EOF' > .env
+          BASE_URL=${{ vars.PLAYWRIGHT_ENVIRONMENT_PREFIX }}${{ matrix.base_url }}
+          USER_NAME=${{ secrets.PLAYWRIGHT_USER_NAME }}
+          PASSWORD=${{ secrets.PLAYWRIGHT_PASSWORD }}
+          DFE_ADMIN_USER=${{ secrets.PLAYWRIGHT_GOVLOGIN_DFE_ADMIN_USER }}
+          GOV_LOGIN_PASSWORD=${{ secrets.PLAYWRIGHT_GOVLOGIN_PASSWORD }}
+          EOF
+          
+      - name: Run Playwright Test Suite
+        shell: bash
+        run: npx playwright test
+        
+      - name: Upload Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.suite }}
+          path: "**/playwright-report/"
+  
+  # Intentionally doesn't run after test failure to facilitate analysis
+  post-test-teardown:
+    needs: [ run-test-suite ]
+    name: Post-Test Database Teardown
+    uses: ./.github/workflows/e2e-seed-database.yml
     with:
       environment: ${{ inputs.environment }}
-      suite: 'manage-e2e-tests'
+      action: 'Teardown'
+    secrets: inherit
