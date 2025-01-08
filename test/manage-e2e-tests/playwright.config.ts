@@ -70,10 +70,10 @@ export default defineConfig<SerenityOptions>({
         //         ...devices['Desktop Firefox'],
         //     },
         // },
-        {
-            name: 'webkit',
-            use: { ...devices['Desktop Safari'] },
-        },
+        // {
+        //     name: 'webkit',
+        //     use: { ...devices['Desktop Safari'] },
+        // },
         {
             name: 'Microsoft Edge',
             use: {
