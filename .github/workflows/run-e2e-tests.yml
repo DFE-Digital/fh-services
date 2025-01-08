@@ -5,7 +5,7 @@ on:
   workflow_dispatch: 
     inputs:
       environment:
-        description: The environment target for deployment
+        description: The environment to run the E2E tests on
         default: 'Development'
         type: choice
         options:
@@ -13,11 +13,27 @@ on:
           - 'Test'
           - 'Test2'
           - 'Pre-production'
+      run-find-suite:
+        description: Find
+        default: true
+        type: boolean
+      run-manage-suite:
+        description: Manage
+        default: true
+        type: boolean
   workflow_call:
     inputs:
       environment:
         required: true
         type: string
+      run-find-suite:
+        required: false
+        type: boolean
+        default: true
+      run-manage-suite:
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   id-token: write
@@ -55,6 +71,11 @@ jobs:
           - suite: manage-e2e-tests
             job_name: E2E - Manage UI
             base_url: ${{ vars.PLAYWRIGHT_MANAGE_BASE_URL }}
+        exclude:
+          - suite: ${{ inputs.run-find-suite == false && 'find-e2e-tests' }}
+            job_name: E2E - Find UI
+          - suite: ${{ inputs.run-manage-suite == false && 'manage-e2e-tests' }}
+            job_name: E2E - Manage UI
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
     defaults: 
