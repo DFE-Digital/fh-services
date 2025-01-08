@@ -4,7 +4,7 @@ import {startButton, continueButton, emailField, passwordField, signInButton} fr
 
 export const loginToTestEnvironment = (): Task =>
     Task.where( `#actor logs into test environment`,
-        Navigate.to(Masked.valueOf(`https://${process.env.USER_NAME}:${process.env.PASSWORD}@signin.integration.account.gov.uk/?prompt=login`))
+        Navigate.to(Masked.valueOf(`https://${Masked.valueOf(process.env.USER_NAME)}:${Masked.valueOf(process.env.PASSWORD)}@signin.integration.account.gov.uk/?prompt=login`))
     );
 export const navigateToManage= (): Task =>
     Task.where(
