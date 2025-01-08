@@ -2,18 +2,9 @@ import {Answerable, Masked, Task} from '@serenity-js/core';
 import { Navigate, Click, Enter } from '@serenity-js/web';
 import {startButton, continueButton, emailField, passwordField, signInButton} from "./gov-login-page-objects";
 
-// export const loginToTestEnvironment = (): Task =>
-//     Task.where( `#actor logs into test environment`,
-//         Navigate.to(`https://${process.env.USER_NAME}:${process.env.PASSWORD}@signin.integration.account.gov.uk/?prompt=login`)
-//     );
-
 export const loginToTestEnvironment = (): Task =>
     Task.where( `#actor logs into test environment`,
-        (() => {
-            const url = `https://${process.env.USER_NAME}:${process.env.PASSWORD}@signin.integration.account.gov.uk/?prompt=login`;
-            console.log("Navigating to https://[REDACTED]:[REDACTED]@signin.integration.account.gov.uk/?prompt=login");
-            return Navigate.to(url);
-        })()
+        Navigate.to(`https://${Masked.valueOf(process.env.USER_NAME)}:${Masked.valueOf(process.env.PASSWORD)}@signin.integration.account.gov.uk/?prompt=login`)
     );
 
 export const navigateToManage= (): Task =>
