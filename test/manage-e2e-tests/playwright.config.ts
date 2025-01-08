@@ -1,9 +1,8 @@
-import { defineConfig, devices } from '@playwright/test';
+import {defineConfig, devices} from '@playwright/test';
 import type { SerenityOptions } from '@serenity-js/playwright-test';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
 
 export default defineConfig<SerenityOptions>({
     testDir: './tests',
@@ -56,31 +55,37 @@ export default defineConfig<SerenityOptions>({
 
         // Capture screenshot only on failure
         screenshot: 'only-on-failure',
+
+        httpCredentials: {
+            username: process.env.USER_NAME,
+            password: process.env.PASSWORD,
+        }
     },
 
     /* Configure projects for major browsers */
     projects: [
-        // {
-        //     name: 'chromium',
-        //     use: {
-        //         ...devices['Desktop Chrome'],
-        //     },
-        // },
-        //
-        // {
-        //     name: 'firefox',
-        //     use: {
-        //         ...devices['Desktop Firefox'],
-        //     },
-        // },
-        //
-        // {
-        //     name: 'webkit',
-        //     use: {
-        //         ...devices['Desktop Safari'],
-        //     },
-        // },
-        //
+        {
+            name: 'firefox',
+            use: {
+                ...devices['Desktop Firefox'],
+            },
+        },
+        {
+            name: 'webkit',
+            use: { ...devices['Desktop Safari'] },
+        },
+        {
+            name: 'Microsoft Edge',
+            use: {
+                channel: 'msedge',
+            },
+        },
+        {
+            name: 'Google Chrome',
+            use: {
+                channel: 'chrome',
+            },
+        },
         // /* Test against mobile viewports. */
         // {
         //     name: 'Mobile Chrome',
@@ -95,19 +100,6 @@ export default defineConfig<SerenityOptions>({
         //     },
         // },
         //
-        // /* Test against branded browsers. */
-        // {
-        //     name: 'Microsoft Edge',
-        //     use: {
-        //         channel: 'msedge',
-        //     },
-        // },
-        {
-            name: 'Google Chrome',
-            use: {
-                channel: 'chrome',
-            },
-        },
     ],
 
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
