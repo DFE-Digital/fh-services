@@ -2,6 +2,17 @@ name: Run E2E Test Suite
 run-name: Run E2E Test Suite on ${{ inputs.environment }}
 
 on:
+  workflow_dispatch: 
+    inputs:
+      environment:
+        description: The environment target for deployment
+        default: 'Development'
+        type: choice
+        options:
+          - 'Development'
+          - 'Test'
+          - 'Test2'
+          - 'Pre-production'
   workflow_call:
     inputs:
       environment:
