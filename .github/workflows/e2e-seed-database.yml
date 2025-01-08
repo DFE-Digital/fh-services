@@ -30,7 +30,7 @@ on:
         type: string
           
 concurrency:
-  group: "${{ github.workflow }}-${{ github.ref }}-seed"
+  group: "${{ github.workflow }}-${{ github.ref }}-${{ inputs.environment }}-seed"
   cancel-in-progress: true
   
 permissions:

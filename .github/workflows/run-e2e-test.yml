@@ -1,25 +1,17 @@
-name: Run Playwright E2E Tests
-run-name: Run Playwright E2E Tests on ${{ inputs.environment }}
+name: Run E2E Test
 
 on:
   workflow_call:
     inputs:
       environment:
+        required: true
         type: string
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: The environment target for running E2E tests
-        default: 'Development'
-        type: choice
-        options:
-          - 'Development'
-          - 'Test'
-          - 'Test2'
-          - 'Pre-production'
+      suite:
+        required: true
+        type: string
 
 concurrency:
-  group: "${{ github.workflow }}-${{ github.ref }}"
+  group: "${{ github.workflow }}-${{ github.ref }}-${{ inputs.environment }}-e2e"
   cancel-in-progress: true
 
 permissions:
@@ -44,25 +36,14 @@ jobs:
       action: 'Setup'
     secrets: inherit
   
-  run-test-suites:
+  run-test-suite:
     needs: [ pre-test-setup ]
-    name: ${{ matrix.job_name }}
-    strategy:
-      fail-fast: false
-      matrix:
-        suite: [ find-e2e-tests, manage-e2e-tests ]
-        include:
-          - suite: find-e2e-tests
-            job_name: "Find E2E Test Suite"
-            base_url: ${{ vars.PLAYWRIGHT_FIND_BASE_URL }}
-          - suite: manage-e2e-tests
-            job_name: "Manage E2E Test Suite"
-            base_url: ${{ vars.PLAYWRIGHT_MANAGE_BASE_URL }}
+    name: Run Test Suite
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
     defaults: 
       run: 
-        working-directory: "test/${{ matrix.suite }}"
+        working-directory: "test/${{ inputs.suite }}"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -121,12 +102,12 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report-${{ matrix.suite }}
+          name: playwright-report-${{ inputs.suite }}
           path: "**/playwright-report/"
   
   # Intentionally doesn't run after test failure to facilitate analysis
   post-test-teardown:
-    needs: [ run-test-suites ]
+    needs: [ run-test-suite ]
     name: Post-Test Database Teardown
     uses: ./.github/workflows/e2e-seed-database.yml
     with:

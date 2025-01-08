@@ -271,13 +271,23 @@ jobs:
       project_type: service
     secrets: inherit
     
-  run-ui-e2e-tests:
+  run-test-suites:
     # if: ${{ startsWith(inputs.environment, 'Test') || inputs.environment == 'Pre-production' }}
-    if: ${{ inputs.environment == 'Development' || startsWith(inputs.environment, 'Test') || inputs.environment == 'Pre-production' }}
-    name: TODO
     needs: [ deploy-ui-services ]
-    uses: ./.github/workflows/run-e2e-tests.yml
+    name: ${{ matrix.job_name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [ find-e2e-tests, manage-e2e-tests ]
+        include:
+          - suite: find-e2e-tests
+            job_name: E2E - Find UI
+            base_url: ${{ vars.PLAYWRIGHT_FIND_BASE_URL }}
+          - suite: manage-e2e-tests
+            job_name: E2E - Manage UI
+            base_url: ${{ vars.PLAYWRIGHT_MANAGE_BASE_URL }}
+    uses: ./.github/workflows/run-e2e-test.yml
     with:
       environment: ${{ inputs.environment }}
+      suite: ${{ matrix.suite }}
     secrets: inherit
-    
