@@ -1,6 +1,24 @@
 name: Seed Database with E2E Test Data
 
 on:
+  workflow_dispatch: 
+    inputs:
+      environment:
+        description: The environment target to seed test data in
+        default: 'Development'
+        type: choice
+        options:
+          - 'Development'
+          - 'Test'
+          - 'Test2'
+          - 'Pre-production'
+      action:
+        description: Whether to run the setup or teardown script
+        default: 'Teardown'
+        type: choice
+        options:
+          - 'Setup'
+          - 'Teardown'
   workflow_call:
     inputs:
       environment:
@@ -27,6 +45,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
+          
+      - name: Install NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/Jod" # 22 LTS
+          
+      - name: Install NPM Packages
+        shell: bash
+        run: npm i
 
       - name: Get Workflow Runner IP
         id: runner-ip
@@ -47,7 +74,7 @@ jobs:
           az_resource_group: ${{ vars.AZURE_RESOURCE_PREFIX }}-familyhubs
           az_sql_server_name: ${{ vars.AZURE_RESOURCE_PREFIX }}-as-fh-sql-server
           az_firewall_rule_name: E2E-SEED-SCRIPT
-
+          
       - name: Create Environment Variables
         shell: bash
         run: |
@@ -60,15 +87,6 @@ jobs:
           INITIALISATION_VECTOR=${{ secrets.REFERRAL_COLUMN_INITIALISATION_VECTOR }}
           EXAMPLE_SEED=False
           EOF
-
-      - name: Install NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version: "lts/Jod" # 22 LTS
-
-      - name: Install NPM Packages
-        shell: bash
-        run: npm i
           
       - name: Run ${{ inputs.action }}
         shell: bash

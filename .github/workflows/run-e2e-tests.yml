@@ -104,9 +104,7 @@ jobs:
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         shell: bash
-        run: |
-          npx playwright install
-          PLAYWRIGHT_BROWSERS_PATH=~/.cache/ms-playwright npx playwright install msedge
+        run: npx playwright install
           
       - name: Create Environment Variables
         shell: bash
@@ -130,6 +128,7 @@ jobs:
           name: playwright-report-${{ matrix.suite }}
           path: "**/playwright-report/"
   
+  # Intentionally doesn't run after test failure to facilitate analysis
   post-test-teardown:
     needs: [ run-test-suites ]
     name: Post-Test Database Teardown
