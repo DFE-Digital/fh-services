@@ -275,7 +275,7 @@ jobs:
     # if: ${{ startsWith(inputs.environment, 'Test') || inputs.environment == 'Pre-production' }}
     if: ${{ inputs.environment == 'Development' || startsWith(inputs.environment, 'Test') || inputs.environment == 'Pre-production' }}
     name: TODO
-    needs: [ deploy-api-services ]
+    needs: [ deploy-ui-services ]
     uses: ./.github/workflows/run-e2e-tests.yml
     with:
       environment: ${{ inputs.environment }}
