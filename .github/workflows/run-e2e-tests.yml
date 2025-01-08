@@ -58,7 +58,7 @@ jobs:
     secrets: inherit
   
   run-test-suite:
-    needs: [ pre-test-setup ]
+#    needs: [ pre-test-setup ]
     name: ${{ matrix.job_name }}
     strategy:
       fail-fast: false
@@ -73,9 +73,7 @@ jobs:
             base_url: ${{ vars.PLAYWRIGHT_MANAGE_BASE_URL }}
         exclude:
           - suite: ${{ inputs.run-find-suite == false && 'find-e2e-tests' }}
-            job_name: E2E - Find UI
           - suite: ${{ inputs.run-manage-suite == false && 'manage-e2e-tests' }}
-            job_name: E2E - Manage UI
     runs-on: ubuntu-24.04
     environment: ${{ inputs.environment }}
     defaults: 
