@@ -28,7 +28,6 @@ permissions:
 
 jobs:
   pre-test-teardown:
-    if: ${{ inputs.environment != 'Production' }} # TODO: Guard clause can be moved to deploy.yml
     name: Pre-Test Database Teardown
     uses: ./.github/workflows/e2e-seed-database.yml
     with:

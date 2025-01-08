@@ -270,3 +270,13 @@ jobs:
       test_project_name: ${{ matrix.test_project_name }}
       project_type: service
     secrets: inherit
+    
+  run-ui-e2e-tests:
+    if: ${{ startsWith(inputs.environment, 'Test') || inputs.environment == 'Pre-production' }}
+    name: TODO
+    needs: [ deploy-api-services ]
+    uses: ./.github/workflows/run-e2e-tests.yml
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit
+    
