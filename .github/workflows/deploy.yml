@@ -271,7 +271,7 @@ jobs:
       project_type: service
     secrets: inherit
     
-  run-test-suites:
+  run-e2e-test-suites:
     # if: ${{ startsWith(inputs.environment, 'Test') || inputs.environment == 'Pre-production' }}
     needs: [ deploy-ui-services ]
     name: ${{ matrix.job_name }}

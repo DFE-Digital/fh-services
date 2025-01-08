@@ -10,10 +10,6 @@ on:
         required: true
         type: string
 
-concurrency:
-  group: "${{ github.workflow }}-${{ github.ref }}-${{ inputs.environment }}-e2e"
-  cancel-in-progress: true
-
 permissions:
   id-token: write
   contents: read

@@ -1,0 +1,43 @@
+name: Run E2E Test Suite
+run-name: Run E2E Test Suite on ${{ inputs.environment }}
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}-${{ inputs.environment }}-e2e"
+  cancel-in-progress: true
+
+on:
+  pull_request: 
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: The environment to run the E2E tests on
+        default: 'Development'
+        type: choice
+        options:
+          - 'Development'
+          - 'Test'
+          - 'Test2'
+          - 'Pre-production'
+      test-find:
+        description: Find
+        default: true
+        type: boolean
+      test-manage:
+        description: Manage
+        default: true
+        type: boolean
+
+jobs:
+  test-find:
+    if: ${{ inputs.test-find == true }}
+    uses: ./.github/workflows/run-e2e-test.yml
+    with:
+      environment: ${{ inputs.environment }}
+      suite: 'find-e2e-tests'
+
+  test-manage:
+    if: ${{ inputs.test-manage == true }}
+    uses: ./.github/workflows/run-e2e-test.yml
+    with:
+      environment: ${{ inputs.environment }}
+      suite: 'manage-e2e-tests'
