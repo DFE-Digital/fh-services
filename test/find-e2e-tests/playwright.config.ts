@@ -59,16 +59,6 @@ export default defineConfig<SerenityOptions>({
 
     /* Configure projects for major browsers */
     projects: [
-        // {
-        //     name: 'firefox',
-        //     use: {
-        //         ...devices['Desktop Firefox'],
-        //     },
-        // },
-        // {
-        //     name: 'webkit',
-        //     use: { ...devices['Desktop Safari'] },
-        // },
         {
             name: 'Microsoft Edge',
             use: {
@@ -81,19 +71,31 @@ export default defineConfig<SerenityOptions>({
                 channel: 'chrome',
             },
         },
-        /* Test against mobile viewports. */
         {
             name: 'Mobile Chrome',
             use: {
                 ...devices['Pixel 5'],
             },
         },
+        // The below browsers are commented out due to a bug around TLS certificates.
+        // Jira Ticket: https://dfedigital.atlassian.net.mcas.ms/browse/FHB-1180
+        //
+        // {
+        //     name: 'firefox',
+        //     use: {
+        //         ...devices['Desktop Firefox'],
+        //     },
+        // },
+        // {
+        //     name: 'webkit',
+        //     use: { ...devices['Desktop Safari'] },
+        // },
         // {
         //     name: 'Mobile Safari',
         //     use: {
         //         ...devices['iPhone 12'],
         //     },
-        // },
+        // }
     ],
 
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
