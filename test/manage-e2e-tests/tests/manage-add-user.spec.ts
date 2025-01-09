@@ -51,7 +51,7 @@ describe('Add a User - Manage Tests', () => {
             clickContinue(),
             selectUserAction('add services'),
             clickContinue(),
-            selectLocalAuthority('Tower Hamlets'),
+            selectLocalAuthority('Test LA'),
             clickSecondContinue(),
             enterTestEmail(emailAddress),
             clickSecondContinue(),
