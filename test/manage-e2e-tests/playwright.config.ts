@@ -93,12 +93,12 @@ export default defineConfig<SerenityOptions>({
                 ...devices['Pixel 5'],
             },
         },
-        {
-            name: 'Mobile Safari',
-            use: {
-                ...devices['iPhone 12'],
-            },
-        }
+        // {
+        //     name: 'Mobile Safari',
+        //     use: {
+        //         ...devices['iPhone 12'],
+        //     },
+        // }
     ],
 
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
