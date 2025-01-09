@@ -1,25 +1,26 @@
 import {describe, it, test} from '@serenity-js/playwright-test';
-
 import {
-    navigateToManage,
-    clickOnTheStartButton,
-    loginToManage,
-    loginToTestEnvironment,
-    acceptManageTermsAndConditions,
     acceptCookies,
-    isTheManageHomepageDisplayed,
+    acceptManageTermsAndConditions,
     clickAddUserLink,
     clickConfirmDetails,
+    clickContinue,
+    clickOnTheStartButton,
+    clickSecondContinue,
     enterFullName,
     enterTestEmail,
+    getRandomEmail,
+    getRandomFullName,
+    isTheManageHomepageDisplayed,
+    isUserCreatedPageDisplayed,
+    isUserFoundInUserList,
+    loginToManage,
+    loginToTestEnvironment,
+    navigateToManage,
     searchForUserByName,
     selectLocalAuthority,
     selectPermissionType,
-    selectUserAction,
-    isUserCreatedPageDisplayed,
-    isUserFoundInUserList,
-    getRandomEmail,
-    getRandomFullName, clickContinue
+    selectUserAction
 } from './serenity-tools/manage-index';
 
 describe('Add a User - Manage Tests', () => {
@@ -28,22 +29,22 @@ describe('Add a User - Manage Tests', () => {
         defaultActorName: 'DFE_ADMIN_user',
     })
 
-    test.beforeEach('Setup', async ({ actor }) => {
+    test.beforeEach('Setup', async ({actor}) => {
         await actor.attemptsTo(
             loginToTestEnvironment(),
             navigateToManage(),
             clickOnTheStartButton(),
-            loginToManage('DFE_ADMIN_USER'),
+            loginToManage(),
             acceptManageTermsAndConditions(),
             acceptCookies(),
             isTheManageHomepageDisplayed());
-        
+
     });
-    
-    it('should check a DfE Admin User can create LA manager user', async ({ actor }) => {
+
+    it('should check a DfE Admin User can create LA manager user', async ({actor}) => {
         const emailAddress = getRandomEmail();
         const fullName = getRandomFullName();
-        
+
         await actor.attemptsTo(
             clickAddUserLink(),
             selectPermissionType('la'),
@@ -51,11 +52,11 @@ describe('Add a User - Manage Tests', () => {
             selectUserAction('add services'),
             clickContinue(),
             selectLocalAuthority('Tower Hamlets'),
-            clickContinue(),
+            clickSecondContinue(),
             enterTestEmail(emailAddress),
-            clickContinue(),
+            clickSecondContinue(),
             enterFullName(fullName),
-            clickContinue(),
+            clickSecondContinue(),
             clickConfirmDetails(),
             isUserCreatedPageDisplayed(),
             searchForUserByName(fullName),

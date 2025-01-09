@@ -1,5 +1,5 @@
 import {Ensure, equals} from "@serenity-js/assertions";
-import {Text, Page} from "@serenity-js/web";
+import {Page, Text} from "@serenity-js/web";
 import {Answerable} from "@serenity-js/core";
 import {userNameInUserList} from "../page-objects/accounts-page-objects";
 

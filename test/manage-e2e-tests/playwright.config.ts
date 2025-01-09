@@ -1,5 +1,5 @@
-import { defineConfig, devices } from '@playwright/test';
-import type { SerenityOptions } from '@serenity-js/playwright-test';
+import {defineConfig, devices} from '@playwright/test';
+import type {SerenityOptions} from '@serenity-js/playwright-test';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -8,7 +8,7 @@ dotenv.config();
 export default defineConfig<SerenityOptions>({
     testDir: './tests',
     /* Maximum time one test can run for, measured in milliseconds. */
-    timeout: 200_000,
+    timeout: 30_000,
     expect: {
         /**
          * The maximum time, in milliseconds, that expect() should wait for a condition to be met.
@@ -25,7 +25,7 @@ export default defineConfig<SerenityOptions>({
     /* Specifies the reporter to use. For more information, see https://playwright.dev/docs/test-reporters */
     reporter: [
         ['line'],
-        ['html', { open: 'never' }],
+        ['html', {open: 'never'}],
         ['@serenity-js/playwright-test', {
             crew: [
                 '@serenity-js/console-reporter',
@@ -35,7 +35,7 @@ export default defineConfig<SerenityOptions>({
                         includeAbilityDetails: true,
                     },
                 }],
-                ['@serenity-js/core:ArtifactArchiver', { outputDirectory: 'target/site/serenity' }],
+                ['@serenity-js/core:ArtifactArchiver', {outputDirectory: 'target/site/serenity'}],
                 // '@serenity-js/core:StreamReporter',  // uncomment to enable debugging output
             ],
         }],
@@ -61,19 +61,11 @@ export default defineConfig<SerenityOptions>({
     /* Configure projects for major browsers */
     projects: [
         {
-            name: 'chromium',
-            use: {
-                ...devices['Desktop Chrome'],
-            },
-        },
-
-        {
             name: 'firefox',
             use: {
                 ...devices['Desktop Firefox'],
             },
         },
-
         {
             name: 'webkit',
             use: {
@@ -81,33 +73,29 @@ export default defineConfig<SerenityOptions>({
             },
         },
 
-        // /* Test against mobile viewports. */
-        // {
-        //      name: 'Mobile Chrome',
-        //      use: {
-        //          ...devices['Pixel 5'],
-        //      },
-        //  },
-        // {
-        //      name: 'Mobile Safari',
-        //      use: {
-        //          ...devices['iPhone 12'],
-        //      },
-        // },
-        //
-        // /* Test against branded browsers. */
-        // {
-        //    name: 'Microsoft Edge',
-        //    use: {
-        //      channel: 'msedge',
-        //     },
-        // },
-        // {
-        //    name: 'Google Chrome',
-        //    use: {
-        //      channel: 'chrome',
-        //    },
-        // },
+        /* Test against mobile viewports. */
+        {
+            name: 'Mobile Chrome',
+            use: {
+                ...devices['Pixel 5'],
+            },
+        },
+
+        //TODO: Get tests running on mobile safari - need some custom code to scroll elements into view.
+
+        /* Test against branded browsers. */
+        {
+            name: 'Microsoft Edge',
+            use: {
+                channel: 'msedge',
+            },
+        },
+        {
+            name: 'Google Chrome',
+            use: {
+                channel: 'chrome',
+            },
+        },
     ],
 
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
