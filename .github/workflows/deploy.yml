@@ -272,7 +272,7 @@ jobs:
     secrets: inherit
     
   run-ui-e2e-tests:
-    if: ${{ startsWith(inputs.environment, 'Test') || inputs.environment == 'Pre-production' }}
+#    if: ${{ startsWith(inputs.environment, 'Test') || inputs.environment == 'Pre-production' }}
     name: Run E2E Test Suite
     needs: [ deploy-ui-services ]
     uses: ./.github/workflows/run-e2e-tests.yml

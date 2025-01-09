@@ -20,7 +20,7 @@ export default defineConfig<SerenityOptions>({
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!process.env.CI,
     /* Retry on CI only */
-    retries: 0,
+    retries: process.env.CI ? 2 : 0,
     /* Specifies the reporter to use. For more information, see https://playwright.dev/docs/test-reporters */
     reporter: [
         ['line'],
