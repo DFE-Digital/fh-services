@@ -4,5 +4,5 @@ import { Ensure, equals } from '@serenity-js/assertions';
 export const isTheManageHomepageDisplayed = () =>
     Ensure.that(
         Page.current().title().describedAs('Manage Agree T&Cs'),
-        equals('DfE Admin - Manage family support services and accounts - GOV.UK'),
+        equals('Dfe Admin - Manage family support services and accounts - GOV.UK'),
     )  
