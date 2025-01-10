@@ -26,7 +26,7 @@ import {
 describe('Add a User - Manage Tests', () => {
 
     test.use({
-        defaultActorName: 'DFE_ADMIN_user',
+        defaultActorName: 'DFE_ADMIN_user'
     })
 
     test.beforeEach('Setup', async ({actor}) => {
@@ -38,7 +38,6 @@ describe('Add a User - Manage Tests', () => {
             acceptManageTermsAndConditions(),
             acceptCookies(),
             isTheManageHomepageDisplayed());
-
     });
 
     it('should check a DfE Admin User can create LA manager user', async ({actor}) => {

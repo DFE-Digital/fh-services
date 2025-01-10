@@ -48,12 +48,12 @@ export const selectLocalAuthority = (laName: Answerable<string>): Task =>
 
 export const enterTestEmail = (emailAddress: Answerable<string>): Task =>
     Task.where(`#actor assigns ${emailAddress} email address to user`,
-        Enter.theValue(emailAddress).into(emailAddressInputBox()),
+        Enter.theValue(emailAddress).into(emailAddressInputBox())
     );
 
 export const enterFullName = (fullName: Answerable<string>): Task =>
     Task.where(`#actor assigns ${fullName} full name address to user`,
-        Enter.theValue(fullName).into(fullNameInputBox()),
+        Enter.theValue(fullName).into(fullNameInputBox())
     );
 
 export const clickContinue = (): Task =>

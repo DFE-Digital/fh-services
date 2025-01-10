@@ -54,7 +54,7 @@ export const secondContinueButton = () =>
 export const confirmDetailsButton = () =>
     PageElement
         .located(By.css("[data-testid='confirm-button']"))
-        .describedAs('Confirm details button')
+        .describedAs('Confirm details button');
 
 export const userNameFilterInputBox = () =>
     PageElement
@@ -74,4 +74,4 @@ export const showFiltersButton = () =>
 export const userNameInUserList = () =>
     PageElement
         .located(By.css("#main-content > form > div > div.govuk-grid-column-two-thirds > table > tbody > tr:nth-child(1) > td:nth-child(1)"))
-        .describedAs('Name of user in user list')
+        .describedAs('Name of user in user list');

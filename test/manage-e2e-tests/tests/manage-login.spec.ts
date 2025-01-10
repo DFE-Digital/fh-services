@@ -19,7 +19,6 @@ describe('Manage Tests', () => {
             loginToManage(),
             acceptManageTermsAndConditions(),
             acceptCookies(),
-            isTheManageHomepageDisplayed()
-        );
+            isTheManageHomepageDisplayed());
     });
 });

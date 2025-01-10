@@ -17,12 +17,12 @@ export const loginToTestEnvironment = (): Task =>
 export const navigateToManage = (): Task =>
     Task.where(
         `#actor navigates to the Manage Website`,
-        Navigate.to(process.env.BASE_URL),
+        Navigate.to(process.env.BASE_URL)
     );
 export const clickOnTheStartButton = (): Task =>
     Task.where(
         `#actor clicks on the start button on the Manage Landing Page`,
-        Click.on(startButton()),
+        Click.on(startButton())
     );
 
 //TODO: Make this is a reusable method that takes userType and enters different email addresses from .env based on userType. 
@@ -41,7 +41,7 @@ export const acceptCookies = (): Task =>
         `#actor accepts cookies`,
         Check.whether(acceptCookiesButton().isVisible(), equals(true))
             .andIfSo(
-                Click.on(acceptCookiesButton()),
+                Click.on(acceptCookiesButton())
             )
     );
 

@@ -6,7 +6,7 @@ import {userNameInUserList} from "../page-objects/accounts-page-objects";
 export const isUserCreatedPageDisplayed = () =>
     Ensure.that(
         Page.current().title().describedAs('User created page'),
-        equals('Account Confirmed - Manage family support services and accounts - GOV.UK'),
+        equals('Account Confirmed - Manage family support services and accounts - GOV.UK')
     )
 
 export const isUserFoundInUserList = (fullName: Answerable<string>) =>
