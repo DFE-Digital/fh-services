@@ -14,7 +14,7 @@ export default defineConfig<SerenityOptions>({
          * The maximum time, in milliseconds, that expect() should wait for a condition to be met.
          * For example in `await expect(locator).toHaveText();`
          */
-        timeout: 5000,
+        timeout: 5000
     },
     /* Run tests in files in parallel */
     fullyParallel: true,
@@ -33,7 +33,7 @@ export default defineConfig<SerenityOptions>({
                     specDirectory: './tests',
                     reporter: {
                         includeAbilityDetails: true,
-                    },
+                    }
                 }],
                 ['@serenity-js/core:ArtifactArchiver', {outputDirectory: 'target/site/serenity'}],
                 // '@serenity-js/core:StreamReporter',  // uncomment to enable debugging output
@@ -55,7 +55,7 @@ export default defineConfig<SerenityOptions>({
         trace: 'on-first-retry',
 
         // Capture screenshot only on failure
-        screenshot: 'only-on-failure',
+        screenshot: 'only-on-failure'
     },
 
     /* Configure projects for major browsers */
@@ -64,13 +64,13 @@ export default defineConfig<SerenityOptions>({
             name: 'firefox',
             use: {
                 ...devices['Desktop Firefox'],
-            },
+            }
         },
         {
             name: 'webkit',
             use: {
                 ...devices['Desktop Safari'],
-            },
+            }
         },
 
         /* Test against mobile viewports. */
@@ -78,7 +78,7 @@ export default defineConfig<SerenityOptions>({
             name: 'Mobile Chrome',
             use: {
                 ...devices['Pixel 5'],
-            },
+            }
         },
 
         //TODO: Get tests running on mobile safari - need some custom code to scroll elements into view.
@@ -88,16 +88,16 @@ export default defineConfig<SerenityOptions>({
             name: 'Microsoft Edge',
             use: {
                 channel: 'msedge',
-            },
+            }
         },
         {
             name: 'Google Chrome',
             use: {
                 channel: 'chrome',
-            },
-        },
+            }
+        }
     ],
 
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-    outputDir: 'test-results/',
+    outputDir: 'test-results/'
 });
