@@ -3,6 +3,7 @@
 @{
     Layout = "~/pages/Shared/_InputPageLayout.cshtml";
     ViewData["Title"] = Model.PageHeading;
+    Model.Errors.ErrorIdToHtmlElementId = _ => "organisationName";
 }
 
 <div class="govuk-form-group">

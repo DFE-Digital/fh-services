@@ -51,7 +51,7 @@ public class WhenUsingTelephone : BaseProfessionalReferralPage
         //Act
         await _telephoneModel.OnPostAsync("1");
 
-        _telephoneModel.HasErrors.Should().BeTrue();
+        _telephoneModel.Errors.HasErrors.Should().BeTrue();
     }
 
     //todo: we should really have a test to check the email validation is working

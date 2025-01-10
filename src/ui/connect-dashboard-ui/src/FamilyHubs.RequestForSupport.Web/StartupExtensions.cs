@@ -1,6 +1,5 @@
 ﻿using FamilyHubs.Notification.Api.Client.Extensions;
 using FamilyHubs.Notification.Api.Client.Templates;
-using FamilyHubs.RequestForSupport.Core.ApiClients;
 using FamilyHubs.RequestForSupport.Web.Pages.Vcs;
 using FamilyHubs.SharedKernel.GovLogin.AppStart;
 using FamilyHubs.SharedKernel.Identity;
@@ -9,8 +8,11 @@ using Microsoft.ApplicationInsights.Extensibility;
 using Serilog;
 using Serilog.Events;
 using System.Diagnostics.CodeAnalysis;
+using FamilyHubs.RequestForSupport.Core.ApiClients;
 using FamilyHubs.RequestForSupport.Infrastructure.Health;
 using FamilyHubs.SharedKernel.Health;
+using IReferralClientService = FamilyHubs.RequestForSupport.Core.ApiClients.IReferralClientService;
+using ReferralClientService = FamilyHubs.RequestForSupport.Core.ApiClients.ReferralClientService;
 
 namespace FamilyHubs.RequestForSupport.Web;
 
@@ -69,9 +71,14 @@ public static class StartupExtensions
 
     public static void AddHttpClients(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSecuredTypedHttpClient<IReferralClientService, ReferralClientService>((serviceProvider, httpClient) =>
+        services.AddSecuredTypedHttpClient<IReferralClientService, ReferralClientService>((_, httpClient) =>
         {
             httpClient.BaseAddress = new Uri(configuration.GetValue<string>("ReferralApiUrl")!);
+        });
+        
+        services.AddSecuredTypedHttpClient<IOrganisationClientService, OrganisationClientService>((_, httpClient) =>
+        {
+            httpClient.BaseAddress = new Uri(configuration.GetValue<string>("ServiceDirectoryUrl")!);
         });
     }
 

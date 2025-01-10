@@ -28,7 +28,7 @@ public class EmailModel : ProfessionalReferralCacheModel, ISingleEmailTextboxPag
 
     protected override void OnGetWithModel(ConnectionRequestModel model)
     {
-        if (!HasErrors)
+        if (!Errors.HasErrors)
         {
             TextBoxValue = model.EmailAddress;
         }

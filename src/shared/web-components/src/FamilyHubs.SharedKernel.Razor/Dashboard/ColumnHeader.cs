@@ -51,7 +51,7 @@ internal class ColumnHeader : IColumnHeader
             {
                 url += $"&{_extraQueryParams}";
             }
-            return $"<a href = \"{url}\">{_columnImmutable.DisplayName}</a>";
+            return $"<a href = \"{url}\">{_columnImmutable.DisplayName}<span aria-hidden=\"true\"></span></a>";
         }
     }
 

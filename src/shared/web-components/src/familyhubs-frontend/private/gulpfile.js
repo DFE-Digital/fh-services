@@ -18,10 +18,18 @@ const del = require('del');
 const rename = require('gulp-rename');
 const fs = require('fs');
 
+// Hacky but it works
+let sassPaths = [
+    '../',
+    '../node_modules/govuk-frontend/dist'
+];
+
 gulp.task('sass-to-min-css', async function () {
     return gulp.src('../styles/all.scss')
         .pipe(sourcemaps.init())
-        .pipe(sass().on('error', sass.logError))
+          .pipe(sass({
+              includePaths: sassPaths
+          }).on('error', sass.logError))
         .pipe(csso())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./wwwroot/css'));

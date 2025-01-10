@@ -2,8 +2,10 @@ using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Helpers;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
+using FamilyHubs.ServiceDirectory.Admin.Web.Errors;
 using FamilyHubs.ServiceDirectory.Admin.Web.ViewModel;
 using FamilyHubs.SharedKernel.Identity;
+using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManagePermissions;
@@ -26,7 +28,6 @@ public class EditEmailModel : InputPageViewModel
         ILogger<EditEmailModel> logger)
     {
         PageHeading = "What's their email address?";
-        ErrorMessage = "Enter an email address";
         BackButtonPath = $"/AccountAdmin/ManagePermissions/{AccountId}";
         SubmitButtonText = "Confirm";
         HintText = "They will use this to sign in to their account.";
@@ -34,6 +35,8 @@ public class EditEmailModel : InputPageViewModel
         _idamClient = idamClient;
         _emailService = emailService;
         _logger = logger;
+
+        Errors = ErrorState.Empty;
     }
 
     public void OnGet()
@@ -70,7 +73,7 @@ public class EditEmailModel : InputPageViewModel
         }
 
         BackButtonPath = $"/AccountAdmin/ManagePermissions/{AccountId}";
-        HasValidationError = true;
+        Errors = ErrorState.Create(PossibleErrors.All, ErrorId.ManagePermissions_EditEmail_Missing);
         return Page();
     }
 

@@ -2,7 +2,7 @@
 
 @model DashboardModel
 @{
-    ViewData["Title"] = "My requests";
+    ViewData["Title"] = Model.Title;
 }
 
 @* todo: borrow the status box (for accessibility) from the moj component (or perhaps do without the status box?) (see createStatusBox) *@
@@ -11,7 +11,11 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">My requests</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
+            <span class="govuk-caption-l">@Model.CaptionText</span>
+            @Model.Title
+        </h1>
+        <h2 class="govuk-heading-m">@Model.SubTitle</h2>
     </div>
 </div>
 

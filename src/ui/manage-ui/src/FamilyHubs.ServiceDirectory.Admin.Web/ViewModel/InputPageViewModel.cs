@@ -1,17 +1,17 @@
 ﻿using FamilyHubs.ServiceDirectory.Admin.Web.Pages.Shared;
+using FamilyHubs.SharedKernel.Razor.ErrorNext;
+using FamilyHubs.SharedKernel.Razor.Header;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.ViewModel
 {
-    public class InputPageViewModel : HeaderPageModel
+    public class InputPageViewModel : HeaderPageModel, IHasErrorStatePageModel
     {
         [BindProperty]
         public string BackButtonPath { get; set; } = string.Empty;
         public string SubmitButtonText { get; set; } = "Continue";
-        public bool HasValidationError { get; set; }
-        public string ErrorMessage { get; set; } = string.Empty;
-        public string ErrorElementId { get; set; } = string.Empty;
+        public IErrorState Errors { get; protected set; } = ErrorState.Empty;
         public string PageHeading { get; set; } = string.Empty;
         public string HintText { get; set; } = string.Empty;
 

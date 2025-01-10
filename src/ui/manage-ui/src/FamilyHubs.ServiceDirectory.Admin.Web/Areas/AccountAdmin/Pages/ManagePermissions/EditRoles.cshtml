@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = Model.PageHeading;
     Layout = "~/pages/Shared/_InputPageLayout.cshtml";
+    Model.Errors.ErrorIdToHtmlElementId = _ => "";
 }
 
 <div class="govuk-checkboxes" data-module="govuk-checkboxes">

@@ -4,11 +4,12 @@ using FamilyHubs.Referral.Web.Errors;
 using FamilyHubs.Referral.Web.Pages.Shared;
 using FamilyHubs.SharedKernel.Identity;
 using FamilyHubs.SharedKernel.Razor.ErrorNext;
+using FamilyHubs.SharedKernel.Razor.Header;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.Referral.Web.Pages.My_Account;
 
-public class ChangeNameModel : HeaderPageModel
+public class ChangeNameModel : HeaderPageModel, IHasErrorStatePageModel
 {
     private readonly IIdamsClient _idamsClient;
 

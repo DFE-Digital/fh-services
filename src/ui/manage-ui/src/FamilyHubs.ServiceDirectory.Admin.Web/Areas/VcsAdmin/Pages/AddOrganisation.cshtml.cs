@@ -1,7 +1,10 @@
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
+using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
+using FamilyHubs.ServiceDirectory.Admin.Web.Errors;
 using FamilyHubs.ServiceDirectory.Admin.Web.ViewModel;
 using FamilyHubs.SharedKernel.Identity;
+using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
@@ -20,8 +23,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
             _serviceDirectoryClient = serviceDirectoryClient;
             
             PageHeading = "What is the organisation's name?";
-            ErrorMessage = "Enter the organisation's name";
-            ErrorElementId = "organisationName";
+            Errors = ErrorState.Empty;
         }
 
         public async Task OnGet(bool changeName = false, string cacheId="")
@@ -63,7 +65,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
                 return RedirectToPage("/AddOrganisationCheckDetails", new { cacheId = cacheId });
             }
 
-            HasValidationError = true;
+            Errors = ErrorState.Create(PossibleErrors.All, ErrorId.Add_Organisation__Organisation_Missing);
 
             return Page();
         }

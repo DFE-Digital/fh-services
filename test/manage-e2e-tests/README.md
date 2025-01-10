@@ -1,7 +1,8 @@
 # E2E Testing
 
 Here are written End to End tests for Family Hubs: Manage.
-This is a Serenity/JS with Playwright Framework using a screenplay pattern. 
+This is a Serenity/JS with Playwright Framework using a screenplay pattern.
+
 # Prerequisites
 
 - Ensure Node.js and npm are installed on your machine.
@@ -20,7 +21,8 @@ To view the test report: `npm run test:report`
 
 Screenplay Pattern Overview - https://serenity-js.org/handbook/design/screenplay-pattern/
 
-Serenity JS Playwright Test 
+Serenity JS Playwright Test
+
 - https://serenity-js.org/handbook/test-runners/playwright-test/
 - https://serenity-js.org/handbook/getting-started/serenity-js-with-playwright-test/
 

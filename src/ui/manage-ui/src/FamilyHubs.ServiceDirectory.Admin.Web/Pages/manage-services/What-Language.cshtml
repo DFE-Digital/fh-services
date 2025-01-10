@@ -16,18 +16,19 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        <div data-module="fh-add-another" data-fh-add-another-callback="setupLanguageAutocompleteWhenAddAnother">
+        <div id="fh-add-another-id" data-module="fh-add-another" data-fh-add-another-callback="setupLanguageAutocompleteWhenAddAnother">
             <h1 class="govuk-heading-l fh-add-another__heading" tabindex="-1">Which language is the service offered in?</h1>
             <form method="post">
                 @foreach (var (item, index) in Model.UserLanguageOptions.Select((item, index) => (item, index)))
                 {
+                    var viewIndex = index + 1;
                     Error? error = null;
                     Model.SelectIndexToError?.TryGetValue(index, out error);
 
                     @* todo: fieldset > form-group or other way round? check other pages *@
                     <fieldset class="govuk-fieldset fh-add-another__item" aria-describedby="@(error?.InputErrorMessageParaId)">
                         <div class="govuk-form-group @error?.FormGroupClass">
-                            <label for="language-@index" class="govuk-label">Enter a language</label>
+                            <label for="language-@index" class="govuk-label">Enter language @viewIndex</label>
                             
                             <partial name="_ErrorMessageNext" model="@error" />
 
@@ -50,11 +51,20 @@
                         </div>
                         @if (Model.UserLanguageOptions.Count() > 1)
                         {
-                            <button type="submit" name="button" value="remove-@index" class="govuk-button govuk-button--secondary fh-add-another__remove-button">Remove</button>
+                            <button 
+                                type="submit" 
+                                name="button" 
+                                value="remove-@index" 
+                                class="govuk-button govuk-button--secondary fh-add-another__remove-button">Remove language @viewIndex</button>
                         }
                     </fieldset>
                 }
-                <button type="submit" name="button" value="add" class="govuk-button fh-add-another__add-button govuk-button--secondary govuk-!-margin-bottom-4" data-module="govuk-button">Add another language</button>
+                <button 
+                    type="submit" 
+                    name="button" 
+                    value="add" 
+                    class="govuk-button fh-add-another__add-button govuk-button--secondary govuk-!-margin-bottom-4" 
+                    data-module="govuk-button">Add another language</button>
 
                 <h2 class="govuk-heading-m">
                     Can you offer language support?

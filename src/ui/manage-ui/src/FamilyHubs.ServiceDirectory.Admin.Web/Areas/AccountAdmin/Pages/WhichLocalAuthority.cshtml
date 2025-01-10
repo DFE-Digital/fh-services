@@ -2,7 +2,7 @@
 @model WhichLocalAuthority
 @{
     ViewData["Title"] = Model.PageHeading;
-    Model.ErrorElementId = "LaOrganisationName";
+    Model.Errors.ErrorIdToHtmlElementId = _ => "LaOrganisationName";
 }
 
 <input type="hidden" id="modelLaOrganisationName" value="@Model.LaOrganisationName" />

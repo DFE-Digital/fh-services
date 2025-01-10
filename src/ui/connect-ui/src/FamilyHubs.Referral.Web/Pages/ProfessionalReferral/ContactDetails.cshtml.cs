@@ -38,7 +38,7 @@ public class ContactDetailsModel(IConnectionRequestDistributedCache connectionRe
 
         bool[] contactMethods;
 
-        if (HasErrors)
+        if (Errors.HasErrors)
         {
             contactMethods = SelectedContactMethodMapping;
         }

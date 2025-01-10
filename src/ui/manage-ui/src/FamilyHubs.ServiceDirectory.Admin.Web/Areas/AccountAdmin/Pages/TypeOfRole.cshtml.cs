@@ -22,8 +22,6 @@ public class TypeOfRole : AccountAdminViewModel, IRadiosPageModel
         new(VcsRoleTypeLabel, "VCS")
     };
 
-    public IErrorState Errors { get; protected set; } = ErrorState.Empty;
-
     [BindProperty]
     public string? SelectedValue { get; set; }
 

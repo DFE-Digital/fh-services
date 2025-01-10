@@ -132,7 +132,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
             await sut.OnPost();
 
             //  Assert
-            Assert.True(sut.HasValidationError);
+            Assert.True(sut.Errors.HasErrors);
         }
 
         [Theory]
@@ -153,7 +153,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin
             await sut.OnPost();
 
             //  Assert
-            Assert.True(sut.HasValidationError);
+            Assert.True(sut.Errors.HasErrors);
         }
 
         [Theory]

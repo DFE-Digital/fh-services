@@ -21,7 +21,7 @@ public class WhySupportModel : ProfessionalReferralCacheModel, ITellTheServicePa
 
     protected override void OnGetWithModel(ConnectionRequestModel model)
     {
-        if (!HasErrors)
+        if (!Errors.HasErrors)
         {
             TextAreaValue = model.Reason;
             return;

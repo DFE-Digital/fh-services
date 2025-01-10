@@ -52,8 +52,18 @@ public enum ErrorId
     Time_Details_At_Location__MissingText,
     Time_Details_At_Location__DescriptionTooLong,
     ManagePermissions_Delete_MissingSelection,
+    ManagePermissions_EditEmail_Missing,
+    ManagePermissions_EditRole_MissingSelection,
     AccountAdmin_TypeOfRole_MissingSelection,
     AccountAdmin_TypeOfUserLa_MissingSelection,
     AccountAdmin_TypeOfUserVcs_MissingSelection,
-    Delete_Service__NeitherRadioButtonIsSelected
+    AccountAdmin_WhichLocalAuthority_MissingSelection,
+    AccountAdmin_UserEmail_MissingText,
+    AccountAdmin_UserName_MissingText,
+    AccountAdmin_WhichVcsOrganisation_MissingSelection,
+    Delete_Service__NeitherRadioButtonIsSelected,
+    Add_Organisation__Organisation_Missing,
+    Add_Organisation__WhichLocalAuthority_Missing,
+    Update_Organisation__Organisation_Missing,
+    Delete_Organisation
 }

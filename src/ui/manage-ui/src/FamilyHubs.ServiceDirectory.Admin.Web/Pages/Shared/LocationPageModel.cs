@@ -7,6 +7,7 @@ using FamilyHubs.ServiceDirectory.Admin.Web.Journeys;
 using FamilyHubs.SharedKernel.Identity;
 using FamilyHubs.SharedKernel.Identity.Models;
 using FamilyHubs.SharedKernel.Razor.ErrorNext;
+using FamilyHubs.SharedKernel.Razor.Header;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,7 @@ public class LocationPageModel : LocationPageModel<object>
 }
 
 [Authorize(Roles = RoleGroups.AdminRole)]
-public class LocationPageModel<TInput> : HeaderPageModel
+public class LocationPageModel<TInput> : HeaderPageModel, IHasErrorStatePageModel
     where TInput : class?
 {
     //todo: make non-nullable any that are guaranteed to be set in get/post?

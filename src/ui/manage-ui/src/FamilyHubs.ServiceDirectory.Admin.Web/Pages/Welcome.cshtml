@@ -7,18 +7,24 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-1">@Model.Heading</h1>
-        <h2 class="govuk-caption-l">@Model.SubHeading</h2>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-4">
+            <span class="govuk-caption-l">@Model.CaptionText</span>
+            @Model.Heading
+        </h1>
+        
+        <p class="govuk-body">@Model.Description</p>
         
         @switch (Model.MenuPage)
         {
             case MenuPage.Dfe:
+                <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l">
                 <partial name="_MenuSection" model="@("Accounts")" />
                 <div class="cards">
                     <partial name="_AddUserCard" />
                     <partial name="_ManageUsersCard" />
                 </div>
 
+                <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l">
                 <partial name="_MenuSection" model="@("Local authorities (LAs)")" />
                 <div class="cards">
                     <partial name="_AddServiceCard" model="@ServiceTypeArg.La" />
@@ -26,7 +32,8 @@
                     <partial name="_AddLocationCard" />
                     <partial name="_ManageLocationsCard" />
                 </div>
-
+                
+                <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l">
                 <partial name="_MenuSection" model="@("Voluntary community organisations (VCSs)")" />
                 <div class="cards">
                     <partial name="_AddServiceCard" model="@ServiceTypeArg.Vcs" />
@@ -36,7 +43,8 @@
                     <partial name="_AddOrganisationCard" />
                     <partial name="_ManageOrganisationsCard" />
                 </div>
-
+                
+                <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l">
                 <partial name="_MenuSection" model="@("Performance data")" />
                 <div class="cards">
                     <partial name="_PerformanceDataCard" model="true" />
@@ -44,34 +52,27 @@
                 break;
 
             case MenuPage.La:
+                <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l">
                 <partial name="_MenuSection" model="@("Accounts")" />
                 <div class="cards">
                     <partial name="_AddUserCard" />
                     <partial name="_ManageUsersCard" />
                 </div>
-
+                
+                <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l">
                 <partial name="_MenuSection" model="@("Local authority services and locations")" />
                 <div class="cards">
                     <partial name="_ServicesCard" model="@ServiceTypeArg.La" />
                     <partial name="_LocationsCard" />
                 </div>
-
-                <partial name="_MenuSection" model="@("Voluntary and community sector (VCS) organisations")" />
+                
+                <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l">
+                <partial name="_MenuSection" model="@("Voluntary community organisations")" />
                 <div class="cards">
                     <partial name="_ManageOrganisationsCard" />
                 </div>
-
-                <!-- Undesigned / untested functionality. Hidden for now.
-                <partial name="_MenuSection" model="@("Subject access request")" />
-                <div class="cards">
-                    <div class="card">
-                        <h3 class="govuk-heading-s">
-                            <a href="/La/PersonsDetails">Subject Access Request</a>
-                        </h3>
-                        <p class="govuk-body-s">Find information stored about a person.</p>
-                    </div>
-                </div> -->
-
+                
+                <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l">
                 <partial name="_MenuSection" model="@("Performance data")" />
                 <div class="cards">
                     <partial name="_PerformanceDataCard" model="false" />
@@ -79,14 +80,10 @@
                 break;
 
             case MenuPage.Vcs:
+                <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l">
                 <div class="cards govuk-!-margin-top-8">
                     <partial name="_ServicesCard" model="@ServiceTypeArg.Vcs" />
                     <partial name="_LocationsCard" />
-
-                    <!-- <partial name="_MenuSection" model="@("Performance data")" />
-                    <div class="cards">
-                        <partial name="_PerformanceDataCard" model="false" />
-                    </div> -->
                 </div>
                 break;
         }
