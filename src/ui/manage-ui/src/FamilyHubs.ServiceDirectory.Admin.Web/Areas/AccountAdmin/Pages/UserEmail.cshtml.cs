@@ -1,7 +1,10 @@
 ﻿using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Helpers;
+using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
+using FamilyHubs.ServiceDirectory.Admin.Web.Errors;
 using FamilyHubs.ServiceDirectory.Admin.Web.ViewModel;
+using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages;
@@ -13,8 +16,8 @@ public class UserEmail : AccountAdminViewModel
     public UserEmail(ICacheService cacheService, IIdamClient idamClient) : base(nameof(UserEmail), cacheService)
     {
         PageHeading = "What's their email address?";
-        ErrorMessage = "Enter an email address";
         _idamClient = idamClient;
+        Errors = ErrorState.Empty;
     }
 
     [BindProperty] 
@@ -45,7 +48,7 @@ public class UserEmail : AccountAdminViewModel
             return RedirectToPage(NextPageLink, new { cacheId = CacheId });
         }
         
-        HasValidationError = true;
+        Errors = ErrorState.Create(PossibleErrors.All, ErrorId.AccountAdmin_UserEmail_MissingText);
         return Page();
     }
 

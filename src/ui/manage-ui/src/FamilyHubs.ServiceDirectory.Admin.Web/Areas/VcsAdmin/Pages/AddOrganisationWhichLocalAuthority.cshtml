@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Which Local Authority";
     Layout = "~/pages/Shared/_InputPageLayout.cshtml";
+    Model.Errors.ErrorIdToHtmlElementId = _ => "LaOrganisationName";
 }
 
 <input type="hidden" id="modelLaOrganisationName" value="@Model.LaOrganisationName" />

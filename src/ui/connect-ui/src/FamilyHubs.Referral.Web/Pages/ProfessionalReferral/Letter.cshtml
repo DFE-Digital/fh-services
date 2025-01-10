@@ -2,6 +2,13 @@
 @model FamilyHubs.Referral.Web.Pages.ProfessionalReferral.LetterModel
 @{
     ViewData["Title"] = Model.HeadingText;
+    Model.Errors.ErrorIdToHtmlElementId = errorId => errorId switch
+    {
+        (int)ErrorId.Letter_AddressLine1 => "AddressLine1",
+        (int)ErrorId.Letter_TownOrCity => "TownOrCity",
+        (int)ErrorId.Letter_Postcode => "Postcode",
+        _ => throw new SwitchExpressionException(errorId)
+    };
 }
 
 @section Back {
@@ -10,31 +17,8 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        
-        @* move summary into partial if reused *@
-        @if (Model.HasErrors)
-        {
-            <div class="govuk-error-summary" data-module="govuk-error-summary">
-                <div role="alert">
-                    <h2 class="govuk-error-summary__title">
-                        There is a problem
-                    </h2>
-                    <div class="govuk-error-summary__body">
-                        <ul class="govuk-list govuk-error-summary__list">
-                            @if (Model.LetterErrors != null)
-                            {
-                                @foreach (var error in Model.LetterErrors)
-                                {
-                                    <li>
-                                        <a href="#@error.Property" data-testid="summary-error">@error.ErrorMessage</a>
-                                    </li>
-                                }
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        }
+
+        <partial name="_ErrorSummaryNext" for="@Model.Errors"/>
 
         <form method="post" novalidate>
             <fieldset class="govuk-fieldset">
@@ -43,25 +27,15 @@
                         @Model.HeadingText
                     </h1>
                 </legend>
+                @{Error? addressError = Model.Errors.GetErrorIfTriggered((int)ErrorId.Letter_AddressLine1); }
+
                 @* we could drive these from data *@
-                @{ string? errorMessage = GetErrorMessage("AddressLine1"); }
-                <div class="govuk-form-group @(errorMessage != null ? "govuk-form-group--error" : "")">
+                <div class="govuk-form-group @(addressError?.FormGroupClass)">
                     <label asp-for="AddressLine1" class="govuk-label">
                         Address line 1
                     </label>
-                    @if (errorMessage != null)
-                    {
-                        <p id="AddressLine1-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> @errorMessage
-                        </p>
-
-                        <input asp-for="AddressLine1" class="govuk-input" type="text" autocomplete="off"
-                            aria-describedby="AddressLine1-error">
-                    }
-                    else
-                    {
-                        <input asp-for="AddressLine1" class="govuk-input" type="text" autocomplete="off">
-                    }
+                    <partial name="_ErrorMessageNext" model="addressError"/>
+                    <input asp-for="AddressLine1" class="govuk-input @(addressError?.InputClass)" type="text" autocomplete="off" aria-describedby="@(addressError?.InputErrorMessageParaId)">
                 </div>
                 <div class="govuk-form-group">
                     <label asp-for="AddressLine2" class=" govuk-label">
@@ -69,24 +43,14 @@
                     </label>
                     <input asp-for="AddressLine2" class="govuk-input" type="text" autocomplete="off">
                 </div>
-                @{ errorMessage = GetErrorMessage("TownOrCity"); }
-                <div class="govuk-form-group @(errorMessage != null ? "govuk-form-group--error" : "")">
+
+                @{Error? townError = Model.Errors.GetErrorIfTriggered((int)ErrorId.Letter_TownOrCity); }
+                <div class="govuk-form-group @(townError?.FormGroupClass)">
                     <label asp-for="TownOrCity" class="govuk-label">
                         Town or city
                     </label>
-                    @if (errorMessage != null)
-                    {
-                        <p id="TownOrCity-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> @errorMessage
-                        </p>
-
-                        <input asp-for="TownOrCity" class="govuk-input govuk-!-width-two-thirds" type="text" autocomplete="off"
-                            aria-describedby="TownOrCity-error">
-                    }
-                    else
-                    {
-                        <input asp-for="TownOrCity" class="govuk-input govuk-!-width-two-thirds" type="text" autocomplete="off">
-                    }
+                    <partial name="_ErrorMessageNext" model="townError"/>
+                    <input asp-for="TownOrCity" class="govuk-input govuk-!-width-two-thirds @(townError?.InputClass)" type="text" autocomplete="off" aria-describedby="@(townError?.InputErrorMessageParaId)">
                 </div>
                 <div class="govuk-form-group">
                     <label asp-for="County" class="govuk-label">
@@ -94,24 +58,14 @@
                     </label>
                     <input asp-for="County" class="govuk-input govuk-!-width-two-thirds" type="text" autocomplete="off">
                 </div>
-                @{ errorMessage = GetErrorMessage("Postcode"); }
-                <div class="govuk-form-group @(errorMessage != null ? "govuk-form-group--error" : "")">
+
+                @{Error? postcodeError = Model.Errors.GetErrorIfTriggered((int)ErrorId.Letter_Postcode); }
+                <div class="govuk-form-group @(postcodeError?.FormGroupClass)">
                     <label asp-for="Postcode" class="govuk-label">
                         Postcode
                     </label>
-                    @if (errorMessage != null)
-                    {
-                        <p id="Postcode-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> @errorMessage
-                        </p>
-
-                        <input asp-for="Postcode" class="govuk-input govuk-input--width-10" type="text" autocomplete="off"
-                            aria-describedby="Postcode-error">
-                    }
-                    else
-                    {
-                        <input asp-for="Postcode" class="govuk-input govuk-input--width-10" type="text" autocomplete="off">
-                    }
+                    <partial name="_ErrorMessageNext" model="postcodeError"/>
+                    <input asp-for="Postcode" class="govuk-input govuk-input--width-10 @(townError?.InputClass)" type="text" autocomplete="off" aria-describedby="@(postcodeError?.InputErrorMessageParaId)">
                 </div>
             </fieldset>
             <button type="submit" class="govuk-button" data-module="govuk-button">
@@ -121,11 +75,3 @@
 
     </div>
 </div>
-
-@functions
-{
-    public string? GetErrorMessage(string propertyName)
-    {
-        return Model.LetterErrors?.FirstOrDefault(e => e.Property == propertyName)?.ErrorMessage;
-    }
-}

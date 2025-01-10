@@ -1,9 +1,10 @@
 ﻿@page
-@using FamilyHubs.SharedKernel.Services.Postcode.Model
+@using FamilyHubs.SharedKernel.Razor.ErrorNext
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model PostcodeSearchModel
 @{
     ViewData["Title"] = "Search your local area for support and services";
+    Model.Errors.ErrorIdToHtmlElementId = _ => "postcode";
 }
 
 @section Back {
@@ -12,27 +13,8 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        
-        @*todo: we might want a partial for this at some point (that supports a list of errors)*@
-        @*todo: gds says top of main, but that would take it out of the 2/3rds column*@
-        @if (Model.PostcodeError != PostcodeError.None)
-        {
-            <div class="govuk-error-summary" data-module="govuk-error-summary">
 
-                <div role="alert">
-                    <h2 class="govuk-error-summary__title">
-                        There is a problem
-                    </h2>
-                    <div class="govuk-error-summary__body">
-                        <ul class="govuk-list govuk-error-summary__list">
-                            <li>
-                                <a href="#postcode">@GetErrorMessage(Model.PostcodeError)</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        }
+        <partial name="_ErrorSummaryNext" model="Model.Errors" />
 
         <h1 class="govuk-heading-l govuk-!-margin-bottom-4">Search your local area for support and services</h1>
 
@@ -52,44 +34,19 @@
 
         <form method="post" asp-page="/ServiceFilter/Index">
 
-            @if (Model.PostcodeError == PostcodeError.None)
-            {
-                <div class="govuk-form-group">
-                    <label class="govuk-label govuk-label--s" for="postcode">
-                        Enter a postcode
-                    </label>
-                    <div id="postcode-services-hint" class="govuk-hint">For example SW1A 2AA</div>
-                    <input class="govuk-input govuk-input--width-10" id="postcode" name="postcode" type="text" aria-describedby="postcode-services-hint" autocomplete="postal-code">
-                </div>
-            }
-            else
-            {
-                <div class="govuk-form-group govuk-form-group--error">
-                    <label class="govuk-label govuk-label--s" for="postcode">
-                        Enter a postcode
-                    </label>
-                    <p id="postcode-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> @GetErrorMessage(Model.PostcodeError)
-                    </p>
-                    <input class="govuk-input govuk-input--width-10 govuk-input--error" id="postcode" name="postcode" type="text" aria-describedby="postcode-error" autocomplete="postal-code">
-                </div>
-            }
+            @{Error? error = Model.Errors.GetErrorIfTriggered(); }
+
+            <div class="govuk-form-group @(error?.FormGroupClass)">
+                <label class="govuk-label govuk-label--s" for="postcode">
+                    Enter a postcode
+                </label>
+                <div id="postcode-services-hint" class="govuk-hint">For example SW1A 2AA</div>
+                <partial name="_ErrorMessageNext" model="error"/>
+                <input class="govuk-input govuk-input--width-10 @(error?.InputClass)" id="postcode" name="postcode" type="text" aria-describedby="postcode-services-hint @(error?.InputErrorMessageParaId)" autocomplete="postal-code">
+            </div>
 
             <button class="govuk-button" data-testid="search-button" data-module="govuk-button">Search</button>
 
         </form>
     </div>
 </div>
-
-@{
-    string GetErrorMessage(PostcodeError postcodeError)
-    {
-        return postcodeError switch
-        {
-            PostcodeError.NoPostcode => "You need to enter a postcode, like SW1A 2AA",
-            PostcodeError.PostcodeNotFound => "Your postcode is not recognised - try another one",
-            PostcodeError.InvalidPostcode => "You need to enter a valid postcode, like SW1A 2AA",
-            _ => throw new ArgumentOutOfRangeException(nameof(postcodeError), postcodeError, "Unexpected")
-        };
-    }
-}

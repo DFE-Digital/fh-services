@@ -6,11 +6,12 @@ using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Mvc;
 using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using FamilyHubs.SharedKernel.Razor.FullPages.Radios;
+using FamilyHubs.SharedKernel.Razor.Header;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManagePermissions
 {
-    public class DeleteUserModel : PageModel, IRadiosPageModel
+    public class DeleteUserModel : PageModel, IRadiosPageModel, IHasErrorStatePageModel
     {
         private readonly IIdamClient _idamClient;
         private readonly ICacheService _cacheService;

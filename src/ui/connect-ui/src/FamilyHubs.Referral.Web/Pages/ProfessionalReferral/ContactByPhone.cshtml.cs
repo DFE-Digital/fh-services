@@ -22,7 +22,7 @@ public class ContactByPhoneModel : ProfessionalReferralCacheModel
 
     protected override void OnGetWithModel(ConnectionRequestModel model)
     {
-        if (!HasErrors && model.ReferrerContact != null)
+        if (!Errors.HasErrors && model.ReferrerContact is not null)
         {
             Contact = model.ReferrerContact;
             TelephoneNumber = model.ReferrerTelephone;

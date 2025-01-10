@@ -1,6 +1,6 @@
 ﻿@model FamilyHubs.ServiceDirectory.Admin.Web.ViewModel.InputPageViewModel
 @{
-    var errorGroupCss = Model.HasValidationError ? "govuk-form-group--error" : "";
+    var error = Model.Errors.GetErrorIfTriggered();
     Layout = "_Layout.cshtml";
 }
 
@@ -16,26 +16,13 @@
     <a href="@Model.BackButtonPath" class="govuk-back-link">Back</a>
 }
 
+<partial name="_ErrorSummaryNext" model="Model.Errors" />
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form method="post">
             <input type="hidden" id="backButtonPath" name="BackButtonPath" asp-for="BackButtonPath" />
             <div class="govuk-form-group">
-                @if (Model.HasValidationError)
-                {
-                    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" data-module="govuk-error-summary">
-                        <h2 class="govuk-error-summary__title" id="error-summary-title">
-                            There is a problem
-                        </h2>
-                        <div class="govuk-error-summary__body">
-                            <ul class="govuk-list govuk-error-summary__list" data-testid="errors-list">
-                                <li>
-                                    <a href="#@Model.ErrorElementId">@Model.ErrorMessage</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                }
                 <fieldset class="govuk-fieldset" >
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 class="govuk-fieldset__heading app-wrap-anywhere">
@@ -50,11 +37,8 @@
                         </div>
                     }
 
-                    <div class="govuk-form-group @errorGroupCss">
-                        @if (Model.HasValidationError)
-                        {
-                            <span class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> @Model.ErrorMessage</span>
-                        }
+                    <div class="govuk-form-group @(error?.FormGroupClass)">
+                        <partial name="_ErrorMessageNext" model="error" />
                         @RenderBody()
                     </div>
 

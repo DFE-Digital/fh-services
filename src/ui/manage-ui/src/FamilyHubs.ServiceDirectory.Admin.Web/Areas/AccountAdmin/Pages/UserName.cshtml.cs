@@ -1,5 +1,8 @@
-﻿using FamilyHubs.ServiceDirectory.Admin.Core.Services;
+﻿using FamilyHubs.ServiceDirectory.Admin.Core.Models;
+using FamilyHubs.ServiceDirectory.Admin.Core.Services;
+using FamilyHubs.ServiceDirectory.Admin.Web.Errors;
 using FamilyHubs.ServiceDirectory.Admin.Web.ViewModel;
+using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages;
@@ -9,7 +12,7 @@ public class UserName : AccountAdminViewModel
     public UserName(ICacheService cacheService) : base(nameof(UserName), cacheService)
     {
         PageHeading = "What's their full name?";
-        ErrorMessage = "Enter a full name";
+        Errors = ErrorState.Empty;
     }
 
     [BindProperty] 
@@ -34,7 +37,7 @@ public class UserName : AccountAdminViewModel
             return RedirectToPage(NextPageLink, new { cacheId = CacheId});
         }
 
-        HasValidationError = true;
+        Errors = ErrorState.Create(PossibleErrors.All, ErrorId.AccountAdmin_UserName_MissingText);
         return Page();
     }
 }

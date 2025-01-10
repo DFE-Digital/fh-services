@@ -42,8 +42,6 @@ public class TelephoneModel : ProfessionalReferralCacheModel, ISingleTelephoneTe
     {
         if (!ModelState.IsValid)
         {
-            HasErrors = true;
-
             var errors = ImmutableDictionary
                 .Create<int, PossibleError>()
                 .Add(AdHocErrorId.Error1, ModelState["TextBoxValue"]!.Errors[0].ErrorMessage);

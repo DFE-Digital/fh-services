@@ -1,5 +1,5 @@
 import {defineConfig, devices} from '@playwright/test';
-import type { SerenityOptions } from '@serenity-js/playwright-test';
+import type {SerenityOptions} from '@serenity-js/playwright-test';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -13,7 +13,7 @@ export default defineConfig<SerenityOptions>({
          * The maximum time, in milliseconds, that expect() should wait for a condition to be met.
          * For example in `await expect(locator).toHaveText();`
          */
-        timeout: 5000,
+        timeout: 5000
     },
     /* Run tests in files in parallel */
     fullyParallel: true,
@@ -24,7 +24,7 @@ export default defineConfig<SerenityOptions>({
     /* Specifies the reporter to use. For more information, see https://playwright.dev/docs/test-reporters */
     reporter: [
         ['line'],
-        ['html', { open: 'never' }],
+        ['html', {open: 'never'}],
         ['@serenity-js/playwright-test', {
             crew: [
                 '@serenity-js/console-reporter',
@@ -32,9 +32,9 @@ export default defineConfig<SerenityOptions>({
                     specDirectory: './tests',
                     reporter: {
                         includeAbilityDetails: true,
-                    },
+                    }
                 }],
-                ['@serenity-js/core:ArtifactArchiver', { outputDirectory: 'target/site/serenity' }],
+                ['@serenity-js/core:ArtifactArchiver', {outputDirectory: 'target/site/serenity'}],
                 // '@serenity-js/core:StreamReporter',  // uncomment to enable debugging output
             ],
         }],
@@ -59,7 +59,7 @@ export default defineConfig<SerenityOptions>({
         httpCredentials: {
             username: process.env.USER_NAME,
             password: process.env.PASSWORD,
-        },
+        }
     },
 
     /* Configure projects for major browsers */
@@ -98,6 +98,7 @@ export default defineConfig<SerenityOptions>({
                 ignoreHTTPSErrors: true
             },
         },
+        //TODO: Get tests running on mobile safari - need some custom code to scroll elements into view.
         // {
         //     name: 'Mobile Safari',
         //     use: {
@@ -107,5 +108,5 @@ export default defineConfig<SerenityOptions>({
     ],
 
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-    outputDir: 'test-results/',
+    outputDir: 'test-results/'
 });
