@@ -77,7 +77,7 @@ export default defineConfig<SerenityOptions>({
                 ...devices['Pixel 5'],
             },
         },
-        // Firefox has a temporary workaround to ignore HTTPS errors due to a bug around TLS certificates.
+        // Firefox & Safari have a temporary workaround to ignore HTTPS errors due to a bug around TLS certificates.
         // Jira Ticket: https://dfedigital.atlassian.net.mcas.ms/browse/FHB-1180
         {
             name: 'Firefox',
@@ -90,6 +90,7 @@ export default defineConfig<SerenityOptions>({
             name: 'Safari',
             use: {
                 ...devices['Desktop Safari'],
+                ignoreHTTPSErrors: true
             },
         },
         // {
