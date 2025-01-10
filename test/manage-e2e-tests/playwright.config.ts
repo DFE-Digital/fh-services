@@ -59,7 +59,7 @@ export default defineConfig<SerenityOptions>({
         httpCredentials: {
             username: process.env.USER_NAME,
             password: process.env.PASSWORD,
-        }
+        },
     },
 
     /* Configure projects for major browsers */
@@ -82,19 +82,21 @@ export default defineConfig<SerenityOptions>({
                 ...devices['Pixel 5'],
             },
         },
-        // The below browsers are commented out due to a bug around TLS certificates.
+        // Firefox has a temporary workaround to ignore HTTPS errors due to a bug around TLS certificates.
         // Jira Ticket: https://dfedigital.atlassian.net.mcas.ms/browse/FHB-1180
-        //
-        // {
-        //     name: 'firefox',
-        //     use: {
-        //         ...devices['Desktop Firefox'],
-        //     },
-        // },
-        // {
-        //     name: 'webkit',
-        //     use: { ...devices['Desktop Safari'] },
-        // },
+        {
+            name: 'Firefox',
+            use: {
+                ...devices['Desktop Firefox'],
+                ignoreHTTPSErrors: true
+            },
+        },
+        {
+            name: 'Safari',
+            use: {
+                ...devices['Desktop Safari'],
+            },
+        },
         // {
         //     name: 'Mobile Safari',
         //     use: {
