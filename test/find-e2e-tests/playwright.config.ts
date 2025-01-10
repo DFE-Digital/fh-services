@@ -93,6 +93,7 @@ export default defineConfig<SerenityOptions>({
                 ignoreHTTPSErrors: true
             },
         },
+        //TODO: Get tests running on mobile safari - need some custom code to scroll elements into view.
         // {
         //     name: 'Mobile Safari',
         //     use: {
