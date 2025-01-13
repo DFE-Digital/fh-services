@@ -7,6 +7,7 @@ using FamilyHubs.RequestForSupport.Web.Models;
 using FamilyHubs.RequestForSupport.Web.Pages.Shared;
 using FamilyHubs.RequestForSupport.Web.Security;
 using FamilyHubs.SharedKernel.Identity;
+using FamilyHubs.SharedKernel.Identity.Models;
 using FamilyHubs.SharedKernel.Razor.Dashboard;
 using FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options;
 using FamilyHubs.SharedKernel.Razor.Pagination;
@@ -32,28 +33,42 @@ public class DashboardModel : HeaderPageModel, IDashboard<ReferralDto>
 
     private readonly IReferralClientService _referralClientService;
     private readonly FamilyHubsUiOptions _familyHubsUiOptions;
+    private readonly IOrganisationClientService _organisationClientService;
 
     string? IDashboard<ReferralDto>.TableClass => "app-la-dashboard";
 
+    public string Title => "My requests";
+    public string SubTitle => "Connection requests sent to services";
+    public string? CaptionText { get; set; }
     public IPagination Pagination { get; set; }
 
     public const int PageSize = 20;
 
-    private IEnumerable<IColumnHeader> _columnHeaders = Enumerable.Empty<IColumnHeader>();
-    private IEnumerable<IRow<ReferralDto>> _rows = Enumerable.Empty<IRow<ReferralDto>>();
+    private IEnumerable<IColumnHeader> _columnHeaders = [];
+    private IEnumerable<IRow<ReferralDto>> _rows = [];
     IEnumerable<IColumnHeader> IDashboard<ReferralDto>.ColumnHeaders => _columnHeaders;
     IEnumerable<IRow<ReferralDto>> IDashboard<ReferralDto>.Rows => _rows;
 
     public DashboardModel(
         IReferralClientService referralClientService,
-        IOptions<FamilyHubsUiOptions> familyHubsUiOptions)
+        IOptions<FamilyHubsUiOptions> familyHubsUiOptions,
+        IOrganisationClientService organisationClientService)
     {
         _referralClientService = referralClientService;
         _familyHubsUiOptions = familyHubsUiOptions.Value;
+        _organisationClientService = organisationClientService;
         Pagination = IPagination.DontShow;
     }
 
     public async Task OnGet(string? columnName, SortOrder sort, int? currentPage = 1)
+    {
+        var user = HttpContext.GetFamilyHubsUser();
+        await SetPaginationResults(user, columnName, sort, currentPage);
+        
+        CaptionText = await GetLocalAuthorityName(user);
+    }
+
+    private async Task SetPaginationResults(FamilyHubsUser user, string? columnName, SortOrder sort, int? currentPage)
     {
         if (columnName == null || !Enum.TryParse(columnName, true, out Column column))
         {
@@ -62,18 +77,30 @@ public class DashboardModel : HeaderPageModel, IDashboard<ReferralDto>
             sort = SortOrder.descending;
         }
 
-        Uri thisWebBaseUrl = _familyHubsUiOptions.Url(UrlKeys.ThisWeb);
-        string laDashboardUrl = $"{thisWebBaseUrl}La/Dashboard";
+        var thisWebBaseUrl = _familyHubsUiOptions.Url(UrlKeys.ThisWeb);
+        var laDashboardUrl = $"{thisWebBaseUrl}La/Dashboard";
 
         _columnHeaders = new ColumnHeaderFactory(_columnImmutables, laDashboardUrl, column.ToString(), sort)
             .CreateAll();
 
-        var user = HttpContext.GetFamilyHubsUser();
+        
         var searchResults = await GetConnections(user.AccountId, currentPage!.Value, column, sort);
 
         _rows = searchResults.Items.Select(r => new LaDashboardRow(r, thisWebBaseUrl));
 
         Pagination = new LargeSetLinkPagination<Column>(laDashboardUrl, searchResults.TotalPages, currentPage.Value, column, sort);
+    }
+    
+    private async Task<string> GetLocalAuthorityName(FamilyHubsUser familyHubsUser)
+    {
+        var parseOrgId = long.TryParse(familyHubsUser.OrganisationId, out var organisationId);
+        if (!parseOrgId)
+        {
+            throw new InvalidOperationException($"Could not parse OrganisationId from claim: {organisationId}");
+        }
+
+        var org = await _organisationClientService.GetOrganisationDtoByIdAsync(organisationId);
+        return org?.Name ?? "";
     }
 
     private async Task<PaginatedList<ReferralDto>> GetConnections(

@@ -3,6 +3,20 @@
   "version": "1.0.0",
   "license": "MIT",
   "dependencies": {
+    "govuk-frontend": "^5.2.0",
     "familyhubs-frontend": "file:../../../../shared/web-components/src/familyhubs-frontend"
+  },
+  "devDependencies": {
+    "del": "^8.0.0",
+    "gulp": "^4.0.2",
+    "gulp-better-rollup": "^4.0.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-csso": "^4.0.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.1.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-terser": "^2.1.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "sass": "^1.80.7"
   }
 }

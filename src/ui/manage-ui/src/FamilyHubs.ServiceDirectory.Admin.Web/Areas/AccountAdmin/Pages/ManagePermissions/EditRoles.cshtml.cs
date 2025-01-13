@@ -1,8 +1,10 @@
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
+using FamilyHubs.ServiceDirectory.Admin.Web.Errors;
 using FamilyHubs.ServiceDirectory.Admin.Web.ViewModel;
 using FamilyHubs.SharedKernel.Identity;
+using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManagePermissions
@@ -13,28 +15,28 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
         private readonly IEmailService _emailService;
 
         [BindProperty]
-        public bool LaProfessional { get; set; } = false;
+        public bool LaProfessional { get; set; }
 
         [BindProperty]
-        public bool LaManager { get; set; } = false;
+        public bool LaManager { get; set; }
 
         [BindProperty]
-        public bool VcsProfessional { get; set; } = false;
+        public bool VcsProfessional { get; set; }
 
         [BindProperty]
-        public bool VcsManager { get; set; } = false;
+        public bool VcsManager { get; set; }
       
-        public bool IsLa { get; set; } = false;
+        public bool IsLa { get; set; }
         
-        public bool IsVcs { get; set; } = false;
+        public bool IsVcs { get; set; }
 
         public EditRolesModel(IIdamClient idamClient, IEmailService emailService)
         {
             PageHeading = "What do they need to do?";
-            ErrorMessage = "Select what they need to do";
             SubmitButtonText = "Confirm";
             _idamClient = idamClient;
             _emailService = emailService;
+            Errors = ErrorState.Empty;
         }
 
         public async Task OnGet(long accountId)
@@ -60,7 +62,8 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
                 var request = new UpdateClaimDto { AccountId = accountId, Name = "role", Value = newRole };
                 await _idamClient.UpdateClaim(request);
 
-                var email = new PermissionChangeNotificationModel() {
+                var email = new PermissionChangeNotificationModel
+                {
                     EmailAddress = account!.Email, 
                     OldRole = oldRole,
                     NewRole = newRole
@@ -76,7 +79,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
                 return RedirectToPage("EditRolesChangedConfirmation", new { AccountId = accountId });
             }
 
-            HasValidationError = true;
+            Errors = ErrorState.Create(PossibleErrors.All, ErrorId.ManagePermissions_EditRole_MissingSelection);
                         
             string role = GetRole(account);
             SetOrganisationType(role);

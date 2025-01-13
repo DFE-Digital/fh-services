@@ -1,6 +1,9 @@
 ﻿using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
+using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
+using FamilyHubs.ServiceDirectory.Admin.Web.Errors;
 using FamilyHubs.ServiceDirectory.Admin.Web.ViewModel;
+using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages;
@@ -12,8 +15,8 @@ public class WhichLocalAuthority : AccountAdminViewModel
     public WhichLocalAuthority(ICacheService cacheService, IServiceDirectoryClient serviceDirectoryClient) : base(nameof(WhichLocalAuthority), cacheService)
     {
         PageHeading = string.Empty;
-        ErrorMessage = "Select a local authority";
         _serviceDirectoryClient = serviceDirectoryClient;
+        Errors = ErrorState.Empty;
     }
     
     [BindProperty]
@@ -23,7 +26,7 @@ public class WhichLocalAuthority : AccountAdminViewModel
 
     private const string LaJourneyLabel = "Which local authority do they work for?";
     private const string VcsJourneyLabel = "Which local authority area do they work in?";
-    
+
     public override async Task OnGet()
     {
         await base.OnGet();
@@ -55,8 +58,8 @@ public class WhichLocalAuthority : AccountAdminViewModel
         }
         
         PageHeading = PermissionModel.VcsJourney ? VcsJourneyLabel : LaJourneyLabel;
-        
-        HasValidationError = true;
+
+        Errors = ErrorState.Create(PossibleErrors.All, ErrorId.AccountAdmin_WhichLocalAuthority_MissingSelection);
         
         LocalAuthorities = laOrganisations.Select(l => l.Name).ToList();
 

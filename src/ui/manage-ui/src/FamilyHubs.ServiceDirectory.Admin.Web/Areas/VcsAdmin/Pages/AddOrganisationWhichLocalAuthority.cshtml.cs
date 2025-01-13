@@ -1,7 +1,10 @@
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
+using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
+using FamilyHubs.ServiceDirectory.Admin.Web.Errors;
 using FamilyHubs.ServiceDirectory.Admin.Web.ViewModel;
 using FamilyHubs.SharedKernel.Identity;
+using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
@@ -18,8 +21,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
 
         public AddOrganisationWhichLocalAuthorityModel(ICacheService cacheService, IServiceDirectoryClient serviceDirectoryClient) 
         {
-            ErrorMessage = "Select a local authority";
-            ErrorElementId = "LaOrganisationName";
+            Errors = ErrorState.Empty;
             _cacheService = cacheService;
             _serviceDirectoryClient = serviceDirectoryClient;
             PageHeading = "Which local authority is the organisation in?";
@@ -65,13 +67,11 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
                 return RedirectToPage("/AddOrganisation");
             }
 
-            HasValidationError = true;
+            Errors = ErrorState.Create(PossibleErrors.All, ErrorId.Add_Organisation__WhichLocalAuthority_Missing);
 
             LocalAuthorities = laOrganisations.Select(l => l.Name).ToList();
 
             return Page();
-        }      
-
-        
+        }
     }
 }

@@ -9,6 +9,7 @@ using FamilyHubs.RequestForSupport.Web.Pages.Shared;
 using FamilyHubs.RequestForSupport.Web.Security;
 using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options;
+using FamilyHubs.SharedKernel.Razor.Header;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -34,7 +35,7 @@ public enum NotificationType
 }
 
 [Authorize(Roles = Roles.VcsProfessionalOrDualRole)]
-public class VcsRequestDetailsPageModel : HeaderPageModel
+public class VcsRequestDetailsPageModel : HeaderPageModel, IHasErrorStatePageModel
 {
     private readonly IReferralClientService _referralClientService;
     private readonly INotifications _notifications;

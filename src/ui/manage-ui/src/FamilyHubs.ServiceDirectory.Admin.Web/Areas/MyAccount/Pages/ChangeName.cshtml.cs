@@ -5,10 +5,11 @@ using FamilyHubs.ServiceDirectory.Admin.Web.Pages.Shared;
 using FamilyHubs.SharedKernel.Identity;
 using Microsoft.AspNetCore.Mvc;
 using FamilyHubs.SharedKernel.Razor.ErrorNext;
+using FamilyHubs.SharedKernel.Razor.Header;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.MyAccount.Pages;
 
-public class ChangeNameModel : HeaderPageModel
+public class ChangeNameModel : HeaderPageModel, IHasErrorStatePageModel
 {
     public enum ErrorId
     {

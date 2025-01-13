@@ -55,7 +55,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
 
             //  Assert
             Assert.IsType<PageResult>(result);
-            Assert.True(sut.HasValidationError);
+            Assert.True(sut.Errors.HasErrors);
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
 
             //  Assert
             Assert.IsType<RedirectToPageResult>(result);
-            Assert.False(sut.HasValidationError);
+            Assert.False(sut.Errors.HasErrors);
             await _mockIdamClient.Received(1).UpdateAccount(Arg.Any<UpdateAccountDto>(), Arg.Any<CancellationToken>());
         }
 

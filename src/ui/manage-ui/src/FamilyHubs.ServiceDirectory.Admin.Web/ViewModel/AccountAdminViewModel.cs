@@ -2,25 +2,22 @@
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
 using FamilyHubs.ServiceDirectory.Admin.Web.Pages.Shared;
 using FamilyHubs.SharedKernel.Identity;
+using FamilyHubs.SharedKernel.Razor.ErrorNext;
+using FamilyHubs.SharedKernel.Razor.Header;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.ViewModel;
 
-public class AccountAdminViewModel : HeaderPageModel
+public class AccountAdminViewModel : HeaderPageModel, IHasErrorStatePageModel
 {
     public ICacheService CacheService { get; set; }
-    public bool HasValidationError { get; set; }
+    public IErrorState Errors { get; protected set; }
 
     public string PageHeading { get; set; } = string.Empty;
     
     public string LaRoleTypeLabel { get; set; } = "Someone who works for a local authority";
 
     public string VcsRoleTypeLabel { get; set; } = "Someone who works for a voluntary and community sector organisation";
-
-
-    public string ErrorMessage { get; set; } = string.Empty;
-    
-    public string ErrorElementId { get; set; } = string.Empty;
     
     public string PreviousPageLink { get; set; } = string.Empty;
     public string CurrentPageName { get; set; }
@@ -30,9 +27,9 @@ public class AccountAdminViewModel : HeaderPageModel
     public string CacheId { get; set; } = string.Empty;
 
     [FromQuery(Name = "backToCheckDetails")]
-    public bool BackToCheckDetails { get; set; } = false;
+    public bool BackToCheckDetails { get; set; }
 
-    public PermissionModel PermissionModel { get; set; } = new PermissionModel();
+    public PermissionModel PermissionModel { get; set; } = new();
 
     public AccountAdminViewModel(string currentPageName, ICacheService cacheService)
     {
@@ -40,6 +37,7 @@ public class AccountAdminViewModel : HeaderPageModel
         
         CacheService = cacheService;
         CurrentPageName = currentPageName;
+        Errors = ErrorState.Empty;
     }
 
     public virtual async Task OnGet()

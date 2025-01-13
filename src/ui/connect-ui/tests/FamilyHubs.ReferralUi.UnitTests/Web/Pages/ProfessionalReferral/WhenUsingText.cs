@@ -48,6 +48,6 @@ public class WhenUsingText : BaseProfessionalReferralPage
         //Act
         await _textModel.OnPostAsync("1");
 
-        _textModel.HasErrors.Should().BeTrue();
+        _textModel.Errors.HasErrors.Should().BeTrue();
     }
 }

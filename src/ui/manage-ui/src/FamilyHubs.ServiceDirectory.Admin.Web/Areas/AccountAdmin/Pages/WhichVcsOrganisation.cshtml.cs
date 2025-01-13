@@ -1,6 +1,9 @@
 ﻿using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
+using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
+using FamilyHubs.ServiceDirectory.Admin.Web.Errors;
 using FamilyHubs.ServiceDirectory.Admin.Web.ViewModel;
+using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages;
@@ -12,8 +15,8 @@ public class WhichVcsOrganisation : AccountAdminViewModel
     public WhichVcsOrganisation(ICacheService cacheService, IServiceDirectoryClient serviceDirectoryClient) : base(nameof(WhichVcsOrganisation), cacheService)
     {
         PageHeading = "Which organisation do they work for?";
-        ErrorMessage = "Select an organisation";
         _serviceDirectoryClient = serviceDirectoryClient;
+        Errors = ErrorState.Empty;
     }
 
     [BindProperty]
@@ -48,8 +51,8 @@ public class WhichVcsOrganisation : AccountAdminViewModel
 
             return RedirectToPage(NextPageLink, new {cacheId= CacheId});
         }
-        
-        HasValidationError = true;
+
+        Errors = ErrorState.Create(PossibleErrors.All, ErrorId.AccountAdmin_WhichVcsOrganisation_MissingSelection);
         
         VcsOrganisations = vcsOrganisations.Select(l => l.Name).ToList();
         

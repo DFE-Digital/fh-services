@@ -1,9 +1,11 @@
+using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
 using FamilyHubs.Referral.Core.DistributedCache;
 using FamilyHubs.Referral.Core.Models;
 using FamilyHubs.Referral.Core.ValidationAttributes;
 using FamilyHubs.Referral.Web.Pages.Shared;
+using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -33,8 +35,6 @@ public class LetterModel : ProfessionalReferralCacheModel
 
     public string HeadingText { get; set; } = "";
 
-    public LetterError[]? LetterErrors { get; set; }
-
     public LetterModel(IConnectionRequestDistributedCache connectionRequestCache)
         : base(ConnectJourneyPage.Letter, connectionRequestCache)
     {
@@ -51,23 +51,29 @@ public class LetterModel : ProfessionalReferralCacheModel
         SetPageProperties(model);
     }
 
-    //todo: make this generic
-    public record LetterError(string Property, string ErrorMessage);
+    private readonly ImmutableDictionary<string, ErrorId> _propertyToErrorId =
+        ImmutableDictionary.Create<string, ErrorId>()
+            .Add(nameof(AddressLine1), ErrorId.Letter_AddressLine1)
+            .Add(nameof(TownOrCity), ErrorId.Letter_TownOrCity)
+            .Add(nameof(Postcode), ErrorId.Letter_Postcode);
 
-    // the ordering of errors in the ModelState is not guaranteed
-    private IEnumerable<LetterError> GetErrors(params string[] propertyNames)
+    private IErrorState GetErrors(params string[] propertyNames)
     {
-        return propertyNames.Select(p => (propertyName: p, entry: ModelState[p]))
+        var invalidProperties = propertyNames.Select(p => (propertyName: p, entry: ModelState[p]))
             .Where(t => t.entry!.ValidationState == ModelValidationState.Invalid)
-            .Select(t => new LetterError(t.propertyName, t.entry!.Errors[0].ErrorMessage));
+            .ToList();
+
+        var errors = invalidProperties
+            .ToImmutableDictionary(t => (int)_propertyToErrorId[t.propertyName], t => new PossibleError((int)_propertyToErrorId[t.propertyName], t.entry!.Errors[0].ErrorMessage));
+
+        return ErrorState.Create(errors, invalidProperties.Select(t => _propertyToErrorId[t.propertyName]).ToArray());
     }
 
     protected override IActionResult OnPostWithModel(ConnectionRequestModel model)
     {
         if (!ModelState.IsValid)
         {
-            LetterErrors = GetErrors(nameof(AddressLine1), nameof(TownOrCity), nameof(Postcode)).ToArray();
-            HasErrors = true;
+            Errors = GetErrors(nameof(AddressLine1), nameof(TownOrCity), nameof(Postcode));
             SetPageProperties(model);
             return Page();
         }
