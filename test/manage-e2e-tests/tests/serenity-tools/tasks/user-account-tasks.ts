@@ -1,5 +1,5 @@
 import {Answerable, Check, Task} from '@serenity-js/core';
-import {Click, Enter, isVisible, Scroll} from '@serenity-js/web';
+import {Click, Enter, Scroll} from '@serenity-js/web';
 import {
     addUserLink,
     applyFilterButton,
@@ -14,9 +14,9 @@ import {
     localAuthorityPermissions,
     manageUsersLink,
     secondContinueButton,
-    showFiltersButton,
     userNameFilterInputBox,
-    vcfsManagerUserActivity, vcfsOrganisationInputBox,
+    vcfsManagerUserActivity,
+    vcfsOrganisationInputBox,
     vcfsOrganisationInputSuggestion,
     vcfsPermissions,
     vcfsPractitionerUserActivity

@@ -17,7 +17,8 @@ import {
     loginToManage,
     navigateToManage,
     searchForUserByName,
-    selectLocalAuthority, selectOrganisation,
+    selectLocalAuthority, 
+    selectOrganisation,
     selectPermissionType,
     selectUserAction
 } from './serenity-tools/manage-index';
