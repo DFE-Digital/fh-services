@@ -18,7 +18,7 @@ import {
     loginToTestEnvironment,
     navigateToManage,
     searchForUserByName,
-    selectLocalAuthority,
+    selectLocalAuthority, selectOrganisation,
     selectPermissionType,
     selectUserAction
 } from './serenity-tools/manage-index';
@@ -48,9 +48,127 @@ describe('Add a User - Manage Tests', () => {
             clickAddUserLink(),
             selectPermissionType('la'),
             clickContinue(),
-            selectUserAction('add services'),
+            selectUserAction('la manager'),
             clickContinue(),
             selectLocalAuthority('Test LA'),
+            clickSecondContinue(),
+            enterTestEmail(emailAddress),
+            clickSecondContinue(),
+            enterFullName(fullName),
+            clickSecondContinue(),
+            clickConfirmDetails(),
+            isUserCreatedPageDisplayed(),
+            searchForUserByName(fullName),
+            isUserFoundInUserList(fullName));
+    });
+
+    it('should check a DfE Admin User can create VCFS manager user', async ({actor}) => {
+        const emailAddress = getRandomEmail();
+        const fullName = getRandomFullName();
+
+        await actor.attemptsTo(
+            clickAddUserLink(),
+            selectPermissionType('vcfs'),
+            clickContinue(),
+            selectUserAction('vcfs manager'),
+            clickContinue(),
+            selectLocalAuthority('Test LA'),
+            clickSecondContinue(),
+            selectOrganisation('Test Organisation'),
+            clickSecondContinue(),
+            enterTestEmail(emailAddress),
+            clickSecondContinue(),
+            enterFullName(fullName),
+            clickSecondContinue(),
+            clickConfirmDetails(),
+            isUserCreatedPageDisplayed(),
+            searchForUserByName(fullName),
+            isUserFoundInUserList(fullName));
+    });
+
+    it('should check a DfE Admin User can create LA Practitioner user', async ({actor}) => {
+        const emailAddress = getRandomEmail();
+        const fullName = getRandomFullName();
+
+        await actor.attemptsTo(
+            clickAddUserLink(),
+            selectPermissionType('la'),
+            clickContinue(),
+            selectUserAction('la professional'),
+            clickContinue(),
+            selectLocalAuthority('Test LA'),
+            clickSecondContinue(),
+            enterTestEmail(emailAddress),
+            clickSecondContinue(),
+            enterFullName(fullName),
+            clickSecondContinue(),
+            clickConfirmDetails(),
+            isUserCreatedPageDisplayed(),
+            searchForUserByName(fullName),
+            isUserFoundInUserList(fullName));
+    });
+
+    it('should check a DfE Admin User can create VCFS Practitioner user', async ({actor}) => {
+        const emailAddress = getRandomEmail();
+        const fullName = getRandomFullName();
+
+        await actor.attemptsTo(
+            clickAddUserLink(),
+            selectPermissionType('vcfs'),
+            clickContinue(),
+            selectUserAction('vcfs professional'),
+            clickContinue(),
+            selectLocalAuthority('Test LA'),
+            clickSecondContinue(),
+            selectOrganisation('Test Organisation'),
+            clickSecondContinue(),
+            enterTestEmail(emailAddress),
+            clickSecondContinue(),
+            enterFullName(fullName),
+            clickSecondContinue(),
+            clickConfirmDetails(),
+            isUserCreatedPageDisplayed(),
+            searchForUserByName(fullName),
+            isUserFoundInUserList(fullName));
+    });
+
+    it('should check a DfE Admin User can create LA Dual user', async ({actor}) => {
+        const emailAddress = getRandomEmail();
+        const fullName = getRandomFullName();
+
+        await actor.attemptsTo(
+            clickAddUserLink(),
+            selectPermissionType('la'),
+            clickContinue(),
+            selectUserAction('la manager'),
+            selectUserAction('la professional'),
+            clickContinue(),
+            selectLocalAuthority('Test LA'),
+            clickSecondContinue(),
+            enterTestEmail(emailAddress),
+            clickSecondContinue(),
+            enterFullName(fullName),
+            clickSecondContinue(),
+            clickConfirmDetails(),
+            isUserCreatedPageDisplayed(),
+            searchForUserByName(fullName),
+            isUserFoundInUserList(fullName));
+    });
+
+    it('should check a DfE Admin User can create VCFS Dual user', async ({actor}) => {
+        const emailAddress = getRandomEmail();
+        const fullName = getRandomFullName();
+
+        await actor.attemptsTo(
+            clickAddUserLink(),
+            selectPermissionType('vcfs'),
+            clickContinue(),
+            selectUserAction('vcfs manager'),
+            selectUserAction('vcfs professional'),
+            clickContinue(),
+            selectLocalAuthority('Test LA'),
+            clickSecondContinue(),
+            selectOrganisation('Test Organisation'),
             clickSecondContinue(),
             enterTestEmail(emailAddress),
             clickSecondContinue(),

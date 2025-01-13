@@ -15,20 +15,50 @@ export const localAuthorityPermissions = () =>
         .located(By.css("[id='radio-LA']"))
         .describedAs('Radio Button for Local Authority Permissions');
 
-export const addServicesUserActivity = () =>
+export const vcfsPermissions = () =>
+    PageElement
+        .located(By.css("[id='radio-VCS']"))
+        .describedAs('Radio Button for VCFS Permissions');
+
+export const laManagerUserActivity = () =>
     PageElement
         .located(By.css("[id='checkbox-LaManager']"))
-        .describedAs('Checkbox for Add and Manage Services Activity');
+        .describedAs('Checkbox for LA Manager Activity');
+
+export const laPractitionerUserActivity = () =>
+    PageElement
+        .located(By.css("[id='checkbox-LaProfessional']"))
+        .describedAs('Checkbox for LA Practitioner Activity');
+
+export const vcfsManagerUserActivity = () =>
+    PageElement
+        .located(By.css("[id='checkbox-VcsManager']"))
+        .describedAs('Checkbox for VCFS Manager Activity');
+
+export const vcfsPracitionerUserActivity = () =>
+    PageElement
+        .located(By.css("[id='checkbox-VcsProfessional']"))
+        .describedAs('Checkbox for VCFS Practitioner Activity');
 
 export const laOrganisationInputBox = () =>
     PageElement
-        .located(By.css("[id='LaOrganisationName']"))
+        .located(By.css("[data-testid='LaOrganisationName']"))
         .describedAs('LA Organisation Input Box');
 
 export const laOrganisationInputSuggestion = () =>
     PageElement
         .located(By.css("[id='LaOrganisationName__option--0']"))
-        .describedAs('LA Organisation Input Box');
+        .describedAs('LA Organisation Input Suggestion');
+
+export const vcfsOrganisationInputBox = () =>
+    PageElement
+        .located(By.css("[data-testid='VcsOrganisationName']"))
+        .describedAs('VCFS Organisation Input Box');
+
+export const vcfsOrganisationInputSuggestion = () =>
+    PageElement
+        .located(By.css("[id='VcsOrganisationName__option--0']"))
+        .describedAs('VCFS Organisation Input Suggestion');
 
 export const emailAddressInputBox = () =>
     PageElement

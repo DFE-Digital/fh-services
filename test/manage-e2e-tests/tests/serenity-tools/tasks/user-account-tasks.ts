@@ -1,20 +1,25 @@
 import {Answerable, Check, Task} from '@serenity-js/core';
 import {Click, Enter, isVisible} from '@serenity-js/web';
 import {
-    addServicesUserActivity,
     addUserLink,
     applyFilterButton,
     confirmDetailsButton,
     continueButton,
     emailAddressInputBox,
     fullNameInputBox,
+    laManagerUserActivity,
     laOrganisationInputBox,
     laOrganisationInputSuggestion,
+    laPractitionerUserActivity,
     localAuthorityPermissions,
     manageUsersLink,
     secondContinueButton,
     showFiltersButton,
-    userNameFilterInputBox
+    userNameFilterInputBox,
+    vcfsManagerUserActivity, vcfsOrganisationInputBox,
+    vcfsOrganisationInputSuggestion,
+    vcfsPermissions,
+    vcfsPracitionerUserActivity
 } from "../page-objects/accounts-page-objects";
 import {equals} from "@serenity-js/assertions";
 import {homeButton} from "../page-objects/manage-page-objects";
@@ -29,14 +34,30 @@ export const selectPermissionType = (permissionType: Answerable<string>): Task =
         Check.whether(permissionType, equals('la'))
             .andIfSo(
                 Click.on(localAuthorityPermissions())
+            ),
+        Check.whether(permissionType, equals('la pracitioner'))
+            .andIfSo(
+                Click.on(vcfsPermissions())
             )
     );
 
 export const selectUserAction = (actionType: Answerable<string>): Task =>
     Task.where(`#actor assigns available actions to user`,
-        Check.whether(actionType, equals('add services'))
+        Check.whether(actionType, equals('la manager'))
             .andIfSo(
-                Click.on(addServicesUserActivity())
+                Click.on(laManagerUserActivity())
+            ),
+        Check.whether(actionType, equals('la practitioner'))
+            .andIfSo(
+                Click.on(laPractitionerUserActivity())
+            ),
+        Check.whether(actionType, equals('vcfs manager'))
+            .andIfSo(
+                Click.on(vcfsManagerUserActivity())
+            ),
+        Check.whether(actionType, equals('vcfs practitioner'))
+            .andIfSo(
+                Click.on(vcfsPracitionerUserActivity())
             )
     );
 
@@ -44,6 +65,12 @@ export const selectLocalAuthority = (laName: Answerable<string>): Task =>
     Task.where(`#actor assigns ${laName} local authority to user`,
         Enter.theValue(laName).into(laOrganisationInputBox()),
         Click.on(laOrganisationInputSuggestion())
+    );
+
+export const selectOrganisation = (organisationName: Answerable<string>): Task =>
+    Task.where(`#actor assigns ${organisationName} organisation to user`,
+        Enter.theValue(organisationName).into(vcfsOrganisationInputBox()),
+        Click.on(vcfsOrganisationInputSuggestion())
     );
 
 export const enterTestEmail = (emailAddress: Answerable<string>): Task =>
@@ -65,6 +92,7 @@ export const clickSecondContinue = (): Task =>
     Task.where(`#actor clicks continue`,
         Click.on(secondContinueButton())
     );
+
 export const clickConfirmDetails = (): Task =>
     Task.where(`#actor clicks confirm on final page of user journey`,
         Click.on(confirmDetailsButton())
