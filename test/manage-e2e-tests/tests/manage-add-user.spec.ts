@@ -15,7 +15,6 @@ import {
     isUserCreatedPageDisplayed,
     isUserFoundInUserList,
     loginToManage,
-    loginToTestEnvironment,
     navigateToManage,
     searchForUserByName,
     selectLocalAuthority,
@@ -31,7 +30,6 @@ describe('Add a User - Manage Tests', () => {
 
     test.beforeEach('Setup', async ({actor}) => {
         await actor.attemptsTo(
-            loginToTestEnvironment(),
             navigateToManage(),
             clickOnTheStartButton(),
             loginToManage(),
@@ -50,7 +48,7 @@ describe('Add a User - Manage Tests', () => {
             clickContinue(),
             selectUserAction('add services'),
             clickContinue(),
-            selectLocalAuthority('Test LA'),
+            selectLocalAuthority('Tower Hamlets'),
             clickSecondContinue(),
             enterTestEmail(emailAddress),
             clickSecondContinue(),
