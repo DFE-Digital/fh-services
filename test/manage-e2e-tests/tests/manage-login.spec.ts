@@ -6,8 +6,7 @@ import {
     isTheManageHomepageDisplayed,
     loginToManage,
     loginToTestEnvironment,
-    navigateToManage,
-
+    navigateToManage
 } from './serenity-tools/manage-index';
 
 describe('Manage Tests', () => {
