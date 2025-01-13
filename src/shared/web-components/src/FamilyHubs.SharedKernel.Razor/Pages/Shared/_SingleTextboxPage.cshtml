@@ -84,10 +84,10 @@
 
                 <input class="govuk-input @(error?.InputClass)" maxlength="@(Model.MaxLength)"
                        name="TextBoxValue" type="@type" value="@Model.TextBoxValue" inputmode="@type"
-                       spellcheck="false" autocomplete="off" id="@textBoxId"
+                       spellcheck="false" autocomplete="off" id="@textBoxId" data-testid="@textBoxId"
                        aria-describedby="@(string.IsNullOrEmpty(Model.HintText) ? "" : "hint ")@error?.InputErrorMessageParaId">
             </div>
-            <button type="submit" class="govuk-button" data-module="govuk-button">
+            <button type="submit" data-testid="buttonContinue" class="govuk-button" data-module="govuk-button">
                 Continue
             </button>
         </form>
