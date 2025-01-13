@@ -42,7 +42,7 @@ export const vcfsPracitionerUserActivity = () =>
 
 export const laOrganisationInputBox = () =>
     PageElement
-        .located(By.css("[data-testid='LaOrganisationName']"))
+        .located(By.xpath("/html/body/div[2]/main/div/div/form/fieldset/div/div/div/div/input"))
         .describedAs('LA Organisation Input Box');
 
 export const laOrganisationInputSuggestion = () =>
@@ -52,7 +52,7 @@ export const laOrganisationInputSuggestion = () =>
 
 export const vcfsOrganisationInputBox = () =>
     PageElement
-        .located(By.css("[data-testid='VcsOrganisationName']"))
+        .located(By.xpath("/html/body/div[2]/main/div/div/form/fieldset/div/div/div[2]/div/input"))
         .describedAs('VCFS Organisation Input Box');
 
 export const vcfsOrganisationInputSuggestion = () =>

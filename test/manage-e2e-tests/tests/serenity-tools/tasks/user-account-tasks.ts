@@ -1,5 +1,5 @@
 import {Answerable, Check, Task} from '@serenity-js/core';
-import {Click, Enter, isVisible} from '@serenity-js/web';
+import {Click, Enter, isVisible, Scroll} from '@serenity-js/web';
 import {
     addUserLink,
     applyFilterButton,
@@ -63,23 +63,27 @@ export const selectUserAction = (actionType: Answerable<string>): Task =>
 
 export const selectLocalAuthority = (laName: Answerable<string>): Task =>
     Task.where(`#actor assigns ${laName} local authority to user`,
+        Scroll.to(laOrganisationInputBox()),
         Enter.theValue(laName).into(laOrganisationInputBox()),
         Click.on(laOrganisationInputSuggestion())
     );
 
 export const selectOrganisation = (organisationName: Answerable<string>): Task =>
     Task.where(`#actor assigns ${organisationName} organisation to user`,
+        Scroll.to(vcfsOrganisationInputBox()),
         Enter.theValue(organisationName).into(vcfsOrganisationInputBox()),
         Click.on(vcfsOrganisationInputSuggestion())
     );
 
 export const enterTestEmail = (emailAddress: Answerable<string>): Task =>
     Task.where(`#actor assigns ${emailAddress} email address to user`,
+        Scroll.to(emailAddressInputBox()),
         Enter.theValue(emailAddress).into(emailAddressInputBox())
     );
 
 export const enterFullName = (fullName: Answerable<string>): Task =>
     Task.where(`#actor assigns ${fullName} full name address to user`,
+        Scroll.to(fullNameInputBox()),
         Enter.theValue(fullName).into(fullNameInputBox())
     );
 
@@ -106,6 +110,7 @@ export const searchForUserByName = (fullName: Answerable<string>): Task =>
             .andIfSo(
                 Click.on(showFiltersButton())
             ),
+        Scroll.to(userNameFilterInputBox()),
         Enter.theValue(fullName).into(userNameFilterInputBox()),
         Click.on(applyFilterButton())
     );
