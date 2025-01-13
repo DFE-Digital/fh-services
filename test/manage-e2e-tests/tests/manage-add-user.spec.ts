@@ -49,7 +49,7 @@ describe('Add a User - Manage Tests', () => {
             clickContinue(),
             selectUserAction('la manager'),
             clickContinue(),
-            selectLocalAuthority('Tower Hamlets'),
+            selectLocalAuthority('Test LA'),
             clickSecondContinue(),
             enterTestEmail(emailAddress),
             clickSecondContinue(),
