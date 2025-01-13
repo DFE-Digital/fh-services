@@ -22,7 +22,7 @@ export const addServicesUserActivity = () =>
 
 export const laOrganisationInputBox = () =>
     PageElement
-        .located(By.css("[id='LaOrganisationName']"))
+        .located(By.css("[data-testid='LaOrganisationName']"))
         .describedAs('LA Organisation Input Box');
 
 export const laOrganisationInputSuggestion = () =>
