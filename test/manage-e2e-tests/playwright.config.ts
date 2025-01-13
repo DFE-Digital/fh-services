@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-
 export default defineConfig<SerenityOptions>({
     testDir: './tests',
     /* Maximum time one test can run for, measured in milliseconds. */
@@ -55,47 +54,57 @@ export default defineConfig<SerenityOptions>({
         trace: 'on-first-retry',
 
         // Capture screenshot only on failure
-        screenshot: 'only-on-failure'
+        screenshot: 'only-on-failure',
+
+        httpCredentials: {
+            username: process.env.USER_NAME,
+            password: process.env.PASSWORD,
+        }
     },
 
     /* Configure projects for major browsers */
     projects: [
         {
-            name: 'firefox',
-            use: {
-                ...devices['Desktop Firefox'],
-            }
-        },
-        {
-            name: 'webkit',
-            use: {
-                ...devices['Desktop Safari'],
-            }
-        },
-
-        /* Test against mobile viewports. */
-        {
-            name: 'Mobile Chrome',
-            use: {
-                ...devices['Pixel 5'],
-            }
-        },
-
-        //TODO: Get tests running on mobile safari - need some custom code to scroll elements into view.
-
-        /* Test against branded browsers. */
-        {
             name: 'Microsoft Edge',
             use: {
                 channel: 'msedge',
-            }
+            },
         },
         {
             name: 'Google Chrome',
             use: {
                 channel: 'chrome',
-            }
-        }
+            },
+        },
+        {
+            name: 'Mobile Chrome',
+            use: {
+                ...devices['Pixel 5'],
+            },
+        },
+        // Firefox & Safari have a temporary workaround to ignore HTTPS errors due to a bug around TLS certificates.
+        // Jira Ticket: https://dfedigital.atlassian.net.mcas.ms/browse/FHB-1180
+        {
+            name: 'Firefox',
+            use: {
+                ...devices['Desktop Firefox'],
+                ignoreHTTPSErrors: true
+            },
+        },
+        {
+            name: 'Safari',
+            use: {
+                ...devices['Desktop Safari'],
+                ignoreHTTPSErrors: true
+            },
+        },
+        //TODO: Get tests running on mobile safari - need some custom code to scroll elements into view.
+        // {
+        //     name: 'Mobile Safari',
+        //     use: {
+        //         ...devices['iPhone 12'],
+        //     },
+        // }
     ],
 
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */

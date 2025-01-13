@@ -1,9 +1,8 @@
-import { defineConfig, devices } from '@playwright/test';
+import {defineConfig, devices} from '@playwright/test';
 import type { SerenityOptions } from '@serenity-js/playwright-test';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
 
 export default defineConfig<SerenityOptions>({
     testDir: './tests',
@@ -55,59 +54,52 @@ export default defineConfig<SerenityOptions>({
         trace: 'on-first-retry',
 
         // Capture screenshot only on failure
-        screenshot: 'only-on-failure',
+        screenshot: 'only-on-failure'
     },
 
     /* Configure projects for major browsers */
     projects: [
         {
-            name: 'chromium',
+            name: 'Microsoft Edge',
             use: {
-                ...devices['Desktop Chrome'],
+                channel: 'msedge',
             },
         },
-
         {
-            name: 'firefox',
+            name: 'Google Chrome',
+            use: {
+                channel: 'chrome',
+            },
+        },
+        {
+            name: 'Mobile Chrome',
+            use: {
+                ...devices['Pixel 5'],
+            },
+        },
+        // Firefox & Safari have a temporary workaround to ignore HTTPS errors due to a bug around TLS certificates.
+        // Jira Ticket: https://dfedigital.atlassian.net.mcas.ms/browse/FHB-1180
+        {
+            name: 'Firefox',
             use: {
                 ...devices['Desktop Firefox'],
+                ignoreHTTPSErrors: true
             },
         },
-
         {
-            name: 'webkit',
+            name: 'Safari',
             use: {
                 ...devices['Desktop Safari'],
+                ignoreHTTPSErrors: true
             },
         },
-
-        /* Test against mobile viewports. */
-        // {
-        //     name: 'Mobile Chrome',
-        //     use: {
-        //         ...devices['Pixel 5'],
-        //     },
-        // },
+        //TODO: Get tests running on mobile safari - need some custom code to scroll elements into view.
         // {
         //     name: 'Mobile Safari',
         //     use: {
         //         ...devices['iPhone 12'],
         //     },
-        // },
-
-        /* Test against branded browsers. */
-        // {
-        //   name: 'Microsoft Edge',
-        //   use: {
-        //     channel: 'msedge',
-        //   },
-        // },
-        // {
-        //   name: 'Google Chrome',
-        //   use: {
-        //     channel: 'chrome',
-        //   },
-        // },
+        // }
     ],
 
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
