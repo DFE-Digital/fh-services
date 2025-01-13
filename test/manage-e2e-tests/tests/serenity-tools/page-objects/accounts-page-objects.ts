@@ -35,7 +35,7 @@ export const vcfsManagerUserActivity = () =>
         .located(By.css("[id='checkbox-VcsManager']"))
         .describedAs('Checkbox for VCFS Manager Activity');
 
-export const vcfsPracitionerUserActivity = () =>
+export const vcfsPractitionerUserActivity = () =>
     PageElement
         .located(By.css("[id='checkbox-VcsProfessional']"))
         .describedAs('Checkbox for VCFS Practitioner Activity');

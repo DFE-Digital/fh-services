@@ -19,7 +19,7 @@ import {
     vcfsManagerUserActivity, vcfsOrganisationInputBox,
     vcfsOrganisationInputSuggestion,
     vcfsPermissions,
-    vcfsPracitionerUserActivity
+    vcfsPractitionerUserActivity
 } from "../page-objects/accounts-page-objects";
 import {equals} from "@serenity-js/assertions";
 import {homeButton} from "../page-objects/manage-page-objects";
@@ -35,7 +35,7 @@ export const selectPermissionType = (permissionType: Answerable<string>): Task =
             .andIfSo(
                 Click.on(localAuthorityPermissions())
             ),
-        Check.whether(permissionType, equals('la pracitioner'))
+        Check.whether(permissionType, equals('vcfs'))
             .andIfSo(
                 Click.on(vcfsPermissions())
             )
@@ -57,7 +57,7 @@ export const selectUserAction = (actionType: Answerable<string>): Task =>
             ),
         Check.whether(actionType, equals('vcfs practitioner'))
             .andIfSo(
-                Click.on(vcfsPracitionerUserActivity())
+                Click.on(vcfsPractitionerUserActivity())
             )
     );
 
@@ -106,10 +106,6 @@ export const searchForUserByName = (fullName: Answerable<string>): Task =>
     Task.where(`#actor searches for user in manage`,
         Click.on(homeButton()),
         Click.on(manageUsersLink()),
-        Check.whether(showFiltersButton(), isVisible())
-            .andIfSo(
-                Click.on(showFiltersButton())
-            ),
         Scroll.to(userNameFilterInputBox()),
         Enter.theValue(fullName).into(userNameFilterInputBox()),
         Click.on(applyFilterButton())
