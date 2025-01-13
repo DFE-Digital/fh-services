@@ -1,10 +1,8 @@
 using FamilyHubs.Idams.Maintenance.Core.ApiClient;
-using FamilyHubs.Idams.Maintenance.Core.Commands.Update;
 using FamilyHubs.Idams.Maintenance.Core.Services;
 using FamilyHubs.Idams.Maintenance.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Identity.Client;
 
 namespace FamilyHubs.Idams.Maintenance.UI.Pages;
 
@@ -24,7 +22,7 @@ public class ModifyUserPermissionsModel : PageModel
     [BindProperty]
     public required string LaOrganisationName { get; set; } = string.Empty;
 
-    public required List<string> LocalAuthorities { get; set; } = new List<string>();
+    public required List<string> LocalAuthorities { get; set; } = [];
 
     public List<string> RoleTypes { get; set; }
 
@@ -35,16 +33,16 @@ public class ModifyUserPermissionsModel : PageModel
         _idamService = idamService;
         _serviceDirectoryClient = serviceDirectoryClient;
 
-        List<string> roleTypes = new List<string>()
-        {
-            FamilyHubs.SharedKernel.Identity.RoleTypes.DfeAdmin,
-            FamilyHubs.SharedKernel.Identity.RoleTypes.LaManager,
-            FamilyHubs.SharedKernel.Identity.RoleTypes.VcsManager,
-            FamilyHubs.SharedKernel.Identity.RoleTypes.LaProfessional,
-            FamilyHubs.SharedKernel.Identity.RoleTypes.VcsProfessional,
-            FamilyHubs.SharedKernel.Identity.RoleTypes.VcsDualRole,
-            FamilyHubs.SharedKernel.Identity.RoleTypes.LaDualRole
-        };
+        List<string> roleTypes =
+        [
+            SharedKernel.Identity.RoleTypes.DfeAdmin,
+            SharedKernel.Identity.RoleTypes.LaManager,
+            SharedKernel.Identity.RoleTypes.VcsManager,
+            SharedKernel.Identity.RoleTypes.LaProfessional,
+            SharedKernel.Identity.RoleTypes.VcsProfessional,
+            SharedKernel.Identity.RoleTypes.VcsDualRole,
+            SharedKernel.Identity.RoleTypes.LaDualRole
+        ];
 
         RoleTypes = roleTypes;
     }
@@ -87,7 +85,7 @@ public class ModifyUserPermissionsModel : PageModel
             ValidationValid = false;
         }
 
-        if (SelectedRole != FamilyHubs.SharedKernel.Identity.RoleTypes.DfeAdmin && string.IsNullOrEmpty(LaOrganisationName))
+        if (SelectedRole != SharedKernel.Identity.RoleTypes.DfeAdmin && string.IsNullOrEmpty(LaOrganisationName))
         {
             ValidationValid = false;
         }
@@ -97,18 +95,19 @@ public class ModifyUserPermissionsModel : PageModel
             return Page();
         }
 
-        long OrganisationId = -1;
+        long organisationId = -1;
+        
         if (!string.IsNullOrEmpty(LaOrganisationName))
         {
             var organisations = await _serviceDirectoryClient.GetOrganisations();
             var organisation = organisations.Find(x => x.Name == LaOrganisationName);
             if (organisation != null) 
             { 
-                OrganisationId = organisation.Id;
+                organisationId = organisation.Id;
             }
         }
 
-        bool result = await _idamService.UpdateRoleAndOrganisation(AccountId, OrganisationId, SelectedRole);
+        bool result = await _idamService.UpdateRoleAndOrganisation(AccountId, organisationId, SelectedRole);
         if (result) 
         {
             return RedirectToPage($"ModifiedUserClaimsConfirmation", new { accountId = AccountId });

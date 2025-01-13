@@ -1,11 +1,15 @@
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
+using FamilyHubs.ServiceDirectory.Admin.Core.Models;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
+using FamilyHubs.ServiceDirectory.Admin.Web.Errors;
 using FamilyHubs.ServiceDirectory.Admin.Web.Pages.Shared;
+using FamilyHubs.SharedKernel.Razor.ErrorNext;
+using FamilyHubs.SharedKernel.Razor.Header;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
 {
-    public class DeleteOrganisationModel : HeaderPageModel
+    public class DeleteOrganisationModel : HeaderPageModel, IHasErrorStatePageModel
     {
         private readonly IServiceDirectoryClient _serviceDirectoryClient;
         private readonly ICacheService _cacheService;
@@ -18,11 +22,14 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
         [BindProperty]
         public required bool? DeleteOrganisation { get; set; } = null;
 
+        public IErrorState Errors { get; private set; }
+
         public DeleteOrganisationModel(IServiceDirectoryClient serviceDirectoryClient, ICacheService cacheService, IIdamClient idamClient)
         {
             _serviceDirectoryClient = serviceDirectoryClient;
             _cacheService = cacheService;
             _idamClient = idamClient;
+            Errors = ErrorState.Empty;
         }
 
         public async Task OnGet(long organisationId)
@@ -55,6 +62,9 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
             }
             
             HasValidationError = true;
+
+            Errors = ErrorState.Create(PossibleErrors.All, ErrorId.Delete_Organisation);
+
             return Page();
 
         }

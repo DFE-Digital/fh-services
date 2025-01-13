@@ -15,7 +15,7 @@ public class DeleteUserModel : PageModel
 
     [BindProperty]
     [Required]
-    public bool? DeleteUser { get; set; } = null;
+    public bool? DeleteUser { get; set; }
 
     public string Error { get; set; } = string.Empty;
 
@@ -23,6 +23,7 @@ public class DeleteUserModel : PageModel
     {
         _idamService = idamService;
     }
+    
     public async Task OnGet(long accountId)
     {
         AccountId = accountId;

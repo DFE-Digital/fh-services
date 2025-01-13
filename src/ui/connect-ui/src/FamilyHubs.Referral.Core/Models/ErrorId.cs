@@ -16,7 +16,13 @@ public enum ErrorId
     ContactByPhone_NoContactSelected,
     ContactByPhone_NoTelephoneNumber,
     ContactByPhone_InvalidTelephoneNumber,
-    ChangeName_EnterAName
+    ChangeName_EnterAName,
+    NoPostcode,
+    InvalidPostcode,
+    PostcodeNotFound,
+    Letter_AddressLine1,
+    Letter_TownOrCity,
+    Letter_Postcode,
 }
 
 public enum AdHocErrorId

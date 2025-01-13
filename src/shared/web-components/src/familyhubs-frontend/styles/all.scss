@@ -1,9 +1,9 @@
 @use "sass:map";
 @import "overrides";
-@import "../../govuk-frontend/dist/govuk/all";
-@import "../../@ministryofjustice/frontend/moj/all";
-@import '../../dfe-frontend-alpha/packages/dfefrontend';
-@import "../../accessible-autocomplete/src/autocomplete";
+@import "../node_modules/govuk-frontend/dist/govuk/all";
+@import "../node_modules/@ministryofjustice/frontend/moj/all";
+@import '../node_modules/dfe-frontend-alpha/packages/dfefrontend';
+@import "../node_modules/accessible-autocomplete/src/autocomplete";
 @import "global";
 @import "layout/_header";
 @import "components/accessible-autocomplete";

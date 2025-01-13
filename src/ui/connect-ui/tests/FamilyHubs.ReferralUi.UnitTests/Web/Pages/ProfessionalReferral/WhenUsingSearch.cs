@@ -26,7 +26,7 @@ public class WhenUsingSearch
         _ = await searchModel.OnPostAsync() as PageResult;
 
         //Assert
-        Assert.True(searchModel.PostcodeValid);
+        Assert.False(searchModel.Errors.HasErrors);
     }
 
     [Fact]
@@ -45,6 +45,6 @@ public class WhenUsingSearch
         _ = await searchModel.OnPostAsync() as PageResult;
 
         //Assert
-        Assert.False(searchModel.PostcodeValid);
+        Assert.True(searchModel.Errors.HasErrors);
     }
 }

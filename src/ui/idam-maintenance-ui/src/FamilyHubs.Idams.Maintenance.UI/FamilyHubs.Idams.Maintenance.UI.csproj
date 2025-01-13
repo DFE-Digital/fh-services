@@ -44,10 +44,6 @@
 		<NoWarn>S1135</NoWarn>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <DefineConstants>$(DefineConstants);MABUSE_DistributedCache</DefineConstants>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<Compile Remove="Areas\SubjectAccessRequest\**" />
 		<Content Remove="Areas\SubjectAccessRequest\**" />

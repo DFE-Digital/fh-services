@@ -2,7 +2,7 @@
 @model WhichVcsOrganisation
 @{
     ViewData["Title"] = "Which organisation do they work for?";
-    Model.ErrorElementId = "VcsOrganisationName";
+    Model.Errors.ErrorIdToHtmlElementId = _ => "VcsOrganisationName";
 }
 
 <input type="hidden" id="modelVcsOrganisationName" value="@Model.VcsOrganisationName" />

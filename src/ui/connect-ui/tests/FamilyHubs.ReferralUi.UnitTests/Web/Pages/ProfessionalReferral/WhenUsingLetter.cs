@@ -47,7 +47,7 @@ public class WhenUsingLetter : BaseProfessionalReferralPage
         //Act
         await _letterModel.OnPostAsync("1");
 
-        _letterModel.HasErrors.Should().BeTrue();
+        _letterModel.Errors.HasErrors.Should().BeTrue();
     }
 
     [Fact]

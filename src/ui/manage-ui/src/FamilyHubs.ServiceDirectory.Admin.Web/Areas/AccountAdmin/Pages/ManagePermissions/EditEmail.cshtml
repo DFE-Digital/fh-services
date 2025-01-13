@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = Model.PageHeading;
     Layout = "~/pages/Shared/_InputPageLayout.cshtml";
+    Model.Errors.ErrorIdToHtmlElementId = _ => "emailAddress";
 }
 
 <input type="hidden" id="accountId" name="AccountId" asp-for="AccountId" />

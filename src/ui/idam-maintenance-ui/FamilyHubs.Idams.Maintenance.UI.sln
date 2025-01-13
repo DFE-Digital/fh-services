@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FamilyHubs.Idams.Maintenanc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FamilyHubs.Idams.Maintenance.Data", "src\FamilyHubs.Idams.Maintenance.Data\FamilyHubs.Idams.Maintenance.Data.csproj", "{F2B53CDD-7D07-4266-80B4-EF762C77B376}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyHubs.Idams.Maintenance.UnitTests", "tests\FamilyHubs.Idams.Maintenance.UnitTests\FamilyHubs.Idams.Maintenance.UnitTests.csproj", "{12079D2F-F42D-4B86-A50F-E4D0118B1138}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{F2B53CDD-7D07-4266-80B4-EF762C77B376}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2B53CDD-7D07-4266-80B4-EF762C77B376}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2B53CDD-7D07-4266-80B4-EF762C77B376}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12079D2F-F42D-4B86-A50F-E4D0118B1138}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12079D2F-F42D-4B86-A50F-E4D0118B1138}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12079D2F-F42D-4B86-A50F-E4D0118B1138}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12079D2F-F42D-4B86-A50F-E4D0118B1138}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{CB6D66EE-E5A0-4E6C-895A-97B1D6692E88} = {4988CDF2-ECFB-47DA-B9F6-A4DF3138E8CA}
 		{47D73AD1-2441-42C7-A6CF-C4EA143ABF5C} = {4988CDF2-ECFB-47DA-B9F6-A4DF3138E8CA}
 		{F2B53CDD-7D07-4266-80B4-EF762C77B376} = {4988CDF2-ECFB-47DA-B9F6-A4DF3138E8CA}
+		{12079D2F-F42D-4B86-A50F-E4D0118B1138} = {9C7D8127-6A9A-4AD7-ADCC-0C6DBD186166}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A3C58AC5-822F-4BAD-961F-0382482F2F22}

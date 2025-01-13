@@ -1,23 +1,26 @@
-﻿@model FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options.IFamilyHubsUiOptions
+﻿@model FamilyHubs.SharedKernel.Razor.FamilyHubsUi.FamilyHubsLayoutModel
+@{
+    var familyHubsUiOptions = Model.FamilyHubsUiOptions.Value;
+}
 
-<partial name="_GoogleAnalytics.cshtml" model="Model"/>
-<partial name="_MicrosoftClarity.cshtml" model="Model"/>
+<partial name="_GoogleAnalytics.cshtml" model="familyHubsUiOptions"/>
+<partial name="_MicrosoftClarity.cshtml" model="familyHubsUiOptions"/>
 
 <meta charset="utf-8" />
-<title>@ViewData["Title"] - @Model.ServiceName - GOV.UK</title>
-<meta name="description" content="@Model.ServiceName">
+<title>@if (Model.IsError) { <text>Error: </text> }@ViewData["Title"] - @familyHubsUiOptions.ServiceName - GOV.UK</title>
+<meta name="description" content="@familyHubsUiOptions.ServiceName">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b0c0c">
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-<link rel="shortcut icon" sizes="16x16 32x32 48x48" href="@(Model.PathPrefix)/lib/govuk/assets/images/favicon.ico" type="image/x-icon">
-<link rel="mask-icon" href="@(Model.PathPrefix)/lib/govuk/assets/images/govuk-mask-icon.svg" color="#0b0c0c">
-<link rel="apple-touch-icon" sizes="180x180" href="@(Model.PathPrefix)/lib/govuk/assets/images/govuk-apple-touch-icon-180x180.png">
-<link rel="apple-touch-icon" sizes="167x167" href="@(Model.PathPrefix)/lib/govuk/assets/images/govuk-apple-touch-icon-167x167.png">
-<link rel="apple-touch-icon" sizes="152x152" href="@(Model.PathPrefix)/lib/govuk/assets/images/govuk-apple-touch-icon-152x152.png">
-<link rel="apple-touch-icon" href="@(Model.PathPrefix)/lib/govuk/assets/images/govuk-apple-touch-icon.png">
+<link rel="shortcut icon" sizes="16x16 32x32 48x48" href="@(familyHubsUiOptions.PathPrefix)/lib/govuk/assets/images/favicon.ico" type="image/x-icon">
+<link rel="mask-icon" href="@(familyHubsUiOptions.PathPrefix)/lib/govuk/assets/images/govuk-mask-icon.svg" color="#0b0c0c">
+<link rel="apple-touch-icon" sizes="180x180" href="@(familyHubsUiOptions.PathPrefix)/lib/govuk/assets/images/govuk-apple-touch-icon-180x180.png">
+<link rel="apple-touch-icon" sizes="167x167" href="@(familyHubsUiOptions.PathPrefix)/lib/govuk/assets/images/govuk-apple-touch-icon-167x167.png">
+<link rel="apple-touch-icon" sizes="152x152" href="@(familyHubsUiOptions.PathPrefix)/lib/govuk/assets/images/govuk-apple-touch-icon-152x152.png">
+<link rel="apple-touch-icon" href="@(familyHubsUiOptions.PathPrefix)/lib/govuk/assets/images/govuk-apple-touch-icon.png">
 
-<meta property="og:image" content="@(Model.PathPrefix)/lib/govuk/assets/images/govuk-opengraph-image.png">
+<meta property="og:image" content="@(familyHubsUiOptions.PathPrefix)/lib/govuk/assets/images/govuk-opengraph-image.png">
 
-<link rel="stylesheet" href="@(Model.PathPrefix)/css/application.css" asp-append-version="true" />
+<link rel="stylesheet" href="@(familyHubsUiOptions.PathPrefix)/css/application.css" asp-append-version="true" />

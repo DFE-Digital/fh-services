@@ -13,5 +13,7 @@ public class FamilyHubsLayoutModel
         FamilyHubsUiOptions = familyHubsUiOptions;
     }
 
+    public bool IsError { get; set; }
+
     public PageModel? PageModel { get; set; }
 }

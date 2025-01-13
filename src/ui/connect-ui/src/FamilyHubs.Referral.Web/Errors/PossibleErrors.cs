@@ -21,5 +21,8 @@ public static class PossibleErrors
         .Add(ErrorId.ContactMethods_TooLong, "How the service can engage with the family must be 500 characters or less")
         .Add(ErrorId.ContactDetails_NoContactMethodsSelected, "Select a contact method")
         .Add(ErrorId.ChangeName_EnterAName, "Enter a name")
+        .Add(ErrorId.NoPostcode, "You need to enter a postcode")
+        .Add(ErrorId.InvalidPostcode, "Your postcode is not recognised - try another one")
+        .Add(ErrorId.PostcodeNotFound, "You need to enter a valid postcode")
         ;
 }

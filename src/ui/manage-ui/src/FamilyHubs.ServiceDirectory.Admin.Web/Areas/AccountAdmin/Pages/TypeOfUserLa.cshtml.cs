@@ -18,7 +18,6 @@ public class TypeOfUserLa : AccountAdminViewModel, ICheckboxesPageModel
     };
     [BindProperty]
     public IEnumerable<string> SelectedValues { get; set; } = Enumerable.Empty<string>();
-    public IErrorState Errors { get; protected set; } = ErrorState.Empty;
     public string? DescriptionPartial => null;
     public string Legend => "What do they need to do?";
     public string? Hint => null;

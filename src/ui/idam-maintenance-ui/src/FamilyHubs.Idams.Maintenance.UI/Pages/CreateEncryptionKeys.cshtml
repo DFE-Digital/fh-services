@@ -1,7 +1,7 @@
 ﻿@page
 @model FamilyHubs.Idams.Maintenance.UI.Pages.CreateEncryptionKeysModel
 @{
-    ViewData["Title"] = "Users";
+    ViewData["Title"] = "Db Encryption Keys";
 }
 
 @section Back {
@@ -10,8 +10,8 @@
 
 <h1 class="govuk-heading-l app-wrap-anywhere">New Database Encryption Keys</h1>
 
-<p>DbEncryptionKey: @Model.DbEncryptionKey</p>
+<p data-testid="db-encryption-key">DbEncryptionKey: @Model.DbEncryptionKey</p>
 
-<p>DbEncryptionKey: @Model.DbEncryptionIVKey</p>
+<p data-testid="db-encryption-iv-key">DbEncryptionIvKey: @Model.DbEncryptionIVKey</p>
 
 <p>Return to: <a href="/Welcome">Welcome Page</a></p>

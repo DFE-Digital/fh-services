@@ -1,0 +1,72 @@
+[aria-sort] button span,
+[aria-sort] button span:hover {
+  background-color: transparent;
+  border-width: 0;
+  box-shadow: none;
+  color: #005ea5;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  padding: 0 10px 0 0;
+  position: relative;
+  text-align: inherit;
+  margin: 0;
+  line-height: normal;
+  text-decoration: none;
+}
+
+[aria-sort] button span:focus {
+  background-color: $govuk-focus-colour;
+  color: $govuk-focus-text-colour;
+  box-shadow: 0 -2px $govuk-focus-colour, 0 4px $govuk-focus-text-colour;
+  outline: none;
+}
+
+[aria-sort]:first-child button span {
+  right: auto;
+}
+
+[aria-sort] button span::before {
+  content: " \25bc";
+  position: absolute;
+  right: -1px;
+  top: 9px;
+  font-size: 0.5em;
+}
+
+[aria-sort] button span::after {
+  content: " \25b2";
+  position: absolute;
+  right: -1px;
+  top: 1px;
+  font-size: 0.5em;
+}
+
+[aria-sort="ascending"] button span::before,
+[aria-sort="descending"] button span::before {
+  content: none;
+}
+
+[aria-sort="ascending"] button span::after {
+  content: " \25b2";
+  font-size: 0.8em;
+  position: absolute;
+  right: -5px;
+  top: 2px;
+}
+
+[aria-sort="descending"] button span::after {
+  content: " \25bc";
+  font-size: 0.8em;
+  position: absolute;
+  right: -5px;
+  top: 2px;
+}
+
+// Overwrite the default styles for the sort header component - coming from the shared web components moj library
+[aria-sort] button::before,
+[aria-sort] button::after,
+[aria-sort] button {
+  content: none !important;
+}

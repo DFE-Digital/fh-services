@@ -18,7 +18,6 @@ public class TypeOfUserVcs : AccountAdminViewModel, ICheckboxesPageModel
 
     [BindProperty]
     public IEnumerable<string> SelectedValues { get; set; } = Enumerable.Empty<string>();
-    public IErrorState Errors { get; protected set; } = ErrorState.Empty;
     public string DescriptionPartial => "TypeOfUserVcsDescription";
     public string? Legend => null;
     public string? Hint => null;

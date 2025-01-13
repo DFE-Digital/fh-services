@@ -1,6 +1,6 @@
 ﻿@model UsersModel
 
-<button type="button" class="govuk-button govuk-button--secondary filters-mobile" id="buttonShowFilters" >Show filters</button>
+<button type="button" class="govuk-button govuk-button--secondary filters-mobile" id="buttonShowFilters" data-testid="show-filters">Show filters</button>
 <button type="button" class="govuk-button govuk-button--secondary filters-mobile govuk-!-display-none" id="buttonHideFilters" >Hide filters</button>
 
 <div class="filters-component panel-component__content" id="filters-component" data-controller="filters">
@@ -20,7 +20,7 @@
                             Search by users name
                         </label>
                         @* todo: repeated use of userName id will get flagged by accessibility testing *@
-                        <input class="govuk-input govuk-input--width-20" id="userName" asp-for="Name" type="text">
+                        <input class="govuk-input govuk-input--width-20" id="userName" asp-for="Name" type="text" data-testid="name-filter">
                     </fieldset>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                         <label class="govuk-label govuk-visually-hidden" for="width-20">
                             Search by users email address
                         </label>
-                        <input class="govuk-input govuk-input--width-20" id="userName" asp-for="Email" type="text">
+                        <input class="govuk-input govuk-input--width-20" id="userName" asp-for="Email" type="text" data-testid="email-filter">
                     </fieldset>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                         <label class="govuk-label govuk-visually-hidden" for="width-20">
                             Name of organisation
                         </label>
-                        <select class="govuk-select" id="LaOrganisationName" name="LaOrganisationName" aria-describedby="LaOrganisationName-hint">
+                        <select class="govuk-select" id="LaOrganisationName" name="LaOrganisationName" aria-describedby="LaOrganisationName-hint" data-testid="organisation-filter">
                             <option value="" selected disabled></option>
 
                             @foreach (var option in Model.LocalAuthorities)
@@ -79,14 +79,14 @@
                         </legend>
                         <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="isLaUser" name="IsLaUser" value="true" type="checkbox" @(Model.IsLaUser ? "checked=\"checked\"" : string.Empty)>
+                                <input class="govuk-checkboxes__input" id="isLaUser" name="IsLaUser" value="true" type="checkbox" @(Model.IsLaUser ? "checked=\"checked\"" : string.Empty) data-testid="is-la-user">
                                 @* todo: user-2 target is missing *@
                                 <label class="govuk-label govuk-checkboxes__label" for="user-2">
                                     Local authority
                                 </label>
                             </div>
                             <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="isVcsUser" name="IsVcsUser" value="true" type="checkbox" @(Model.IsVcsUser ? "checked=\"checked\"" : string.Empty)>
+                                <input class="govuk-checkboxes__input" id="isVcsUser" name="IsVcsUser" value="true" type="checkbox" @(Model.IsVcsUser ? "checked=\"checked\"" : string.Empty) data-testid="is-vcs-user">
                                 <label class="govuk-label govuk-checkboxes__label" for="user-3">
                                     Voluntary and community sector organisation
                                 </label>
@@ -97,7 +97,7 @@
             </div>
         </div>
     </div>
-    <button type="submit" class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">
+    <button type="submit" class="govuk-button" data-module="govuk-button" data-prevent-double-click="true" data-testid="apply-filters">
         Apply filters
     </button>
 

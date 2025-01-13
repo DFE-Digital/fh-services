@@ -25,26 +25,27 @@ public class UpdateRoleAndOrganisationCommand : IRequest<bool>
 
 public class UpdateRoleAndOrganisationCommandHandler : IRequestHandler<UpdateRoleAndOrganisationCommand, bool>
 {
-    private readonly ApplicationDbContext _dbContext;
-    private readonly ILogger<AddAccountCommandHandler> _logger;
+    private readonly IRepository _repository;
+    private readonly ILogger<UpdateRoleAndOrganisationCommandHandler> _logger;
 
     public UpdateRoleAndOrganisationCommandHandler(
-        ApplicationDbContext dbContext,
+        IRepository repository,
         ISender sender,
-        ILogger<AddAccountCommandHandler> logger)
+        ILogger<UpdateRoleAndOrganisationCommandHandler> logger)
     {
-        _dbContext = dbContext;
+        _repository = repository;
         _logger = logger;
     }
+    
     public async Task<bool> Handle(UpdateRoleAndOrganisationCommand request, CancellationToken cancellationToken)
     {
-        var account = await _dbContext.Accounts
+        var account = await _repository.Accounts
             .FirstOrDefaultAsync(r => r.Id == request.AccountId, cancellationToken);
 
         if (account is null)
         {
             _logger.LogWarning($"Account {request.AccountId} does not exist");
-            throw new AlreadyExistsException("Account Does Not Exist");
+            throw new NotFoundException(nameof(Account), "Account Does Not Exist");
         }
 
         var accountClaim = account.Claims.FirstOrDefault(x => x.Name == "role");
@@ -63,7 +64,7 @@ public class UpdateRoleAndOrganisationCommandHandler : IRequestHandler<UpdateRol
         }
         accountClaim.Value = request.OrganisationId.ToString();
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
 
         return true;
     }

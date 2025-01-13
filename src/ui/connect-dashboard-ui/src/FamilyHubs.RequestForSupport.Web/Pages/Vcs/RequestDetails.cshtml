@@ -79,7 +79,7 @@
     <form method="post" novalidate action="@Html.FamilyHubUrl(UrlKeys.ThisWeb, $"/Vcs/RequestDetails?id={Model.Referral.Id}")">
         @Html.AntiForgeryToken()
 
-        <div class="govuk-form-group @(selectAResponseError != null ? "govuk-form-group--error" : "")">
+        <div class="govuk-form-group @(selectAResponseError?.FormGroupClass)">
             <fieldset class="govuk-fieldset" role="group" aria-describedby="select-option @(selectAResponseError != null ? "option-error" : "")">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                     <h2 class="govuk-fieldset__heading">
@@ -89,12 +89,8 @@
                 <div id="select-option" class="govuk-hint">
                     Select one option.
                 </div>
-                @if (selectAResponseError != null)
-                {
-                    <p id="option-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> @selectAResponseError.Message
-                    </p>
-                }
+
+                <partial name="_ErrorMessageNext" model="selectAResponseError" />
 
                 <div class="govuk-radios" data-module="govuk-radios">
                     <div class="govuk-radios__item">
@@ -137,12 +133,12 @@
                     </div>
                 </div>
             </fieldset>
-            <div class="govuk-button-group">
-                <button type="submit" name="userAction" value="AcceptDecline" class="govuk-button govuk-!-margin-top-2" data-module="govuk-button">
-                    Send response
-                </button>
-                <button id="return-later" type="submit" name="userAction" value="ReturnLater">Return later</button>
-            </div>
+        </div>
+        <div class="govuk-button-group">
+            <button type="submit" name="userAction" value="AcceptDecline" class="govuk-button govuk-!-margin-top-2" data-module="govuk-button">
+                Send response
+            </button>
+            <button id="return-later" type="submit" name="userAction" value="ReturnLater">Return later</button>
         </div>
     </form>
 }

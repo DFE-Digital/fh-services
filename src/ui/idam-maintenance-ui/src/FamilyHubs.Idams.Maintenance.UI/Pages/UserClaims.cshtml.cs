@@ -1,4 +1,3 @@
-using Azure.Identity;
 using FamilyHubs.Idams.Maintenance.Core.Services;
 using FamilyHubs.Idams.Maintenance.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -10,26 +9,22 @@ public class UserClaimsModel : PageModel
 {
     private readonly IIdamService _idamService;
 
+    public UserClaimsModel(IIdamService idamService)
+    {
+        _idamService = idamService;
+    }
+    
     public string UserName { get; set; } = string.Empty;
 
     [BindProperty]
     public long AccountId { get; set; }
 
-    public List<AccountClaim> UserClaims { get; private set; } = new List<AccountClaim>();
-
-public UserClaimsModel(IIdamService idamService)
-    {
-       _idamService = idamService;
-    }
+    public List<AccountClaim> UserClaims { get; private set; } = [];
     
     public async Task OnGet(long accountId, string username)
     {
         AccountId = accountId;
         UserName = username;
-
         UserClaims = await _idamService.GetAccountClaimsById(accountId);
-
-
     }
-
 }

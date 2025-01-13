@@ -11,7 +11,10 @@
 
 <th scope="col" class="govuk-table__header @Class" aria-sort="@GetSortOrder().ToString().ToLower()">
 
-    <button type="submit" data-index="@DataIndex" name="SortBy" value="@Value()">@Title</button>
+    <button type="submit" data-index="@DataIndex" name="SortBy" value="@Value()">
+        @Title
+        <span aria-hidden="true"></span>
+    </button>
 
 </th>
 
