@@ -64,12 +64,12 @@ export default defineConfig<SerenityOptions>({
 
     /* Configure projects for major browsers */
     projects: [
-        // {
-        //     name: 'Microsoft Edge',
-        //     use: {
-        //         channel: 'msedge',
-        //     },
-        // },
+        {
+            name: 'Microsoft Edge',
+            use: {
+                channel: 'msedge',
+            },
+        },
         {
             name: 'Google Chrome',
             use: {
