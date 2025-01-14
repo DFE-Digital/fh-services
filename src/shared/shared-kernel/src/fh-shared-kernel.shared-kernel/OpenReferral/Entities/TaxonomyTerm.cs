@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using FamilyHubs.SharedKernel.OpenReferral.Converters;
 
 namespace FamilyHubs.SharedKernel.OpenReferral.Entities;
 
@@ -14,6 +15,7 @@ public class TaxonomyTerm : BaseHsdsEntity
     public required string Description { get; init; }
 
     [JsonPropertyName("parent_id")]
+    [JsonConverter(typeof(StringToNullableTypeConverter))]
     public Guid? ParentId { get; init; }
 
     [JsonPropertyName("taxonomy")]

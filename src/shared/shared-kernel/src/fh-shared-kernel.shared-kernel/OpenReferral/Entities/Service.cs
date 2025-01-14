@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using FamilyHubs.SharedKernel.OpenReferral.Converters;
 
 namespace FamilyHubs.SharedKernel.OpenReferral.Entities;
 
@@ -54,6 +55,7 @@ public class Service : BaseHsdsEntity
     public byte? MaximumAge { get; init; }
 
     [JsonPropertyName("assured_date")]
+    [JsonConverter(typeof(StringToNullableTypeConverter))]
     public DateTime? AssuredDate { get; init; }
 
     [JsonPropertyName("assurer_email")]

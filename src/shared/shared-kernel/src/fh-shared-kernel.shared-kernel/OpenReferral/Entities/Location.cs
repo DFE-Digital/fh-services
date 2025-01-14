@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using FamilyHubs.SharedKernel.OpenReferral.Converters;
 
 namespace FamilyHubs.SharedKernel.OpenReferral.Entities;
 
@@ -26,9 +27,11 @@ public class Location : BaseHsdsEntity
     public string? Transportation { get; init; }
 
     [JsonPropertyName("latitude")]
+    [JsonConverter(typeof(StringToNullableTypeConverter))]
     public decimal? Latitude { get; init; }
 
     [JsonPropertyName("longitude")]
+    [JsonConverter(typeof(StringToNullableTypeConverter))]
     public decimal? Longitude { get; init; }
 
     [JsonPropertyName("external_identifier")]
