@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using FamilyHubs.SharedKernel.OpenReferral.Converters;
 
 namespace FamilyHubs.SharedKernel.OpenReferral.Entities;
 
@@ -23,6 +24,7 @@ public class Phone : BaseHsdsEntity
     public required string Number { get; init; }
 
     [JsonPropertyName("extension")]
+    [JsonConverter(typeof(StringToNullableTypeConverter))]
     public short? Extension { get; init; }
 
     [JsonPropertyName("type")]
