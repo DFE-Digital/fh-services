@@ -67,6 +67,20 @@ public class WhenUsingStringToNullableTypeConverter
         Assert.Null(result.Date);
     }
     
+    [Fact]
+    public void ShouldReturnTimeSpan_WhenStringHasATimeSpan()
+    {
+        // Arrange
+        var jsonData = $"{{\"time\": \"16:53:16.997\"}}";
+
+        // Act
+        var result = JsonSerializer.Deserialize<MyMockData>(jsonData);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.NotNull(result.Time);
+    }
+    
     
     private class MyMockData
     {
