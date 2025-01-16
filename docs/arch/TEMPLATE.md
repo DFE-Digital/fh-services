@@ -63,4 +63,7 @@
 <!--
     List of advice gathered to make this decision, including the names and role of 
     advisors and the date each piece of advice was gathered.
+
+    Before submitting a decision, you are expected to gather advice from all team 
+    members or stakeholders who will be affected by the decision.
 -->

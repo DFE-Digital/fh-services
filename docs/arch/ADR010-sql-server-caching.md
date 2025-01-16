@@ -6,53 +6,29 @@
 
 ## Decision
 
-<!-- 
-    In a few sentences, describe the decision taken. 
--->
+Use SQL Server caching for session storage.
 
 ## Context
 
-<!-- 
-    Describe the forces and circumstances that brought about this decision. 
--->
+We use a distributed cache (separate to the server a website is hosted on) to save the information collected on a given page in a User Journey between request post-backs (e.g. the User Journey for adding a service, the User Journey for a Professional referral and the User Journey for IdAMs) and encountered a number of issue with the Azure Managed Redis cache that resulted in the cache being unresponsive and returning an error. 
+
+After quite a lengthy investigation the issue was determined to be outside of our control most likely in the client library we were using so it was decided to investigate an alternate mechanism for the distributed cache.
+
 
 ## Options considered
 
-<!-- 
-    Briefly describe each option considered as a numbered list. Start with the selected option.
-    It's usually wise to include a 'do nothing' option.
-
-    e.g.
-
-    1. (SELECTED) PostgreSQL
-    2. Oracle
-    3. SQL Server  
--->
+1. (SELECTED) Use SQL Server caching
+2. Stick with Redis
 
 ## Consequences
 
-<!-- 
-    For each of the options above, describe positive and negative consequences
-    of selecting that option. Create a new section for each option under a heading.
+### Option 1 - Use SQL Server Caching
 
-    Remember a law of architecture: There are no solutions, only trade-offs. Make
-    sure to include any negative consequences of the selected option.
+- Simple to implement
+- May result in a slight performance reduction
+- Could increase database load
+- Saves costs, since SQL Server is already being used as the primary database
 
-    e.g.
+### Option 2 - Stick with Redis
 
-    ### Option 1 - XXX
-
-    - Consequence 1
-    - Consequence 2
-
-    ### Option 2 - XXX
-
-    etc.
--->
-
-## Advice
-
-<!--
-    List of advice gathered to make this decision, including the names and role of 
-    advisors and the date each piece of advice was gathered.
--->
+- Continuing errors and unresponsiveness on page loads
