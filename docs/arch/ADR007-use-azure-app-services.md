@@ -6,7 +6,8 @@
 
 ## Decision
 
-Applications in the family hub services will be directly deployed to Azure App Services.
+Applications in the family hub services will be directly deployed to Azure App
+Services.
 
 ## Options considered
 
@@ -18,7 +19,8 @@ Applications in the family hub services will be directly deployed to Azure App S
 ### Option 1 - Azure App Services
 
 - More effort to migrate family hubs to another cloud provider.
-- Brings the family hubs architecture more in line with the 'Apprenticeship service' which is considered the exemplar in the DfE.
+- Brings the family hubs architecture more in line with the 'Apprenticeship
+  service' which is considered the exemplar in the DfE.
 
 ### Option 2 - Container Apps
 

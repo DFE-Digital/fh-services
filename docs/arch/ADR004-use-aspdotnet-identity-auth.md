@@ -21,7 +21,8 @@ ASP.NET Identity will be used to authenticate users of the family hubs services.
 ### Option 1 - ASP.NET Identity
 
 - Can be customised because the source code is available.
-- The team has an added responsibility for the security of stored user accounts and passwords.
+- The team has an added responsibility for the security of stored user accounts
+  and passwords.
 
 ### Option 2 - IdentityServer
 
@@ -29,7 +30,8 @@ ASP.NET Identity will be used to authenticate users of the family hubs services.
 
 ### Option 3 - Azure AD B2C
 
-- A seaparte Azure AD tenant would be required for each LA and VCF organisation. This would be onerous for the support desk.
+- A seaparte Azure AD tenant would be required for each LA and VCF organisation.
+  This would be onerous for the support desk.
 
 ### Option 4 - GOV.UK Sign-in
 

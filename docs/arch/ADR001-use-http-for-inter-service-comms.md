@@ -6,7 +6,8 @@
 
 ## Decision
 
-HTTP will be used for inter-service communication. No message queue (RabbitMQ or otherwise) shall be used.
+HTTP will be used for inter-service communication. No message queue (RabbitMQ or
+otherwise) shall be used.
 
 ## Options considered
 
