@@ -10,7 +10,7 @@ public class Service : BaseHsdsEntity
     public Organization? Organization { get; init; }
 
     [JsonIgnore]
-    public Guid ProgramId { get; init; }
+    public Guid? ProgramId { get; init; }
     [JsonPropertyName("program")]
     public Program? Program { get; init; }
 
