@@ -50,7 +50,7 @@
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
     <PackageVersion Include="GeoCoordinate.NetCore" Version="1.0.0.1" />
     <PackageVersion Include="GovukNotify" Version="7.2.0" />
-    <PackageVersion Include="libphonenumber-csharp" Version="8.13.45" />
+    <PackageVersion Include="libphonenumber-csharp" Version="8.13.53" />
     <PackageVersion Include="LinqKit.Core" Version="1.2.5" />
     <PackageVersion Include="MediatR" Version="12.2.0" />
     <PackageVersion Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
