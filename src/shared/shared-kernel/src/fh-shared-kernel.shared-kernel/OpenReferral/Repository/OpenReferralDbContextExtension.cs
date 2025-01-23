@@ -202,7 +202,7 @@ public static class OpenReferralDbContextExtension
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
             entity.Property(e => e.InterpretationServices).HasMaxLength(512);
-            entity.Property(e => e.ApplicationProcess).HasMaxLength(512);
+            entity.Property(e => e.ApplicationProcess);
             entity.Property(e => e.AssuredDate).HasColumnType("date");
             entity.Property(e => e.AssurerEmail).HasMaxLength(255);
             entity.Property(e => e.Alert).HasMaxLength(255);
