@@ -21,7 +21,6 @@ After quite a lengthy investigation the issue was determined to be outside of
 our control most likely in the client library we were using so it was decided to
 investigate an alternate mechanism for the distributed cache.
 
-
 ## Options considered
 
 1. (SELECTED) Use SQL Server caching
