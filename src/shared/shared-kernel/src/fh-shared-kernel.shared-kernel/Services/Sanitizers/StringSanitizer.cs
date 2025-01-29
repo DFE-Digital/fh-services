@@ -18,6 +18,7 @@ public partial class StringSanitizer : IStringSanitizer
 {
     private bool _removeHtml;
     private bool _removeJs;
+    private bool _removeProfanity;
 
     internal StringSanitizer RemoveHtml()
     {
@@ -28,6 +29,12 @@ public partial class StringSanitizer : IStringSanitizer
     internal StringSanitizer RemoveJs()
     {
         _removeJs = true;
+        return this;
+    }
+    
+    internal StringSanitizer RemoveProfanity()
+    {
+        _removeProfanity = true;
         return this;
     }
 
@@ -53,7 +60,26 @@ public partial class StringSanitizer : IStringSanitizer
         if (_removeHtml)
         { 
             sanitizedHtml = RemoveHtml(sanitizedHtml);
-            return sanitizedHtml;
+        }
+
+        if (_removeProfanity)
+        {
+            sanitizedHtml = RemoveProfanity(sanitizedHtml);
+        }
+
+        return sanitizedHtml;
+    }
+    
+    private static string RemoveProfanity(string input)
+    {
+        var sanitizedHtml = input;
+        var profanityFilter = new ProfanityFilter.ProfanityFilter();
+        var allProfanities = profanityFilter.DetectAllProfanities(input);
+        
+        if (allProfanities is not null && allProfanities.Count > 0)
+        {
+            sanitizedHtml = allProfanities.Aggregate(input, 
+                (current, profanity) => current.Replace(profanity, ""));
         }
 
         return sanitizedHtml;

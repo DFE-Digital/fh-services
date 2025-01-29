@@ -70,6 +70,26 @@ public class SanitizerTests
         Assert.Equal("Test from mock three", result.MockClassTwo!.MockClassThree!.Name);
         
     }
+    
+    [Fact]
+    public void ShouldRemoveProfanity_WhenUsingDedsTextSanitizer()
+    {
+        // Arrange
+        var service = new MockClass
+        {
+            Name = "This is a test with some profanity weirdo",
+            Description = "",
+            Url = "",
+        };
+        
+        // Act
+        var sanitizer = SanitizerFactory.CreateDedsTextSanitizer();
+        var result = sanitizer.Sanitize(service);
+        
+        // Assert
+        Assert.Equal("This is a test with some profanity ", result.Name);
+        
+    }
 
     private class MockClass
     {

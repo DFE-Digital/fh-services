@@ -42,6 +42,7 @@
 	  <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" />
 	  <PackageReference Include="Microsoft.IdentityModel.KeyVaultExtensions" />
 	  <PackageReference Include="Newtonsoft.Json" />
+	  <PackageReference Include="Profanity.Detector" />
 	  <PackageReference Include="Serilog.Sinks.AzureBlobStorage" />
 	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
 	  <PackageReference Include="Serilog" />
