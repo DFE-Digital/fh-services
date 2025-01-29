@@ -38,7 +38,7 @@ public class SanitizerTests
     }
     
     [Fact]
-    public void ShouldSanitizeClass_RemovingtmlAndJavascriptOnStringProperties()
+    public void ShouldSanitizeClass_RemovingHtmlAndJavascriptOnStringProperties()
     {
         // Arrange
         var guid = Guid.NewGuid().ToString();
