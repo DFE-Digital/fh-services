@@ -4,6 +4,7 @@ using FamilyHubs.OpenReferral.Function.ClientServices;
 using FamilyHubs.OpenReferral.Function.Repository;
 using FamilyHubs.SharedKernel.Factories;
 using FamilyHubs.SharedKernel.OpenReferral.Entities;
+using FamilyHubs.SharedKernel.Utilities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -47,9 +48,9 @@ public class TriggerPullServicesWebhook(
     private async Task ClearDatabase()
     {
         logger.LogInformation("Removing all services from the database");
-        List<Service> serviceListFromDb = await functionDbContext.ToListAsync(functionDbContext.Services());
+        var serviceListFromDb = await functionDbContext.ToListAsync(functionDbContext.Services());
 
-        foreach (Service service in serviceListFromDb)
+        foreach (var service in serviceListFromDb)
         {
             logger.LogInformation("Removing service from the database, Internal ID = {iId} | Open Referral ID = {oId}",
                 service.Id, service.OrId);
@@ -61,11 +62,20 @@ public class TriggerPullServicesWebhook(
 
     private async Task UpdateDatabase(List<Service> serviceListFromApi)
     {
-        foreach (Service service in serviceListFromApi)
+        foreach (var service in serviceListFromApi)
         {
+            var hasProfanity = ProfanityChecker.HasProfanity(service);
+            if (hasProfanity)
+            {
+                logger.LogWarning("Service with OR ID {OrId} contains profanity and will not be added to the database", service.OrId);
+                continue;
+            }
+            
             var factory = SanitizerFactory.CreateDedsTextSanitizer();
             logger.LogInformation("Sanitizing service with ID {serviceId}", service.OrId);
             var sanitizedService = factory.Sanitize(service);
+            
+            
             
             logger.LogInformation("Adding service with ID {serviceId} to the database", service.OrId);
             functionDbContext.AddService(sanitizedService);
