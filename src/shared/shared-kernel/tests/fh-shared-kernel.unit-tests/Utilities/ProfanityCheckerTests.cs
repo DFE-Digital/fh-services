@@ -75,6 +75,7 @@ public class ProfanityCheckerTests
     private class MockClass
     {
         public required string Id { get; init; }
+        public string? Name { get; set; } = null;
         public required MockClassTwo MockClassTwo { get; set; }
         public MockClassTwo[] ListOfMockClassTwo { get; set; } = [];
         public MockClassTwo? NullableMockClassTwo { get; set; }

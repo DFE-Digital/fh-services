@@ -12,7 +12,11 @@ public static class PropertyInspector
 
         foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
-            var value = property.GetValue(obj)!;
+            var value = property.GetValue(obj);
+            if (value is null)
+            {
+                continue;
+            }
             
             if (property.PropertyType == typeof(string))
             {
