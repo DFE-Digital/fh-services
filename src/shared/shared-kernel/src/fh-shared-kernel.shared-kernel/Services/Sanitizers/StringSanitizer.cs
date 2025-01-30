@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.RegularExpressions;
+using FamilyHubs.SharedKernel.Utilities;
 
 namespace FamilyHubs.SharedKernel.Services.Sanitizers;
 
@@ -18,7 +19,6 @@ public partial class StringSanitizer : IStringSanitizer
 {
     private bool _removeHtml;
     private bool _removeJs;
-    private bool _removeProfanity;
 
     internal StringSanitizer RemoveHtml()
     {
@@ -31,20 +31,24 @@ public partial class StringSanitizer : IStringSanitizer
         _removeJs = true;
         return this;
     }
-    
-    internal StringSanitizer RemoveProfanity()
-    {
-        _removeProfanity = true;
-        return this;
-    }
 
     public T Sanitize<T>(T input)
     {
-        return SanitizeStringGeneric(input);
+        PropertyInspector.InspectStringProperties(input, (_, parent, property) =>
+        {
+            var value = (string?)property.GetValue(parent);
+            if (value != null && property.CanWrite)
+            {
+                var sanitizedValue = Sanitize(value);
+                property.SetValue(parent, sanitizedValue);
+            }
+        });
+        return input;
     }
 
     public string Sanitize(string input)
     {
+        
         return SanitizeString(input);
     }
     
@@ -60,26 +64,6 @@ public partial class StringSanitizer : IStringSanitizer
         if (_removeHtml)
         { 
             sanitizedHtml = RemoveHtml(sanitizedHtml);
-        }
-
-        if (_removeProfanity)
-        {
-            sanitizedHtml = RemoveProfanity(sanitizedHtml);
-        }
-
-        return sanitizedHtml;
-    }
-    
-    private static string RemoveProfanity(string input)
-    {
-        var sanitizedHtml = input;
-        var profanityFilter = new ProfanityFilter.ProfanityFilter();
-        var allProfanities = profanityFilter.DetectAllProfanities(input);
-        
-        if (allProfanities is not null && allProfanities.Count > 0)
-        {
-            sanitizedHtml = allProfanities.Aggregate(input, 
-                (current, profanity) => current.Replace(profanity, ""));
         }
 
         return sanitizedHtml;
@@ -105,55 +89,6 @@ public partial class StringSanitizer : IStringSanitizer
         stripTags = WebUtility.HtmlDecode(stripTags);
         stripTags = stripTags.Replace("\u00A0", " "); // Replace non-breaking space with regular space
         return stripTags;
-    }
-    
-    private T SanitizeStringGeneric<T>(T input)
-    {
-        if (input is null)
-        {
-            return input;
-        }
-
-        var properties = input.GetType().GetProperties();
-        foreach (var property in properties)
-        {
-            // Ensure property is writable and has a setter
-            if (!property.CanWrite)
-            {
-                continue;
-            }
-
-            try
-            {
-                if (property.PropertyType == typeof(string))
-                {
-                    var value = (string?)property.GetValue(input);
-                    if (value != null)
-                    {
-                        var sanitizedValue = Sanitize(value);
-                        property.SetValue(input, sanitizedValue);
-                    }
-                }
-                else if (!property.PropertyType.IsValueType && property.PropertyType != typeof(string))
-                {
-                    // Handle nested objects
-                    var nestedObject = property.GetValue(input);
-                    if (nestedObject != null)
-                    {
-                        var sanitizedNestedObject = Sanitize(nestedObject);
-                        
-                        // This is reflection so it bypasses the init readonly allowing us to set the value
-                        property.SetValue(input, sanitizedNestedObject);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log or handle any exceptions gracefully
-                Console.WriteLine($"Error sanitizing property {property.Name}: {ex.Message}");
-            }
-        }
-        return input;
     }
 
     [GeneratedRegex("<script.*?</script>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]

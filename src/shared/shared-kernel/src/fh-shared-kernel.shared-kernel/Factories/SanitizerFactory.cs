@@ -8,7 +8,6 @@ public static class SanitizerFactory
     {
         return new StringSanitizer()
             .RemoveHtml()
-            .RemoveJs()
-            .RemoveProfanity();
+            .RemoveJs();
     }
 }
