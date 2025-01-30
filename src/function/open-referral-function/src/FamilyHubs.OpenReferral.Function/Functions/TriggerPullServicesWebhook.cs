@@ -71,9 +71,9 @@ public class TriggerPullServicesWebhook(
                 continue;
             }
             
-            var factory = SanitizerFactory.CreateDedsTextSanitizer();
+            var textSanitizer = SanitizerFactory.CreateDedsTextSanitizer();
             logger.LogInformation("Sanitizing service with ID {serviceId}", service.OrId);
-            var sanitizedService = factory.Sanitize(service);
+            var sanitizedService = textSanitizer.Sanitize(service);
             
             
             
