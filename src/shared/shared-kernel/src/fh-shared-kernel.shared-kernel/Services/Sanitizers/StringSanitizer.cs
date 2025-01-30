@@ -49,11 +49,6 @@ public partial class StringSanitizer : IStringSanitizer
     public string Sanitize(string input)
     {
         
-        return SanitizeString(input);
-    }
-    
-    private string SanitizeString(string input)
-    {
         var sanitizedHtml = input;
         
         if (_removeJs)
