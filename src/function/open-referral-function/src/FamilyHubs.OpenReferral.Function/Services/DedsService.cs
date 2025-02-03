@@ -25,12 +25,12 @@ public class DedsService(ILogger<DedsService> logger, IFunctionDbContext context
 {
     public Task<List<Service>> GetServices()
     {
-        return context.ServicesDbSet.AsNoTracking().AsSplitQuery().ToListAsync();
+        return context.ServicesDbSet.AsSplitQuery().ToListAsync();
     }
 
     public Task<Service?> GetServicesById(string id)
     {
-        return context.ServicesDbSet.AsNoTracking().AsSplitQuery().FirstOrDefaultAsync(x => x.Id == new Guid(id));
+        return context.ServicesDbSet.AsSplitQuery().FirstOrDefaultAsync(x => x.Id == new Guid(id));
     }
 
     public async Task<Guid> AddService(Service service)
