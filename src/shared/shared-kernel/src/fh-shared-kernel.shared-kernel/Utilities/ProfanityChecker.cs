@@ -23,7 +23,7 @@ public static class ProfanityChecker
             
             // Using DetectAllProfanities method from ProfanityFilter library to check for profanity as it only picks on whole words
             // The ContainsProfanity method from the same library picks up profanity in the middle of words and is too aggressive
-            if (value != null && ProfanityFilter.DetectAllProfanities(value).Count > 0)
+            if (value is  not null && ProfanityFilter.DetectAllProfanities(value).Count > 0)
             {
                 hasProfanity = true;
             }
