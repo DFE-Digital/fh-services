@@ -61,7 +61,28 @@ public class ProfanityCheckerTests
             Id = "This has no profanity",
             MockClassTwo = new MockClassTwo
             {
-                Description = "This also has no profanity"
+                Description = "circumstances. "
+            }
+        };
+        
+        // Act
+        var result = ProfanityChecker.HasProfanity(testClass);
+        
+        // Assert
+        Assert.False(result);
+    }
+    
+    [Fact]
+    public void ShouldReturnFalse_WhenProfanityExistsInAWordButNotInAProfanityWord()
+    {
+        // Arrange
+        var testClass = new MockClass
+        {
+            Id = "This has no profanity",
+            MockClassTwo = new MockClassTwo
+            {
+                Description = "This has no profanity but 'organisation' could be because of the first 3 letters existing in the profanity library," +
+                              "this test shows we are not being too aggressive in our profanity check"
             }
         };
         
