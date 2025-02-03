@@ -8,6 +8,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{CFE432E7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyHubs.OpenReferral.UnitTests", "tests\FamilyHubs.OpenReferral.UnitTests\FamilyHubs.OpenReferral.UnitTests.csproj", "{5226BE5A-7D63-4D9E-8299-910E3AF30922}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyHubs.OpenReferral.IntegrationTests", "tests\FamilyHubs.OpenReferral.IntegrationTests\FamilyHubs.OpenReferral.IntegrationTests.csproj", "{89C0C5AA-9292-49DC-B940-7D80F2EB937A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,9 +24,14 @@ Global
 		{5226BE5A-7D63-4D9E-8299-910E3AF30922}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5226BE5A-7D63-4D9E-8299-910E3AF30922}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5226BE5A-7D63-4D9E-8299-910E3AF30922}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89C0C5AA-9292-49DC-B940-7D80F2EB937A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89C0C5AA-9292-49DC-B940-7D80F2EB937A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89C0C5AA-9292-49DC-B940-7D80F2EB937A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89C0C5AA-9292-49DC-B940-7D80F2EB937A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B8E4024F-F702-4A71-95AE-7C18F133DE34} = {45240118-D520-4A3A-983A-0670C50B21D3}
 		{5226BE5A-7D63-4D9E-8299-910E3AF30922} = {CFE432E7-9B6C-425D-B31A-16C789D2E19A}
+		{89C0C5AA-9292-49DC-B940-7D80F2EB937A} = {CFE432E7-9B6C-425D-B31A-16C789D2E19A}
 	EndGlobalSection
 EndGlobal
