@@ -73,7 +73,7 @@ public class ProfanityCheckerTests
     }
     
     [Fact]
-    public void ShouldReturnFalse_WhenProfanityExistsInAWordButNotInAProfanityWord()
+    public void ShouldReturnFalse_WhenThereAreNoWholeWordsThatAreProfanity()
     {
         // Arrange
         var testClass = new MockClass
@@ -81,7 +81,7 @@ public class ProfanityCheckerTests
             Id = "This has no profanity",
             MockClassTwo = new MockClassTwo
             {
-                Description = "This has no profanity but 'organisation' could be because of the first 3 letters existing in the profanity library," +
+                Description = "This has no profanity, but 'organisation' could be because of the first 3 letters existing in the profanity library," +
                               "this test shows we are not being too aggressive in our profanity check"
             }
         };
