@@ -1,14 +1,10 @@
 using FamilyHubs.SharedKernel.OpenReferral.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace FamilyHubs.OpenReferral.Function.Repository;
 
 public interface IFunctionDbContext
 {
-    public void AddService(Service service);
-    public void DeleteService(Service service);
-    public IQueryable<Service> Services();
-
-    public Task<List<T>> ToListAsync<T>(IQueryable<T> queryable);
-
+    DbSet<Service> ServicesDbSet { get; }
     public Task<int> SaveChangesAsync();
 }

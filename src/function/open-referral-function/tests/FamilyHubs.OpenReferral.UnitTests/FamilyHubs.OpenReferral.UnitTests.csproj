@@ -11,6 +11,7 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="NSubstitute" />
         <PackageReference Include="NSubstitute.Analyzers.CSharp">
@@ -27,6 +28,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\FamilyHubs.OpenReferral.Function\FamilyHubs.OpenReferral.Function.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="TestData\*">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

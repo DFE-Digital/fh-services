@@ -1,5 +1,6 @@
 using FamilyHubs.OpenReferral.Function.ClientServices;
 using FamilyHubs.OpenReferral.Function.Repository;
+using FamilyHubs.OpenReferral.Function.Services;
 using FamilyHubs.SharedKernel.Extensions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,8 @@ IHost host = new HostBuilder()
 
         services.AddApplicationInsightsTelemetryWorkerService(config);
         services.ConfigureFunctionsApplicationInsights();
+
+        services.AddTransient<IDedsService, DedsService>();
 
         services.AddHttpClient<IHsdaApiService, HsdaApiService>(httpClient =>
             httpClient.BaseAddress = new Uri(config["ApiConnection"]!));

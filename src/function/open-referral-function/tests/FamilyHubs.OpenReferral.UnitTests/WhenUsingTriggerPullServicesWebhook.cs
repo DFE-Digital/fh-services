@@ -1,12 +1,11 @@
 using System.Net;
 using FamilyHubs.OpenReferral.Function.ClientServices;
 using FamilyHubs.OpenReferral.Function.Functions;
-using FamilyHubs.OpenReferral.Function.Repository;
+using FamilyHubs.OpenReferral.Function.Services;
 using FamilyHubs.OpenReferral.UnitTests.Helpers;
 using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
@@ -17,7 +16,7 @@ public class WhenUsingTriggerPullServicesWebhook
     private readonly TriggerPullServicesWebhook _triggerPullServicesWebhook;
 
     private readonly IHsdaApiService _hsdaApiServiceMock;
-    private readonly IFunctionDbContext _functionDbContextMock;
+    private readonly IDedsService _dedsServiceMock;
     private readonly HttpRequestData _reqMock;
 
     private readonly Service _service;
@@ -28,12 +27,12 @@ public class WhenUsingTriggerPullServicesWebhook
 
         _hsdaApiServiceMock = Substitute.For<IHsdaApiService>();
 
-        _functionDbContextMock = Substitute.For<IFunctionDbContext>();
+        _dedsServiceMock = Substitute.For<IDedsService>();
 
         _reqMock = Substitute.For<HttpRequestData>(Substitute.For<FunctionContext>());
         _reqMock.CreateResponse().Returns(Substitute.For<HttpResponseData>(Substitute.For<FunctionContext>()));
 
-        _triggerPullServicesWebhook = new TriggerPullServicesWebhook(loggerApiReceiverMock, _hsdaApiServiceMock, _functionDbContextMock);
+        _triggerPullServicesWebhook = new TriggerPullServicesWebhook(loggerApiReceiverMock, _hsdaApiServiceMock, _dedsServiceMock);
 
         _service = MockService.Service;
     }
@@ -46,8 +45,7 @@ public class WhenUsingTriggerPullServicesWebhook
         _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
         _hsdaApiServiceMock.GetServicesById(default).Returns((HttpStatusCode.OK, servicesById));
 
-        _functionDbContextMock.ToListAsync(Arg.Any<IQueryable<Service>>()).Returns([_service]);
-        _functionDbContextMock.SaveChangesAsync().Returns(Task.FromResult(1));
+        _dedsServiceMock.GetServices().Returns([_service]);
 
         HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
 
@@ -59,38 +57,7 @@ public class WhenUsingTriggerPullServicesWebhook
     {
         _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.InternalServerError, null));
 
-        HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
-
-        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task Then_NoServicesByIdReturned_Should_ResultIn_204_NoContent()
-    {
-        List<Service> servicesById = [];
-
-        _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
-        _hsdaApiServiceMock.GetServicesById(default).Returns((HttpStatusCode.NoContent, servicesById));
-
-        HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
-
-        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task Then_DatabaseFailingToUpdate_Should_ResultIn_500_InternalServerError()
-    {
-        List<Service> servicesById = [ _service ];
-
-        _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
-        _hsdaApiServiceMock.GetServicesById(default).Returns((HttpStatusCode.OK, servicesById));
-
-        _functionDbContextMock.ToListAsync(Arg.Any<IQueryable<Service>>()).Returns([_service]);
-
-        _functionDbContextMock.When(dbContext => dbContext.SaveChangesAsync())
-            .Do(_ => throw new DbUpdateException());
-
-        HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
+        var response = await _triggerPullServicesWebhook.Run(_reqMock);
 
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
     }
