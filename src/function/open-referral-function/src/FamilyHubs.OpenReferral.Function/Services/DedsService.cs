@@ -17,7 +17,7 @@ public interface IDedsService
     Task DeleteService(Service service);
 
     [Description("** WARNING ** This will completely clear the deds tables and is only to be used for local testing. Delete when done!")]
-    internal Task ClearDatabase();
+    Task ClearDatabase();
 }
 
 // Clean Architecture: Move to infrastructure layer
