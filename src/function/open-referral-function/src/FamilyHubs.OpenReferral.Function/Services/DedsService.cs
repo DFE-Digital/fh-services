@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FamilyHubs.OpenReferral.Function.Services;
 
-// Clean Architecture: Move to application layer
+// TODO: Clean Architecture: Move to application layer
 public interface IDedsService
 {
     Task<List<Service>> GetServices();
@@ -20,7 +20,7 @@ public interface IDedsService
     Task ClearDatabase();
 }
 
-// Clean Architecture: Move to infrastructure layer
+// TODO: Clean Architecture: Move to infrastructure layer
 public class DedsService(ILogger<DedsService> logger, IFunctionDbContext context) : IDedsService
 {
     public Task<List<Service>> GetServices()
