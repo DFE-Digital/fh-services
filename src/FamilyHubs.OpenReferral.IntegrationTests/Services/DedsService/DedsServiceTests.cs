@@ -1,11 +1,10 @@
 using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.Repository;
-using FamilyHubs.SharedKernel.OpenReferral.Entities;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using NSubstitute;
 
-namespace FamilyHubs.OpenReferral.UnitTests.Services.DedsService;
+namespace FamilyHubs.OpenReferral.IntegrationTests.Services.DedsService;
 
 
 public class DedsServiceTests
