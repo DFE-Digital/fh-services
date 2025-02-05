@@ -1,5 +1,6 @@
 import { test as setup } from '@playwright/test';
 import path from 'path';
+import {isManageLandingPageDisplayed} from "./serenity-tools/questions/login-questions";
 
 const authFile = path.join(__dirname, '../playwright/.auth/user.json');
 
@@ -12,8 +13,7 @@ setup('Login to Manage', async ({ page }) => {
     await page.getByText('Continue').click();
     await page.locator('#password').fill(process.env.GOV_LOGIN_PASSWORD);
     await page.getByText('Continue').click();
-
-    await page.waitForURL('/Welcome');
+    isManageLandingPageDisplayed()
     
     await page.context().storageState({ path: authFile });
 });

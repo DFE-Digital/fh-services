@@ -33,7 +33,6 @@ const getFormattedDate = () => {
     });
 };
 
-
 export const getRandomServiceName = () => {
     const text = generateRandomText();
     const date = getFormattedDate();
