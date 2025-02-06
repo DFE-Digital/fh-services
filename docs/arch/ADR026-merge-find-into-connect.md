@@ -1,14 +1,13 @@
-# ADR026 - 
+# ADR026 - Merge Find into Connect
 
-- **Status**: Draft
+- **Status**: Proposed
 - **Date**: 2025-02-05
 - **Author**: Joshua Taylor
 
 ## Decision
 
-<!-- 
-    In a few sentences, describe the decision taken. 
--->
+'Connect' will be transformed into the new single directory service. 'Find' will
+be removed and its traffic redirected to 'Connect'.
 
 ## Context
 
@@ -37,25 +36,6 @@ to be decided.
 
 ## Consequences
 
-<!-- 
-    For each of the options above, describe positive and negative consequences
-    of selecting that option. Create a new section for each option under a heading.
-
-    Remember a law of architecture: There are no solutions, only trade-offs. Make
-    sure to include any negative consequences of the selected option.
-
-    e.g.
-
-    ### Option 1 - XXX
-
-    - Consequence 1
-    - Consequence 2
-
-    ### Option 2 - XXX
-
-    etc.
--->
-
 ### Option 1 - Transform 'Connect' into the new single directory and remove 'Find'
 
 - 'Connect' already has service directory and support request features, so
@@ -67,14 +47,14 @@ to be decided.
 - The existing technical debt and design of 'Connect' would remain to add
   difficulty to future maintenance.
 
-### Option 2 - Build a new component then remove 'Find' and 'Connect'
+### Option 2 - Build a new component then remove 'Find' and remove 'Connect'
 
 - The new single directory component would not inherit any existing technical
   debt in either 'Find' or 'Connect'.
 
 - The overall cost of development would be far higher than the other options.
 
-### Option 3 - Transform 'Find' into the new single directory and 'Connect'
+### Option 3 - Transform 'Find' into the new single directory and remove 'Connect'
 
 - The existing technical debt and design of 'Find' would remain to add
   difficulty to future maintenance.
@@ -83,14 +63,6 @@ to be decided.
   functionality would be an additional cost of this approach. 
 
 ## Advice
-
-<!--
-    List of advice gathered to make this decision, including the names and role of 
-    advisors and the date each piece of advice was gathered.
-
-    Before submitting a decision, you are expected to gather advice from all team 
-    members or stakeholders who will be affected by the decision.
--->
 
 - Aaron Yarborough:
   - It was always the plan to consolidate 'Find' and 'Connect' into a single
@@ -109,4 +81,17 @@ to be decided.
     support features.
 
 - Zac King:
-  - 
+  - The easiest to maintain approach would be to start a new component, due to the
+    difficulty of working with the existing services.
+
+  - 'Connect' is still pretty hard to maintain, but it's marginally better
+    compared to 'Find'.
+
+  - A new component was not as attractive more due to risk than development time.
+
+  - It could have been a waste to build a new component, since we are hoping to
+    do a larger piece of work on design improvements.
+
+  - 'Find' has better accessibility properties compared to 'Connect', so if
+    'Find' were to be the merge base there would be less accessibility work to
+    complete. 
