@@ -1,4 +1,4 @@
-# ADR026 - Merge Find into Connect
+# ADR026 - Merge 'Find' into 'Connect'
 
 - **Status**: Proposed
 - **Date**: 2025-02-05

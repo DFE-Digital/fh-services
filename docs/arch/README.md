@@ -34,3 +34,4 @@ Please note that not all technical decisions are architectural decisions. An arc
 | ADR013 | [Ingest service data into a 'staging schema'](./ADR013-ingest-into-staging-schema.md) |
 | ADR020 | [Create an ASP.NET API to stub local authorities during development](./ADR020-create-mock-api-to-stub-las.md) |
 | ADR025 | [Use SonarCloud in 'monitoring mode'](./ADR025-use-sonar-cloud.md) |
+| ADR026 | [Merge 'Find' into 'Connect'](./ADR026-merge-find-into-connect.md) |
