@@ -1,3 +1,4 @@
+using AutoMapper.EquivalencyExpression;
 using FamilyHubs.OpenReferral.Function.ClientServices;
 using FamilyHubs.OpenReferral.Function.Repository;
 using FamilyHubs.OpenReferral.Function.Services;
@@ -24,10 +25,13 @@ IHost host = new HostBuilder()
     {
         IConfiguration config = services.BuildServiceProvider().GetService<IConfiguration>()!;
 
+        services.AddAutoMapper(cfg => { cfg.AddCollectionMappers(); }, typeof(Program).Assembly);
+
         services.AddApplicationInsightsTelemetryWorkerService(config);
         services.ConfigureFunctionsApplicationInsights();
 
         services.AddTransient<IDedsService, DedsService>();
+        services.AddTransient<IApiService, ApiService>();
 
         services.AddHttpClient<IHsdaApiService, HsdaApiService>(httpClient =>
             httpClient.BaseAddress = new Uri(config["ApiConnection"]!));

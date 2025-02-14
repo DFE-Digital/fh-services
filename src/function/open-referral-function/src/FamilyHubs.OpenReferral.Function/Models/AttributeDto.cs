@@ -1,0 +1,24 @@
+using System.Text.Json.Serialization;
+
+namespace FamilyHubs.OpenReferral.Function.Models;
+
+public class AttributeDto
+{
+    [JsonPropertyName("link_id")] 
+    public Guid? LinkId { get; init; }
+    
+    [JsonPropertyName("taxonomy_term")]
+    public TaxonomyTermDto? TaxonomyTerm { get; init; }
+
+    [JsonPropertyName("link_type")]
+    public string? LinkType { get; init; }
+
+    [JsonPropertyName("link_entity")]
+    public required string LinkEntity { get; init; }
+
+    [JsonPropertyName("value")]
+    public string? Value { get; init; }
+
+    [JsonPropertyName("metadata")]
+    public List<MetadataDto> Metadata { get; init; } = [];
+}

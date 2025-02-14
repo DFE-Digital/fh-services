@@ -1,6 +1,6 @@
 using System.Net;
 using System.Text.Json;
-using FamilyHubs.SharedKernel.OpenReferral.Entities;
+using FamilyHubs.OpenReferral.Function.Models;
 using Microsoft.Extensions.Logging;
 
 namespace FamilyHubs.OpenReferral.Function.ClientServices;
@@ -33,9 +33,9 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
         return (HttpStatusCode.OK, serviceList);
     }
 
-    public async Task<(HttpStatusCode, List<Service>)> GetServicesById(JsonElement.ArrayEnumerator services)
+    public async Task<(HttpStatusCode, List<ServiceDto>)> GetServicesById(JsonElement.ArrayEnumerator services)
     {
-        List<Service> servicesById = [];
+        List<ServiceDto> servicesById = [];
 
         foreach (string serviceId in services.Select(service => service.GetProperty("id").ToString()))
         {
@@ -51,7 +51,7 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
 
             try
             {
-                Service? service = JsonSerializer.Deserialize<Service>(jsonResponse!);
+                var service = JsonSerializer.Deserialize<ServiceDto>(jsonResponse!);
 
                 if (service is null)
                 {

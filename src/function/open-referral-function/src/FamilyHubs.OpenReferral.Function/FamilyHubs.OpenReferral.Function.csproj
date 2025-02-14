@@ -8,6 +8,9 @@
     </PropertyGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+        <PackageReference Include="AutoMapper" />
+        <PackageReference Include="AutoMapper.Collection" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" />
         <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" />

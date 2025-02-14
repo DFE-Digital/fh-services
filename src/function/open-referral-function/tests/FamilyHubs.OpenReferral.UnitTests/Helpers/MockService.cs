@@ -1,20 +1,20 @@
 using System.Text.Json;
-using FamilyHubs.SharedKernel.OpenReferral.Entities;
+using FamilyHubs.OpenReferral.Function.Models;
 
 namespace FamilyHubs.OpenReferral.UnitTests.Helpers;
 
 public static class MockService
 {
-    public static Service Service { get; } = new()
+    public static ServiceDto Service { get; } = new()
     {
         OrId = Guid.Parse("00000000-0000-0000-0000-000000000000"),
         Name = "Service Name",
         Status = "Active",
-        Program = new Program
+        Program = new ProgramDto
         {
             OrId = Guid.Parse("00000000-0000-0000-0000-000000000013"),
         },
-        Organization = new Organization
+        Organization = new OrganizationDto
         {
             OrId = Guid.Parse("00000000-0000-0000-0000-000000000014"),
             Name = "Organization Name",
@@ -23,28 +23,28 @@ public static class MockService
             LegalStatus = "LegalStatus",
             Funding =
             [
-                new Funding
+                new FundingDto
                 {
                     OrId = Guid.Parse("00000000-0000-0000-0000-000000000010"),
                 }
             ],
             Contacts =
             [
-                new Contact
+                new ContactDto
                 {
                     OrId = Guid.Parse("00000000-0000-0000-0000-000000000008"),
                 }
             ],
             Phones =
             [
-                new Phone
+                new PhoneDto
                 {
                     OrId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                     Number = "01234567890",
                     Extension = 1,
                     Languages =
                     [
-                        new Language
+                        new LanguageDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                             Name = "English",
@@ -55,13 +55,13 @@ public static class MockService
             ],
             Locations =
             [
-                new Location
+                new LocationDto
                 {
                     OrId = Guid.Parse("00000000-0000-0000-0000-000000000006"),
                     LocationType = "LocationType",
                     Languages =
                     [
-                        new Language
+                        new LanguageDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                             Name = "English",
@@ -70,7 +70,7 @@ public static class MockService
                     ],
                     Addresses =
                     [
-                        new Address
+                        new AddressDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000007"),
                             Address1 = "100 Street",
@@ -83,28 +83,28 @@ public static class MockService
                     ],
                     Contacts =
                     [
-                        new Contact
+                        new ContactDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000008"),
                         }
                     ],
                     Accessibilities =
                     [
-                        new Accessibility
+                        new AccessibilityDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000009"),
                         }
                     ],
                     Phones =
                     [
-                        new Phone
+                        new PhoneDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                             Number = "01234567890",
                             Extension = 1,
                             Languages =
                             [
-                                new Language
+                                new LanguageDto
                                 {
                                     OrId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                                     Name = "English",
@@ -115,7 +115,7 @@ public static class MockService
                     ],
                     Schedules =
                     [
-                        new Schedule
+                        new ScheduleDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000003")
                         }
@@ -124,14 +124,14 @@ public static class MockService
             ],
             Programs =
             [
-                new Program
+                new ProgramDto
                 {
                     OrId = Guid.Parse("00000000-0000-0000-0000-000000000013"),
                 }
             ],
             OrganizationIdentifiers =
             [
-                new OrganizationIdentifier
+                new OrganizationIdentifierDto
                 {
                     OrId = Guid.Parse("00000000-0000-0000-0000-000000000014")
                 }
@@ -139,14 +139,14 @@ public static class MockService
         },
         Phones =
         [
-            new Phone
+            new PhoneDto
             {
                 OrId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                 Number = "01234567890",
                 Extension = 1,
                 Languages =
                 [
-                    new Language
+                    new LanguageDto
                     {
                         OrId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                         Name = "English",
@@ -157,14 +157,14 @@ public static class MockService
         ],
         Schedules =
         [
-            new Schedule
+            new ScheduleDto
             {
                 OrId = Guid.Parse("00000000-0000-0000-0000-000000000003")
             }
         ],
         ServiceAreas =
         [
-            new ServiceArea
+            new ServiceAreaDto
             {
                 OrId = Guid.Parse("00000000-0000-0000-0000-000000000004"),
                 Name = "Service Area",
@@ -173,16 +173,16 @@ public static class MockService
         ],
         ServiceAtLocations =
         [
-            new ServiceAtLocation
+            new ServiceAtLocationDto
             {
                 OrId = Guid.Parse("00000000-0000-0000-0000-000000000005"),
-                Location = new Location
+                Location = new LocationDto
                 {
                     OrId = Guid.Parse("00000000-0000-0000-0000-000000000006"),
                     LocationType = "LocationType",
                     Languages =
                     [
-                        new Language
+                        new LanguageDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                             Name = "English",
@@ -191,7 +191,7 @@ public static class MockService
                     ],
                     Addresses =
                     [
-                        new Address
+                        new AddressDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000007"),
                             Address1 = "100 Street",
@@ -204,28 +204,28 @@ public static class MockService
                     ],
                     Contacts =
                     [
-                        new Contact
+                        new ContactDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000008"),
                         }
                     ],
                     Accessibilities =
                     [
-                        new Accessibility
+                        new AccessibilityDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000009"),
                         }
                     ],
                     Phones =
                     [
-                        new Phone
+                        new PhoneDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                             Number = "01234567890",
                             Extension = 1,
                             Languages =
                             [
-                                new Language
+                                new LanguageDto
                                 {
                                     OrId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                                     Name = "English",
@@ -236,7 +236,7 @@ public static class MockService
                     ],
                     Schedules =
                     [
-                        new Schedule
+                        new ScheduleDto
                         {
                             OrId = Guid.Parse("00000000-0000-0000-0000-000000000003")
                         }
@@ -244,21 +244,21 @@ public static class MockService
                 },
                 Contacts =
                 [
-                    new Contact
+                    new ContactDto
                     {
                         OrId = Guid.Parse("00000000-0000-0000-0000-000000000008"),
                     }
                 ],
                 Phones =
                 [
-                    new Phone
+                    new PhoneDto
                     {
                         OrId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                         Number = "01234567890",
                         Extension = 1,
                         Languages =
                         [
-                            new Language
+                            new LanguageDto
                             {
                                 OrId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                                 Name = "English",
@@ -269,7 +269,7 @@ public static class MockService
                 ],
                 Schedules =
                 [
-                    new Schedule
+                    new ScheduleDto
                     {
                         OrId = Guid.Parse("00000000-0000-0000-0000-000000000003")
                     }
@@ -278,7 +278,7 @@ public static class MockService
         ],
         Languages =
         [
-            new Language
+            new LanguageDto
             {
                 OrId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                 Name = "English",
@@ -287,28 +287,28 @@ public static class MockService
         ],
         Funding =
         [
-            new Funding
+            new FundingDto
             {
                 OrId = Guid.Parse("00000000-0000-0000-0000-000000000010"),
             }
         ],
         CostOptions =
         [
-            new CostOption
+            new CostOptionDto
             {
                 OrId = Guid.Parse("00000000-0000-0000-0000-000000000011"),
             }
         ],
         RequiredDocuments =
         [
-            new RequiredDocument
+            new RequiredDocumentDto
             {
                 OrId = Guid.Parse("00000000-0000-0000-0000-000000000012")
             }
         ],
         Contacts =
         [
-            new Contact
+            new ContactDto
             {
                 OrId = Guid.Parse("00000000-0000-0000-0000-000000000008"),
             }

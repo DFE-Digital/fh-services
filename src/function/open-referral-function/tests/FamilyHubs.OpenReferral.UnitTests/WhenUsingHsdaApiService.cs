@@ -1,8 +1,8 @@
 using System.Net;
 using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.ClientServices;
+using FamilyHubs.OpenReferral.Function.Models;
 using FamilyHubs.OpenReferral.UnitTests.Helpers;
-using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
@@ -13,7 +13,7 @@ public class WhenUsingHsdaApiService
     private readonly IHsdaApiService _hsdaApiService;
     private readonly MockHttpMessageHandler _mockHttpMessageHandler;
 
-    private readonly Service _service;
+    private readonly ServiceDto _service;
     private readonly string _serviceJson;
 
     public WhenUsingHsdaApiService()
@@ -93,7 +93,7 @@ public class WhenUsingHsdaApiService
 
         _mockHttpMessageHandler.Content = _serviceJson;
 
-        (HttpStatusCode httpStatusCode, List<Service> servicesById) =
+        (HttpStatusCode httpStatusCode, List<ServiceDto> servicesById) =
             await _hsdaApiService.GetServicesById(services.Value);
 
         Assert.Equal(HttpStatusCode.OK, httpStatusCode);
@@ -113,7 +113,7 @@ public class WhenUsingHsdaApiService
 
         _mockHttpMessageHandler.Content = "";
 
-        (HttpStatusCode httpStatusCode, List<Service> servicesById) = await _hsdaApiService.GetServicesById(services.Value);
+        (HttpStatusCode httpStatusCode, List<ServiceDto> servicesById) = await _hsdaApiService.GetServicesById(services.Value);
 
         Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);
         Assert.Empty(servicesById);
@@ -131,7 +131,7 @@ public class WhenUsingHsdaApiService
 
         _mockHttpMessageHandler.Content = "{\"incorrect\":\"schema\"}";
 
-        (HttpStatusCode httpStatusCode, List<Service> servicesById) =
+        (HttpStatusCode httpStatusCode, List<ServiceDto> servicesById) =
             await _hsdaApiService.GetServicesById(services.Value);
 
         Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);
@@ -150,7 +150,7 @@ public class WhenUsingHsdaApiService
 
         _mockHttpMessageHandler.Content = "null";
 
-        (HttpStatusCode httpStatusCode, List<Service> servicesById) =
+        (HttpStatusCode httpStatusCode, List<ServiceDto> servicesById) =
             await _hsdaApiService.GetServicesById(services.Value);
 
         Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);

@@ -1,8 +1,10 @@
 using System.Net;
 using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.ClientServices;
+using FamilyHubs.OpenReferral.Function.Models;
 using FamilyHubs.OpenReferral.Function.Services;
 using FamilyHubs.SharedKernel.OpenReferral.Entities;
+using FamilyHubs.SharedKernel.Utilities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -19,18 +21,29 @@ public class TriggerPullServicesWebhook(
     {
         logger.LogInformation("[ApiReceiver] HTTP Trigger Function Started");
 
-        (HttpStatusCode HttpStatusCode, JsonElement.ArrayEnumerator? Result) services = await hsdaApiService.GetServices();
-        if (services.HttpStatusCode != HttpStatusCode.OK) return req.CreateResponse(services.HttpStatusCode);
+        (HttpStatusCode HttpStatusCode, JsonElement.ArrayEnumerator? Result) services =
+            await hsdaApiService.GetServices();
+        if (services.HttpStatusCode != HttpStatusCode.OK)
+        {
+            return req.CreateResponse(services.HttpStatusCode);
+        }
 
-        (HttpStatusCode HttpStatusCode, List<Service> Result) servicesById = await hsdaApiService.GetServicesById(services.Result!.Value);
-        if (servicesById.HttpStatusCode != HttpStatusCode.OK) return req.CreateResponse(servicesById.HttpStatusCode);
+        (HttpStatusCode HttpStatusCode, List<ServiceDto> Result) servicesById =
+            await hsdaApiService.GetServicesById(services.Result!.Value);
+        
+        if (servicesById.HttpStatusCode != HttpStatusCode.OK)
+        {
+            return req.CreateResponse(servicesById.HttpStatusCode);
+        }
 
         try
         {
-            await dedsService.ClearDatabase();
             foreach (var service in servicesById.Result)
             {
-                await dedsService.AddService(service);
+                //  JsonSerializer.Serialize - Only because this is mock and we need the hash
+                var serviceJson = JsonSerializer.Serialize(service);
+                var checksum = HashingAlgorithms.ComputeXxHashToLong64(serviceJson);
+                await dedsService.UpsertService(service, checksum);
             }
         }
         catch (Exception e)
@@ -41,4 +54,5 @@ public class TriggerPullServicesWebhook(
 
         return req.CreateResponse(HttpStatusCode.OK);
     }
+
 }

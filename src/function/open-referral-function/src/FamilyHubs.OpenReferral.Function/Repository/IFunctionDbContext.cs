@@ -7,4 +7,5 @@ public interface IFunctionDbContext
 {
     DbSet<Service> ServicesDbSet { get; }
     public Task<int> SaveChangesAsync();
+    
 }
