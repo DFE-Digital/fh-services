@@ -535,4 +535,535 @@ export async function seed() {
     serviceId: 6,
   });
   //#endregion
+
+  // First VCFS Service
+  //#region
+  await Database.addService({
+    id: 7,
+    serviceType: "InformationSharing",
+    name: "Test VCFS Service One",
+    description: "Test VCFS Service Description",
+    status: "Active",
+    organisationId: 2,
+    summary: "Test Summary",
+  });
+
+  // To link them together, we need to create an entry in ServiceAtLocations
+  await Database.addServiceAtLocation({
+    serviceId: 7,
+    locationId: 1,
+    id: 7,
+  });
+
+  /**
+   * A Service also needs at least one Taxonomy (i.e., Category)
+   *
+   * Since the Taxonomy table is pre-seeded, just select one to link up to your Service.
+   *
+   * In this case I chose ID 18, which is "Money, benefits and housing", which is automatically under category "Family support" as-is.
+   */
+  await Database.addServiceTaxonomy({
+    serviceId: 7,
+    taxonomyId: 18,
+  });
+
+  // Let's add two Contacts, one for the Service and one for its Location
+  await Database.addContact({
+    id: 8,
+    telephone: "01234567890",
+    url: "https://www.example.com/",
+    email: "test@email.co.uk",
+    serviceId: 7,
+  });
+
+  await Database.addContact({
+    id: 9,
+    telephone: "",
+    email: "email@test.co.uk",
+    locationId: 1,
+  });
+
+  // Adding an Eligibility..
+  await Database.addEligibility({
+    id: 7,
+    maximumAge: 18,
+    minimumAge: 16,
+    serviceId: 7,
+  });
+
+  // Adding a Language..
+  await Database.addLanguage({
+    id: 7,
+    name: "English",
+    serviceId: 7,
+    code: "en",
+  });
+
+  // Adding Schedules to the Service..
+
+  // Online..
+  await Database.addSchedule({
+    id: 9,
+    frequency: "WEEKLY",
+    byDay: "MO,WE,FR",
+    description: "Test Description",
+    serviceId: 7,
+    attendingType: "Online",
+  });
+
+  // Telephone..
+  await Database.addSchedule({
+    id: 10,
+    frequency: "WEEKLY",
+    byDay: "MO,WE,FR",
+    description: "Test Description",
+    serviceId: 7,
+    attendingType: "Telephone",
+  });
+
+  // InPerson.. Notice that this uses ServiceAtLocationId instead of ServiceId, as InPerson is tied to the Location!
+  await Database.addSchedule({
+    id: 11,
+    frequency: "WEEKLY",
+    byDay: "MO,WE,FR",
+    description: "Test Description",
+    serviceAtLocationId: 7,
+    attendingType: "InPerson",
+  });
+
+  // For some reason, you need to make ServiceDelivery entries that match your Schedules..
+  await Database.addServiceDelivery({
+    id: 9,
+    name: "InPerson",
+    serviceId: 7,
+  });
+
+  await Database.addServiceDelivery({
+    id: 10,
+    name: "Online",
+    serviceId: 7,
+  });
+
+  await Database.addServiceDelivery({
+    id: 11,
+    name: "Telephone",
+    serviceId: 7,
+  });
+
+  //#endregion
+
+  // Second VCFS Service
+  //#region
+  await Database.addService({
+    id: 8,
+    serviceType: "InformationSharing",
+    name: "Test VCFS Service Two",
+    description: "Test VCFS Service Description",
+    status: "Active",
+    organisationId: 2,
+    summary: "Test Summary",
+  });
+
+  // To link them together, we need to create an entry in ServiceAtLocations
+  await Database.addServiceAtLocation({
+    serviceId: 8,
+    locationId: 1,
+    id: 8,
+  });
+
+  /**
+   * A Service also needs at least one Taxonomy (i.e., Category)
+   *
+   * Since the Taxonomy table is pre-seeded, just select one to link up to your Service.
+   *
+   * In this case I chose ID 18, which is "Money, benefits and housing", which is automatically under category "Family support" as-is.
+   */
+  await Database.addServiceTaxonomy({
+    serviceId: 9,
+    taxonomyId: 18,
+  });
+
+  // Let's add two Contacts, one for the Service and one for its Location
+  await Database.addContact({
+    id: 9,
+    telephone: "01234567890",
+    url: "https://www.example.com/",
+    email: "test@email.co.uk",
+    serviceId: 8,
+  });
+
+  await Database.addContact({
+    id: 10,
+    telephone: "",
+    email: "email@test.co.uk",
+    locationId: 1,
+  });
+
+  // Adding an Eligibility..
+  await Database.addEligibility({
+    id: 8,
+    maximumAge: 8,
+    minimumAge: 4,
+    serviceId: 8,
+  });
+
+  // Adding a Language..
+  await Database.addLanguage({
+    id: 8,
+    name: "English",
+    serviceId: 8,
+    code: "en",
+  });
+
+  // Adding Schedules to the Service..
+
+  // Online..
+  await Database.addSchedule({
+    id: 12,
+    frequency: "WEEKLY",
+    byDay: "MO,WE,FR",
+    description: "Test Description",
+    serviceId: 8,
+    attendingType: "Online",
+  });
+
+  // For some reason, you need to make ServiceDelivery entries that match your Schedules..
+  await Database.addServiceDelivery({
+    id: 12,
+    name: "InPerson",
+    serviceId: 8,
+  });
+  //#endregion
+
+  // Third VCFS Service
+  //#region
+  await Database.addService({
+    id: 9,
+    serviceType: "InformationSharing",
+    name: "Test VCFS Service Three",
+    description: "Test VCFS Service Description",
+    status: "Active",
+    organisationId: 2,
+    summary: "Test Summary",
+  });
+
+  // To link them together, we need to create an entry in ServiceAtLocations
+  await Database.addServiceAtLocation({
+    serviceId: 9,
+    locationId: 1,
+    id: 9,
+  });
+
+  /**
+   * A Service also needs at least one Taxonomy (i.e., Category)
+   *
+   * Since the Taxonomy table is pre-seeded, just select one to link up to your Service.
+   *
+   * In this case I chose ID 18, which is "Money, benefits and housing", which is automatically under category "Family support" as-is.
+   */
+  await Database.addServiceTaxonomy({
+    serviceId: 9,
+    taxonomyId: 14,
+  });
+
+  // Let's add two Contacts, one for the Service and one for its Location
+  await Database.addContact({
+    id: 10,
+    telephone: "01234567890",
+    url: "https://www.example.com/",
+    email: "test@email.co.uk",
+    serviceId: 9,
+  });
+
+  await Database.addContact({
+    id: 11,
+    telephone: "",
+    email: "email@test.co.uk",
+    locationId: 1,
+  });
+
+  // Adding an Eligibility..
+  await Database.addEligibility({
+    id: 9,
+    maximumAge: 8,
+    minimumAge: 4,
+    serviceId: 9,
+  });
+
+  // Adding a Language..
+  await Database.addLanguage({
+    id: 9,
+    name: "English",
+    serviceId: 9,
+    code: "en",
+  });
+
+  // Adding Schedules to the Service..
+
+  // Online..
+  await Database.addSchedule({
+    id: 13,
+    frequency: "WEEKLY",
+    byDay: "MO,WE,FR",
+    description: "Test Description",
+    serviceId: 9,
+    attendingType: "Online",
+  });
+
+  // For some reason, you need to make ServiceDelivery entries that match your Schedules..
+  await Database.addServiceDelivery({
+    id: 13,
+    name: "InPerson",
+    serviceId: 9,
+  });
+  //#endregion
+
+  // Fourth VCFS Service
+  //#region
+  await Database.addService({
+    id: 10,
+    serviceType: "InformationSharing",
+    name: "Test VCFS Service Four",
+    description: "Test VCFS Service Description",
+    status: "Active",
+    organisationId: 2,
+    summary: "Test Summary",
+  });
+
+  // To link them together, we need to create an entry in ServiceAtLocations
+  await Database.addServiceAtLocation({
+    serviceId: 10,
+    locationId: 1,
+    id: 10,
+  });
+
+  /**
+   * A Service also needs at least one Taxonomy (i.e., Category)
+   *
+   * Since the Taxonomy table is pre-seeded, just select one to link up to your Service.
+   *
+   * In this case I chose ID 18, which is "Money, benefits and housing", which is automatically under category "Family support" as-is.
+   */
+  await Database.addServiceTaxonomy({
+    serviceId: 10,
+    taxonomyId: 15,
+  });
+
+  // Let's add two Contacts, one for the Service and one for its Location
+  await Database.addContact({
+    id: 11,
+    telephone: "01234567890",
+    url: "https://www.example.com/",
+    email: "test@email.co.uk",
+    serviceId: 10,
+  });
+
+  await Database.addContact({
+    id: 12,
+    telephone: "",
+    email: "email@test.co.uk",
+    locationId: 1,
+  });
+
+  // Adding an Eligibility..
+  await Database.addEligibility({
+    id: 10,
+    maximumAge: 9,
+    minimumAge: 3,
+    serviceId: 10,
+  });
+
+  // Adding a Language..
+  await Database.addLanguage({
+    id: 10,
+    name: "English",
+    serviceId: 10,
+    code: "en",
+  });
+
+  // Adding Schedules to the Service..
+
+  // Online..
+  await Database.addSchedule({
+    id: 14,
+    frequency: "WEEKLY",
+    byDay: "MO,WE,FR",
+    description: "Test Description",
+    serviceId: 10,
+    attendingType: "Online",
+  });
+
+  // For some reason, you need to make ServiceDelivery entries that match your Schedules..
+  await Database.addServiceDelivery({
+    id: 14,
+    name: "InPerson",
+    serviceId: 10,
+  });
+  //#endregion
+
+  // Fifth VCFS Service
+  //#region
+  await Database.addService({
+    id: 11,
+    serviceType: "InformationSharing",
+    name: "Test VCFS Service Five",
+    description: "Test VCFS Service Description",
+    status: "Active",
+    organisationId: 2,
+    summary: "Test Summary",
+  });
+
+  // To link them together, we need to create an entry in ServiceAtLocations
+  await Database.addServiceAtLocation({
+    serviceId: 11,
+    locationId: 1,
+    id: 11,
+  });
+
+  /**
+   * A Service also needs at least one Taxonomy (i.e., Category)
+   *
+   * Since the Taxonomy table is pre-seeded, just select one to link up to your Service.
+   *
+   * In this case I chose ID 18, which is "Money, benefits and housing", which is automatically under category "Family support" as-is.
+   */
+  await Database.addServiceTaxonomy({
+    serviceId: 11,
+    taxonomyId: 16,
+  });
+
+  // Let's add two Contacts, one for the Service and one for its Location
+  await Database.addContact({
+    id: 12,
+    telephone: "01234567890",
+    url: "https://www.example.com/",
+    email: "test@email.co.uk",
+    serviceId: 11,
+  });
+
+  await Database.addContact({
+    id: 13,
+    telephone: "",
+    email: "email@test.co.uk",
+    locationId: 1,
+  });
+
+  // Adding an Eligibility..
+  await Database.addEligibility({
+    id: 11,
+    maximumAge: 9,
+    minimumAge: 3,
+    serviceId: 11,
+  });
+
+  // Adding a Language..
+  await Database.addLanguage({
+    id: 11,
+    name: "English",
+    serviceId: 11,
+    code: "en",
+  });
+
+  // Adding Schedules to the Service..
+
+  // Online..
+  await Database.addSchedule({
+    id: 15,
+    frequency: "WEEKLY",
+    byDay: "MO,WE,FR",
+    description: "Test Description",
+    serviceId: 11,
+    attendingType: "Online",
+  });
+
+  // For some reason, you need to make ServiceDelivery entries that match your Schedules..
+  await Database.addServiceDelivery({
+    id: 15,
+    name: "InPerson",
+    serviceId: 11,
+  });
+  //#endregion
+
+  // Sixth VCFS Service
+  //#region
+  await Database.addService({
+    id: 12,
+    serviceType: "InformationSharing",
+    name: "Test VCFS Service Six",
+    description: "Test VCFS Service Description",
+    status: "Active",
+    organisationId: 2,
+    summary: "Test Summary",
+  });
+
+  // To link them together, we need to create an entry in ServiceAtLocations
+  await Database.addServiceAtLocation({
+    serviceId: 12,
+    locationId: 1,
+    id: 12,
+  });
+
+  /**
+   * A Service also needs at least one Taxonomy (i.e., Category)
+   *
+   * Since the Taxonomy table is pre-seeded, just select one to link up to your Service.
+   *
+   * In this case I chose ID 18, which is "Money, benefits and housing", which is automatically under category "Family support" as-is.
+   */
+  await Database.addServiceTaxonomy({
+    serviceId: 12,
+    taxonomyId: 17,
+  });
+
+  // Let's add two Contacts, one for the Service and one for its Location
+  await Database.addContact({
+    id: 13,
+    telephone: "01234567890",
+    url: "https://www.example.com/",
+    email: "test@email.co.uk",
+    serviceId: 12,
+  });
+
+  await Database.addContact({
+    id: 14,
+    telephone: "",
+    email: "email@test.co.uk",
+    locationId: 1,
+  });
+
+  // Adding an Eligibility..
+  await Database.addEligibility({
+    id: 12,
+    maximumAge: 9,
+    minimumAge: 3,
+    serviceId: 12,
+  });
+
+  // Adding a Language..
+  await Database.addLanguage({
+    id: 12,
+    name: "English",
+    serviceId: 12,
+    code: "en",
+  });
+
+  // Adding Schedules to the Service..
+
+  // Online..
+  await Database.addSchedule({
+    id: 16,
+    frequency: "WEEKLY",
+    byDay: "MO,WE,FR",
+    description: "Test Description",
+    serviceId: 12,
+    attendingType: "Online",
+  });
+
+  // For some reason, you need to make ServiceDelivery entries that match your Schedules..
+  await Database.addServiceDelivery({
+    id: 16,
+    name: "InPerson",
+    serviceId: 12,
+  });
+  //#endregion
 }
