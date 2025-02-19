@@ -39,6 +39,20 @@ export async function seed() {
     postcode: "E1 2EN",
     stateProvince: "City of London",
   });
+
+  // Add a Location for the LA Service & VCFS Organisation
+  await Database.addLocation({
+    id: 2,
+    locationTypeCategory: "NotSet",
+    name: "Test Westminister Location",
+    description: "Test Description",
+    latitude: 51.517612,
+    longitude: -0.056838,
+    address1: "100 Test Street",
+    city: "London",
+    postcode: "SW1A 2AD",
+    stateProvince: "City of London",
+  });
   
   // First Service
   //#region
@@ -57,6 +71,13 @@ export async function seed() {
     serviceId: 1,
     locationId: 1,
     id: 1,
+  });
+
+  // To link them together, we need to create an entry in ServiceAtLocations
+  await Database.addServiceAtLocation({
+    serviceId: 1,
+    locationId: 2,
+    id: 2,
   });
 
   /**
@@ -173,7 +194,7 @@ export async function seed() {
   await Database.addServiceAtLocation({
     serviceId: 2,
     locationId: 1,
-    id: 2,
+    id: 3,
   });
 
   /**
@@ -249,7 +270,7 @@ export async function seed() {
   await Database.addServiceAtLocation({
     serviceId: 3,
     locationId: 1,
-    id: 3,
+    id: 4,
   });
 
   /**
@@ -325,7 +346,7 @@ export async function seed() {
   await Database.addServiceAtLocation({
     serviceId: 4,
     locationId: 1,
-    id: 4,
+    id: 5,
   });
 
   /**
@@ -401,7 +422,7 @@ export async function seed() {
   await Database.addServiceAtLocation({
     serviceId: 5,
     locationId: 1,
-    id: 5,
+    id: 6,
   });
 
   /**
@@ -477,7 +498,7 @@ export async function seed() {
   await Database.addServiceAtLocation({
     serviceId: 6,
     locationId: 1,
-    id: 6,
+    id: 7,
   });
 
   /**
@@ -552,7 +573,14 @@ export async function seed() {
   await Database.addServiceAtLocation({
     serviceId: 7,
     locationId: 1,
-    id: 7,
+    id: 8,
+  });
+
+  // To link them together, we need to create an entry in ServiceAtLocations
+  await Database.addServiceAtLocation({
+    serviceId: 7,
+    locationId: 2,
+    id: 9,
   });
 
   /**
@@ -668,7 +696,7 @@ export async function seed() {
   await Database.addServiceAtLocation({
     serviceId: 8,
     locationId: 1,
-    id: 8,
+    id: 10,
   });
 
   /**
@@ -751,7 +779,7 @@ export async function seed() {
   await Database.addServiceAtLocation({
     serviceId: 9,
     locationId: 1,
-    id: 9,
+    id: 11,
   });
 
   /**
@@ -834,7 +862,7 @@ export async function seed() {
   await Database.addServiceAtLocation({
     serviceId: 10,
     locationId: 1,
-    id: 10,
+    id: 12,
   });
 
   /**
@@ -917,7 +945,7 @@ export async function seed() {
   await Database.addServiceAtLocation({
     serviceId: 11,
     locationId: 1,
-    id: 11,
+    id: 13,
   });
 
   /**
@@ -1000,7 +1028,7 @@ export async function seed() {
   await Database.addServiceAtLocation({
     serviceId: 12,
     locationId: 1,
-    id: 12,
+    id: 14,
   });
 
   /**
