@@ -679,13 +679,13 @@ export async function seed() {
    * In this case I chose ID 18, which is "Money, benefits and housing", which is automatically under category "Family support" as-is.
    */
   await Database.addServiceTaxonomy({
-    serviceId: 9,
+    serviceId: 8,
     taxonomyId: 18,
   });
 
   // Let's add two Contacts, one for the Service and one for its Location
   await Database.addContact({
-    id: 9,
+    id: 10,
     telephone: "01234567890",
     url: "https://www.example.com/",
     email: "test@email.co.uk",
@@ -693,7 +693,7 @@ export async function seed() {
   });
 
   await Database.addContact({
-    id: 10,
+    id: 11,
     telephone: "",
     email: "email@test.co.uk",
     locationId: 1,
@@ -768,7 +768,7 @@ export async function seed() {
 
   // Let's add two Contacts, one for the Service and one for its Location
   await Database.addContact({
-    id: 10,
+    id: 12,
     telephone: "01234567890",
     url: "https://www.example.com/",
     email: "test@email.co.uk",
@@ -776,7 +776,7 @@ export async function seed() {
   });
 
   await Database.addContact({
-    id: 11,
+    id: 13,
     telephone: "",
     email: "email@test.co.uk",
     locationId: 1,
@@ -851,7 +851,7 @@ export async function seed() {
 
   // Let's add two Contacts, one for the Service and one for its Location
   await Database.addContact({
-    id: 11,
+    id: 14,
     telephone: "01234567890",
     url: "https://www.example.com/",
     email: "test@email.co.uk",
@@ -859,7 +859,7 @@ export async function seed() {
   });
 
   await Database.addContact({
-    id: 12,
+    id: 15,
     telephone: "",
     email: "email@test.co.uk",
     locationId: 1,
@@ -934,7 +934,7 @@ export async function seed() {
 
   // Let's add two Contacts, one for the Service and one for its Location
   await Database.addContact({
-    id: 12,
+    id: 16,
     telephone: "01234567890",
     url: "https://www.example.com/",
     email: "test@email.co.uk",
@@ -942,7 +942,7 @@ export async function seed() {
   });
 
   await Database.addContact({
-    id: 13,
+    id: 17,
     telephone: "",
     email: "email@test.co.uk",
     locationId: 1,
@@ -1017,7 +1017,7 @@ export async function seed() {
 
   // Let's add two Contacts, one for the Service and one for its Location
   await Database.addContact({
-    id: 13,
+    id: 18,
     telephone: "01234567890",
     url: "https://www.example.com/",
     email: "test@email.co.uk",
@@ -1025,7 +1025,7 @@ export async function seed() {
   });
 
   await Database.addContact({
-    id: 14,
+    id: 19,
     telephone: "",
     email: "email@test.co.uk",
     locationId: 1,
