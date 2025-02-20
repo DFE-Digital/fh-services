@@ -17,6 +17,16 @@ public static class ProfanityChecker
     public static bool HasProfanity<T>([DisallowNull]T obj) where T : class
     {
         var hasProfanity = false;
+        
+        if(typeof(T) == typeof(string))
+        {
+            if (obj is string value && ProfanityFilter.DetectAllProfanities(value).Count > 0)
+            {
+                hasProfanity = true;
+            }
+            return hasProfanity;
+        }
+        
         PropertyInspector.InspectStringProperties(obj, (propertyName, parent, property) =>
         {
             var value = (string?)property.GetValue(parent);

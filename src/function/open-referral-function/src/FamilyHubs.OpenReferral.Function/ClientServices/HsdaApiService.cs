@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 namespace FamilyHubs.OpenReferral.Function.ClientServices;
 
@@ -18,6 +19,14 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
                 httpStatusCode, jsonResponse);
             return (httpStatusCode, null);
         }
+        
+        if (!IsValidJson(jsonResponse))
+        {
+            logger.LogWarning(
+                "Incoming JSON is not a valid response | JSON = {jsonResponse}",
+                jsonResponse);
+            return  (HttpStatusCode.BadRequest, null);
+        }
 
         JsonElement.ArrayEnumerator serviceList =
             JsonDocument.Parse(jsonResponse).RootElement.GetProperty("contents").EnumerateArray();
@@ -33,9 +42,9 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
         return (HttpStatusCode.OK, serviceList);
     }
 
-    public async Task<(HttpStatusCode, List<Service>)> GetServicesById(JsonElement.ArrayEnumerator services)
+    public async Task<(HttpStatusCode, Dictionary<string, string>)> GetServicesById(JsonElement.ArrayEnumerator services)
     {
-        List<Service> servicesById = [];
+        Dictionary<string, string> servicesById = [];
 
         foreach (string serviceId in services.Select(service => service.GetProperty("id").ToString()))
         {
@@ -51,17 +60,24 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
 
             try
             {
-                Service? service = JsonSerializer.Deserialize<Service>(jsonResponse!);
 
-                if (service is null)
+                if (string.IsNullOrEmpty(jsonResponse))
                 {
                     logger.LogWarning(
                         "After attempting to deserialise the incoming JSON, the Service is null | JSON = {jsonResponse}",
                         jsonResponse);
                     continue;
                 }
+                
+                if (!IsValidJson(jsonResponse))
+                {
+                    logger.LogWarning(
+                        "Incoming JSON is not a valid response | JSON = {jsonResponse}",
+                        jsonResponse);
+                    continue;
+                }
 
-                servicesById.Add(service);
+                servicesById.Add(serviceId, jsonResponse);
             }
             catch (Exception e)
             {
@@ -84,5 +100,13 @@ public class HsdaApiService(ILogger<HsdaApiService> logger, HttpClient httpClien
         logger.LogInformation("GET {endpoint} | Status Code = {httpStatusCode}", endpoint, response.StatusCode);
         return (response.StatusCode,
             response.StatusCode == HttpStatusCode.OK ? await response.Content.ReadAsStringAsync() : null);
+    }
+
+    private bool IsValidJson(string jsonResponse)
+    {
+        using var document = JsonDocument.Parse(jsonResponse);
+        var root = document.RootElement;
+
+        return root.ValueKind is JsonValueKind.Object or JsonValueKind.Array;
     }
 }

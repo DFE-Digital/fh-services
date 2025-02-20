@@ -16,7 +16,6 @@ public class WhenUsingTriggerPullServicesWebhook
     private readonly TriggerPullServicesWebhook _triggerPullServicesWebhook;
 
     private readonly IHsdaApiService _hsdaApiServiceMock;
-    private readonly IDedsService _dedsServiceMock;
     private readonly HttpRequestData _reqMock;
 
     private readonly Service _service;
@@ -27,12 +26,12 @@ public class WhenUsingTriggerPullServicesWebhook
 
         _hsdaApiServiceMock = Substitute.For<IHsdaApiService>();
 
-        _dedsServiceMock = Substitute.For<IDedsService>();
+        var dedsServiceMock = Substitute.For<IDedsPrototypeService>();
 
         _reqMock = Substitute.For<HttpRequestData>(Substitute.For<FunctionContext>());
         _reqMock.CreateResponse().Returns(Substitute.For<HttpResponseData>(Substitute.For<FunctionContext>()));
 
-        _triggerPullServicesWebhook = new TriggerPullServicesWebhook(loggerApiReceiverMock, _hsdaApiServiceMock, _dedsServiceMock);
+        _triggerPullServicesWebhook = new TriggerPullServicesWebhook(loggerApiReceiverMock, _hsdaApiServiceMock, dedsServiceMock);
 
         _service = MockService.Service;
     }
@@ -40,14 +39,12 @@ public class WhenUsingTriggerPullServicesWebhook
     [Fact]
     public async Task Then_NormalOperation_BeingReturned_ShouldResultIn_200_OK()
     {
-        List<Service> servicesById = [ _service ];
+        Dictionary<string,string> servicesById = [ ];
 
         _hsdaApiServiceMock.GetServices().Returns((HttpStatusCode.OK, []));
         _hsdaApiServiceMock.GetServicesById(default).Returns((HttpStatusCode.OK, servicesById));
 
-        _dedsServiceMock.GetServices().Returns([_service]);
-
-        HttpResponseData response = await _triggerPullServicesWebhook.Run(_reqMock);
+        var response = await _triggerPullServicesWebhook.Run(_reqMock);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }

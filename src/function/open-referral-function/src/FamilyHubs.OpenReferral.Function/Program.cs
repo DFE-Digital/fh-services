@@ -28,6 +28,7 @@ IHost host = new HostBuilder()
         services.ConfigureFunctionsApplicationInsights();
 
         services.AddTransient<IDedsService, DedsService>();
+        services.AddTransient<IDedsPrototypeService, DedsPrototypeService>();
 
         services.AddHttpClient<IHsdaApiService, HsdaApiService>(httpClient =>
             httpClient.BaseAddress = new Uri(config["ApiConnection"]!));

@@ -8,5 +8,5 @@ public interface IHsdaApiService
 {
     public Task<(HttpStatusCode, JsonElement.ArrayEnumerator?)> GetServices();
 
-    public Task<(HttpStatusCode, List<Service>)> GetServicesById(JsonElement.ArrayEnumerator services);
+    public Task<(HttpStatusCode, Dictionary<string, string>)> GetServicesById(JsonElement.ArrayEnumerator services);
 }

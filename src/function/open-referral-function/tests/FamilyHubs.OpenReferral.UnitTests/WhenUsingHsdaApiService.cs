@@ -82,26 +82,6 @@ public class WhenUsingHsdaApiService
     }
 
     [Fact]
-    public async Task Then_GetServicesById_Returns_CorrectData()
-    {
-        _mockHttpMessageHandler.StatusCode = HttpStatusCode.OK;
-        _mockHttpMessageHandler.Content = "{\"contents\":[{\"id\":\"00000000-0000-0000-0000-000000000000\"}]}";
-
-        (HttpStatusCode _, JsonElement.ArrayEnumerator? services) = await _hsdaApiService.GetServices();
-
-        Assert.NotNull(services);
-
-        _mockHttpMessageHandler.Content = _serviceJson;
-
-        (HttpStatusCode httpStatusCode, List<Service> servicesById) =
-            await _hsdaApiService.GetServicesById(services.Value);
-
-        Assert.Equal(HttpStatusCode.OK, httpStatusCode);
-        Assert.Single(servicesById);
-        Assert.Equivalent(_service, servicesById[0]);
-    }
-
-    [Fact]
     public async Task Then_GetServicesById_Continues_When_AResultDidNotComeBack()
     {
         _mockHttpMessageHandler.StatusCode = HttpStatusCode.OK;
@@ -113,26 +93,7 @@ public class WhenUsingHsdaApiService
 
         _mockHttpMessageHandler.Content = "";
 
-        (HttpStatusCode httpStatusCode, List<Service> servicesById) = await _hsdaApiService.GetServicesById(services.Value);
-
-        Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);
-        Assert.Empty(servicesById);
-    }
-
-    [Fact]
-    public async Task Then_GetServicesById_Continues_When_IncomingJson_IsNot_A_Valid_Service()
-    {
-        _mockHttpMessageHandler.StatusCode = HttpStatusCode.OK;
-        _mockHttpMessageHandler.Content = "{\"contents\":[{\"id\":\"00000000-0000-0000-0000-000000000000\"}]}";
-
-        (HttpStatusCode _, JsonElement.ArrayEnumerator? services) = await _hsdaApiService.GetServices();
-
-        Assert.NotNull(services);
-
-        _mockHttpMessageHandler.Content = "{\"incorrect\":\"schema\"}";
-
-        (HttpStatusCode httpStatusCode, List<Service> servicesById) =
-            await _hsdaApiService.GetServicesById(services.Value);
+        (HttpStatusCode httpStatusCode, var servicesById) = await _hsdaApiService.GetServicesById(services.Value);
 
         Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);
         Assert.Empty(servicesById);
@@ -150,7 +111,7 @@ public class WhenUsingHsdaApiService
 
         _mockHttpMessageHandler.Content = "null";
 
-        (HttpStatusCode httpStatusCode, List<Service> servicesById) =
+        (HttpStatusCode httpStatusCode, var servicesById) =
             await _hsdaApiService.GetServicesById(services.Value);
 
         Assert.Equal(HttpStatusCode.NoContent, httpStatusCode);

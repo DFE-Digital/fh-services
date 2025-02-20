@@ -35,4 +35,8 @@
         <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Migrations\20250220163756_dedsNewTablesAndSeed.cs" />
+      <Compile Remove="Migrations\20250220163756_dedsNewTablesAndSeed.Designer.cs" />
+    </ItemGroup>
 </Project>
