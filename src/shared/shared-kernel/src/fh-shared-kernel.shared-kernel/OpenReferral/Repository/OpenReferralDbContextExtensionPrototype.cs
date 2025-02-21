@@ -26,8 +26,8 @@ public static class OpenReferralDbContextExtensionPrototype
         modelBuilder.Entity<ThirdPartyService>(entity =>
         {
             entity.ToTable("ThirdPartyServices", schema: DedsSchema);
-            entity.HasKey(x => new {x.ServiceId, x.ThirdPartyId});
-            entity.Property(x => x.Id).ValueGeneratedOnAdd();
+            entity.HasKey(x => x.Id);
+            entity.HasAlternateKey(x => new { x.ServiceId, x.ThirdPartyId }); 
             entity.HasIndex(x => x.ThirdPartyId);
             entity.HasIndex(x => x.ServiceId);
             entity.Property(x => x.Document).HasColumnType("NVARCHAR(max)");
