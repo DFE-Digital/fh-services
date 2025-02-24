@@ -26,7 +26,7 @@ There is no known ADR or decision document which explains why the current was ch
 ### Option 1
 
 - Reduced complexity in the database and fetching of data.
-- Overwriting data when changes occur is a simple overwrite on the JSON field, as appose to pulling the full graph of data and updating.
+- Updating data when changes occur is a simple overwrite on the JSON field, as appose to pulling the full graph of data and updating.
 - Increased storage size as storing JSON will require more space than using a full entity graph.
     - Number of Family Hubs = 431
     - Number of VCFS = average 1000 per LA
