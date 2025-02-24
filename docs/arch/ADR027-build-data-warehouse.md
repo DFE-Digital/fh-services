@@ -13,8 +13,9 @@ Editor's note: This is a retroactive ADR made to reflect a decision that had
 
 We will generate reporting metrics by building a data warehouse, structured with
 a star schema. The warehouse will be populated using an Azure data factory (ADF)
-pipeline using the existing operational databases as data sources. Access the
-data warehouse from the Manage UI through a new 'Reporting API' service.
+pipeline using the existing operational databases as data sources. The data 
+warehouse will be accessed from the Manage UI through a new 'Reporting API' 
+service.
 
 ## Context
 
