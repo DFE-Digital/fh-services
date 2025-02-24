@@ -1,14 +1,20 @@
-# ADR027 - TITLE
+# ADR027 - Build data warehouse for reporting metrics
 
-- **Status**: Draft
+<!-- 
+Editor's note: This is a retroactive ADR made to reflect a decision that had 
+               already been made as of writing. 
+-->
+
+- **Status**: Accepted
 - **Date**: 2025-02-19
 - **Author**: Joshua Taylor MBCS
 
 ## Decision
 
-<!-- 
-    In a few sentences, describe the decision taken. 
--->
+We will generate reporting metrics by building a data warehouse, structured with
+a star schema. The warehouse will be populated using an Azure data factory (ADF)
+pipeline using the existing operational databases as data sources. Access the
+data warehouse from the Manage UI through a new 'Reporting API' service.
 
 ## Context
 
@@ -32,50 +38,49 @@ exceed acceptance performance ranges.
 
 ## Options considered
 
-<!-- 
-    Briefly describe each option considered as a numbered list. Start with the selected option.
-    It's usually wise to include a 'do nothing' option.
-
-    e.g.
-
-    1. (SELECTED) PostgreSQL
-    2. Oracle
-    3. SQL Server  
--->
+1. (SELECTED) Azure data factory ETL pipeline to generate service-fronted data
+   warehouse
+2. Directly query any service-related metrics <!-- i.e. Do nothing -->
 
 ## Consequences
 
 ### Option 1 - Azure data factory ETL pipeline to generate service-fronted data warehouse
 
-- Acessing metrics would be very performant.
+![](./img/ADR027-etl-approach.png)
 
-- If high user load appears, there would be no degredation of performance.
-  Scales well.
+- Selected because acessing metrics would be very performant.
 
-- Quite complex to implement, requires multiple new components which bring new
-  maintenance and infrastructure costs.
+- Selected because if high user load appears, there would be no degredation of
+  performance. It scales well.
 
-- An Azure data factory (ADF) pipeline is hard to manage using the team's
-  current infrastructure as code, increasing the overhead of creating new environments.
+- Selected despite it being quite complex to implement. Requires multiple new
+  components which bring new maintenance and infrastructure costs.
 
-- Usage of a 'star schema' data warehouse would make any new metric requirements
-  easy to provide, provided the right data is loaded.
+- Selected despite it being hard to manage Azure data factory (ADF) pipelines
+  using terraform, increasing the overhead of creating new environments.
 
-- ADF pipelines are hard to change and are error-prone if implemented with
-  steps that rely on the underlying data schema, such as stored procedures.
+- Selected because the usage of a 'star schema' data warehouse would make any
+  new metric requirements easy to provide, provided the right data is loaded.
 
-- One of the reasons to use ADF is it's ability to graphically create pipelines,
-  which would not be used in the implementation of this approach.
+- Selected despite the difficulty of changing ADF pipelines and their tendendy
+  to produce errorsif implemented with steps that rely on the underlying data
+  schema, such as stored procedures.
+
+- Selected despite not making use of a key feature of ADF which is its ability
+  to graphically create pipelines.
 
 ### Option 2 - Directly query any service-related metrics
 
-- No new components would be required, just added features to existing
-  components.
+![](./img/ADR027-direct-query.png)
 
-- If user load grows, the execution time of queries would also grow. Could use
-  caching to mitigate this.
+- Rejected despite its simplicity. No new components would be required, just
+  added features to existing components.
 
-- The resulting solution would be easier to change and extend.
+- Rejected because of potentially poorer performance. if user load grows, the
+  execution time of queries would also grow. Could use caching or replicated
+  databases to mitigate this.
+
+- Rejected despite the resulting solution being easier to change and extend.
 
 ## Advice
 
