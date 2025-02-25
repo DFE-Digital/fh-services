@@ -41,7 +41,7 @@ exceed acceptance performance ranges.
 
 1. (SELECTED) Azure data factory ETL pipeline to generate service-fronted data
    warehouse
-2. Directly query any service-related metrics <!-- i.e. Do nothing -->
+2. Directly query any service-related metrics <!-- i.e. No architectural change introduced -->
 
 ## Consequences
 
@@ -58,17 +58,17 @@ exceed acceptance performance ranges.
   components which bring new maintenance and infrastructure costs.
 
 - Selected despite it being hard to manage Azure data factory (ADF) pipelines
-  using terraform, increasing the overhead of creating new environments.
+  using Terraform, increasing the overhead of creating new environments.
 
 - Selected because the usage of a 'star schema' data warehouse would make any
   new metric requirements easy to provide, provided the right data is loaded.
 
 - Selected despite the difficulty of changing ADF pipelines and their tendendy
-  to produce errorsif implemented with steps that rely on the underlying data
+  to produce errors if implemented with steps that rely on the underlying data
   schema, such as stored procedures.
 
 - Selected despite not making use of a key feature of ADF which is its ability
-  to graphically create pipelines.
+  to graphically create and edit data pipelines through a drag-and-drop editor.
 
 ### Option 2 - Directly query any service-related metrics
 
@@ -77,7 +77,7 @@ exceed acceptance performance ranges.
 - Rejected despite its simplicity. No new components would be required, just
   added features to existing components.
 
-- Rejected because of potentially poorer performance. if user load grows, the
+- Rejected because of potentially poorer performance. If user load grows, the
   execution time of queries would also grow. Could use caching or replicated
   databases to mitigate this.
 
