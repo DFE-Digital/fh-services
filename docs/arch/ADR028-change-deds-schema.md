@@ -6,7 +6,7 @@
 
 ## Decision
 
-Replace the existing DEDS full entity graph schema (taken from International spec v3.0 HSDS schema), and replace it with a simpler schema where the incoming JSON data is stored as JSON instead.
+Replace the existing DEDS full entity graph schema (taken from International spec v3.0 HSDS schema), and replace it with a simpler schema where the incoming JSON is stored directly rather than being split into various relational tables.
 
 ## Context
 
@@ -23,11 +23,10 @@ Trying to implement this became really complicated using the existing DEDS schem
 
 ### Option 1
 
-- No complexity storing data as we simply store the JSON document.
-- Keep the original document from the third party intact. Querying of data within the document does not need to change.
-- Greatly reduced complexity in the database as the schema is small. A single table including serviceId, JSON document, version of the document and auditing columns.
+- Little complexity storing data as we simply store the JSON document in a JSON field. As appose to pulling the full graph JSON document, deserialising, inserting many rows into many tables, which is slower and more complex as an implementation
+- Retains the original document from the third party.
 - Updating data is simplified to an overwrite of the JSON field, rather than querying and updating a full normalized entity graph. This eliminates the complexity of field mapping in large models.
-- Complexity is when retrieving data from the database, mapping of each version of JSON data is required to extract the information we need.
+- The most complexity is when retrieving data from the database, mapping of each version of JSON data is required to extract the information we need.
 - Increased storage size, as storing JSON will require more space than a fully normalized SQL schema. Unlike a normalized entity graph that uses references, JSON storage can contain data duplication within it's own structure, this is the nature of JSON."
     - Number of Family Hubs = 431
     - Number of VCFS = average 1000 per LA
@@ -35,7 +34,7 @@ Trying to implement this became really complicated using the existing DEDS schem
 
 ### Option 2
 
-- Complexity is when ingesting data, mapping of each version of data is required to create on the DB schema.
+- There is complexity is when ingesting data, mapping of each version of data is required to create on the DB schema.
 - Supporting future Open Referral versions will require us to update the DEDS schema to reflect schema changes in the DB
 - Mapping third party fields types to our schema can be mismatched which could require more work to map with in both our code database. <-- i.e id could be int when our field is uuid -->
 - More mental overhead for developers dealing with such a large entity model.
