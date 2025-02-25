@@ -1,4 +1,4 @@
-# ADR028 - Change deds schema
+# ADR028 - Simplify DEDS schema to store JSON documents
 
 - **Status**: Draft
 - **Date**: 2025-02-24
@@ -6,13 +6,13 @@
 
 ## Decision
 
-Replace the existing DEDS full entity graph schema (taken from Internation spec v3.0 HSDS schema), and replace it with a simpler schema where the incoming JSON data is stored as JSON instead.
+Replace the existing DEDS full entity graph schema (taken from International spec v3.0 HSDS schema), and replace it with a simpler schema where the incoming JSON data is stored as JSON instead.
 
 ## Context
 
-There is significant complexity in creating a full entity graph schema based on the HSDS 3.0 Open referral internation spec. This leads to tight coupling to particular open referral spec, when our service will take on many open referral specs, and also potential file uploads which will contain far less data. This would then shoehorn other specification into this spec, and as a result, original data will then lose it's structure.
+There is significant complexity in creating a full entity graph schema based on the HSDS 3.0 Open referral internation spec. This leads to tight coupling to a particular open referral spec, when our service will take on many open referral specs, and also potential file uploads which will contain far less data. This would then shoehorn other specification into this spec, and as a result, original data will then lose it's structure.
 
-There is documentation in confluence which talks about using JSON. However, there is no known ADR or decision document which explains why the current was chosen over storing JSON. 
+There is documentation in confluence which talks about using JSON. However, there is no known ADR or decision document which explains why the current design was chosen over storing JSON. 
 
 ## Options considered
 
@@ -23,11 +23,11 @@ There is documentation in confluence which talks about using JSON. However, ther
 
 ### Option 1
 
-- No complexity storing data as we just store the JSON document.
+- No complexity storing data as we simply store the JSON document.
 - Keep the original document from the third party intact. Querying of data within the document does not need to change.
 - Greatly reduced complexity in the database as the schema is small. A single table with serviceId, JSON document, version of the document and auditing columns.
 - Updating data is simplified to an overwrite of the JSON field, rather than querying and updating a full normalized entity graph. This eliminates the complexity of field mapping in large models.
-- Complexity of mapping is when retrieving data from the database, mapping of each version of data.
+- Complexity of mapping is when retrieving data from the database, mapping of each version of JSON data is required to extract the information we need.
 - Increased storage size, as storing JSON will require more space than a fully normalized SQL schema. Unlike a normalized entity graph that uses references, JSON storage can contain data duplication within it's own structure, this is the nature of JSON."
     - Number of Family Hubs = 431
     - Number of VCFS = average 1000 per LA
@@ -35,8 +35,8 @@ There is documentation in confluence which talks about using JSON. However, ther
 
 ### Option 2
 
-- Complexity of mapping is when ingesting data, mapping of each version of data.
-- Maintaining the full schema when changes are required could lead to time consuming or complex tasks with migrating data.
+- Complexity of mapping is when ingesting data, mapping of each version of data is required to create on the DB schema.
+- Supporting future Open Referral versions will require us to update the DEDS schema to reflect schema changes in the DB
 - Mapping third party fields types to our schema can be mismatched which could require more work to map with in both our code database. <-- i.e id could be int when our field is uuid -->
 - More mental overhead for developers dealing with such a large entity model.
 - All the data stored is kept in a single normalized SQL schema.
