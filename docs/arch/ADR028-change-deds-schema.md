@@ -10,13 +10,13 @@ Replace the existing DEDS full entity graph schema (taken from International spe
 
 ## Context
 
-There is significant complexity in creating a full entity graph schema based on the HSDS 3.0 Open referral internation spec. This leads to tight coupling to a particular open referral spec, when our service will take on many open referral specs, and also potential file uploads which will contain far less data. This would then shoehorn other specification into this spec, and as a result, original data will then lose it's structure.
+The existing DEDS schema models the OR international v3.0 spec. This was likely done because we were attempting to understand OpenRerral ourselves, and the International spec is what we were most likely to ingest. Since then it's seeming more likely that we'll be ingesting various data types, such as OpenReferral UK (A subset of International) and file upload which does not conform to any OpenReferral specification. 
 
-There is documentation in confluence which talks about using JSON. However, there is no known ADR or decision document which explains why the current design was chosen over storing JSON. 
+Trying to implement this became really complicated using the existing DEDS schema. The question arose as to whether we could do things differently with less complexity. 
 
 ## Options considered
 
-1. Store the JSON data as a string/json field in the database with minimal other columns to represent data.
+1. Store the JSON data as a string/JSON field in the database with minimal other columns to represent data.
 2. Do nothing and keep the current full entity graph schema.
 
 ## Consequences
@@ -25,9 +25,9 @@ There is documentation in confluence which talks about using JSON. However, ther
 
 - No complexity storing data as we simply store the JSON document.
 - Keep the original document from the third party intact. Querying of data within the document does not need to change.
-- Greatly reduced complexity in the database as the schema is small. A single table with serviceId, JSON document, version of the document and auditing columns.
+- Greatly reduced complexity in the database as the schema is small. A single table including serviceId, JSON document, version of the document and auditing columns.
 - Updating data is simplified to an overwrite of the JSON field, rather than querying and updating a full normalized entity graph. This eliminates the complexity of field mapping in large models.
-- Complexity of mapping is when retrieving data from the database, mapping of each version of JSON data is required to extract the information we need.
+- Complexity is when retrieving data from the database, mapping of each version of JSON data is required to extract the information we need.
 - Increased storage size, as storing JSON will require more space than a fully normalized SQL schema. Unlike a normalized entity graph that uses references, JSON storage can contain data duplication within it's own structure, this is the nature of JSON."
     - Number of Family Hubs = 431
     - Number of VCFS = average 1000 per LA
@@ -35,7 +35,7 @@ There is documentation in confluence which talks about using JSON. However, ther
 
 ### Option 2
 
-- Complexity of mapping is when ingesting data, mapping of each version of data is required to create on the DB schema.
+- Complexity is when ingesting data, mapping of each version of data is required to create on the DB schema.
 - Supporting future Open Referral versions will require us to update the DEDS schema to reflect schema changes in the DB
 - Mapping third party fields types to our schema can be mismatched which could require more work to map with in both our code database. <-- i.e id could be int when our field is uuid -->
 - More mental overhead for developers dealing with such a large entity model.
@@ -47,12 +47,12 @@ There is documentation in confluence which talks about using JSON. However, ther
     - Go through the reasons why JSON would be a less complex design in both Database schema, data flow, code logic and Developer productivity. 
     - Go through technical flow diagrams and database schemas, understand if they make sense and simple to understand. Update where needed.
     - Go through any performance concerns.
-    - Understand how it can fit in with potential future work around service reviews (manual checking of a service in deds)
+    - Understand how it can fit in with potential future work around service reviews (manual checking of a service in DEDS)
     - Understand how it will can be a drop in replacement for the existing schema.
     - Maintainability.
 
 - Josh Taylor - Technical Architect - on 2025-02-20
     - Go through the reasons why JSON would be a less complex design in Database schema and data flow.
-    - Understand how it can fit in with potential future work around service reviews (manual checking of a service in deds)
+    - Understand how it can fit in with potential future work around service reviews (manual checking of a service in DEDS)
     - Understand how it will can be a drop in replacement for the existing schema.
     - Are there any further consideration from a tech arch perspective.
