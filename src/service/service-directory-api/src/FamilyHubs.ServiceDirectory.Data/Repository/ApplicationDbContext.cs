@@ -162,7 +162,6 @@ namespace FamilyHubs.ServiceDirectory.Data.Repository
              */
             if (!Database.IsSqlite())
             {
-                OpenReferralDbContextExtension.OnModelCreating(modelBuilder);
                 OpenReferralDbContextExtensionPrototype.OnModelCreating(modelBuilder);
             }
 

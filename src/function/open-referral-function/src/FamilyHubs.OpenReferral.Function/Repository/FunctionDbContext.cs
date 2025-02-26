@@ -7,8 +7,6 @@ namespace FamilyHubs.OpenReferral.Function.Repository;
 
 public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : DbContext(options), IFunctionDbContext
 {
-    public DbSet<Service> ServicesDbSet { get; init; } = null!;
-    
     public DbSet<ThirdParty> ThirdParties { get; init; } = null!;
     public DbSet<ThirdPartyService> ThirdPartyServices { get; init; } = null!;
     public DbSet<StandardVersion> StandardVersions { get; init; } = null!;
@@ -18,7 +16,6 @@ public class FunctionDbContext(DbContextOptions<FunctionDbContext> options) : Db
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        OpenReferralDbContextExtension.OnModelCreating(modelBuilder);
         OpenReferralDbContextExtensionPrototype.OnModelCreating(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
