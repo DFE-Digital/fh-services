@@ -4,6 +4,7 @@ using FamilyHubs.OpenReferral.Function.Services;
 using FamilyHubs.SharedKernel.OpenReferral.PrototypeEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NSubstitute;
 
 namespace FamilyHubs.OpenReferral.IntegrationTests.Services.DedsService;
 

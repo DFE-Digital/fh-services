@@ -2,8 +2,6 @@ using System.Net;
 using FamilyHubs.OpenReferral.Function.ClientServices;
 using FamilyHubs.OpenReferral.Function.Functions;
 using FamilyHubs.OpenReferral.Function.Services;
-using FamilyHubs.OpenReferral.UnitTests.Helpers;
-using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -18,8 +16,6 @@ public class WhenUsingTriggerPullServicesWebhook
     private readonly IHsdaApiService _hsdaApiServiceMock;
     private readonly HttpRequestData _reqMock;
 
-    private readonly Service _service;
-
     public WhenUsingTriggerPullServicesWebhook()
     {
         ILogger<TriggerPullServicesWebhook> loggerApiReceiverMock = Substitute.For<ILogger<TriggerPullServicesWebhook>>();
@@ -33,7 +29,6 @@ public class WhenUsingTriggerPullServicesWebhook
 
         _triggerPullServicesWebhook = new TriggerPullServicesWebhook(loggerApiReceiverMock, _hsdaApiServiceMock, dedsServiceMock);
 
-        _service = MockService.Service;
     }
 
     [Fact]

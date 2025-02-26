@@ -1,8 +1,6 @@
 using System.Net;
 using System.Text.Json;
-using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 
 namespace FamilyHubs.OpenReferral.Function.ClientServices;
 

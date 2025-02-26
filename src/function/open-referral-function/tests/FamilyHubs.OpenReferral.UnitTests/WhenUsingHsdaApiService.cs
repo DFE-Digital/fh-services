@@ -2,7 +2,6 @@ using System.Net;
 using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.ClientServices;
 using FamilyHubs.OpenReferral.UnitTests.Helpers;
-using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
@@ -13,9 +12,6 @@ public class WhenUsingHsdaApiService
     private readonly IHsdaApiService _hsdaApiService;
     private readonly MockHttpMessageHandler _mockHttpMessageHandler;
 
-    private readonly Service _service;
-    private readonly string _serviceJson;
-
     public WhenUsingHsdaApiService()
     {
         ILogger<HsdaApiService> loggerApiReceiverMock = Substitute.For<ILogger<HsdaApiService>>();
@@ -25,9 +21,6 @@ public class WhenUsingHsdaApiService
         httpClient.BaseAddress = new Uri("http://localhost:16384");
 
         _hsdaApiService = new HsdaApiService(loggerApiReceiverMock, httpClient);
-
-        _service = MockService.Service;
-        _serviceJson = MockService.ServiceJson;
     }
 
     [Theory]
