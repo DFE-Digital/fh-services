@@ -18,9 +18,7 @@
 
 ## Documentation
 
-- [High Level Design Document](/docs/hld.md)
-- [HSDS v3.0 entity relationships](/docs/hsds-3_0-er-diagram.md)
-- [Architecture Decision Records](/docs/arch)
+Technical documentation can be found at: [dfe-digital.github.io/fh-services](https://dfe-digital.github.io/fh-services/), and the source files could be found in the [docs/src/ directory](docs/src/docs/)
 
 **Note:** Specific documentation on each lib, service, API and others can be found within the `src/` folder.
 

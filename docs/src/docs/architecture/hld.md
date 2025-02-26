@@ -1,4 +1,4 @@
-# Family Hubs High Level Design Document
+# High Level Design
 
 ## Glossary
 
