@@ -1,4 +1,4 @@
-namespace FamilyHubs.SharedKernel.OpenReferral.PrototypeEntities;
+namespace FamilyHubs.SharedKernel.OpenReferral.Entities;
 
 public class ThirdParty
 {

@@ -27,7 +27,7 @@ IHost host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService(config);
         services.ConfigureFunctionsApplicationInsights();
 
-        services.AddTransient<IDedsPrototypeService, DedsPrototypeService>();
+        services.AddTransient<IDedsService, DedsService>();
 
         services.AddHttpClient<IHsdaApiService, HsdaApiService>(httpClient =>
             httpClient.BaseAddress = new Uri(config["ApiConnection"]!));

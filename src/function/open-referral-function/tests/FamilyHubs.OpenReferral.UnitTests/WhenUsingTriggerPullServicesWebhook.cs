@@ -22,7 +22,7 @@ public class WhenUsingTriggerPullServicesWebhook
 
         _hsdaApiServiceMock = Substitute.For<IHsdaApiService>();
 
-        var dedsServiceMock = Substitute.For<IDedsPrototypeService>();
+        var dedsServiceMock = Substitute.For<IDedsService>();
 
         _reqMock = Substitute.For<HttpRequestData>(Substitute.For<FunctionContext>());
         _reqMock.CreateResponse().Returns(Substitute.For<HttpResponseData>(Substitute.For<FunctionContext>()));

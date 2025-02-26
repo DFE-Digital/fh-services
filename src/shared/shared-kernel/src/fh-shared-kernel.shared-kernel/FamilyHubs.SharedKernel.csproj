@@ -64,8 +64,4 @@
 		<ProjectReference Include="..\EntityFrameworkCore.DataEncryption\EntityFrameworkCore.DataEncryption.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="OpenReferral\Entities\" />
-	</ItemGroup>
-
 </Project>

@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.Repository;
 using FamilyHubs.SharedKernel.Factories;
-using FamilyHubs.SharedKernel.OpenReferral.PrototypeEntities;
+using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using FamilyHubs.SharedKernel.Services.Sanitizers;
 using FamilyHubs.SharedKernel.Utilities;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FamilyHubs.OpenReferral.Function.Services;
 
-public interface IDedsPrototypeService
+public interface IDedsService
 {
     Task<int> UpsertService(
         int thirdPartyId, 
@@ -20,7 +20,7 @@ public interface IDedsPrototypeService
         StandardDocumentVersions standardVersion); 
 }
 
-public class DedsPrototypeService(ILogger<DedsPrototypeService> logger, IFunctionDbContext context) : IDedsPrototypeService
+public class DedsService(ILogger<DedsService> logger, IFunctionDbContext context) : IDedsService
 {
     private static readonly JsonSerializerOptions JsonDocumentOptions = new()
     {

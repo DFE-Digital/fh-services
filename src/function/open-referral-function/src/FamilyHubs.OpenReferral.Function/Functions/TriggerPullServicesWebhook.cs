@@ -2,7 +2,7 @@ using System.Net;
 using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.ClientServices;
 using FamilyHubs.OpenReferral.Function.Services;
-using FamilyHubs.SharedKernel.OpenReferral.PrototypeEntities;
+using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -12,7 +12,7 @@ namespace FamilyHubs.OpenReferral.Function.Functions;
 public class TriggerPullServicesWebhook(
     ILogger<TriggerPullServicesWebhook> logger,
     IHsdaApiService hsdaApiService,
-    IDedsPrototypeService dedsPrototypeService)
+    IDedsService dedsService)
 {
     [Function("TriggerPullServicesWebhook")]
     public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "POST")] HttpRequestData req)
@@ -29,7 +29,7 @@ public class TriggerPullServicesWebhook(
         {
             foreach (var service in servicesById.Result)
             {
-                await dedsPrototypeService.UpsertService(1, service.Key, service.Value,  StandardDocumentVersions.OpenReferralInternationalV3);
+                await dedsService.UpsertService(1, service.Key, service.Value,  StandardDocumentVersions.OpenReferralInternationalV3);
             }
         }
         catch (Exception e)

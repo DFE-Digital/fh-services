@@ -1,19 +1,19 @@
 using System.Text.Json;
 using FamilyHubs.OpenReferral.Function.Repository;
 using FamilyHubs.OpenReferral.Function.Services;
-using FamilyHubs.SharedKernel.OpenReferral.PrototypeEntities;
+using FamilyHubs.SharedKernel.OpenReferral.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace FamilyHubs.OpenReferral.IntegrationTests.Services.DedsService;
 
-public class DedsPrototypeServiceTests
+public class DedsServiceTests
 {
     private readonly FunctionDbContext _context;
-    private readonly DedsPrototypeService _dedsService;
+    private readonly Function.Services.DedsService _dedsService;
 
-    public DedsPrototypeServiceTests()
+    public DedsServiceTests()
     {
         // get in memory database
         var options = new DbContextOptionsBuilder<FunctionDbContext>()
@@ -22,8 +22,8 @@ public class DedsPrototypeServiceTests
             .Options;
         _context = new FunctionDbContext(options);
 
-        var logger = Substitute.For<ILogger<DedsPrototypeService>>();
-        _dedsService = new DedsPrototypeService(logger, _context);
+        var logger = Substitute.For<ILogger<Function.Services.DedsService>>();
+        _dedsService = new Function.Services.DedsService(logger, _context);
 
         SetupThirdParty();
         SetupStandardVersion();
