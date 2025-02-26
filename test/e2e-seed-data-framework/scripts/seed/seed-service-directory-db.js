@@ -50,7 +50,7 @@ export async function seed() {
     longitude: -0.056838,
     address1: "101 Test Street",
     city: "London",
-    postcode: "ç",
+    postcode: "SW1AA 1AA",
     stateProvince: "City of London",
   });
   
