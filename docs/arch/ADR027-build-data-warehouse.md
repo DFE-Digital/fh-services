@@ -114,7 +114,3 @@ exceed acceptance performance ranges.
 
     - A read-replica could be used to mitigate performance concerns with the
       direct query approach.
-
-    - Development at some point got paused due to the effort required to add new
-      metrics with the ETL approach.
-
