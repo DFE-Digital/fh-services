@@ -45,15 +45,7 @@ Trying to implement this became really complicated using the existing DEDS schem
 ## Advice
 
 - Aaron Yarnborough - Tech lead - 2025-02-20
-   - Go through the reasons why JSON would be a less complex design in both Database schema, data flow, code logic and Developer productivity.
-   - Go through technical flow diagrams and database schemas, understand if they make sense and are simple to understand. Update where needed.
-   - Go through any performance concerns.
-   - Understand how it can fit in with potential future work around service reviews (manual checking of a service in DEDS)
-   - Understand how it can be a drop in replacement for the existing schema.
-   - Maintainability.
-
-- Josh Taylor - Technical Architect - on 2025-02-20
-   - Go through the reasons why JSON would be a less complex design in Database schema and data flow.
-   - Understand how it can fit in with potential future work around service reviews (manual checking of a service in DEDS)
-   - Understand how it can be a drop in replacement for the existing schema.
-   - Are there any further considerations from a tech arch perspective.
+   - Storing JSON means we don't have to deserialise into separate relational tables, saving processing time and DB load
+   - Doesn't require many tables for each entity, meaning fewer DB items to maintain
+   - Use composite key for uniqueness between third party serviceId and third party Id.
+   - Add in JSON normalization (minify) to improve comparison checking.
