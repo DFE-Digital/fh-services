@@ -1,7 +1,12 @@
-import { Answerable, Task } from '@serenity-js/core';
-import { Navigate, Click, Enter } from '@serenity-js/web';
-import { startButton, postcodeSearchBox, postcodeSearchButton } from './find-page-objects';
-import { isTheFindPageDisplayed } from './find-questions';
+import {Answerable, Task} from '@serenity-js/core';
+import {Navigate, Click, Enter} from '@serenity-js/web';
+import {
+    startButton,
+    postcodeSearchBox,
+    postcodeSearchButton,
+    laServiceLink,
+    vcfsServiceLink
+} from './find-page-objects';
 
 export const navigateToFind = (): Task =>
     Task.where(
@@ -27,3 +32,15 @@ export const clickOnPostcodeSearchButton = (): Task =>
         Click.on(postcodeSearchButton()),
     );
 
+export const clickOnTheLaService = (): Task =>
+    Task.where(
+        `#actor clicks on the LA service`,
+        Click.on(laServiceLink()),
+    );
+
+
+export const clickOnTheVcfsService = (): Task =>
+    Task.where(
+        `#actor clicks on the LA service`,
+        Click.on(vcfsServiceLink()),
+    );

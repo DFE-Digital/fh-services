@@ -1,5 +1,5 @@
 import {defineConfig, devices} from '@playwright/test';
-import type { SerenityOptions } from '@serenity-js/playwright-test';
+import type {SerenityOptions} from '@serenity-js/playwright-test';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -24,7 +24,7 @@ export default defineConfig<SerenityOptions>({
     /* Specifies the reporter to use. For more information, see https://playwright.dev/docs/test-reporters */
     reporter: [
         ['line'],
-        ['html', { open: 'never' }],
+        ['html', {open: 'never'}],
         ['@serenity-js/playwright-test', {
             crew: [
                 '@serenity-js/console-reporter',
@@ -34,7 +34,7 @@ export default defineConfig<SerenityOptions>({
                         includeAbilityDetails: true,
                     },
                 }],
-                ['@serenity-js/core:ArtifactArchiver', { outputDirectory: 'target/site/serenity' }],
+                ['@serenity-js/core:ArtifactArchiver', {outputDirectory: 'target/site/serenity'}],
                 // '@serenity-js/core:StreamReporter',  // uncomment to enable debugging output
             ],
         }],
@@ -54,7 +54,13 @@ export default defineConfig<SerenityOptions>({
         trace: 'on-first-retry',
 
         // Capture screenshot only on failure
-        screenshot: 'only-on-failure'
+        screenshot: 'only-on-failure',
+
+        // http credentials
+        httpCredentials: {
+            username: process.env.USER_NAME,
+            password: process.env.PASSWORD,
+        }
     },
 
     /* Configure projects for major browsers */
