@@ -7,10 +7,11 @@
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                 <h3 class="govuk-fieldset__heading">Language</h3>
             </legend>
-            <select asp-for="SelectedLanguage" id="SelectedLanguage"
-                    asp-items="LocalOfferResultsModel.LanguageOptions"
-                    class="govuk-select"
-                    data-testid="select-language">
+            <select id="SelectedLanguage" data-testid="select-language" class="govuk-select">
+                @foreach (SelectListItem language in LocalOfferResultsModel.LanguageOptions)
+                {
+                    <option value=@language.Value data-testid="language-@language.Text">@language.Text</option>
+                }
             </select>
         </fieldset>
     </div>

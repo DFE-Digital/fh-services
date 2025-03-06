@@ -1000,6 +1000,7 @@ a.dfe-header__link--service:focus {
 /* Styling the summary (the filter heading) */
 .custom-filter .govuk-details__summary {
   display: flex !important; /* Ensure the content aligns properly */
+  width: auto !important;
   align-items: center !important; /* Vertically center the arrow and text */
   cursor: pointer !important; /* Pointer cursor for better UX */
   position: relative !important; /* For proper positioning of the arrow */

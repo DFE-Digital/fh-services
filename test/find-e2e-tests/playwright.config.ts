@@ -45,13 +45,13 @@ export default defineConfig<SerenityOptions>({
         baseURL: process.env.BASE_URL,
 
         /* Set headless: false to see the browser window */
-        headless: true,
+        headless: false,
 
         /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
         actionTimeout: 0,
 
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-        trace: 'on-first-retry',
+        trace: 'on',
 
         // Capture screenshot only on failure
         screenshot: 'only-on-failure'
@@ -88,12 +88,12 @@ export default defineConfig<SerenityOptions>({
             },
         },
         //TODO: Get tests running on mobile safari - need some custom code to scroll elements into view.
-        // {
-        //     name: 'Mobile Safari',
-        //     use: {
-        //         ...devices['iPhone 12'],
-        //     },
-        // }
+        {
+            name: 'Mobile Safari',
+            use: {
+                ...devices['iPhone 12'],
+            },
+        }
     ],
 
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
