@@ -13,7 +13,7 @@ To create an ADR:
 Please note that not all technical decisions are architectural decisions. An architectural decision relates to:
 
 - changes at the module (such as dotnet namespace) or component level (structural changes)
-- architectural characteristcs (also known as  NFRs or CFRs)
+- architectural characteristics (also known as  NFRs or CFRs)
 - dependencies
 - external interfaces
 - construction techniques
@@ -36,3 +36,4 @@ Please note that not all technical decisions are architectural decisions. An arc
 | ADR025 | [Use SonarCloud in 'monitoring mode'](./ADR025-use-sonar-cloud.md) |
 | ADR026 | [Merge 'Find' into 'Connect'](./ADR026-merge-find-into-connect.md) |
 | ADR027 | [Build data warehouse for reporting metrics](./ADR027-build-data-warehouse.md) |
+| ADR029 | [Merge all API services and databases](./ADR029.md) |
