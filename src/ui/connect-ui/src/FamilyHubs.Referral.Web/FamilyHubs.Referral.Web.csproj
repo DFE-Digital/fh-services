@@ -51,5 +51,11 @@
     <ProjectReference Include="..\FamilyHubs.Referral.Infrastructure\FamilyHubs.Referral.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\..\service\notification-api\src\FamilyHubs.Notification.Api.Client\FamilyHubs.Notification.Api.Client.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="applicationHost.xdt">
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
   
 </Project>

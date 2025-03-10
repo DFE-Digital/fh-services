@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <location path="%XDT_SITENAME%" xdt:Locator="Match(path)">
+    <system.webServer>
+      <rewrite xdt:Transform="InsertIfMissing">
+        <allowedServerVariables xdt:Transform="InsertIfMissing">
+          <add name="RESPONSE_WWW_AUTHENTICATE" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing" />
+        </allowedServerVariables>
+        <rules xdt:Transform="InsertIfMissing">
+          <!-- Exemption Rule for /api/health and /api/info -->
+          <rule name="AllowHealthCheckAndInfo" stopProcessing="true" xdt:Transform="InsertIfMissing" xdt:Locator="Match(name)">
+            <match url="^api/(health|info)$" ignoreCase="true" />
+            <action type="None" />
+          </rule>
+
+          <!-- Basic Authentication Rule (applies to all other routes) -->
+          <rule name="BasicAuthentication" stopProcessing="true" xdt:Transform="InsertIfMissing" xdt:Locator="Match(name)">
+            <match url=".*" />
+            <conditions>
+              <add input="{HTTP_AUTHORIZATION}" pattern="^Basic ${WEBSITE_BASIC_AUTH_BASE64_ENCODING}" ignoreCase="false" negate="true" />
+            </conditions>
+            <action type="CustomResponse" statusCode="401" statusReason="Unauthorized" statusDescription="Unauthorized" />
+            <serverVariables>
+              <set name="RESPONSE_WWW_AUTHENTICATE" value="Basic realm=Project" />
+            </serverVariables>
+          </rule>
+        </rules>
+      </rewrite>
+    </system.webServer>
+  </location>
+</configuration>

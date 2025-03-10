@@ -23,7 +23,7 @@ export async function seed() {
     organisationType: "VCFS",
     name: "Test Organisation",
     description: "Test Organisation based in Westminster",
-    adminAreaCode: "E09000030",
+    adminAreaCode: "E09000033",
   });
 
   // Add a Location for the LA Service & VCFS Organisation
@@ -36,7 +36,7 @@ export async function seed() {
     longitude: -0.056838,
     address1: "100 Test Street",
     city: "London",
-    postcode: "E1 2EN",
+    postcode: "SW1A 0RS",
     stateProvince: "City of London",
   });
 
@@ -48,9 +48,9 @@ export async function seed() {
     description: "Test Description",
     latitude: 51.517612,
     longitude: -0.056838,
-    address1: "100 Test Street",
+    address1: "101 Test Street",
     city: "London",
-    postcode: "SW1A 2AD",
+    postcode: "SW1AA 1AA",
     stateProvince: "City of London",
   });
   
@@ -487,7 +487,7 @@ export async function seed() {
   await Database.addService({
     id: 6,
     serviceType: "FamilyExperience",
-    name: "Test LA Service Five",
+    name: "Test LA Service Six",
     description: "Test LA Service Description",
     status: "Active",
     organisationId: 1,

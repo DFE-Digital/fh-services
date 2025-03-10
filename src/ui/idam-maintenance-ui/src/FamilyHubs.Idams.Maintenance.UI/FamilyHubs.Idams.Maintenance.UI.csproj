@@ -82,8 +82,8 @@
 		<None Include="Pages\Error\500.cshtml" />
 	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\FamilyHubs.Idams.Maintenance.Core\FamilyHubs.Idams.Maintenance.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\FamilyHubs.Idams.Maintenance.Core\FamilyHubs.Idams.Maintenance.Core.csproj" />
+	</ItemGroup>
 
 </Project>

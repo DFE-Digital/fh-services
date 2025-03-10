@@ -708,7 +708,35 @@ public static class TestDataProvider
                 Name = "Service X",
                 ServiceType = ServiceType.FamilyExperience,
                 Status = ServiceStatusType.Active
-            }
+            },
+            new()
+            {
+                Name = "Service Y",
+                ServiceType = ServiceType.FamilyExperience,
+                Status = ServiceStatusType.Active,
+                Eligibilities = 
+                [
+                    new EligibilityDto
+                    {
+                        MaximumAge = 24,
+                        MinimumAge = 19
+                    }
+                ]
+            },
+            new()
+            {
+                Name = "Service Z",
+                ServiceType = ServiceType.FamilyExperience,
+                Status = ServiceStatusType.Active,
+                Eligibilities = 
+                [
+                    new EligibilityDto
+                    {
+                        MaximumAge = 24,
+                        MinimumAge = TwentyFivePlus
+                    }
+                ]
+            },
         }
     };
 

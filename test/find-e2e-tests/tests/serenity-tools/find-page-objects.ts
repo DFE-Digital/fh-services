@@ -1,4 +1,4 @@
-import {By, PageElement} from '@serenity-js/web';
+import {By, PageElement, Text} from '@serenity-js/web';
 
 export const startButton = () =>
     PageElement
@@ -16,32 +16,33 @@ export const postcodeSearchButton = () =>
         .located(By.css("[data-testid='button-search']"))
         .describedAs('the search button');
 
-export const filterCategoryFamilySupportAccordion = () =>
-    PageElement.located(By.css("[data-testid='accordion-category-Family']"));
 
-export const filterSubCategoryDebtAndWelfareAdviceCheckbox = () =>
-    PageElement.located(By.css("[data-testid='debt-and-welfare-advice']"));
+export const laServiceInformation = () =>
+    PageElement
+        .located(By.css("[data-testid='service-area-[e2e]testlaserviceone']"))       
+        .describedAs('Test LA Service One Detail Area');
 
-export const filterSubCategoryMoneyBenefitsAndHousingCheckbox = () =>
-    PageElement.located(By.css("[data-testid='money,-benefits-and-housing']"));
 
-export const filterOnlyShowFreeServicesCheckbox = () =>
-    PageElement.located(By.css("[data-testid='cost-free']"));
+export const laServiceLink = () =>
+    PageElement
+        .located(By.css("[data-testid='[e2e]testlaserviceone']"))
+        .describedAs('the Test LA Service One link');
 
-export const filterSearchWithinRadioButton = (miles: number) =>
-    PageElement.located(By.css(`[data-testid='search-within-${miles}']`));
 
-export const filterApplyFiltersButton = () =>
-    PageElement.located(By.css("[data-test-id='submit-button']"));
+export const vcfsServiceInformation = () =>
+    PageElement
+        .located(By.css("[data-testid='service-area-[e2e]testvcfsserviceone']"))   
+        .describedAs('Test VCFS Service One Detail Area');
 
-export const filterDayAvailable = (dayCode: string) =>
-    PageElement.located(By.css(`[data-testid='days-${dayCode}']`));
 
-export const filterAgeRange = (indexNumber: string) =>
-    PageElement.located(By.css(`[data-testid='age-$${indexNumber}']`));
+export const vcfsServiceLink = () =>
+    PageElement
+        .located(By.css("[data-testid='[e2e]testvcfsserviceone']"))
+        .describedAs('the Test VCFS Service One link');
 
-export const filterLanguageList = () =>
-    PageElement.located(By.css("[data-testid='select-language']"));
 
-export const filterLanguage = (languageName: string) =>
-    PageElement.located(By.css(`[data-testid='language-${languageName}']`));
+export const serviceDetailsPage = () =>
+    PageElement
+        .located(By.id("main-content"))
+        .describedAs('Service Details Page');
+
