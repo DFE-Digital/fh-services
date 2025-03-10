@@ -8,9 +8,9 @@ vnetint_address_space = ["10.0.4.80/28"] # Range is 10.0.4.80 - 10.0.4.95
 pvtendpt_address_space = ["10.0.4.96/28"] # Range is 10.0.4.96 - 10.0.4.111
 sql_server_address_space = ["10.0.4.112/28"] # Range is 10.0.4.112 - 10.0.4.127
 
-appgw_errorpage_path_referral_ui = "modules/fhinfrastructurestack/errorpages/referral_ui/preprod"
-appgw_errorpage_path_sd_admin_ui = "modules/fhinfrastructurestack/errorpages/sd_admin_ui/preprod"
-appgw_errorpage_path_sd_ui = "modules/fhinfrastructurestack/errorpages/sd_ui/preprod"
+appgw_errorpage_path_referral_ui = "files/errorpages/referral_ui/preprod"
+appgw_errorpage_path_sd_admin_ui = "files/errorpages/sd_admin_ui/preprod"
+appgw_errorpage_path_sd_ui = "files/errorpages/sd_ui/preprod"
 
 service_principals = {
   reader_usr_group_object_id = "2c713f1b-2c2a-413c-879f-3b48a121bc19"
@@ -22,6 +22,8 @@ service_principals = {
 connect_domain = "preprod.connect-families-to-support.education.gov.uk"
 manage_domain = "preprod.manage-family-support-services-and-accounts.education.gov.uk"
 find_domain = "preprod.find-support-for-your-family.education.gov.uk"
+
+log_retention_in_days = 30
 
 private_endpoint_ip_address = {
   referral_api = "10.0.4.100"

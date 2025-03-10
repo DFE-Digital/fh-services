@@ -8,9 +8,9 @@ vnetint_address_space = ["10.0.3.80/28"] # Range is 10.0.3.80 - 10.0.3.95
 pvtendpt_address_space = ["10.0.3.96/28"] # Range is 10.0.3.96 - 10.0.3.111
 sql_server_address_space = ["10.0.3.112/28"] # Range is 10.0.3.112 - 10.0.3.127
 
-appgw_errorpage_path_referral_ui = "modules/fhinfrastructurestack/errorpages/referral_ui/test2"
-appgw_errorpage_path_sd_admin_ui = "modules/fhinfrastructurestack/errorpages/sd_admin_ui/test2"
-appgw_errorpage_path_sd_ui = "modules/fhinfrastructurestack/errorpages/sd_ui/test2"
+appgw_errorpage_path_referral_ui = "files/errorpages/referral_ui/test2"
+appgw_errorpage_path_sd_admin_ui = "files/errorpages/sd_admin_ui/test2"
+appgw_errorpage_path_sd_ui = "files/errorpages/sd_ui/test2"
 
 service_principals = {
   reader_usr_group_object_id = "2c713f1b-2c2a-413c-879f-3b48a121bc19"
@@ -39,3 +39,4 @@ private_endpoint_ip_address = {
 }
 
 pvt_endp_report_stg_api_ip_address = "10.0.3.109"
+data_factory_exists = false
