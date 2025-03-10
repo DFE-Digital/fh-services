@@ -37,3 +37,4 @@ Please note that not all technical decisions are architectural decisions. An arc
 | ADR026 | [Merge 'Find' into 'Connect'](./ADR026-merge-find-into-connect.md) |
 | ADR027 | [Build data warehouse for reporting metrics](./ADR027-build-data-warehouse.md) |
 | ADR028 | [Simplify DEDS schema to store JSON documents](./ADR028-change-deds-schema.md) |
+| ADR029 | [Implement technical documentation site](./ADR029-tech-docs-site.md) |
