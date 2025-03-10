@@ -1,5 +1,5 @@
 import {defineConfig, devices} from '@playwright/test';
-import type { SerenityOptions } from '@serenity-js/playwright-test';
+import type {SerenityOptions} from '@serenity-js/playwright-test';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -7,7 +7,7 @@ dotenv.config();
 export default defineConfig<SerenityOptions>({
     testDir: './tests',
     /* Maximum time one test can run for, measured in milliseconds. */
-    timeout: 30_000,
+    timeout: 40_000,
     expect: {
         /**
          * The maximum time, in milliseconds, that expect() should wait for a condition to be met.
@@ -24,7 +24,7 @@ export default defineConfig<SerenityOptions>({
     /* Specifies the reporter to use. For more information, see https://playwright.dev/docs/test-reporters */
     reporter: [
         ['line'],
-        ['html', { open: 'never' }],
+        ['html', {open: 'never'}],
         ['@serenity-js/playwright-test', {
             crew: [
                 '@serenity-js/console-reporter',
@@ -34,7 +34,7 @@ export default defineConfig<SerenityOptions>({
                         includeAbilityDetails: true,
                     },
                 }],
-                ['@serenity-js/core:ArtifactArchiver', { outputDirectory: 'target/site/serenity' }],
+                ['@serenity-js/core:ArtifactArchiver', {outputDirectory: 'target/site/serenity'}],
                 // '@serenity-js/core:StreamReporter',  // uncomment to enable debugging output
             ],
         }],
@@ -45,31 +45,41 @@ export default defineConfig<SerenityOptions>({
         baseURL: process.env.BASE_URL,
 
         /* Set headless: false to see the browser window */
-        headless: false,
+        headless: true,
 
         /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
         actionTimeout: 0,
 
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-        trace: 'on',
+        trace: 'on-first-retry',
 
         // Capture screenshot only on failure
-        screenshot: 'only-on-failure'
+        screenshot: 'only-on-failure',
+
+        httpCredentials: {
+            username: process.env.USER_NAME,
+            password: process.env.PASSWORD,
+        }
     },
 
     /* Configure projects for major browsers */
     projects: [
+        { name: 'setup', testMatch: /.*\.setup\.ts/ },
+
         {
             name: 'Chromium',
             use: {
                 ...devices['Desktop Chrome'],
             },
+            dependencies: ['setup']
         },
+
         {
             name: 'Mobile Chrome',
             use: {
                 ...devices['Pixel 5'],
             },
+            dependencies: ['setup']
         },
         // Firefox & Safari have a temporary workaround to ignore HTTPS errors due to a bug around TLS certificates.
         // Jira Ticket: https://dfedigital.atlassian.net.mcas.ms/browse/FHB-1180
@@ -79,6 +89,7 @@ export default defineConfig<SerenityOptions>({
                 ...devices['Desktop Firefox'],
                 ignoreHTTPSErrors: true
             },
+            dependencies: ['setup']
         },
         {
             name: 'Safari',
@@ -86,14 +97,15 @@ export default defineConfig<SerenityOptions>({
                 ...devices['Desktop Safari'],
                 ignoreHTTPSErrors: true
             },
-        },
-        //TODO: Get tests running on mobile safari - need some custom code to scroll elements into view.
-        {
-            name: 'Mobile Safari',
-            use: {
-                ...devices['iPhone 12'],
-            },
+            dependencies: ['setup']
         }
+        //TODO: Get tests running on mobile safari/chrome - need some custom code to scroll elements into view.
+        // {
+        //     name: 'Mobile Safari',
+        //     use: {
+        //         ...devices['iPhone 12'],
+        //     },
+        // }
     ],
 
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */

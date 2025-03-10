@@ -1,4 +1,4 @@
-import {By, PageElement, Text} from '@serenity-js/web';
+import {By, PageElement} from '@serenity-js/web';
 
 export const startButton = () =>
     PageElement

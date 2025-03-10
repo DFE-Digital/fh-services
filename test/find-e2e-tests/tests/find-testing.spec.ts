@@ -22,7 +22,6 @@ describe('Single Directory Tests', () => {
         );
     });
 
-
     it(`should check a ${GENERAL_PUBLIC_USER} is able verify LA Service information`, async ({actorCalled}) => {
         await actorCalled(GENERAL_PUBLIC_USER).attemptsTo(
             navigateToFind(),

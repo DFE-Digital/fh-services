@@ -38,7 +38,6 @@ export const clickOnTheLaService = (): Task =>
         Click.on(laServiceLink()),
     );
 
-
 export const clickOnTheVcfsService = (): Task =>
     Task.where(
         `#actor clicks on the LA service`,
