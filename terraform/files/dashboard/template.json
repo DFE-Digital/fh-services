@@ -1,0 +1,146 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 10,
+      "content": {
+        "chartId": "workbookdc737cd0-bbe3-4195-aac0-9bfc2c3cfbca",
+        "version": "MetricsItem/2.0",
+        "size": 0,
+        "chartType": 2,
+        "resourceType": "microsoft.web/sites",
+        "metricScope": 0,
+        "resourceIds": [
+          "/subscriptions/56c128b8-5ca9-4328-bb24-a11c829f4af9/resourceGroups/s181d01-familyhubs/providers/Microsoft.Web/sites/s181d01-as-fh-sd-ui",
+          "/subscriptions/56c128b8-5ca9-4328-bb24-a11c829f4af9/resourceGroups/s181d01-familyhubs/providers/Microsoft.Web/sites/s181d01-as-fh-sd-api",
+          "/subscriptions/56c128b8-5ca9-4328-bb24-a11c829f4af9/resourceGroups/s181d01-familyhubs/providers/Microsoft.Web/sites/s181d01-as-fh-sd-admin-ui",
+          "/subscriptions/56c128b8-5ca9-4328-bb24-a11c829f4af9/resourceGroups/s181d01-familyhubs/providers/Microsoft.Web/sites/s181d01-as-fh-report-api",
+          "/subscriptions/56c128b8-5ca9-4328-bb24-a11c829f4af9/resourceGroups/s181d01-familyhubs/providers/Microsoft.Web/sites/s181d01-as-fh-referral-ui",
+          "/subscriptions/56c128b8-5ca9-4328-bb24-a11c829f4af9/resourceGroups/s181d01-familyhubs/providers/Microsoft.Web/sites/s181d01-as-fh-referral-api",
+          "/subscriptions/56c128b8-5ca9-4328-bb24-a11c829f4af9/resourceGroups/s181d01-familyhubs/providers/Microsoft.Web/sites/s181d01-as-fh-ref-dash-ui",
+          "/subscriptions/56c128b8-5ca9-4328-bb24-a11c829f4af9/resourceGroups/s181d01-familyhubs/providers/Microsoft.Web/sites/s181d01-as-fh-notification-api",
+          "/subscriptions/56c128b8-5ca9-4328-bb24-a11c829f4af9/resourceGroups/s181d01-familyhubs/providers/Microsoft.Web/sites/s181d01-as-fh-idam-api"
+        ],
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "metrics": [
+          {
+            "namespace": "microsoft.web/sites",
+            "metric": "microsoft.web/sites--HttpResponseTime",
+            "aggregation": 4
+          }
+        ],
+        "title": "API and UI Response Times",
+        "gridSettings": {
+          "rowLimit": 10000
+        }
+      },
+      "name": "metric - 8"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let postcodes_io = AppDependencies \r\n| where Target == \"api.postcodes.io\" and Name contains \"/postcodes/SW1A2AA\"\r\n| extend Service = \"Postcodes.io\";\r\nlet gov_notify = AppDependencies \r\n| where Target == \"api.notifications.service.gov.uk\" and Name contains \"/v2/notifications/email\"\r\n| extend Service = \"GOV Notify\";\r\nlet one_login = AppDependencies \r\n| where Target contains \".account.gov.uk\" and Name contains \"/.well-known/openid-configuration\"\r\n| extend Service = \"One Login\";\r\nunion postcodes_io, gov_notify, one_login\r\n| summarize Response = avg(DurationMs) by bin(TimeGenerated, 30m), Service\r\n| render timechart",
+        "size": 0,
+        "aggregation": 3,
+        "title": "Average Response times (ms) for 3rd Party Services",
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "/subscriptions/56c128b8-5ca9-4328-bb24-a11c829f4af9/resourceGroups/s181d01-familyhubs/providers/Microsoft.OperationalInsights/workspaces/s181d01-la-as-familyhubs"
+        ],
+        "visualization": "timechart",
+        "chartSettings": {
+          "xSettings": {
+            "label": "Time"
+          },
+          "ySettings": {
+            "label": "Response ms"
+          }
+        }
+      },
+      "name": "query - 9"
+    },
+    {
+      "type": 10,
+      "content": {
+        "chartId": "workbook9b384420-e6df-47ef-912f-38fe25b95b4f",
+        "version": "MetricsItem/2.0",
+        "size": 0,
+        "chartType": 3,
+        "resourceType": "microsoft.datafactory/factories",
+        "metricScope": 0,
+        "resourceIds": [
+          "/subscriptions/56c128b8-5ca9-4328-bb24-a11c829f4af9/resourceGroups/s181d01-familyhubs/providers/Microsoft.DataFactory/factories/s181d01-dataf-default"
+        ],
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "metrics": [
+          {
+            "namespace": "microsoft.datafactory/factories",
+            "metric": "microsoft.datafactory/factories--PipelineFailedRuns",
+            "aggregation": 1,
+            "splitBy": null,
+            "columnName": "Failed runs"
+          },
+          {
+            "namespace": "microsoft.datafactory/factories",
+            "metric": "microsoft.datafactory/factories--PipelineSucceededRuns",
+            "aggregation": 1,
+            "columnName": "Successful runs"
+          }
+        ],
+        "title": "ADF Status",
+        "mapSettings": {
+          "locInfo": "AzureResource",
+          "sizeSettings": "microsoft.datafactory/factories--PipelineFailedRuns",
+          "sizeAggregation": "Sum",
+          "legendMetric": "microsoft.datafactory/factories--PipelineFailedRuns",
+          "legendAggregation": "Sum",
+          "itemColorSettings": {
+            "type": "heatmap",
+            "colorAggregation": "Sum",
+            "nodeColorField": "microsoft.datafactory/factories--PipelineFailedRuns",
+            "heatmapPalette": "greenRed"
+          },
+          "locInfoColumn": "Name"
+        },
+        "graphSettings": {
+          "type": 0,
+          "topContent": {
+            "columnMatch": "Subscription",
+            "formatter": 1
+          },
+          "centerContent": {
+            "columnMatch": "microsoft.datafactory/factories--PipelineFailedRuns",
+            "formatter": 1,
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "maximumSignificantDigits": 3,
+                "maximumFractionDigits": 2
+              }
+            }
+          }
+        },
+        "gridSettings": {
+          "rowLimit": 10000
+        }
+      },
+      "name": "metric - 10"
+    }
+  ],
+  "fallbackResourceIds": [
+    "azure monitor"
+  ],
+  "styleSettings": {
+    "paddingStyle": "narrow"
+  },
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

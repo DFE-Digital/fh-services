@@ -73,7 +73,7 @@ jobs:
       - name: Terraform Plan
         run: |
           cd terraform
-          VARS_FILE=$(echo "${{ inputs.environment }}.tfvars" | tr '[:upper:]' '[:lower:]')
+          VARS_FILE=$(echo "envs/${{ inputs.environment }}/env.tfvars" | tr '[:upper:]' '[:lower:]')
           terraform plan \
             -var-file=$VARS_FILE \
             -var='sql_server_user=${{ secrets.TERRAFORM_APP_SQL_SERVER_USER }}' \
@@ -84,6 +84,7 @@ jobs:
             -var='ssl_cert_path_sd_ui=${{ secrets.TERRAFORM_SSL_FIND_PFX }}' \
             -var='ssl_cert_path_referral_ui=${{ secrets.TERRAFORM_SSL_CONNECT_PFX }}' \
             -var='ssl_cert_path_sd_admin_ui=${{ secrets.TERRAFORM_SSL_MANAGE_PFX }}' \
+            -var='slack_support_channel_email=${{ vars.SLACK_SUPPORT_CHANNEL_EMAIL }}' \
             -out=tfplan
       
       - name: Terraform Apply

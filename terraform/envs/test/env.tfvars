@@ -8,9 +8,9 @@ vnetint_address_space = ["10.0.1.80/28"]
 pvtendpt_address_space = ["10.0.1.96/28"]
 sql_server_address_space = ["10.0.1.112/28"]
 
-appgw_errorpage_path_referral_ui = "modules/fhinfrastructurestack/errorpages/referral_ui/test"
-appgw_errorpage_path_sd_admin_ui = "modules/fhinfrastructurestack/errorpages/sd_admin_ui/test"
-appgw_errorpage_path_sd_ui = "modules/fhinfrastructurestack/errorpages/sd_ui/test"
+appgw_errorpage_path_referral_ui = "files/errorpages/referral_ui/test"
+appgw_errorpage_path_sd_admin_ui = "files/errorpages/sd_admin_ui/test"
+appgw_errorpage_path_sd_ui = "files/errorpages/sd_ui/test"
 
 service_principals = {
   reader_usr_group_object_id = "2c713f1b-2c2a-413c-879f-3b48a121bc19"

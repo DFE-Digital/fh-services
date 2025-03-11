@@ -1,7 +1,6 @@
 subscription_id = "ee94c326-6d5d-4cc3-b439-4e39dfde6ebc"
 prefix = "s181p01"
 environment = "Prod"
-email_notify = "growingupwell.live@education.gov.uk"
 defender_app_services_tier = "Standard"
 autoscale_rule_default_capacity = 4
 autoscale_rule_minimum_capacity = 4
@@ -12,9 +11,9 @@ vnetint_address_space = ["10.0.2.80/28"]
 pvtendpt_address_space = ["10.0.2.96/28"]
 sql_server_address_space = ["10.0.2.112/28"]
 
-appgw_errorpage_path_referral_ui = "modules/fhinfrastructurestack/errorpages/referral_ui/prod"
-appgw_errorpage_path_sd_admin_ui = "modules/fhinfrastructurestack/errorpages/sd_admin_ui/prod"
-appgw_errorpage_path_sd_ui = "modules/fhinfrastructurestack/errorpages/sd_ui/prod"
+appgw_errorpage_path_referral_ui = "files/errorpages/referral_ui/prod"
+appgw_errorpage_path_sd_admin_ui = "files/errorpages/sd_admin_ui/prod"
+appgw_errorpage_path_sd_ui = "files/errorpages/sd_ui/prod"
 
 service_principals = {
   reader_usr_group_object_id = "2c713f1b-2c2a-413c-879f-3b48a121bc19"
@@ -26,6 +25,8 @@ service_principals = {
 connect_domain = "connect-families-to-support.education.gov.uk"
 manage_domain = "manage-family-support-services-and-accounts.education.gov.uk"
 find_domain = "find-support-for-your-family.education.gov.uk"
+
+log_retention_in_days = 30
 
 private_endpoint_ip_address = {
   referral_api = "10.0.2.100"

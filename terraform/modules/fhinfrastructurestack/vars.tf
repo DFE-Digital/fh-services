@@ -1,3 +1,8 @@
+variable "subscription_id" {
+  type = string
+  description = "Azure subscription Id for the environment."
+}
+
 variable "location" {
   type = string
   description = "The Azure region the services are deployed in."
@@ -143,10 +148,9 @@ variable "autoscale_rule_maximum_capacity" {
   default = 10
 }
 
-variable "email_notify" {
+variable "slack_support_channel_email" {
   type = string
-  description = "Email to send alert notifications to."
-  default = "growingupwell.lower@education.gov.uk"
+  description = "The Slack channel email to send alerts to."
 }
 
 variable "defender_app_services_tier" {
@@ -168,6 +172,16 @@ variable "manage_domain" {
 variable "find_domain" {
   type = string
   description = "Domain name for find."
+}
+
+variable "log_retention_in_days" {
+  type = number
+  description = "Length of time to retain logs in Log Analytics and App Insights."
+  default = 30 # GDS - https://gds-way.digital.cabinet-office.gov.uk/standards/logging.html#short-term-storage
+  validation {
+    condition = contains([30, 60, 90, 120, 180, 270, 365, 550, 730], var.log_retention_in_days)
+    error_message = "The log retention must be one of 30, 60, 90, 120, 180, 270, 365, 550, 730."
+  }
 }
 
 # Report Staging API Application - Variable Declaration - fh_report_stg_api
@@ -204,4 +218,10 @@ variable "service_principals" {
     github_enterprise_object_id = string # Allows GitHub to deploy into the resource group
   })
   description = "Group and enterprise object Ids for service principals."
+}
+
+variable "data_factory_exists" {
+  type = bool
+  description = "Whether the data factory exists or not for the environment. It's optional for test environments."
+  default = true
 }

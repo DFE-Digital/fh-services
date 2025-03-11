@@ -1734,7 +1734,7 @@ resource "azurerm_mssql_server_vulnerability_assessment" "sqlserver_db_vulnerabi
     enabled                   = true
     email_subscription_admins = true
     emails = [
-      var.email_notify
+      var.slack_support_channel_email
     ]
   }
 }
@@ -2478,7 +2478,7 @@ resource "azurerm_storage_account" "storage_appgw_errorpage" {
 
 resource "azurerm_storage_container" "container_appgw_referral_ui" {
   name                  				= "${var.prefix}sacontappgwrefui"
-  storage_account_name  				= azurerm_storage_account.storage_appgw_errorpage.name
+  storage_account_id  				= azurerm_storage_account.storage_appgw_errorpage.id
   container_access_type 				= "blob"
 }
 
@@ -2504,7 +2504,7 @@ resource "azurerm_storage_blob" "blob_appgw_referral_ui_error403" {
 
 resource "azurerm_storage_container" "container_appgw_sd_admin_ui" {
   name                  				= "${var.prefix}sacontappgwsdadminui"
-  storage_account_name  				= azurerm_storage_account.storage_appgw_errorpage.name
+  storage_account_id  				= azurerm_storage_account.storage_appgw_errorpage.id
   container_access_type 				= "blob"
 }
 
@@ -2530,7 +2530,7 @@ resource "azurerm_storage_blob" "blob_appgw_sd_admin_ui_error403" {
 
 resource "azurerm_storage_container" "container_appgw_sd_ui" {
   name                  				= "${var.prefix}sacontappgwsdui"
-  storage_account_name  				= azurerm_storage_account.storage_appgw_errorpage.name
+  storage_account_id  				= azurerm_storage_account.storage_appgw_errorpage.id
   container_access_type 				= "blob"
 }
 
@@ -2576,7 +2576,7 @@ resource "azurerm_storage_account" "storage_db_logs" {
 
 resource "azurerm_storage_container" "container_db_va_logs" {
   name                  = "${var.prefix}sadbvalogs"
-  storage_account_name  = azurerm_storage_account.storage_db_logs.name
+  storage_account_id  = azurerm_storage_account.storage_db_logs.id
   container_access_type = "blob"
 }
 
@@ -2642,282 +2642,8 @@ resource "azurerm_monitor_action_group" "email_grp" {
   resource_group_name   = local.resource_group_name
   short_name            = "shrnm"
   email_receiver {
-    email_address       = "${var.email_notify}"
+    email_address       = "${var.slack_support_channel_email}"
     name                = "FamilyHub"
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "cpu_alert01" {
-  name                  = "${var.prefix}-fh-cpu-alert-referral-ui"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_insights.app_insights.id]
-  description           = "CPU-Utilization is greater than 75%"
-  window_size           = "PT30M"
-  frequency             = "PT5M"
-  action {
-    action_group_id     =  azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation         = "Average"
-    metric_name         = "performanceCounters/processCpuPercentage"
-    metric_namespace    = "Microsoft.Insights/components"
-    operator            = "GreaterThan"
-    threshold           = 75
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "cpu_alert02" {
-  name                  = "${var.prefix}-fh-cpu-alert-sd-api"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_insights.app_insights.id]
-  description           = "CPU-Utilization is greater than 75%"
-  window_size           = "PT15M"
-  frequency             = "PT5M"  
-  action {
-    action_group_id     =  azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation         = "Average"
-    metric_name         = "performanceCounters/processCpuPercentage"
-    metric_namespace    = "Microsoft.Insights/components"
-    operator            = "GreaterThan"
-    threshold           = 75
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "cpu_alert03" {
-  name                  = "${var.prefix}-fh-cpu-alert-sd-ui"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_insights.app_insights.id]
-  description           = "CPU-Utilization is greater than 75%"
-  window_size           = "PT15M"
-  frequency             = "PT5M"  
-  action {
-    action_group_id     =  azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation         = "Average"
-    metric_name         = "performanceCounters/processCpuPercentage"
-    metric_namespace    = "Microsoft.Insights/components"
-    operator            = "GreaterThan"
-    threshold           = 75
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "cpu_alert04" {
-  name                  = "${var.prefix}-fh-cpu-alert-sd-admin-ui"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_insights.app_insights.id]
-  description           = "CPU-Utilization is greater than 75%"
-  window_size           = "PT15M"
-  frequency             = "PT5M"  
-  action {
-    action_group_id     =  azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation         = "Average"
-    metric_name         = "performanceCounters/processCpuPercentage"
-    metric_namespace    = "Microsoft.Insights/components"
-    operator            = "GreaterThan"
-    threshold           = 75
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "response-01" {
-  name                  = "${var.prefix}-fh-response-alert-referral-ui"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_insights.app_insights.id]
-  description           = "Response Time alert has reached the threshold"
-  window_size           = "PT15M"
-  frequency             = "PT5M"  
-  action {
-    action_group_id     =  azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation         = "Average"
-    metric_name         = "performanceCounters/requestExecutionTime"
-    metric_namespace    = "Microsoft.Insights/components"
-    operator            = "GreaterThan"
-    threshold           = 10000
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "response-02" {
-  name                  = "${var.prefix}-fh-response-alert-sd-api"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_insights.app_insights.id]
-  description           = "Response Time alert has reached the threshold"
-  window_size           = "PT15M"
-  frequency             = "PT5M"  
-  action {
-    action_group_id     =  azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation         = "Average"
-    metric_name         = "performanceCounters/requestExecutionTime"
-    metric_namespace    = "Microsoft.Insights/components"
-    operator            = "GreaterThan"
-    threshold           = 10000
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "response-03" {
-  name                  = "${var.prefix}-fh-response-alert-sd-ui"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_insights.app_insights.id]
-  description           = "Response Time alert has reached the threshold"
-  window_size           = "PT15M"
-  frequency             = "PT5M"  
-  action {
-    action_group_id     =  azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation         = "Average"
-    metric_name         = "performanceCounters/requestExecutionTime"
-    metric_namespace    = "Microsoft.Insights/components"
-    operator            = "GreaterThan"
-    threshold           = 10000
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "response-04" {
-  name                  = "${var.prefix}-fh-response-alert-sd-admin-ui"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_insights.app_insights.id]
-  description           = "Response Time alert has reached the threshold"
-  window_size           = "PT15M"
-  frequency             = "PT5M"  
-  action {
-    action_group_id     =  azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation         = "Average"
-    metric_name         = "performanceCounters/requestExecutionTime"
-    metric_namespace    = "Microsoft.Insights/components"
-    operator            = "GreaterThan"
-    threshold           = 10000
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "backend01" {
-  name                  = "${var.prefix}-fh-backend-appgtway-alert-ref-ui-app"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_gateway.ref_ui_app_gateway.id]
-  window_size           = "PT15M"
-  frequency             = "PT5M"  
-  action {
-    action_group_id     =  azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation      = "Average"
-    metric_name      = "BackendConnectTime"
-    metric_namespace = "Microsoft.Network/applicationGateways"
-    operator         = "GreaterThan"
-    threshold        = 30
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "backend02" {
-  name                  = "${var.prefix}-fh-backend-appgtway-alert-sd-admin-ui-app"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_gateway.sd_admin_ui_app_gateway.id]
-  window_size           = "PT15M"
-  frequency             = "PT5M"
-  action {
-    action_group_id     =  azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation      = "Average"
-    metric_name      = "BackendConnectTime"
-    metric_namespace = "Microsoft.Network/applicationGateways"
-    operator         = "GreaterThan"
-    threshold        = 30
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "backend03" {
-  name                  = "${var.prefix}-fh-backend-appgtway-alert-sd-ui-app"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_gateway.sd_ui_app_gateway.id]
-  window_size           = "PT15M"
-  frequency             = "PT5M"
-  action {
-    action_group_id     =  azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation         = "Average"
-    metric_name         = "BackendConnectTime"
-    metric_namespace    = "Microsoft.Network/applicationGateways"
-    operator            = "GreaterThan"
-    threshold           = 30
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "failedalt-01" {
-  name                  = "${var.prefix}-fh-failedrequests-appgtway-alert-ref-ui-app"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_gateway.ref_ui_app_gateway.id]
-  window_size           = "PT15M"
-  frequency             = "PT5M"
-  action {
-    action_group_id     = azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation         = "Total"
-    metric_name         = "FailedRequests"
-    metric_namespace    = "Microsoft.Network/applicationGateways"
-    operator            = "GreaterThan"
-    threshold           = 5000
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "failedalt-02" {
-  name                  = "${var.prefix}-fh-failedrequests-appgtway-alert-sd-admin-ui-app"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_gateway.sd_admin_ui_app_gateway.id]
-  window_size           = "PT15M"
-  frequency             = "PT5M"
-  action {
-    action_group_id     = azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation         = "Total"
-    metric_name         = "FailedRequests"
-    metric_namespace    = "Microsoft.Network/applicationGateways"
-    operator            = "GreaterThan"
-    threshold           = 5000
-  }
-  tags = local.tags
-}
-
-resource "azurerm_monitor_metric_alert" "failedalt-03" {
-  name                  = "${var.prefix}-fh-failedrequests-appgtway-alert-sd-ui-app"
-  resource_group_name   = local.resource_group_name
-  scopes                = [azurerm_application_gateway.sd_ui_app_gateway.id]
-  window_size           = "PT15M"
-  frequency             = "PT5M"
-  action {
-    action_group_id     = azurerm_monitor_action_group.email_grp.id
-  }
-  criteria {
-    aggregation         = "Total"
-    metric_name         = "FailedRequests"
-    metric_namespace    = "Microsoft.Network/applicationGateways"
-    operator            = "GreaterThan"
-    threshold           = 5000
   }
   tags = local.tags
 }
