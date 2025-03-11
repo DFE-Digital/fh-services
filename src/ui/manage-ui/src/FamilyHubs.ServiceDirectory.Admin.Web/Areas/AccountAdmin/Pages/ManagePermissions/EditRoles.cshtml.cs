@@ -58,7 +58,15 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
             {
                 var oldRole = GetRole(account);
                 var newRole = GetSelectedRole();
+
+                if (oldRole == newRole)
+                {
+                    // No updates required
+                    return RedirectToPage("EditRolesChangedConfirmation", new { AccountId = accountId });
+                }
+
                 SetOrganisationType(newRole);
+
                 var request = new UpdateClaimDto { AccountId = accountId, Name = "role", Value = newRole };
                 await _idamClient.UpdateClaim(request);
 
@@ -71,7 +79,8 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
                 if (IsLa)
                 {
                     await _emailService.SendLaPermissionChangeEmail(email);
-                }else if ( IsVcs)
+                }
+                else if (IsVcs)
                 {
                     await _emailService.SendVcsPermissionChangeEmail(email);
                 }
@@ -122,14 +131,14 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
 
         private void SetOrganisationType(string role)
         {
-            if (role == RoleTypes.LaManager || role == RoleTypes.LaProfessional || role == RoleTypes.LaDualRole)
+            switch (role)
             {
-                IsLa = true;
-            }
-            //Vcs
-            else if (role == RoleTypes.VcsManager || role == RoleTypes.VcsProfessional || role == RoleTypes.VcsDualRole)
-            {
-                IsVcs = true;
+                case RoleTypes.LaManager or RoleTypes.LaProfessional or RoleTypes.LaDualRole:
+                    IsLa = true;
+                    break;
+                case RoleTypes.VcsManager or RoleTypes.VcsProfessional or RoleTypes.VcsDualRole:
+                    IsVcs = true;
+                    break;
             }
         }
 

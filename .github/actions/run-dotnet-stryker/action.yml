@@ -1,0 +1,46 @@
+name: Run DotNet Stryker
+description: Runs DotNet Stryker Mutations Testing against a solution or project and publishes the results to the workflow
+
+inputs:
+  working_directory:
+    description: The working directory which contains the Solution/Project to be ran against
+    required: true
+  config_path:
+    description: The Stryker configuration file path
+    required: true
+  artifact:
+    description: The artifact to upload to the Workflow results
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install Stryker Mutator
+      shell: bash
+      run: dotnet tool install --global dotnet-stryker
+      
+    - name: Build Project
+      shell: bash
+      run: |
+        cd ${{ inputs.working_directory }}
+        dotnet restore
+        dotnet build --no-restore
+        
+    - name: Run Stryker Mutator
+      shell: bash
+      run: |
+        cd ${{ inputs.working_directory }}
+        dotnet stryker -f ${{ inputs.config_path }} -O StrykerOutput --skip-version-check --concurrency `nproc`
+      
+    - name: Generate Stryker Report
+      shell: bash
+      run: |
+        echo '### ${{ inputs.artifact }} 🚀' >> $GITHUB_STEP_SUMMARY
+        cat ${{ inputs.working_directory }}/StrykerOutput/reports/mutation-report.md >> $GITHUB_STEP_SUMMARY
+
+    - name: Upload HTML Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: Stryker - ${{ inputs.artifact }} - HTML Report
+        path: ${{ inputs.working_directory }}/StrykerOutput/reports/mutation-report.html
+        compression-level: '9'

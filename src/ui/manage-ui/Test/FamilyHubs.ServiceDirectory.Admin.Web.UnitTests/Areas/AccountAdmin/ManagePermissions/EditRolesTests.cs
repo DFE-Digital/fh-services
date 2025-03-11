@@ -142,7 +142,8 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.UnitTests.Areas.AccountAdmin.Man
             _mockIdamClient.GetAccountById(Arg.Any<long>()).Returns(account);
             var sut = new EditRolesModel(_mockIdamClient, _mockEmailService)
             {
-                LaManager = true
+                // Set a different role to what the user has
+                LaProfessional = true
             };
             //  Act
             var result = await sut.OnPost(AccountId);

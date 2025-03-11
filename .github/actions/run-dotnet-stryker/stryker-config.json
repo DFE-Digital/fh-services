@@ -1,0 +1,11 @@
+{
+  "stryker-config": {
+    "reporters": ["progress", "markdown", "html"],
+    "mutate": [
+      "!**/*Program.cs", "!**/*StartupExtensions.cs",
+      "!**/Migrations/*.cs",
+      "!**/*ApplicationDbContext.cs", "!**/*ReportDbContext.cs", "!**/*FunctionDbContext.cs",
+      "!**/*ReferralSeedData.cs", "!**/*OrganisationSeedData.cs"
+    ]
+  }
+}

@@ -43,6 +43,8 @@ public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
     protected DataIntegrationTestBase()
     {
         _fixtureObjectGenerator = new Fixture();
+        _fixtureObjectGenerator.Customizations.Add(new RandomNumericSequenceGenerator(short.MaxValue, int.MaxValue));
+
         TestOrganisation = TestDataProvider.GetTestCountyCouncilDto();
         TestOrganisationFreeService = TestDataProvider.GetTestCountyCouncilWithFreeServiceDto();
         TestOrganisationWithoutAnyServices = TestDataProvider.GetTestCountyCouncilWithoutAnyServices();

@@ -4,11 +4,12 @@
     @foreach (var item in Model.SearchResults.Items)
     {
         var eligibility = item.Eligibilities.FirstOrDefault();
+        var serviceNameTestId = @item.Name.ToLower().Replace(" ", "");
 
-        <li tab-index="0">
+         <li tab-index="0" data-testid="@($"service-area-{serviceNameTestId}")">
             <h2 class="govuk-heading-s govuk-!-margin-bottom-3">
                 <a class="govuk-link" asp-page="/ProfessionalReferral/LocalOfferDetail" asp-route-serviceid="@item.Id"
-                   data-testid=@item.Name.ToLower().Replace(" ", "")>@item.Name</a><span class="govuk-!-font-weight-regular">@item.DistanceText</span>
+                  data-testid="@serviceNameTestId">@item.Name</a><span class="govuk-!-font-weight-regular">@item.DistanceText</span>
             </h2>
             @if (!string.IsNullOrWhiteSpace(item.OrganisationName))
             {

@@ -1,4 +1,5 @@
 using FamilyHubs.SharedKernel.Extensions;
+using FamilyHubs.SharedKernel.Razor.FeatureFlags;
 using Microsoft.FeatureManagement;
 using Serilog;
 
@@ -24,8 +25,10 @@ public static class Program
 
             builder.ConfigureHost();
             
-            builder.Services.AddFeatureManagement(builder.Configuration.GetSection("FeatureManagement"));
-            
+            builder.Services.AddFeatureManagement(builder.Configuration)
+                .AddFeatureFilter<AlsoFilter>()
+                .AddFeatureFilter<EnabledFilter>();
+
             builder.Services.ConfigureServices(builder.Configuration);
 
             var app = builder.Build();

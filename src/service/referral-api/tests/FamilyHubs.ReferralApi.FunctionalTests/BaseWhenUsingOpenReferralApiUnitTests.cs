@@ -9,16 +9,16 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FamilyHubs.Referral.FunctionalTests;
 
-public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
+public class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
 {
     protected readonly HttpClient Client;
     protected readonly CustomWebApplicationFactory? WebAppFactory;
-    protected readonly ServiceDirectoryFactory? ServiceDirectoryFactory;
+    private readonly ServiceDirectoryFactory? _serviceDirectoryFactory;
     protected readonly JwtSecurityToken? Token;
     protected readonly JwtSecurityToken? TokenLaManager;
-    protected readonly JwtSecurityToken? TokenForOrganisation1;
-    protected readonly JwtSecurityToken? Vcstoken;
-    protected readonly JwtSecurityToken? Forbiddentoken;
+    protected readonly JwtSecurityToken? TokenForOrganisationOne;
+    protected readonly JwtSecurityToken? VcsToken;
+    protected readonly JwtSecurityToken? ForbiddenToken;
 
     protected BaseWhenUsingOpenReferralApiUnitTests()
     {
@@ -55,7 +55,7 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
             expires: DateTime.UtcNow.AddMinutes(5)
         );
 
-        TokenForOrganisation1 = new JwtSecurityToken(
+        TokenForOrganisationOne = new JwtSecurityToken(
             claims: new List<Claim>
             {
                 new("sub", conf["GovUkOidcConfiguration:Oidc:ClientId"] ?? ""),
@@ -69,7 +69,7 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
             expires: DateTime.UtcNow.AddMinutes(5)
         );
 
-        Vcstoken = new JwtSecurityToken(
+        VcsToken = new JwtSecurityToken(
             claims: new List<Claim>
             {
                 new("sub", conf["GovUkOidcConfiguration:Oidc:ClientId"] ?? ""),
@@ -82,7 +82,7 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
             expires: DateTime.UtcNow.AddMinutes(5)
         );
 
-        Forbiddentoken = new JwtSecurityToken(
+        ForbiddenToken = new JwtSecurityToken(
             claims: new List<Claim>
             {
                 new("sub", conf["GovUkOidcConfiguration:Oidc:ClientId"] ?? ""),
@@ -95,9 +95,9 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
             expires: DateTime.UtcNow.AddMinutes(5)
         );
 
-        ServiceDirectoryFactory = new ServiceDirectoryFactory();
-        ServiceDirectoryFactory.SetupTestDatabaseAndSeedData();
-        var sdClient = ServiceDirectoryFactory.CreateDefaultClient();
+        _serviceDirectoryFactory = new ServiceDirectoryFactory();
+        _serviceDirectoryFactory.SetupTestDatabaseAndSeedData();
+        var sdClient = _serviceDirectoryFactory.CreateDefaultClient();
 
         WebAppFactory = new CustomWebApplicationFactory(ConfigSetup, sdClient);
         WebAppFactory.SetupTestDatabaseAndSeedData();
@@ -143,16 +143,19 @@ public abstract class BaseWhenUsingOpenReferralApiUnitTests : IDisposable
         });
 
     protected virtual void Dispose(bool disposing)
-    {
-        if (WebAppFactory != null)
-        {
-            using var scope = WebAppFactory.Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            context.Database.EnsureDeleted();
-        }
+    { 
+        using IServiceScope referralScope = WebAppFactory!.Services.CreateScope(); 
+        using IServiceScope serviceDirectoryScope = _serviceDirectoryFactory!.Services.CreateScope();
+        
+        ApplicationDbContext referralDbContext = referralScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        ServiceDirectory.Data.Repository.ApplicationDbContext serviceDirectoryDbContext = serviceDirectoryScope.ServiceProvider.GetRequiredService<ServiceDirectory.Data.Repository.ApplicationDbContext>();
+        
+        referralDbContext.Database.EnsureDeleted(); 
+        serviceDirectoryDbContext.Database.EnsureDeleted();
 
         Client.Dispose();
         WebAppFactory?.Dispose();
+        _serviceDirectoryFactory?.Dispose();
     }
 
     public void Dispose()

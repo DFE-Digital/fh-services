@@ -40,11 +40,10 @@
   border-width: 0 2px 2px 0 !important; /* Creates the diagonal line */
   padding: 5px !important; /* Size of the arrow */
   display: inline-block !important; /* Ensure proper rendering */
-  transition: transform 0.3s ease !important; /* Smooth transition for rotation */
 }
 
 /* Rotate the arrow upwards when the filter is expanded */
-.custom-filter .govuk-details[open] .govuk-details__summary::after {
+.custom-filter[open] .govuk-details__summary::after {
   transform: translateY(-50%) rotate(-135deg) !important; /* Rotate to upwards when expanded */
 }
 

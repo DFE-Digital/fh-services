@@ -46,7 +46,7 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
             _emailService = emailService;
         }
 
-        public async Task OnGet(long accountId)
+        public async Task<IActionResult> OnGet(long accountId)
         {
             BackUrl = await _cacheService.RetrieveLastPageName();
 
@@ -54,13 +54,15 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
 
             if (account == null)
             {
-                throw new ArgumentException("User Account not found");
+                // User not found
+                return RedirectToPage("/ManagePermissions/Index");
             }
 
             UserName = account.Name;
             await _cacheService.StoreString("DeleteUserName", UserName);
-        }
 
+            return Page();
+        }
 
         public async Task<IActionResult> OnPost(long accountId)
         {

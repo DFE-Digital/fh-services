@@ -1,5 +1,6 @@
 ﻿@page
 @using FamilyHubs.Referral.Core.Helper
+@using FamilyHubs.ServiceDirectory.Shared.Dto
 @using FamilyHubs.ServiceDirectory.Shared.Enums
 @using FamilyHubs.SharedKernel.Enums
 @using FamilyHubs.SharedKernel.Razor.Lists
@@ -37,14 +38,14 @@
         @* todo: show bsl, translations in language? *@
 
         <summary-list class="govuk-!-margin-bottom-9">
-            <summary-row key="Support it offers" show-empty>
+            <summary-row key="Support it offers">
                 @if (Model.LocalOffer.Taxonomies?.Any() == true)
                 {
                     <govuk-ul items="@Model.LocalOffer.Taxonomies.Select(t => t.Name).Order()"></govuk-ul>
                 }
             </summary-row>
             
-            <summary-row key="Does support relate to children or young people?" show-empty>
+            <summary-row key="Does support relate to children or young people?">
                 @{
                     var eligibility = Model.LocalOffer.Eligibilities?.FirstOrDefault();
                     if (eligibility == null)
@@ -58,14 +59,14 @@
                 }
             </summary-row>
             
-            <summary-row key="Languages" show-empty>
+            <summary-row key="Languages">
                 @if (Model.LocalOffer.Languages?.Any() == true)
                 {
                     <govuk-ul items="@Model.LocalOffer.Languages.Select(t=> t.Name).Order()"></govuk-ul>
                 }
             </summary-row>
 
-            <summary-row key="Cost" show-empty>
+            <summary-row key="Cost">
                 @if (Model.LocalOffer.CostOptions?.Any() == true)
                 {
                     <text>Yes, it costs money to use. @Model.LocalOffer.CostOptions.First().AmountDescription</text>
@@ -76,7 +77,7 @@
                 }
             </summary-row>
 
-            <summary-row key="How this service is provided" show-empty>
+            <summary-row key="How this service is provided">
                 @if (Model.LocalOffer.ServiceDeliveries?.Any() == true)
                 {
                     @string.Join(", ", Model.LocalOffer.ServiceDeliveries
@@ -99,7 +100,7 @@
                 <h2 class="govuk-heading-m">Location @(++locationNumber)</h2>
                 <summary-list class="govuk-!-margin-bottom-9">
 
-                    <summary-row key="Address" show-empty>
+                    <summary-row key="Address">
                         <govuk-ul items="@location.GetAddress()"></govuk-ul>
                     </summary-row>
 
@@ -107,20 +108,18 @@
                         @(location.LocationTypeCategory == LocationTypeCategory.FamilyHub ? "Yes" : "No")
                     </summary-row>
 
-                    <summary-row key="Accessibility details" show-empty class="fh-pre-wrap">@string.Join("\n", location.AccessibilityForDisabilities.Select(ac => ac.Accessibility))</summary-row>
-
-                    <summary-row key="Location details" show-empty class="fh-pre-wrap">@location.Description</summary-row>
+                    <summary-row key="Location details"  class="fh-pre-wrap">@location.Description</summary-row>
 
                     @{
                         var serviceAtLocationSchedule = Model.LocalOffer.ServiceAtLocations
                             .FirstOrDefault(s => s.LocationId == location.Id)?.Schedules.FirstOrDefault();
                     }
 
-                    <summary-row key="Days service is available" show-empty>
+                    <summary-row key="Days service is available">
                         @ByDayToDisplay(serviceAtLocationSchedule?.ByDay)
                     </summary-row>
 
-                    <summary-row key="Extra availability details" show-empty class="fh-pre-wrap">@serviceAtLocationSchedule?.Description</summary-row>
+                    <summary-row key="Extra availability details"  class="fh-pre-wrap">@serviceAtLocationSchedule?.Description.GetDisplay()</summary-row>
 
                 </summary-list>
             }
@@ -131,48 +130,54 @@
             <h2 class="govuk-heading-m">@Model.ServiceScheduleAttendingTypes.ToDisplay()</h2>
 
             <summary-list>
-                <summary-row key="Days service is available" show-empty>
+                <summary-row key="Days service is available">
                     @ByDayToDisplay(Model.ServiceSchedule.ByDay)
                 </summary-row>
-                <summary-row key="Extra availability details" show-empty class="fh-pre-wrap">@Model.ServiceSchedule.Description</summary-row>
+                <summary-row key="Extra availability details"  class="fh-pre-wrap">@(Model.ServiceSchedule.Description.GetDisplay())</summary-row>
             </summary-list>
         }
 
-        <h2 class="govuk-heading-m">More details</h2>
-        <p class="fh-pre-wrap govuk-!-margin-bottom-9" data-testid="description-value">@Model.LocalOffer.Description</p>
-
-        <h2 class="govuk-heading-m">Contact details</h2>
-
-        @{
-            var contacts = Model.LocalOffer.Contacts?.FirstOrDefault();
+        @if (!string.IsNullOrWhiteSpace(Model.LocalOffer.Description))
+        {
+            <h2 class="govuk-heading-m">More details</h2>
+            <p class="fh-pre-wrap govuk-!-margin-bottom-9" data-testid="description-value">@Model.LocalOffer.Description</p>
         }
 
-        <summary-list class="govuk-!-margin-bottom-9">
-            <summary-row key="Email" show-empty>
-                @if (!string.IsNullOrEmpty(contacts?.Email))
-                {
-                    <a href="mailto:@contacts.Email">@contacts.Email</a>
-                }
-            </summary-row>
-            <summary-row key="Phone" show-empty>
-                @if (!string.IsNullOrEmpty(contacts?.Telephone))
-                {
-                    <a href="tel:@contacts.Telephone">@contacts.Telephone</a>
-                }
-            </summary-row>
-            <summary-row key="Website" show-empty>
-                @if (!string.IsNullOrEmpty(contacts?.Url))
-                {
-                    <a href="@contacts.Url">@contacts.Url</a>
-                }
-            </summary-row>
-            <summary-row key="Text message" show-empty>
-                @if (!string.IsNullOrEmpty(contacts?.TextPhone))
-                {
-                    <a href="tel:@contacts.TextPhone">@contacts.TextPhone</a>
-                }
-            </summary-row>
-        </summary-list>
+        @{
+            ContactDto? contacts = Model.LocalOffer.Contacts?.FirstOrDefault();
+
+            if (contacts is not null)
+            {
+                <h2 class="govuk-heading-m">Contact details</h2>
+                
+                <summary-list class="govuk-!-margin-bottom-9">
+                    <summary-row key="Email">
+                        @if (!string.IsNullOrEmpty(contacts?.Email))
+                        {
+                            <a href="mailto:@contacts.Email">@contacts.Email</a>
+                        }
+                    </summary-row>
+                    <summary-row key="Phone">
+                        @if (!string.IsNullOrEmpty(contacts?.Telephone))
+                        {
+                            <a href="tel:@contacts.Telephone">@contacts.Telephone</a>
+                        }
+                    </summary-row>
+                    <summary-row key="Website">
+                        @if (!string.IsNullOrEmpty(contacts?.Url))
+                        {
+                            <a href="@contacts.Url">@contacts.Url</a>
+                        }
+                    </summary-row>
+                    <summary-row key="Text message">
+                        @if (!string.IsNullOrEmpty(contacts?.TextPhone))
+                        {
+                            <a href="tel:@contacts.TextPhone">@contacts.TextPhone</a>
+                        }
+                    </summary-row>
+                </summary-list>
+            }
+        }
 
         @if (Model.ShowConnectionRequestButton)
         {

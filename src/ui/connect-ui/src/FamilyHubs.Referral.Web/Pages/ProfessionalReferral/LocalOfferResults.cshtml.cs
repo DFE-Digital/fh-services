@@ -45,7 +45,7 @@ public class LocalOfferResultsModel : HeaderPageModel
         new() { Value = "2", Text = "6 to 11 years"},
         new() { Value = "3", Text = "12 to 15 years"},
         new() { Value = "4", Text = "16 to 18 years"},
-        new() { Value = "5", Text = "19 to 24 years with SEND"}
+        new() { Value = "5", Text = "19 to 25 years with SEND"}
     ];
     
     private static readonly Dictionary<string, int[]> AgeRangeMap = new()
@@ -55,7 +55,7 @@ public class LocalOfferResultsModel : HeaderPageModel
         { "2", [6, 11] },
         { "3", [12, 15] },
         { "4", [16, 18] },
-        { "5", [19, 24] }
+        { "5", [19, AgeDisplayExtensions.TwentyFivePlus] }
     };
     
     public static List<SelectListItem> DistanceRange { get; } = 

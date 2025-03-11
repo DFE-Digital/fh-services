@@ -1,0 +1,79 @@
+name: Upload file to web app
+description: Uploads a file to the specified web app using publish profile credentials
+
+inputs:
+
+  source_path_and_name: 
+    required: true
+    description: Path and name of file to upload
+
+  web_app_name:
+    required: true
+    description: Name of web app to upload to
+
+  publish_profile:
+    required: true
+    description: Publish profile for web app
+
+  target_path_and_name: 
+    required: true
+    description: Target path and name of file in the web app
+
+  optional_web_app_restart:
+    required: false
+    description: Whether to restart the web app
+    default: false
+
+  web_app_resource_group:
+    required: false
+    description: Resource group for web app requiring restart
+
+runs:
+  using: composite
+
+  steps:
+    - name: Upload file to web app
+      id: upload-file-to-web-app
+      shell: bash
+      run: |
+        echo "Fetching credentials from publish profile..."
+        LINE=$(echo "$PUBLISH_PROFILE" | grep 'publishMethod="ZipDeploy"')
+        KUDU_USER=$(echo "$LINE" | sed -n 's/.*userName="\([^"]*\)".*/\1/p')
+        KUDU_PASS=$(echo "$LINE" | sed -n 's/.*userPWD="\([^"]*\)".*/\1/p')
+        
+        echo "Uploading $SOURCE_FILE to $WEB_APP_NAME..."
+        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X PUT -u "$KUDU_USER:$KUDU_PASS" -H "If-Match: *" --upload-file "$SOURCE_FILE" "https://$WEB_APP_NAME.scm.azurewebsites.net/api/vfs$TARGET_FILE")
+
+        if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 201 ] || [ "$HTTP_CODE" -eq 204 ]; then
+          echo "$TARGET_FILE successfully uploaded"
+        else
+          echo "Unexpected HTTP code $HTTP_CODE returned from upload request - exiting"
+          exit 1
+        fi
+      env:
+        SOURCE_FILE: ${{ inputs.source_path_and_name }}
+        WEB_APP_NAME: ${{ inputs.web_app_name }}
+        PUBLISH_PROFILE: ${{ inputs.publish_profile }}
+        TARGET_FILE: ${{ inputs.target_path_and_name }}
+
+    - name: Stop Web App (Optional)
+      if: ${{ inputs.optional_web_app_restart == 'true'}}
+      id: stop-web-app
+      shell: bash
+      run: |
+        echo "Stopping web app $WEB_APP_NAME..."
+        az webapp stop --name "$WEB_APP_NAME" --resource-group "$RESOURCE_GROUP"
+      env:
+        WEB_APP_NAME: ${{ inputs.web_app_name }}
+        RESOURCE_GROUP: ${{ inputs.web_app_resource_group }}
+  
+    - name: Start Web App (Optional)
+      if: ${{ inputs.optional_web_app_restart == 'true'}}
+      id: start-web-app
+      shell: bash
+      run: |
+        echo "Starting web app $WEB_APP_NAME..."
+        az webapp start --name "$WEB_APP_NAME" --resource-group "$RESOURCE_GROUP"
+      env:
+        WEB_APP_NAME: ${{ inputs.web_app_name }}
+        RESOURCE_GROUP: ${{ inputs.web_app_resource_group }}

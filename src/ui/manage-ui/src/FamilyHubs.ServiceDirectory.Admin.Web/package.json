@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "govuk-frontend": "^5.2.0",
     "familyhubs-frontend": "file:../../../../shared/web-components/src/familyhubs-frontend"
   },
   "devDependencies": {

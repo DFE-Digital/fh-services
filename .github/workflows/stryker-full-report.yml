@@ -1,0 +1,108 @@
+name: Stryker Mutator (Full Report)
+on:
+  schedule:
+    - cron: "0 0 * * 1" # 12:00 AM every Monday
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  stryker-matrix:
+    name: Stryker - ${{ matrix.job_name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        working_directory:
+          [
+            service/notification-api,
+            service/idam-api,
+            service/service-directory-api,
+            service/referral-api,
+            service/report-api,
+            function/open-referral-function,
+            ui/connect-ui,
+            ui/idam-maintenance-ui,
+            ui/manage-ui,
+            shared/referral-shared,
+            shared/service-directory-shared,
+            shared/shared-kernel,
+            shared/web-components
+          ]
+        include:
+          - working_directory: service/notification-api
+            job_name: "Notification API"
+          - working_directory: service/idam-api
+            job_name: "IdAM API"
+          - working_directory: service/service-directory-api
+            job_name: "Service Directory API"
+          - working_directory: service/referral-api
+            job_name: "Referral API"
+          - working_directory: service/report-api
+            job_name: "Report API"
+          - working_directory: function/open-referral-function
+            job_name: "Open Referral Function"
+          - working_directory: ui/connect-ui
+            job_name: "Connect UI"
+          - working_directory: ui/idam-maintenance-ui
+            job_name: "IdAM Maintenance UI"
+          - working_directory: ui/manage-ui
+            job_name: "Manage UI"
+          - working_directory: shared/referral-shared
+            job_name: "Referral Shared"
+          - working_directory: shared/service-directory-shared
+            job_name: "Service Directory Shared"
+          - working_directory: shared/shared-kernel
+            job_name: "Kernel Shared"
+          - working_directory: shared/web-components
+            job_name: "Web Components Shared"      
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: '0'
+
+      - name: Setup .NET ${{ vars.DOTNET_VERSION_V8 }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ vars.DOTNET_VERSION_V8 }}
+          
+      - name: NuGet Package Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-NuGet-${{ matrix.job_name }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-NuGet-${{ matrix.job_name }}-${{ hashFiles('**/*.csproj') }}
+
+      - name: Install & Configure SpatiaLite
+        if: ${{ matrix.job_name == 'Service Directory API' || matrix.job_name == 'Referral API' }}
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install libspatialite-dev libsqlite3-mod-spatialite -y
+          sudo ldconfig "/usr/lib/x86_64-linux-gnu/mod_spatialite.so"
+
+      - name: Run Stryker Mutator
+        uses: ./.github/actions/run-dotnet-stryker
+        with:
+          working_directory: ${{ github.workspace }}/src/${{ matrix.working_directory }}
+          config_path: ${{ github.workspace }}/.github/actions/run-dotnet-stryker/stryker-config.json
+          artifact: ${{ matrix.job_name }}
+  
+  merge-html-reports:
+    needs: [ stryker-matrix ]
+    if: always()
+    name: "Merge HTML Reports"
+    runs-on: ubuntu-24.04
+    steps:
+      - name: "Merge HTML Reports"
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: 'Stryker - Full HTML Report'
+          separate-directories: true
+          delete-merged: true
+          compression-level: '9'

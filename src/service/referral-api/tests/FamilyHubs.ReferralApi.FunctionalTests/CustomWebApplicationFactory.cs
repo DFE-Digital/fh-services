@@ -20,7 +20,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         _conf = conf;
         _sdClient = sdClient;
-        _referralConnection = $"Data Source=sd-{Random.Shared.Next().ToString()}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
+        _referralConnection = $"Data Source=REFERRAL-{Guid.NewGuid()}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
     }
 
     /// <summary>
