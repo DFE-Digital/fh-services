@@ -3,7 +3,7 @@ import {Ensure, includes} from '@serenity-js/assertions';
 import {Answerable} from "@serenity-js/core";
 import {serviceDetailsPage} from '../find-index';
 
-export const doesTheServiceDetailsPageContentContain = (categoryName: Answerable<string>) =>
+export const doesTheServiceDetailsPageContentContainField = (categoryName: Answerable<string>) =>
     Ensure.that(
         Text.of(serviceDetailsPage()),
         includes(categoryName)
