@@ -1,4 +1,4 @@
-import {describe, it} from '@serenity-js/playwright-test';
+import {describe, it, test} from '@serenity-js/playwright-test';
 import {
     navigateToFind,
     clickOnTheStartButton,
@@ -7,27 +7,34 @@ import {
     doesTheLAServiceInformationInTheListOfServicesPageContain,
     doesTheVCFSServiceInformationInTheListOfServicesPageContains,
     clickOnTheLaService,
-    doesTheServiceDetailsPageContentContain, clickOnTheVcfsService
+    doesTheServiceDetailsPageContentContain, 
+    clickOnTheVcfsService, 
+    isSearchResultsPageDisplayed
 } from './serenity-tools/find-index';
 import {GENERAL_PUBLIC_USER} from './actors-user-roles';
+export const POSTCODE: string = "W1D 2JT"
+describe('View Services Tests', () => {
 
-describe('Single Directory Tests', () => {
+    test.use({
+        defaultActorName: `${GENERAL_PUBLIC_USER}`
+    })
 
-    it(`should check a ${GENERAL_PUBLIC_USER} is able to search for services`, async ({actorCalled}) => {
-        await actorCalled(GENERAL_PUBLIC_USER).attemptsTo(
+    test.beforeEach('Setup', async ({actor}) => {
+        await actor.attemptsTo(
             navigateToFind(),
             clickOnTheStartButton(),
-            enterPostcode('W1D 2JT'),
-            clickOnPostcodeSearchButton(),
+            enterPostcode(POSTCODE),
+            clickOnPostcodeSearchButton()
         );
     });
 
-    it(`should check a ${GENERAL_PUBLIC_USER} is able verify LA Service information`, async ({actorCalled}) => {
-        await actorCalled(GENERAL_PUBLIC_USER).attemptsTo(
-            navigateToFind(),
-            clickOnTheStartButton(),
-            enterPostcode('W1D 2JT'),
-            clickOnPostcodeSearchButton(),
+    it(`should check a ${GENERAL_PUBLIC_USER} is able to search for services`, async () => {
+        const postcodeArray = POSTCODE.toLowerCase().split(" ");
+        isSearchResultsPageDisplayed(postcodeArray[0], postcodeArray[1])
+    });
+
+    it(`should check a ${GENERAL_PUBLIC_USER} is able verify LA Service information`, async ({actor}) => {
+        await actor.attemptsTo(
             doesTheLAServiceInformationInTheListOfServicesPageContain('Test LA'),
             doesTheLAServiceInformationInTheListOfServicesPageContain('Category'),
             doesTheLAServiceInformationInTheListOfServicesPageContain('Age range'),
@@ -42,12 +49,8 @@ describe('Single Directory Tests', () => {
         );
     });
 
-    it(`should check a ${GENERAL_PUBLIC_USER} is able verify VCFS Service information`, async ({actorCalled}) => {
-        await actorCalled(GENERAL_PUBLIC_USER).attemptsTo(
-            navigateToFind(),
-            clickOnTheStartButton(),
-            enterPostcode('W1D 2JT'),
-            clickOnPostcodeSearchButton(),
+    it(`should check a ${GENERAL_PUBLIC_USER} is able verify VCFS Service information`, async ({actor}) => {
+        await actor.attemptsTo(
             doesTheVCFSServiceInformationInTheListOfServicesPageContains('Test Organisation'),
             doesTheVCFSServiceInformationInTheListOfServicesPageContains('Category'),
             doesTheVCFSServiceInformationInTheListOfServicesPageContains('Age range'),
