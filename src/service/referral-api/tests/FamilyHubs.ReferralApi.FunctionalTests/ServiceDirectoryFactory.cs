@@ -13,7 +13,7 @@ namespace FamilyHubs.Referral.FunctionalTests;
 
 public class ServiceDirectoryFactory : WebApplicationFactory<Program>
 {
-    private readonly string _sdConnection = $"Data Source=sd-{Random.Shared.Next().ToString()}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
+    private readonly string _sdConnection = $"Data Source=SERVICE_DIRECTORY-{Guid.NewGuid()}.db;Mode=ReadWriteCreate;Cache=Shared;Foreign Keys=True;Recursive Triggers=True;Default Timeout=30;Pooling=True";
 
     protected override IHost CreateHost(IHostBuilder builder)
     {

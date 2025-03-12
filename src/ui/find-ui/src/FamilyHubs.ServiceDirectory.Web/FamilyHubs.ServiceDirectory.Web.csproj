@@ -44,4 +44,10 @@
         <Folder Include="wwwroot\js\" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Include="applicationHost.xdt">
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>    
+
 </Project>

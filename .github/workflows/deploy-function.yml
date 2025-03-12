@@ -49,6 +49,7 @@ jobs:
         shell: pwsh
         run: |-
           $PublishProfile = az keyvault secret show --name ${{ inputs.keyvault_prefix }}-AZURE-WEBAPP-PUBLISH-PROFILE --vault-name ${{ env.KEYVAULT }} --query value --output tsv
+          Write-Output "::add-mask::$PublishProfile"
           Write-Output "publish_profile=$PublishProfile" >> $env:GITHUB_OUTPUT
 
       - name: Deploy Artifact to Azure

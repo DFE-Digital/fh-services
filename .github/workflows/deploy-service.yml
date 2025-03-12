@@ -89,11 +89,22 @@ jobs:
         shell: pwsh
         run: |-
           $PublishProfile = az keyvault secret show --name ${{ inputs.keyvault_app_prefix }}-AZURE-WEBAPP-PUBLISH-PROFILE --vault-name ${{ env.KEYVAULT }} --query value --output tsv
+          Write-Output "::add-mask::$PublishProfile"
           Write-Output "publish_profile=$PublishProfile" >> $env:GITHUB_OUTPUT
-            
+
       - name: Deploy Artifact to Azure
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.APP_NAME }}
           publish-profile: ${{ steps.fetch_profile.outputs.publish_profile }}
           package: ./out
+
+      - name: Set Basic Auth On Or Off For Web App
+        uses: ./.github/actions/configure-web-app-basic-auth
+        with:
+          web_app_name: ${{ env.APP_NAME }}
+          publish_profile: ${{ steps.fetch_profile.outputs.publish_profile }}
+          web_app_resource_group: ${{ env.RESOURCE_GROUP }}
+          basic_auth_required: ${{ vars.WEB_APPS_REQUIRE_BASIC_AUTH }}
+          basic_auth_user: ${{ secrets.WEB_APPS_BASIC_AUTH_USER }}
+          basic_auth_password: ${{ secrets.WEB_APPS_BASIC_AUTH_PASSWORD }}

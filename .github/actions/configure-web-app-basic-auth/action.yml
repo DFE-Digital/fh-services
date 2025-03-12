@@ -1,0 +1,86 @@
+# Uses an applicationHost.xdt to add Basic Authentication to a Windows App Service.
+# Each environment has a Github variable WEB_APPS_REQUIRE_BASIC_AUTH which determines whether
+# Basic Auth is switched on or off. A web app opts into this by having the applicationHost.xdt
+# file in the Git web folder root which is then published as part of the build artifact. At deploy time 
+# Basic Auth is enabled by:
+#
+#   - In applicationHost.xdt replace the token base 64 user / password placeholder with the Github 
+#     secrets WEB_APPS_BASIC_AUTH_USER and WEB_APPS_BASIC_AUTH_PASSWORD
+#   - Copying the applicationHost.xdt to the /site folder
+#   - Stopping and starting the app service
+#
+# Basic Auth is disabled by setting WEB_APPS_REQUIRE_BASIC_AUTH=false. At deploy time, 
+# this triggers a removal of /site/applicationHost.xdt and a stop / start of the app service.
+# Individual web apps can opt out by not having the applicationHost.xdt or removing it in the
+# future.
+
+name: Configure Basic Auth on or off for webapp
+description: Uses applicationHost.xdt file to configure Basic Auth for webapp
+
+inputs:
+
+  web_app_name:
+    required: true
+    description: Name of web app to upload to
+
+  web_app_resource_group:
+    required: true
+    description: Resource group for web app requiring restart
+
+  publish_profile:
+    required: true
+    description: Publish profile for web app
+
+  basic_auth_required:
+    required: true
+    description: Whether to configure Basic Auth on or off for web app
+
+  basic_auth_user:
+    required: true
+    description: Basic Auth user name
+
+  basic_auth_password:
+    required: true
+    description: Basic Auth password
+
+runs:
+  using: composite
+
+  steps:
+    - name: Add Basic Auth Credentials To applicationHost.xdt (If Auth Required)
+      id: optional_add_basic_auth
+      if: ${{ inputs.basic_auth_required == 'true' }}
+      shell: bash
+      run: |
+        if [[ -f "$APP_HOST_FILE" ]]; then
+          cp "$APP_HOST_FILE" .
+          BASIC_AUTH_BASE64_CREDS=$(echo -n "${{ inputs.basic_auth_user }}:${{ inputs.basic_auth_password }}" | base64)
+          sed -i 's|${WEBSITE_BASIC_AUTH_BASE64_ENCODING}|'"$BASIC_AUTH_BASE64_CREDS|g" "./applicationHost.xdt"
+          echo "app_host_file_exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "applicationHost.xdt file not found (is optional)"
+          echo "app_host_file_exists=false" >> $GITHUB_OUTPUT
+        fi          
+      env:
+        APP_HOST_FILE: ./out/applicationHost.xdt
+
+    - name: Upload applicationHost.xdt To Web App (If Auth Required)
+      if: ${{ inputs.basic_auth_required == 'true' && steps.optional_add_basic_auth.outputs.app_host_file_exists == 'true' }}
+      uses: ./.github/actions/upload-file-to-web-app
+      with:
+        source_path_and_name: ./applicationHost.xdt
+        web_app_name: ${{ inputs.web_app_name }}
+        publish_profile: ${{ inputs.publish_profile }}
+        target_path_and_name: /site/applicationHost.xdt
+        optional_web_app_restart: true
+        web_app_resource_group: ${{ env.RESOURCE_GROUP }}
+
+    - name: Remove applicationHost.xdt From Web App (If Auth NOT Required)
+      if: ${{ inputs.basic_auth_required == 'false' || steps.optional_add_basic_auth.outputs.app_host_file_exists == 'false' }}
+      uses: ./.github/actions/remove-file-from-web-app
+      with:
+        web_app_name: ${{ inputs.web_app_name }}
+        publish_profile: ${{ inputs.publish_profile }}
+        target_path_and_name: /site/applicationHost.xdt
+        optional_web_app_restart: true
+        web_app_resource_group: ${{ env.RESOURCE_GROUP }}
