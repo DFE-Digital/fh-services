@@ -148,6 +148,7 @@ jobs:
   seed-databases:
     name: Seed the ${{ matrix.display_name }} database
     needs: [ migrate-databases ]
+    if: ${{ always() && needs.migrate-databases.result == 'success' }}
     strategy:
       matrix:
         databases: [ 
