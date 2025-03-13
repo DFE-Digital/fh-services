@@ -1,35 +1,6 @@
-#Configure the Azure provider
-terraform {
-  required_providers {
-    azurerm = {
-      source = "hashicorp/azurerm"
-      version = ">= 4.10.0"
-    }
-  }
-}
-
-provider "azurerm" {
-  subscription_id = var.subscription_id
-  features {
-    key_vault {
-      purge_soft_deleted_keys_on_destroy = true
-      recover_soft_deleted_keys = false
-    }
-  }
-}
-
-# This is overriden by the pipeline
-terraform {
-  backend "azurerm" {
-    resource_group_name = "s181d01-familyhubs-terraform"
-    storage_account_name = "s181d01safhterraform"
-    container_name = "s181d01appserviceterraform"
-    key = "s181d01appserviceterraform/s181d01appservicetf.tfstate"
-  }
-}
-
 module "fhinfrastructurestack" {
   source = "./modules/fhinfrastructurestack"
+  subscription_id = var.subscription_id
   location = var.location
   prefix = var.prefix
   environment = var.environment
@@ -57,12 +28,14 @@ module "fhinfrastructurestack" {
   autoscale_rule_default_capacity = var.autoscale_rule_default_capacity
   autoscale_rule_minimum_capacity = var.autoscale_rule_minimum_capacity
   autoscale_rule_maximum_capacity = var.autoscale_rule_maximum_capacity
-  email_notify = var.email_notify
+  slack_support_channel_email = var.slack_support_channel_email
   asp_netcore_environment = var.asp_netcore_environment
   defender_app_services_tier = var.defender_app_services_tier
   private_endpoint_ip_address = var.private_endpoint_ip_address
   connect_domain = var.connect_domain
   manage_domain = var.manage_domain
   find_domain = var.find_domain
+  log_retention_in_days = var.log_retention_in_days
   pvt_endp_report_stg_api_ip_address = var.pvt_endp_report_stg_api_ip_address
+  data_factory_exists = var.data_factory_exists
 }

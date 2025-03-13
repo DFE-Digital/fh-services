@@ -14,10 +14,17 @@ let gulp = require("gulp"),
     //concat = require('gulp-concat'),
 
 
+const familyHubsFrontendSassPaths = [
+    './node_modules/familyhubs-frontend',
+    './node_modules/familyhubs-frontend/node_modules/govuk-frontend/dist'
+];
+
 gulp.task('sass-to-min-css', async function () {
     return gulp.src('./styles/application.scss')
         .pipe(sourcemaps.init())
-        .pipe(sass().on('error', sass.logError))
+        .pipe(sass({
+            includePaths: familyHubsFrontendSassPaths
+        }).on('error', sass.logError))
         .pipe(csso())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./wwwroot/css'));

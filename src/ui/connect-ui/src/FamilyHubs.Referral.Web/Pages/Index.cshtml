@@ -1,12 +1,13 @@
 ﻿@page
 @model FamilyHubs.Referral.Web.Pages.IndexModel
 @{
-    ViewData["Title"] = "Connect families to support";
+    const string pageTitle = "Find support for parents, carers and young people";
+    ViewData["Title"] = pageTitle;
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-4 govuk-!-margin-top-2">Find support for parents, carers and young people</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-4 govuk-!-margin-top-2">@pageTitle</h1>
         
         <p>This website is for parents, carers, young people and families, or those supporting them.</p>
         <p>Search for services and support such as:</p>

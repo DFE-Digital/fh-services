@@ -71,6 +71,6 @@ gulp.task('copy-moj-frontend-js', function () {
 
 gulp.task('copy-js', gulp.series('copy-accessible-autocomplete-js', 'copy-govuk-frontend-js', 'copy-dfe-frontend-js', 'copy-moj-frontend-js'));
 
-gulp.task('populate-wwwroot', gulp.series('copy-wwwroot-remote'));
+gulp.task('populate-wwwroot', gulp.series('assets', 'copy-wwwroot-remote'));
 
 //todo: delegate from consumer gulp to this gulp?

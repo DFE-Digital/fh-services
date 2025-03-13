@@ -1,13 +1,21 @@
 ﻿@model FamilyHubs.SharedKernel.Razor.FamilyHubsUi.FamilyHubsLayoutModel
 @{
     var familyHubsUiOptions = Model.FamilyHubsUiOptions.Value;
+    
+    string? tabTitle;
+    string? relativePath = Context.Request.Path.Value;
+    
+    if (relativePath is not null && relativePath.Equals("/")) tabTitle = $"{ViewData["Title"]}";
+    else tabTitle = $"{ViewData["Title"]} - {familyHubsUiOptions.ServiceName} - GOV.UK";
+    
+    if (Model.IsError) tabTitle = "Error: " + tabTitle;
 }
 
 <partial name="_GoogleAnalytics.cshtml" model="familyHubsUiOptions"/>
 <partial name="_MicrosoftClarity.cshtml" model="familyHubsUiOptions"/>
 
 <meta charset="utf-8" />
-<title>@if (Model.IsError) { <text>Error: </text> }@ViewData["Title"] - @familyHubsUiOptions.ServiceName - GOV.UK</title>
+<title>@tabTitle</title>
 <meta name="description" content="@familyHubsUiOptions.ServiceName">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0b0c0c">
