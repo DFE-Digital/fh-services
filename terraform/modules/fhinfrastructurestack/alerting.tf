@@ -25,12 +25,15 @@ locals {
   gateway_details = {
     "referral-ui" = {
       gateway_id = azurerm_application_gateway.ref_ui_app_gateway.id
+      minimal_alerts = false
     },
     "sd-admin-ui" = {
       gateway_id = azurerm_application_gateway.sd_admin_ui_app_gateway.id
+      minimal_alerts = false
     },
     "sd-ui" = {
       gateway_id = azurerm_application_gateway.sd_ui_app_gateway.id
+      minimal_alerts = true
     }
   }
 
@@ -61,9 +64,6 @@ locals {
     },
     "fh_sd_admin_ui" = {
       app_service_id = azurerm_windows_web_app.fh_sd_admin_ui.id
-    },
-    "fh_sd_ui" = {
-      app_service_id = azurerm_windows_web_app.fh_sd_ui.id
     },
   }
 
@@ -284,7 +284,7 @@ resource "azurerm_monitor_metric_alert" "app-gateway-total-time-alert" {
 }
 
 resource "azurerm_monitor_metric_alert" "app-gateway-backend-connect-time-alert" {
-  for_each = local.gateway_details
+  for_each = { for k, v in local.gateway_details : k => v if !v.minimal_alerts }
   name = "${var.prefix}-fh-appgw-${each.key}-backend-connect-time-alert"
   resource_group_name = local.alert_resource_group_name
   scopes = [each.value.gateway_id]
@@ -304,7 +304,7 @@ resource "azurerm_monitor_metric_alert" "app-gateway-backend-connect-time-alert"
 }
 
 resource "azurerm_monitor_metric_alert" "app-gateway-backend-last-byte-response-time-alert" {
-  for_each = local.gateway_details
+  for_each = { for k, v in local.gateway_details : k => v if !v.minimal_alerts }
   name = "${var.prefix}-fh-appgw-${each.key}-backend-last-byte-response-time-alert"
   resource_group_name = local.alert_resource_group_name
   scopes = [each.value.gateway_id]
@@ -324,7 +324,7 @@ resource "azurerm_monitor_metric_alert" "app-gateway-backend-last-byte-response-
 }
 
 resource "azurerm_monitor_metric_alert" "app-gateway-backend-response-status-alert" {
-  for_each = local.gateway_details
+  for_each = { for k, v in local.gateway_details : k => v if !v.minimal_alerts }
   name = "${var.prefix}-fh-appgw-${each.key}-backend-response-status-alert"
   resource_group_name = local.alert_resource_group_name
   scopes = [each.value.gateway_id]
@@ -364,7 +364,7 @@ resource "azurerm_monitor_metric_alert" "app-gateway-failed-requests-alert" {
 }
 
 resource "azurerm_monitor_metric_alert" "app-gateway-unhealthy-host-count-alert" {
-  for_each = local.gateway_details
+  for_each = { for k, v in local.gateway_details : k => v if !v.minimal_alerts }
   name = "${var.prefix}-fh-appgw-${each.key}-unhealthy-host-count-alert"
   resource_group_name = local.alert_resource_group_name
   scopes = [each.value.gateway_id]
