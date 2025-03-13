@@ -36,8 +36,7 @@ jobs:
           open-referral-mock-database,
           referral-database,
           report-database,
-          service-directory-database,
-          report-staging-database
+          service-directory-database
         ]
         include:  
           - databases: idam-database
@@ -64,10 +63,6 @@ jobs:
             display_name: Service Directory
             keyvault_db_prefix: SD-DB
             sql_file_path: ./test/reset-scripts/reset-database.sql
-          - databases: ${{ inputs.environment != 'Test2' && 'report-staging-database' }}
-            display_name: Report Staging
-            keyvault_db_prefix: REPORT-STAGING-DB
-            sql_file_path: ./test/reset-scripts/reset-report-staging-database.sql
     uses: ./.github/workflows/run-sql-script.yml
     with:
       environment: ${{ inputs.environment }}
@@ -76,9 +71,20 @@ jobs:
       sql_file_path: ${{ matrix.sql_file_path }}
     secrets: inherit
     
+  # Separated out of the Matrix as Test2 will fail because it doesn't have Azure Data Factory resources configured.
+  reset-report-staging-database:
+    if: ${{ inputs.environment != 'Test2' }}
+    name: Reset the Report Staging database
+    uses: ./.github/workflows/run-sql-script.yml
+    with:
+      environment: ${{ inputs.environment }}
+      display_name: Report Staging
+      keyvault_db_prefix: REPORT-STAGING-DB
+      sql_file_path: ./test/reset-scripts/reset-report-staging-database.sql
+    
   migrate-databases:
     name: ${{ matrix.job_name }}
-    needs: [ reset-databases ]
+    needs: [ reset-databases, reset-report-staging-database ]
     strategy:
       matrix:
         artifact_name: [ 
