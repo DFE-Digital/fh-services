@@ -28,24 +28,24 @@ permissions:
   contents: read
 
 jobs:
-#  pre-test-database-reset:
-#    name: Pre-Test Database Reset
-#    uses: ./.github/workflows/reseeding-databases.yml
-#    with:
-#      environment: ${{ inputs.environment }}
-#    secrets: inherit
-#    
-#  pre-test-setup:
-#    needs: [ pre-test-database-reset ]
-#    name: Pre-Test Database Setup
-#    uses: ./.github/workflows/e2e-seed-database.yml
-#    with:
-#      environment: ${{ inputs.environment }}
-#      action: 'Setup'
-#    secrets: inherit
+  pre-test-database-reset:
+    name: Pre-Test Database Reset
+    uses: ./.github/workflows/reseeding-databases.yml
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit
+
+  pre-test-setup:
+    needs: [ pre-test-database-reset ]
+    name: Pre-Test Database Setup
+    uses: ./.github/workflows/e2e-seed-database.yml
+    with:
+      environment: ${{ inputs.environment }}
+      action: 'Setup'
+    secrets: inherit
   
   run-test-suite:
-#    needs: [ pre-test-setup ]
+    needs: [ pre-test-setup ]
     name: ${{ matrix.job_name }}
     strategy:
       fail-fast: false
