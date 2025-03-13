@@ -81,7 +81,8 @@ jobs:
       display_name: Report Staging
       keyvault_db_prefix: REPORT-STAGING-DB
       sql_file_path: ./test/reset-scripts/reset-report-staging-database.sql
-    
+    secrets: inherit
+  
   migrate-databases:
     name: ${{ matrix.job_name }}
     needs: [ reset-databases, reset-report-staging-database ]
