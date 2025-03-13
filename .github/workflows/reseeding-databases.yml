@@ -85,6 +85,9 @@ jobs:
   migrate-databases:
     name: ${{ matrix.job_name }}
     needs: [ reset-databases, reset-report-staging-database ]
+    if: ${{ always() && 
+            needs.reset-databases.result == 'success' && 
+            (needs.reset-report-staging-database.result == 'success' || needs.reset-report-staging-database.result == 'skipped')}}
     strategy:
       matrix:
         artifact_name: [ 
