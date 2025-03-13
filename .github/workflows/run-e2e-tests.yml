@@ -28,24 +28,24 @@ permissions:
   contents: read
 
 jobs:
-  pre-test-database-reset:
-    name: Pre-Test Database Reset
-    uses: ./.github/workflows/reseeding-databases.yml
-    with:
-      environment: ${{ inputs.environment }}
-    secrets: inherit
-    
-  pre-test-setup:
-    needs: [ pre-test-database-reset ]
-    name: Pre-Test Database Setup
-    uses: ./.github/workflows/e2e-seed-database.yml
-    with:
-      environment: ${{ inputs.environment }}
-      action: 'Setup'
-    secrets: inherit
+#  pre-test-database-reset:
+#    name: Pre-Test Database Reset
+#    uses: ./.github/workflows/reseeding-databases.yml
+#    with:
+#      environment: ${{ inputs.environment }}
+#    secrets: inherit
+#    
+#  pre-test-setup:
+#    needs: [ pre-test-database-reset ]
+#    name: Pre-Test Database Setup
+#    uses: ./.github/workflows/e2e-seed-database.yml
+#    with:
+#      environment: ${{ inputs.environment }}
+#      action: 'Setup'
+#    secrets: inherit
   
   run-test-suite:
-    needs: [ pre-test-setup ]
+#    needs: [ pre-test-setup ]
     name: ${{ matrix.job_name }}
     strategy:
       fail-fast: false
@@ -117,11 +117,9 @@ jobs:
       - name: Run Playwright Test Suite
         shell: bash
         run: |
+          WORKER_COUNT=1
           if [ "${{ matrix.job_name }}" == "E2E - Find UI" ]; then
-            NPROC=$(nproc)
-            echo "WORKER_COUNT=$NPROC" >> $GITHUB_OUTPUT
-          else
-            echo "WORKER_COUNT=1" >> $GITHUB_OUTPUT
+            WORKER_COUNT=$(nproc)
           fi
           npx playwright test --workers $WORKER_COUNT
         
