@@ -148,18 +148,18 @@ jobs:
     secrets: inherit
 
   sql-path:
-    name: Determine SQL File Path
+    name: SQL Seed Script Path
     runs-on: ubuntu-24.04
     outputs: 
       SQL_PATH: ${{ steps.get-sql-path.outputs.PATH }}
     steps:
       - id: get-sql-path
         run: |
-          if [[ ${{ inputs.environment }} == "Test" || ${{ inputs.environment }} == "Test2" ]]; then
+          if [[ "${{ inputs.environment }}" == "Test" || "${{ inputs.environment }}" == "Test2" ]]; then
             echo "PATH=test" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          if [[ ${{ inputs.environment }} == "Pre-production" ]]; then
+          if [[ "${{ inputs.environment }}" == "Pre-production" ]]; then
             echo "PATH=pre-prod" >> "$GITHUB_OUTPUT"
             exit 0
           fi
