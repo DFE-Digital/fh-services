@@ -49,6 +49,7 @@ jobs:
     name: ${{ matrix.job_name }}
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         suite: [ find-e2e-tests, manage-e2e-tests ]
         include:
