@@ -155,7 +155,7 @@ jobs:
     steps:
       - id: get-sql-path
         run: |
-          if [[ ${{ inputs.environment }} == "Test1" || ${{ inputs.environment }} == "Test2" ]]; then
+          if [[ ${{ inputs.environment }} == "Test" || ${{ inputs.environment }} == "Test2" ]]; then
             echo "PATH=test" >> "$GITHUB_OUTPUT"
             exit 0
           fi
