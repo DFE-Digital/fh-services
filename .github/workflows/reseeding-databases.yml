@@ -15,6 +15,7 @@ on:
         options:
           - 'Test'
           - 'Test2'
+          - 'Pre-production'
   workflow_call:
     inputs:
       environment:
@@ -146,10 +147,28 @@ jobs:
       project_type: service
     secrets: inherit
 
+  sql-path:
+    name: Determine SQL File Path
+    runs-on: ubuntu-24.04
+    outputs: 
+      SQL_PATH: ${{ steps.get-sql-path.outputs.PATH }}
+    steps:
+      - id: get-sql-path
+        run: |
+          if [[ ${{ inputs.environment }} == "Test1" || ${{ inputs.environment }} == "Test2" ]]; then
+            echo "PATH=test" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ ${{ inputs.environment }} == "Pre-production" ]]; then
+            echo "PATH=pre-prod" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          exit 1
+
   seed-databases:
     name: Seed the ${{ matrix.display_name }} database
-    needs: [ migrate-databases ]
-    if: ${{ always() && needs.migrate-databases.result == 'success' }}
+    needs: [ migrate-databases, sql-path ]
+    if: ${{ always() && needs.migrate-databases.result == 'success' && needs.sql-path.result == 'success' }}
     strategy:
       matrix:
         databases: [ 
@@ -163,23 +182,23 @@ jobs:
           - databases: idam-database
             display_name: IDAM
             keyvault_db_prefix: IDAM-DB
-            sql_file_path: ./test/seed-scripts/test/idam-data.sql
+            sql_file_path: ./test/seed-scripts/${{ needs.sql-path.outputs.SQL_PATH }}/idam-data.sql
           - databases: notification-database
             display_name: Notification
             keyvault_db_prefix: NOTIFICATIONS-DB
-            sql_file_path: ./test/seed-scripts/test/notification-data.sql
+            sql_file_path: ./test/seed-scripts/${{ needs.sql-path.outputs.SQL_PATH }}/notification-data.sql
           - databases: open-referral-mock-database
             display_name: Open Referral Mock
             keyvault_db_prefix: MOCK-HSDA-DB
-            sql_file_path: ./test/seed-scripts/test/open-referral-mock-data.sql
+            sql_file_path: ./test/seed-scripts/${{ needs.sql-path.outputs.SQL_PATH }}/open-referral-mock-data.sql
           - databases: referral-database
             display_name: Referral
             keyvault_db_prefix: REFERRAL-DB
-            sql_file_path: ./test/seed-scripts/test/referral-data.sql
+            sql_file_path: ./test/seed-scripts/${{ needs.sql-path.outputs.SQL_PATH }}/referral-data.sql
           - databases: service-directory-database
             display_name: Service Directory
             keyvault_db_prefix: SD-DB
-            sql_file_path: ./test/seed-scripts/test/service-directory-data.sql
+            sql_file_path: ./test/seed-scripts/${{ needs.sql-path.outputs.SQL_PATH }}/service-directory-data.sql
     uses: ./.github/workflows/run-sql-script.yml
     with:
       environment: ${{ inputs.environment }}
