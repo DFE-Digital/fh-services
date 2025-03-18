@@ -282,9 +282,14 @@ resource "azurerm_windows_web_app" "fh_idam_maintenance_ui" {
 }
 
 # Stop the App Service after creation
-resource "azurerm_resource_action" "stop_fh_idam_maintenance_ui" {
-  target_resource_id = azurerm_windows_web_app.fh_idam_maintenance_ui.id
-  action             = "stop"
+resource "null_resource" "stop_idam_maintenance_ui" {
+  depends_on = [azurerm_windows_web_app.fh_idam_maintenance_ui]
+
+  provisioner "local-exec" {
+    command = <<EOT
+      az webapp stop --name "${azurerm_windows_web_app.fh_idam_maintenance_ui.name}" --resource-group "${azurerm_windows_web_app.fh_idam_maintenance_ui.resource_group_name}"
+    EOT
+  }
 }
 
 # Swift Connection for IDAM Maintenance UI
@@ -402,9 +407,14 @@ resource "azurerm_windows_web_app" "fh_referral_ui" {
 }
 
 # Stop the App Service after creation
-resource "azurerm_resource_action" "stop_fh_referral_ui" {
-  target_resource_id = azurerm_windows_web_app.fh_referral_ui.id
-  action             = "stop"
+resource "null_resource" "stop_fh_referral_ui" {
+  depends_on = [azurerm_windows_web_app.fh_referral_ui]
+
+  provisioner "local-exec" {
+    command = <<EOT
+      az webapp stop --name "${azurerm_windows_web_app.fh_referral_ui.name}" --resource-group "${azurerm_windows_web_app.fh_referral_ui.resource_group_name}"
+    EOT
+  }
 }
 
 # Swift Connection for Referral UI
@@ -528,9 +538,14 @@ resource "azurerm_windows_web_app" "fh_sd_admin_ui" {
 }
 
 # Stop the App Service after creation
-resource "azurerm_resource_action" "stop_fh_sd_admin_ui" {
-  target_resource_id = azurerm_windows_web_app.fh_sd_admin_ui.id
-  action             = "stop"
+resource "null_resource" "stop_fh_sd_admin_ui" {
+  depends_on = [azurerm_windows_web_app.fh_sd_admin_ui]
+
+  provisioner "local-exec" {
+    command = <<EOT
+      az webapp stop --name "${azurerm_windows_web_app.fh_sd_admin_ui.name}" --resource-group "${azurerm_windows_web_app.fh_sd_admin_ui.resource_group_name}"
+    EOT
+  }
 }
 
 # Swift Connection for Service Directory Admin UI
