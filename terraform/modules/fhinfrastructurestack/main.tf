@@ -281,6 +281,12 @@ resource "azurerm_windows_web_app" "fh_idam_maintenance_ui" {
   }
 }
 
+# Stop the App Service after creation
+resource "azurerm_resource_action" "stop_fh_idam_maintenance_ui" {
+  target_resource_id = azurerm_windows_web_app.fh_idam_maintenance_ui.id
+  action             = "stop"
+}
+
 # Swift Connection for IDAM Maintenance UI
 resource "azurerm_app_service_virtual_network_swift_connection" "fh_idam_maintenance_ui" {
   app_service_id = azurerm_windows_web_app.fh_idam_maintenance_ui.id
@@ -393,6 +399,12 @@ resource "azurerm_windows_web_app" "fh_referral_ui" {
   lifecycle {
     ignore_changes = [virtual_network_subnet_id, logs]
   }
+}
+
+# Stop the App Service after creation
+resource "azurerm_resource_action" "stop_fh_referral_ui" {
+  target_resource_id = azurerm_windows_web_app.fh_referral_ui.id
+  action             = "stop"
 }
 
 # Swift Connection for Referral UI
@@ -513,6 +525,12 @@ resource "azurerm_windows_web_app" "fh_sd_admin_ui" {
   lifecycle {
     ignore_changes = [virtual_network_subnet_id, logs]
   }
+}
+
+# Stop the App Service after creation
+resource "azurerm_resource_action" "stop_fh_sd_admin_ui" {
+  target_resource_id = azurerm_windows_web_app.fh_sd_admin_ui.id
+  action             = "stop"
 }
 
 # Swift Connection for Service Directory Admin UI
@@ -1417,14 +1435,6 @@ resource "azurerm_application_gateway" "sd_ui_app_gateway" {
     target_listener_name = "${var.prefix}-${local.appgw_listener_https_sd_ui_name}"
   }
 
-  redirect_configuration {
-    name                 = "${var.prefix}-fh-redirect-to-connect-config"
-    redirect_type        = "Permanent"
-    target_url           = "https://${var.connect_domain}"
-    include_path         = true
-    include_query_string = true
-  }
-  
   request_routing_rule {
     name                       = "${var.prefix}-fh-routing-https-sd-ui"
     redirect_configuration_name = "${var.prefix}-fh-redirect-to-connect-config"
@@ -1433,7 +1443,6 @@ resource "azurerm_application_gateway" "sd_ui_app_gateway" {
     rule_type                  = "Basic"
     rewrite_rule_set_name      = "${var.prefix}-${local.appgw_rewrites_sd_ui_name}"
   }
-
 
   request_routing_rule {
     name                       = "${var.prefix}-fh-routing-http-sd-ui"
