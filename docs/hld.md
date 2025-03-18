@@ -11,108 +11,28 @@
 
 ## Problem Statement
 
-This document provides details of the high-level design for the Vulnerable Children and Families portfolio Family Hubs service directory and request for support products. It consists of three main components:
+This document provides details of the high-level design for the Vulnerable Children and Families portfolio Family Hubs digital service. It consists of two user-facing services:
 
-1. **Find:** Allows public users to browse a national service directory
-2. **Connect:** Allows professional and voluntary users to refer families to services
-3. **Manage:** Allows administration of service data and user accounts
+1. **Single directory:** Allows public users to browse a national service directory and
+   allows professional and voluntary users to refer families to services.
+2. **Manage:** Allows administration of service data and user accounts
 
 ## Architecture
 
-The following diagram provides a high-level overview of the Family Hubs architecture.
+The following C4 models provide a high-level overview of the Family Hubs architecture.
 
-**Note:** as this is only a high-level overview, it is not intended to be a 1:1 visualisation of the entire Family Hubs architecture.
+### C1 View
 
-### High-level Architecture
+Snapshot from 18 Mar 2025.
 
-```mermaid
+![C1 View for Family Hubs](./img/c1view.png)
 
-graph LR
-    %%{init:{'flowchart':{'nodeSpacing': 50, 'rankSpacing': 100 }}}%%
+### C2 View
 
-    style PublicUsers fill:#FFF1E6,stroke:#333
-    style ProfessionalUsers fill:#FFF1E6,stroke:#333
-    style AdministrativeUsers fill:#FFF1E6,stroke:#333
-    style FamilyHubsDev fill:#FFF1E6,stroke:#333
+Snapshot from 18 Mar 2025.
 
-    PublicUsers[Public Users] -->|Use| Find[Find UI]
-    ProfessionalUsers[Professional Users] -->|Authenticate using| GovOneLogin[Gov One Login] -->|Use| Connect[Connect UI]
-    AdministrativeUsers[Administrative Users] -->|Authenticate using| GovOneLogin -->|Use| Manage[Manage UI]    
-    FamilyHubsDev[Family Hubs Developers] -->|Use| IdAMMaintenanceUI[IdAM Maintenance UI]
+![C2 View for Family Hubs](./img/c2view.png)
 
-    style Find fill:#F0EFEB,stroke:#333
-    style Connect fill:#F0EFEB,stroke:#333
-    style Manage fill:#F0EFEB,stroke:#333
-    style IdAMMaintenanceUI fill:#F0EFEB,stroke:#333
-
-    subgraph Azure
-        style Azure fill:#e0f7fa,stroke:#333,stroke-dasharray: 5, 5,margin:102px
-        
-        subgraph App_Services[App Services]
-            style ServiceDirectoryAPI fill:#DFE7FD,stroke:#333
-            style IdAMAPI fill:#DFE7FD,stroke:#333
-            style ReferralAPI fill:#DFE7FD,stroke:#333
-            style ReportAPI fill:#DFE7FD,stroke:#333
-            style NotificationAPI fill:#DFE7FD,stroke:#333
-            
-            Find -->|Connects to| ServiceDirectoryAPI[Service Directory API]
-
-            Connect -->|Connects to| ServiceDirectoryAPI
-            Connect -->|Connects to| IdAMAPI[IdAM API]
-            Connect -->|Connects to| ReferralAPI[Referral API]
-            Connect -->|Connects to| NotificationAPI[Notification API]
-
-            Manage -->|Connects to| ServiceDirectoryAPI
-            Manage -->|Connects to| IdAMAPI
-            Manage -->|Connects to| ReportAPI[Report API]
-            Manage -->|Connects to| NotificationAPI
-
-            IdAMMaintenanceUI -->|Connects to| ServiceDirectoryAPI
-            IdAMMaintenanceUI -->|Connects to| IdAMAPI
-            
-            ReferralAPI -->|Calls| ServiceDirectoryAPI
-            IdAMAPI --> |Calls| ServiceDirectoryAPI
-        end
-
-        subgraph Databases
-            style ServiceDirectoryDB fill:#E2ECE9,stroke:#333 
-            style IdAMDB fill:#E2ECE9,stroke:#333 
-            style ReferralDB fill:#E2ECE9,stroke:#333 
-            style ReportDB fill:#E2ECE9,stroke:#333 
-            style NotificationDB fill:#E2ECE9,stroke:#333 
-            style ReportStagingDB fill:#E2ECE9,stroke:#333 
-
-            ServiceDirectoryAPI -->|Stores data in| ServiceDirectoryDB[s181p01-service-directory-db]
-            IdAMAPI -->|Stores data in| IdAMDB[s181p01-idam-db]
-            ReferralAPI -->|Stores data in| ReferralDB[s181p01-referral-db]
-            ReportAPI -->|Stores data in| ReportDB[s181p01-report-db]
-            NotificationAPI -->|Stores data in| NotificationDB[s181p01-notification-db]
-            ReportStagingDB[s181p01-report-staging-db]
-        end
-
-        subgraph Functions[Azure Functions]
-            style FuncOpenReferral fill:#FAD2E1,stroke:#333 
-
-            FuncOpenReferral[s181d01-fa-fh-open-referral] --> |Stores data in| ServiceDirectoryDB
-        end
-
-        subgraph DataFactory[Azure Data Factory]
-            style DataFDefault fill:#BEE1E6,stroke:#333 
-
-            DataFDefault[s181p01-dataf-default]
-            DataFDefault --> |Copies data from| ServiceDirectoryDB
-            DataFDefault --> |Copies data from| ReferralDB
-            DataFDefault --> |Copies data to| ReportStagingDB
-        end
-    end
-
-    style GovOneLogin fill:#FBF8CC,stroke:#333,stroke-dasharray: 5, 5
-    GovOneLogin[Gov One Login] -->|Authenticates| Connect
-    GovOneLogin -->|Authenticates| Manage
-
-    style LA fill:#cdf7ff,stroke:#333,stroke-dasharray: 5, 5
-    LA[Local Authority] --> |Data ingested by| FuncOpenReferral
-```
 ## Service Information
 
 ### Third Parties
@@ -129,8 +49,8 @@ Family Hubs consists of the following services:
 
 #### UIs
 
-- **Find:** lets users find services in their area through a postcode search
-- **Connect:** allows LAs to connect families with services through connection requests
+- **Single directory:** lets users find services in their area through a postcode search and
+  allows LAs to connect families with services through connection requests.
 - **Manage:** allows LA and VCS users to manage their data, view metrics, and other administrative tasks
 - **IdAM Maintenance:** allows members of the Family Hubs team to add new DfE Admin, LA and VCS users
 
@@ -208,7 +128,7 @@ Services run as app services within an app service plan on Azure.
 
 ## DNS
 
-Public DNS records for each site (Find, Connect, Manage) as subdomains of education.gov.uk.
+Public DNS records for each site (Single directory, Manage) as subdomains of education.gov.uk.
 
 ## Patch & Update Management
 
@@ -226,8 +146,7 @@ Provided by application plan and container orchestration in PaaS services. Appli
 
 ## DevOps
 
-- Single GitHub repository for all Family Hubs services
-- Terraform repository for IAC source
+- Single GitHub repository for all Family Hubs services and Terraform IaC
 - Managed pipeline in GitHub Actions for both code and IAC deployments
 - Open-source code management with feature branching and Pull Requests
 
