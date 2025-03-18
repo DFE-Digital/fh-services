@@ -31,22 +31,22 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
             _cacheService = cacheService;
         }
 
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
             await SetBackButton();
 
             if (!long.TryParse(AccountId, out long id))
             {
-                //todo: throw better exception
-                throw new InvalidOperationException("Invalid AccountId");
+                // Invalid AccountId
+                return RedirectToPage("/ManagePermissions/Index");
             }
 
             var account = await _idamClient.GetAccountById(id);
 
             if(account == null)
             {
-                //todo: throw better exception
-                throw new InvalidOperationException("User not found");
+                // User not found
+                return RedirectToPage("/ManagePermissions/Index");
             }
 
             var organisationName = await GetOrganisationName(account);
@@ -56,6 +56,8 @@ namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.AccountAdmin.Pages.ManageP
             Organisation = organisationName;
             Role = GetRoleText(account);
             Id = account.Id;
+
+            return Page();
         }
 
         private async Task<string> GetOrganisationName(AccountDto account)

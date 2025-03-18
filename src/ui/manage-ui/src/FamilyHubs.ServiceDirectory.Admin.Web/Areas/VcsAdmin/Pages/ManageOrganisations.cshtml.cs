@@ -1,13 +1,13 @@
 using System.Text;
 using FamilyHubs.ServiceDirectory.Admin.Core.ApiClient;
 using FamilyHubs.ServiceDirectory.Admin.Core.Services;
+using FamilyHubs.ServiceDirectory.Admin.Web.Components;
 using FamilyHubs.ServiceDirectory.Admin.Web.Pages.Shared;
 using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Models;
 using FamilyHubs.SharedKernel.Identity;
 using FamilyHubs.SharedKernel.Razor.Pagination;
 using Microsoft.AspNetCore.Mvc;
-using static FamilyHubs.ServiceDirectory.Admin.Web.Components.SortHeaderComponent;
 
 namespace FamilyHubs.ServiceDirectory.Admin.Web.Areas.VcsAdmin.Pages
 {

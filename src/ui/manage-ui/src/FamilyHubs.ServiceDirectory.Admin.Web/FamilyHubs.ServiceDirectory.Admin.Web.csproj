@@ -47,4 +47,11 @@
     <ItemGroup>
         <_ContentIncludedByDefault Remove="Pages\manage-services\Select-Location-Content-Top.cshtml" />
     </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="applicationHost.xdt">
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>    
+
 </Project>

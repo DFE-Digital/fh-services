@@ -1,0 +1,78 @@
+name: Remove file from web app
+description: Removes a file from the specified web app using publish profile credentials
+
+inputs:
+
+  web_app_name:
+    required: true
+    description: Name of web app to upload to
+
+  publish_profile:
+    required: true
+    description: Publish profile for web app
+
+  target_path_and_name: 
+    required: true
+    description: Target path and name of file to remove from the web app
+
+  optional_web_app_restart:
+    required: false
+    description: Whether to restart the web app
+    default: false
+
+  web_app_resource_group:
+    required: false
+    description: Resource group for web app requiring restart
+
+runs:
+  using: composite
+
+  steps:
+    - name: Remove file from web app
+      id: remove-file-from-web-app
+      shell: bash
+      run: |
+        echo "Fetching credentials from publish profile..."
+        LINE=$(echo "$PUBLISH_PROFILE" | grep 'publishMethod="ZipDeploy"')
+        KUDU_USER=$(echo "$LINE" | sed -n 's/.*userName="\([^"]*\)".*/\1/p')
+        KUDU_PASS=$(echo "$LINE" | sed -n 's/.*userPWD="\([^"]*\)".*/\1/p')
+        
+        echo "Removing $TARGET_FILE from $WEB_APP_NAME..."
+        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE -u "$KUDU_USER:$KUDU_PASS" -H "If-Match: *" "https://$WEB_APP_NAME.scm.azurewebsites.net/api/vfs$TARGET_FILE")
+
+        if [ "$HTTP_CODE" -eq 200 ]; then
+          echo "$TARGET_FILE successfully removed"
+          echo "file_removed_successfully=true" >> $GITHUB_OUTPUT
+        elif [ "$HTTP_CODE" -eq 404 ]; then
+          echo "$TARGET_FILE not found - this is OK :-)"
+          echo "file_removed_successfully=false" >> $GITHUB_OUTPUT
+        else
+          echo "Unexpected HTTP code $HTTP_CODE returned from removal request - exiting"
+          exit 1
+        fi
+      env:
+        WEB_APP_NAME: ${{ inputs.web_app_name }}
+        PUBLISH_PROFILE: ${{ inputs.publish_profile }}
+        TARGET_FILE: ${{ inputs.target_path_and_name }}
+
+    - name: Stop Web App (Optional)
+      if: ${{ inputs.optional_web_app_restart == 'true' && steps.remove-file-from-web-app.outputs.file_removed_successfully == 'true' }}
+      id: stop-web-app
+      shell: bash
+      run: |
+        echo "Stopping web app $WEB_APP_NAME..."
+        az webapp stop --name "$WEB_APP_NAME" --resource-group "$RESOURCE_GROUP"
+      env:
+        WEB_APP_NAME: ${{ inputs.web_app_name }}
+        RESOURCE_GROUP: ${{ inputs.web_app_resource_group }}
+  
+    - name: Start Web App (Optional)
+      if: ${{ inputs.optional_web_app_restart == 'true' && steps.remove-file-from-web-app.outputs.file_removed_successfully == 'true' }}
+      id: start-web-app
+      shell: bash
+      run: |
+        echo "Starting web app $WEB_APP_NAME..."
+        az webapp start --name "$WEB_APP_NAME" --resource-group "$RESOURCE_GROUP"
+      env:
+        WEB_APP_NAME: ${{ inputs.web_app_name }}
+        RESOURCE_GROUP: ${{ inputs.web_app_resource_group }}
