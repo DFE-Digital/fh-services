@@ -547,6 +547,287 @@ resource "azurerm_application_gateway" "sd_ui_app_gateway" {
   enable_http2       = true
 }
 
+# WAF Policies
+resource "azurerm_web_application_firewall_policy" "ref_ui_appgwwafp" {
+  name                = "${var.prefix}-fh-waf-referral-ui"
+  resource_group_name = local.resource_group_name
+  location            = var.location
+  managed_rules {
+    exclusion {
+      match_variable = "RequestCookieNames"
+      selector = "*"
+      selector_match_operator = "EqualsAny"
+      excluded_rule_set {
+        rule_group {
+          rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
+          excluded_rules = [942440, 942260]
+        }
+      }
+    }
+    exclusion {
+      match_variable = "RequestArgValues"
+      selector = ".png"
+      selector_match_operator = "EndsWith"
+      excluded_rule_set {
+        rule_group {
+          rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+          excluded_rules = [920300]
+        }
+      }
+    }
+    exclusion {
+      match_variable = "RequestArgValues"
+      selector = ".ico"
+      selector_match_operator = "EndsWith"
+      excluded_rule_set {
+        rule_group {
+          rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+          excluded_rules = [920300]
+        }
+      }
+    }
+    exclusion {
+      match_variable = "RequestHeaderNames"
+      selector = "host"
+      selector_match_operator = "Equals"
+      excluded_rule_set {
+        rule_group {
+          rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+          excluded_rules = [920350]
+        }
+      }
+    }
+    managed_rule_set {
+      type    = "OWASP"
+      version = "3.2"
+      rule_group_override {
+        rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
+        rule {
+          id = "942430"
+          enabled = false
+        }
+        rule {
+          id = "942440"
+          enabled = false
+        }
+        rule {
+          id = "942450"
+          enabled = false
+        }
+        rule {
+          id = "942400"
+          enabled = false
+        }
+      }
+      rule_group_override {
+        rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+        rule {
+          id = "920300"
+          enabled = false
+        }
+      }
+      rule_group_override {
+        rule_group_name = "REQUEST-931-APPLICATION-ATTACK-RFI"
+        rule {
+          id = "931130"
+          enabled = false
+        }
+      }
+    }
+  }
+  policy_settings {
+    mode = "Prevention"
+  }
+  tags = local.tags
+}
+
+resource "azurerm_web_application_firewall_policy" "sd_admin_ui_appgwwafp" {
+  name                = "${var.prefix}-fh-waf-sd-admin-ui"
+  resource_group_name = local.resource_group_name
+  location            = var.location
+  managed_rules {
+    exclusion {
+      match_variable = "RequestCookieNames"
+      selector = "*"
+      selector_match_operator = "EqualsAny"
+      excluded_rule_set {
+        rule_group {
+          rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
+          excluded_rules = [942440, 942260]
+        }
+      }
+    }
+    exclusion {
+      match_variable = "RequestArgValues"
+      selector = ".png"
+      selector_match_operator = "EndsWith"
+      excluded_rule_set {
+        rule_group {
+          rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+          excluded_rules = [920300]
+        }
+      }
+    }
+    exclusion {
+      match_variable = "RequestArgValues"
+      selector = ".ico"
+      selector_match_operator = "EndsWith"
+      excluded_rule_set {
+        rule_group {
+          rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+          excluded_rules = [920300]
+        }
+      }
+    }
+    exclusion {
+      match_variable = "RequestHeaderNames"
+      selector = "host"
+      selector_match_operator = "Equals"
+      excluded_rule_set {
+        rule_group {
+          rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+          excluded_rules = [920350]
+        }
+      }
+    }
+    managed_rule_set {
+      type    = "OWASP"
+      version = "3.2"
+      rule_group_override {
+        rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
+        rule {
+          id = "942430"
+          enabled = false
+        }
+        rule {
+          id = "942440"
+          enabled = false
+        }
+        rule {
+          id = "942450"
+          enabled = false
+        }
+        rule {
+          id = "942400"
+          enabled = false
+        }
+      }
+      rule_group_override {
+        rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+        rule {
+          id = "920300"
+          enabled = false
+        }
+      }
+      rule_group_override {
+        rule_group_name = "REQUEST-931-APPLICATION-ATTACK-RFI"
+        rule {
+          id = "931130"
+          enabled = false
+        }
+      }
+    }
+  }
+
+  policy_settings {
+    mode = "Prevention"
+  }
+  tags = local.tags
+}
+
+resource "azurerm_web_application_firewall_policy" "sd_ui_appgwwafp" {
+  name                = "${var.prefix}-fh-waf-sd-ui"
+  resource_group_name = local.resource_group_name
+  location            = var.location
+  managed_rules {
+    exclusion {
+      match_variable = "RequestCookieNames"
+      selector = "*"
+      selector_match_operator = "EqualsAny"
+      excluded_rule_set {
+        rule_group {
+          rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
+          excluded_rules = [942440, 942260]
+        }
+      }
+    }
+    exclusion {
+      match_variable = "RequestArgValues"
+      selector = ".png"
+      selector_match_operator = "EndsWith"
+      excluded_rule_set {
+        rule_group {
+          rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+          excluded_rules = [920300]
+        }
+      }
+    }
+    exclusion {
+      match_variable = "RequestArgValues"
+      selector = ".ico"
+      selector_match_operator = "EndsWith"
+      excluded_rule_set {
+        rule_group {
+          rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+          excluded_rules = [920300]
+        }
+      }
+    }
+    exclusion {
+      match_variable = "RequestHeaderNames"
+      selector = "host"
+      selector_match_operator = "Equals"
+      excluded_rule_set {
+        rule_group {
+          rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+          excluded_rules = [920350]
+        }
+      }
+    }
+    managed_rule_set {
+      type    = "OWASP"
+      version = "3.2"
+      rule_group_override {
+        rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
+        rule {
+          id = "942430"
+          enabled = false
+        }
+        rule {
+          id = "942440"
+          enabled = false
+        }
+        rule {
+          id = "942450"
+          enabled = false
+        }
+        rule {
+          id = "942400"
+          enabled = false
+        }
+      }
+      rule_group_override {
+        rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+        rule {
+          id = "920300"
+          enabled = false
+        }
+      }
+      rule_group_override {
+        rule_group_name = "REQUEST-931-APPLICATION-ATTACK-RFI"
+        rule {
+          id = "931130"
+          enabled = false
+        }
+      }
+    }
+  }
+  policy_settings {
+    mode = "Prevention"
+  }
+  tags = local.tags
+}
+
 # Public IP
 data "azurerm_public_ip" "referral_ui_public_ip" {
   name                      = "${var.prefix}-fh-pip-referral-ui"
