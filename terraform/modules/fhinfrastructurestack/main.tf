@@ -69,7 +69,7 @@ resource "azurerm_application_gateway" "ref_ui_app_gateway" {
 
   autoscale_configuration {
     min_capacity                = 1
-    max_capacity                = 1
+    max_capacity                = 2
   }
 
   ssl_certificate {
@@ -234,7 +234,7 @@ resource "azurerm_application_gateway" "sd_admin_ui_app_gateway" {
 
   autoscale_configuration {
     min_capacity                = 1
-    max_capacity                = 1
+    max_capacity                = 2
   }
 
   ssl_certificate {
@@ -396,7 +396,7 @@ resource "azurerm_application_gateway" "sd_ui_app_gateway" {
 
   autoscale_configuration {
     min_capacity                = 1
-    max_capacity                = 1
+    max_capacity                = 2
   }
 
   ssl_certificate {
