@@ -1,44 +1,44 @@
 # Google Analytics
 
-Google Analytics (GA) is a web analytics service provided by Google. It can be used to track website traffic and events.
+Google Analytics (GA) is a web analytics service provided by Google. It can be
+used to track website traffic and events.
 
-Currently GA is available for FIND, CONNECT, and MANAGE with projects for both the Production and Test URLs.
+Currently GA is available for 'Single directory' and 'Manage' with projects for
+both the Production and Test URLs.
 
 # Access
 
-Access to GA can be obtained by sending a request to the helpdesk.
-It’s worth noting that a Google account is required for this, but there is a process to link a DfE account to a google account detailed [here](https://measureu.com/access-google-analytics-without-gmail/#Option_1_Use_your_own_email_address_to_access_GA)
+Access to GA can be obtained by sending a request to the helpdesk. It’s worth
+noting that a Google account is required for this, but there is a process to
+link a DfE account to a google account detailed
+[here](https://measureu.com/access-google-analytics-without-gmail/#Option_1_Use_your_own_email_address_to_access_GA)
 
 # Links
 
 Copied below are links to the GA documentation as well as the 6 Project URLs.
 
-[Find Test](https://analytics.google.com/analytics/web/?authuser=2#/p351124658/reports/intelligenthome)
-[Connect Test](https://analytics.google.com/analytics/web/?authuser=2#/p351124658/reports/intelligenthome)
+[Single directory Test](https://analytics.google.com/analytics/web/?authuser=2#/p351124658/reports/intelligenthome)
 [Manage Test](https://analytics.google.com/analytics/web/?authuser=2#/p439164411/reports/intelligenthome)
 
-[Find Production](https://analytics.google.com/analytics/web/?authuser=2#/p346996027/reports/intelligenthome)
-[Connect Production](https://analytics.google.com/analytics/web/?authuser=2#/p347101383/reports/intelligenthome)
+[Single directory Production](https://analytics.google.com/analytics/web/?authuser=2#/p347101383/reports/intelligenthome)
 [Manage Production](https://analytics.google.com/analytics/web/?authuser=2#/p438768701/reports/intelligenthome)
 
 [GA Help / Documentation](https://support.google.com/analytics/#topic=14090456)
 
 # Measurement IDs
 
-Sites are linked to their related GA projects via a Measurement ID (located in the <head> of the site.
-In the table below is a list of sites and Measurement IDs in the Family Hubs estate.
+Sites are linked to their related GA projects via a Measurement ID (located in
+the <head> of the site. In the table below is a list of sites and Measurement
+IDs in the Family Hubs estate.
 
-|  |  |
+| Website | Measurement ID |
 | --- | --- |
-| **Website** | **Measurement ID** |
-| FIND (Test) | G-TD99KTZEE1 |
-| CONNECT (Test) | G-HXVL3XGHE2 |
-| MANAGE (Test) | G-2VRSHGP9CY |
-| FIND (Prod) | G-30G6ZFTEJE |
-| CONNECT (Prod) | G-0FDRRXT218 |
-| MANAGE (Prod) | G-0BB0C0YPYX |
+| Single directory (Test) | G-HXVL3XGHE2 |
+| Manage (Test) | G-2VRSHGP9CY |
+| Single directory (Prod) | G-0FDRRXT218 |
+| Manage (Prod) | G-0BB0C0YPYX |
 
-# Configuration on Find
+# Configuration
 
 ## Page view event
 
@@ -48,13 +48,24 @@ The page view event for the filter page contains query parameters representing t
 
 Here’s an example path…
 
-/ServiceFilter?postcode=M27 8&adminarea=E08000006&latitude=53.508884&longitude=-2.294605&activities=activities,school-clubs&family-support=bullying,debt&cost=free,pay-to-use&show=family-hubs,services&search\_within=20&children\_and\_young-option-selected=true&children\_and\_young=14
+```
+/ServiceFilter?postcode=M27
+&adminarea=E08000006
+&latitude=53.508884
+&longitude=-2.294605
+&activities=activities,school-clubs
+&family-support=bullying,debt
+&cost=free,pay-to-use
+&show=family-hubs,services
+&search\_within=20
+&children\_and\_young-option-selected=true
+&children\_and\_young=14
+```
 
 Here’s a breakdown of each parameter:
 
-|  |  |  |
+| Query Parameter | Notes | Example Value |
 | --- | --- | --- |
-| **Query Parameter** | **Notes** | **Example Value** |
 | postcode | The normalised outcode portion of the postcode that was entered into the postcode search page, which is PII safe. | M27 |
 | adminarea | The LA administrative area, which can be at the county or district/unitary authority level, to which the postcode has been assigned. | E08000006 |
 | activities | The (comma separated) selected ‘**Activities, clubs and groups**’ sub-categories.  The possible values are:  **activities**  **school-clubs**  **holiday-clubs**  **mad**  **baby-groups**  **playgroup**  **sports** | activities,school-clubs |
@@ -83,9 +94,8 @@ postcodeError=InvalidPostcode
 
 The possible values are
 
-|  |  |
+| Value | Scenario |
 | --- | --- |
-| **Value** | **Scenario** |
 | NoPostcode | No postcode supplied |
 | InvalidPostcode | Postcode in an invalid format |
 | PostcodeNotFound | Postcode is in a valid format, but not found |
@@ -94,11 +104,11 @@ The possible values are
 
 When a general error occurs, the page title will be:
 
-Sorry, there is a problem with the service - Find support for your family - GOV.UK
+> Sorry, there is a problem with the service
 
 When a page is not found, the page title will be:
 
-Page not found - Find support for your family - GOV.UK
+> Page not found
 
 ## Custom Events
 
@@ -106,7 +116,7 @@ Our custom events can be viewed in the [Analytics](https://analytics.google.com/
 
 Here’s [GA4 docs on reporting using custom events](https://support.google.com/analytics/answer/12229021?hl=en). We’ll probably need to report on custom event parameters, so we’ll have to [create custom dimensions or metric](https://support.google.com/analytics/answer/10075209)s to use them in reports.
 
-### analytics custom event
+### Analytics custom event
 
 A custom event that indicates when a user has accepted or rejected analytics cookies.
 
