@@ -2,9 +2,15 @@
 
 ## Build and Test
 
-The build and test workflow builds the code, runs unit tests - all in a parallel matrix. This is to improve the feedback loop for issues. This is triggered by PR changes to main or a release branch.
+The build and test workflow builds the code, runs unit tests - all in a parallel
+matrix. This is to improve the feedback loop for issues. This is triggered by PR
+changes to main or a release branch.
 
-Under the hood, it uses a template workflow that installs a report tool (Liquid Test Reports), optionally configures the Linux instance with support for Spatialite - a framework used by Sqlite to support our geo-spatial function. Then it performs the standard dotnet build and test tasks and generates a test report.
+Under the hood, it uses a template workflow that installs a report tool (Liquid
+Test Reports), optionally configures the Linux instance with support for
+Spatialite - a framework used by Sqlite to support our geo-spatial function.
+Then it performs the standard dotnet build and test tasks and generates a test
+report.
 
 ## Re-seeding Databases
 
@@ -14,7 +20,12 @@ We have a set of scripts to reseed the databases in a number of environments. Th
 * Test2
 * Pre-production
 
-The current deployment workflow, is enabled to reseed for test only. This will be extended to cover pre-production and, later development too. Also the current process is integrated into the deploy.yml file. Although the appropriate if statements are in place, along with a checkbox to disable reseeding, this really needs to be abstracted into its own workflow. This will provide the following benefits:
+The current deployment workflow, is enabled to reseed for test and
+pre-production only. This will be extended to cover  development too. Also the
+current process is integrated into the deploy.yml file. Although the appropriate
+if statements are in place, along with a checkbox to disable reseeding, this
+really needs to be abstracted into its own workflow. This will provide the
+following benefits:
 
 * Deterministic reseeding. This is because before the database can be reseeded, it will need to be reset. Then migrations are run to bring the databases into their current state, followed by reseeding with the data required
 * Safety against accidental production destruction. We **do not** want to accidentally run the reset step of the databases against production. Currently we have a separate workflow, to mitigate this which only applies the re-seeding against the test environment.
@@ -56,18 +67,69 @@ We currently run SonarCloud in a “monitoring mode” of sorts. This means we d
 
 ## Deployment
 
-Please see [Deployment guide](/wiki/spaces/FHGUW/pages/4329930754/Deployment%2Bguide) for information.
+Please see [Deployment guide](https://dfedigital.atlassian.net/wiki/spaces/FHGUW/pages/4329930754/Deployment+guide) for information.
 
 ## GitHub Workflows
 
-We use GitHub to build, deploy, provision and analyse our application. There are principally 5 main workflows:
+We use GitHub to build, deploy, provision and analyse our application. Each of the 'triggered' workflows uses a combination of callable workflows and actions to carry out the pipeline actions. The following diagram shows these workflows and their relationships:
 
-* Build and Test
-* Deployment
-* Provisioning
-* SonarCloud
-* Database Reseeding
+```mermaid
+graph LR;
+    subgraph Triggered
+        build-and-test["build-and-test<br>[workflow]"];
+        deploy["deploy<br>[workflow]"];
+        provisioning["provisioning<br>[workflow]"];
+        sonarcloud["sonarcloud<br>[workflow]"];
+        reseeding-databases["reseeding-databases<br>[workflow]"];
+        stryker-mutator["stryker-full-report<br>[workflow]"]
+        run-e2e-tests["run-e2e-tests<br>[workflow]"]
+    end
+    subgraph Called
+        build-and-test-template["build-and-test-template<br>[workflow]"];
+        build-and-upload-artifact["build-and-upload-artifact<br>[workflow]"];
+        deploy-service["deploy-service<br>[workflow]"];
+        deploy-function["deploy-function<br>[workflow]"];
+        migrate-database["migrate-database<br>[workflow]"];
+        run-acceptance-tests["run-acceptance-tests<br>[workflow]"];
+        run-sql-script["run-sql-script<br>[workflow]"];
+        e2e-seed-database["e2e-seed-database<br>[workflow]"];
+    end
+    subgraph Actions
+        database-migration["database-migration<br>[action]"];
+        get-ip-runner["get-runner-ip-address<br>[action]"];
+        run-sql-script-action["run-sql-script<br>[action]"];
+        azure-firewall["azure-firewall-ip<br>[action]"];
+        run-dotnet-stryker["run-dotnet-stryker<br>[action]"]
+        configure-web-app-basic-auth["configure-web-app-basic-auth<br>[action]"]
+        upload-file-to-web-app["upload-file-to-web-app<br>[action]"]
+        remove-file-from-web-app["remove-file-from-web-app<br>[action]"]
 
-Each of these uses a combination of callable workflows and actions to carry out the pipeline actions. The following diagram shows the relationships:
+        database-migration-->get-ip-runner
+        database-migration-->azure-firewall
+        configure-web-app-basic-auth-->upload-file-to-web-app
+        configure-web-app-basic-auth-->remove-file-from-web-app
+    end
 
-![](../img/Pipelines%20Family%20Hubs.png)
+    build-and-test-->build-and-test-template;
+    deploy-->build-and-upload-artifact;
+    deploy-->deploy-service;
+    deploy-->deploy-function;
+    deploy-->run-acceptance-tests
+    deploy-->run-e2e-tests
+    run-e2e-tests-->reseeding-databases
+    run-e2e-tests-->e2e-seed-database
+    stryker-mutator-->run-dotnet-stryker
+    reseeding-databases-->migrate-database;
+    reseeding-databases-->run-sql-script;
+    deploy-service-->database-migration;
+    deploy-service-->configure-web-app-basic-auth;
+    migrate-database-->database-migration;
+    run-acceptance-tests-->get-ip-runner;
+    run-acceptance-tests-->run-sql-script-action;
+    run-acceptance-tests-->get-ip-runner
+    run-sql-script-->run-sql-script-action;
+    run-sql-script-->azure-firewall;
+    run-sql-script-->get-ip-runner
+    e2e-seed-database-->get-ip-runner
+    e2e-seed-database-->azure-firewall
+```
