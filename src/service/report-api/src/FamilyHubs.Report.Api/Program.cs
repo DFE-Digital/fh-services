@@ -32,6 +32,12 @@ public class Program
         IServiceScope serviceScope = app.Services.CreateScope();
         RegisterMinimalEndPoints(serviceScope, app);
 
+        if (builder.Configuration.GetValue<bool>("EnableRuntimeMigrations"))
+        {
+            var db = app.Services.GetRequiredService<ReportDbContext>();
+            db.Database.Migrate();
+        }
+
         app.UseSwagger();
         app.UseSwaggerUI();
         app.UseSerilogRequestLogging();

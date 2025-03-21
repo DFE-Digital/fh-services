@@ -28,10 +28,4 @@
         <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
         <ProjectReference Include="..\FamilyHubs.Referral.Core\FamilyHubs.Referral.Core.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-        <Content Update="appsettings.development.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
 </Project>

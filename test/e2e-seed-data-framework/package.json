@@ -4,6 +4,8 @@
   "scripts": {
     "setup:dev": "dotenvx run -f .env -- node scripts/setup.js",
     "teardown:dev": "dotenvx run -f .env -- node scripts/teardown.js",
+    "setup:docker": "dotenvx run -f .env.docker -- node scripts/setup.js",
+    "teardown:docker": "dotenvx run -f .env.docker -- node scripts/teardown.js",
     "format": "standard --fix"
   },
   "dependencies": {

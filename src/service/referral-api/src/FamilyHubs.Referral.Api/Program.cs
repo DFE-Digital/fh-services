@@ -1,4 +1,6 @@
+using FamilyHubs.Referral.Data.Repository;
 using FamilyHubs.SharedKernel.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace FamilyHubs.Referral.Api;
@@ -29,6 +31,12 @@ public class Program
             builder.Services.ConfigureServices(builder.Configuration);
 
             var webApplication = builder.Build();
+            
+            if (builder.Configuration.GetValue<bool>("EnableRuntimeMigrations"))
+            {
+                var db = webApplication.Services.GetRequiredService<ApplicationDbContext>();
+                await db.Database.MigrateAsync();
+            }
 
             webApplication.ConfigureWebApplication();
 

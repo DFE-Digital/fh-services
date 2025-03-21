@@ -149,7 +149,7 @@ export async function addConnectionRequestsSentFact({
   await Report.ConnectionRequestsSentFacts.create({
     DateKey: dateKey,
     TimeKey: timeKey,
-    OrganisationKey: organisationKey,
+    OrganisationKey: testId(organisationKey),
     ConnectionRequestsSentMetricsId: testId(connectionRequestsSentMetricsId),
     RequestTimestamp: requestTimestamp,
     RequestCorrelationId: crypto.randomUUID(),

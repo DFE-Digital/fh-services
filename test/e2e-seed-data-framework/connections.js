@@ -21,10 +21,12 @@ function buildSequelizeConnection(connectionString) {
   const username = connectionStringParsed["user id"];
   const password = connectionStringParsed["password"];
   const host = connectionStringParsed["server"];
+  const port = connectionStringParsed["port"];
 
   return new Sequelize(database, username, password, {
     dialect: "mssql",
     host: host,
+    port: port,
   });
 }
 

@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
     <UserSecretsId>f14ba96f-a600-4255-be2d-c61d248eb8a7</UserSecretsId>
   </PropertyGroup>
 

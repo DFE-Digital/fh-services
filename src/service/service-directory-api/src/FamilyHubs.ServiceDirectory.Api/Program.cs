@@ -33,6 +33,12 @@ public class Program
             
             var webApplication = builder.Build();
 
+            if (builder.Configuration.GetValue<bool>("EnableRuntimeMigrations"))
+            {
+                var db = webApplication.Services.GetRequiredService<ApplicationDbContext>();
+                await db.Database.MigrateAsync();
+            }
+
             await WarmupAsync(webApplication.Services);
             
             webApplication.ConfigureWebApplication();

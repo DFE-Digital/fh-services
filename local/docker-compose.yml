@@ -1,0 +1,198 @@
+name: fh
+volumes:
+  mssql:
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "11433:1433"
+    user: root
+    volumes:
+      - mssql:/var/opt/mssql/data
+      - ./mssql:/mssql-server-setup-scripts.d
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: qKoCBawgNrWqG62E
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -Usa -P$$MSSQL_SA_PASSWORD -Q 'select 1'"]
+    restart: always
+  ingress:
+    image: jwilder/nginx-proxy
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./certs:/etc/nginx/certs
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+  idam-api:
+    build:
+      context: ..
+      dockerfile: src/service/idam-api/Dockerfile
+    expose:
+      - 8080
+    depends_on:
+      mssql:
+        condition: service_healthy
+    healthcheck:
+      test: curl -sSf http://127.0.0.1:8080/api/health || exit 1
+    environment:
+      VIRTUAL_HOST: idam-api.local.gd
+      ConnectionStrings__IdamConnection: "Server=mssql;User Id=sa;Password=qKoCBawgNrWqG62E;Initial Catalog=FamilyHubs.Idam.Database;MultipleActiveResultSets=True;TrustServerCertificate=true;Pooling=False;Connect Timeout=10;"
+      EnableRuntimeMigrations: "true"
+      Crypto__UseKeyVault: "false"
+      Crypto__DbEncryptionKey: "251,210,252,253,234,252,121,25,106,11,131,49,80,7,17,227,80,190,60,163,57,223,8,128,202,133,206,170,5,196,116,117"
+      Crypto__DbEncryptionIVKey: "71,242,19,146,197,144,0,159,84,81,50,30,238,215,88,98"
+    restart: always
+  sd-api:
+    build:
+      context: ..
+      dockerfile: src/service/service-directory-api/Dockerfile
+    expose:
+      - 8080
+    depends_on:
+      mssql:
+        condition: service_healthy
+    healthcheck:
+      test: curl -sSf http://127.0.0.1:8080/api/health || exit 1
+    environment:
+      VIRTUAL_HOST: sd-api.local.gd
+      EnableRuntimeMigrations: "true"
+      ConnectionStrings__ServiceDirectoryConnection: "Server=mssql;User Id=sa;Password=qKoCBawgNrWqG62E;Initial Catalog=FamilyHubs.ServiceDirectory.Database;MultipleActiveResultSets=True;TrustServerCertificate=true;Pooling=False;Connect 
+Timeout=10;"
+    restart: always
+  notification-api:
+    build:
+      context: ..
+      dockerfile: src/service/notification-api/Dockerfile
+    expose:
+      - 8080
+    depends_on:
+      mssql:
+        condition: service_healthy
+    healthcheck:
+      test: curl -sSf http://127.0.0.1:8080/api/health || exit 1
+    environment:
+      VIRTUAL_HOST: notification-api.local.gd
+      ConnectionStrings__NotificationConnection: "Server=mssql;User Id=sa;Password=qKoCBawgNrWqG62E;Initial Catalog=FamilyHubs.Notify.Database;MultipleActiveResultSets=True;TrustServerCertificate=true;Pooling=False;Connect Timeout=10;"
+      Crypto__DbEncryptionKey: "251,210,252,253,234,252,121,25,106,11,131,49,80,7,17,227,80,190,60,163,57,223,8,128,202,133,206,170,5,196,116,117"
+      Crypto__DbEncryptionIVKey: "71,242,19,146,197,144,0,159,84,81,50,30,238,215,88,98"
+      GovNotifySetting__ConnectAPIKey: "-"
+      GovNotifySetting__ManageAPIKey: "-"
+      EnableRuntimeMigrations: "true"
+    restart: always
+  report-api:
+    build:
+      context: ..
+      dockerfile: src/service/report-api/Dockerfile
+    expose:
+      - 8080
+    depends_on:
+      mssql:
+        condition: service_healthy
+    healthcheck:
+      test: curl -sSf http://127.0.0.1:8080/api/health || exit 1
+    environment:
+      VIRTUAL_HOST: report-api.local.gd
+      ConnectionStrings__ReportConnection: "Server=mssql;User Id=sa;Password=qKoCBawgNrWqG62E;Initial Catalog=FamilyHubs.Report.Database;MultipleActiveResultSets=True;TrustServerCertificate=true;Pooling=False;Connect Timeout=10;"
+      EnableRuntimeMigrations: "true"
+    restart: always
+  referral-api:
+    build:
+      context: ..
+      dockerfile: src/service/referral-api/Dockerfile
+    expose:
+      - 8080
+    depends_on:
+      mssql:
+        condition: service_healthy
+    healthcheck:
+      test: curl -sSf http://127.0.0.1:8080/api/health || exit 1
+    environment:
+      VIRTUAL_HOST: referral-api.local.gd
+      ConnectionStrings__ReferralConnection: "Server=mssql;User Id=sa;Password=qKoCBawgNrWqG62E;Initial Catalog=FamilyHubs.Referral.Database;MultipleActiveResultSets=True;TrustServerCertificate=true;Pooling=False;Connect Timeout=10;"
+      ServiceDirectoryApiBaseUrl: http://sd-api:8080/
+      EnableRuntimeMigrations: "true"
+    restart: always
+  idam-maintenance-ui:
+    build:
+      context: ..
+      dockerfile: src/ui/idam-maintenance-ui/Dockerfile
+    expose:
+      - 8080
+    depends_on:
+      mssql:
+        condition: service_healthy
+      sd-api:
+        condition: service_healthy
+    healthcheck:
+      test: curl -sSf http://127.0.0.1:8080 || exit 1
+    environment:
+      VIRTUAL_HOST: idam-ui.local.gd
+      ConnectionStrings__IdamConnection: "Server=mssql;User Id=sa;Password=qKoCBawgNrWqG62E;Initial Catalog=FamilyHubs.Idam.Database;MultipleActiveResultSets=True;TrustServerCertificate=true;Pooling=False;Connect Timeout=10;"
+      ServiceDirectoryApiBaseUrl: http://sd-api:8080/
+      Crypto__UseKeyVault: "false"
+      Crypto__DbEncryptionKey: "251,210,252,253,234,252,121,25,106,11,131,49,80,7,17,227,80,190,60,163,57,223,8,128,202,133,206,170,5,196,116,117"
+      Crypto__DbEncryptionIVKey: "71,242,19,146,197,144,0,159,84,81,50,30,238,215,88,98"
+      SqlServerCache__Connection: "Server=mssql;User Id=sa;Password=qKoCBawgNrWqG62E;Initial Catalog=FamilyHubs.Cache.Database;MultipleActiveResultSets=True;TrustServerCertificate=true;Pooling=False;Connect Timeout=10;"
+    restart: always
+  manage-ui:
+    build:
+      context: ..
+      dockerfile: src/ui/manage-ui/Dockerfile
+    expose:
+      - 8080
+    depends_on:
+      sd-api:
+        condition: service_healthy
+      idam-api:
+        condition: service_healthy
+      referral-api:
+        condition: service_healthy
+      report-api:
+        condition: service_healthy
+    healthcheck:
+      test: curl -sSf http://127.0.0.1:8080 || exit 1
+    environment:
+      VIRTUAL_HOST: manage-ui.local.gd
+      ServiceDirectoryApiBaseUrl: http://sd-api:8080/
+      ReferralApiBaseUrl: http://referral-api:8080/
+      ReportingApiBaseUrl: http://report-api:8080/
+      IdamApiBaseUrl: http://idam-api:8080/
+      GovUkOidcConfiguration__Oidc__BaseUrl: https://example.com
+      GovUkOidcConfiguration__AppHost: https://manage-ui.local.gd
+      GovUkOidcConfiguration__IdamsApiBaseUrl: http://idam-api:8080/
+      GovUkOidcConfiguration__StubAuthentication__UseStubAuthentication: "true"
+      GovUkOidcConfiguration__StubAuthentication__UseStubClaims: "true"
+    restart: always
+  connect-ui:
+    build:
+      context: ..
+      dockerfile: src/ui/connect-ui/Dockerfile
+    expose:
+      - 8080
+    depends_on:
+      mssql:
+        condition: service_healthy
+      sd-api:
+        condition: service_healthy
+      idam-api:
+        condition: service_healthy
+      notification-api:
+        condition: service_healthy
+      referral-api:
+        condition: service_healthy
+    healthcheck:
+      test: curl -sSf http://127.0.0.1:8080 || exit 1
+    environment:
+      VIRTUAL_HOST: connect-ui.local.gd
+      Notification__Endpoint: http://notification-api:8080/
+      ServiceDirectoryUrl: http://sd-api:8080/
+      ReferralApiUrl: http://referral-api:8080/
+      SqlServerCache__Connection: "Server=mssql;User Id=sa;Password=qKoCBawgNrWqG62E;Initial Catalog=FamilyHubs.Cache.Database;MultipleActiveResultSets=True;TrustServerCertificate=true;Pooling=False;Connect Timeout=10;"
+      GovUkOidcConfiguration__Oidc__BaseUrl: https://example.com
+      GovUkOidcConfiguration__AppHost: https://connect-ui.local.gd
+      GovUkOidcConfiguration__IdamsApiBaseUrl: http://idam-api:8080/
+      GovUkOidcConfiguration__StubAuthentication__UseStubAuthentication: "true"
+      GovUkOidcConfiguration__StubAuthentication__UseStubClaims: "true"
+      ConnectionStrings__SharedKernelConnection: "Server=mssql;User Id=sa;Password=qKoCBawgNrWqG62E;Initial Catalog=FamilyHubs.Report.Database;MultipleActiveResultSets=True;TrustServerCertificate=true;Pooling=False;Connect Timeout=10;"
+    restart: always

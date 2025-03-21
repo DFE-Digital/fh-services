@@ -30,11 +30,21 @@ async function createConnectionRequestSentMetrics() {
     modifiedBy: "",
   });
 
+  await Database.addOrganisationDim({
+    organisationKey: 2,
+    organisationTypeId: 2, // Always 2, as this is the code for an LA
+    organisationTypeName: "LA",
+    organisationId: 2,
+    organisationName: "Test LA",
+    createdBy: "",
+    modifiedBy: "",
+  });
+
   // This will have to mirror the ConnectionRequestSentMetrics you created when seeding the Referral Db
   await Database.addConnectionRequestsSentFact({
     dateKey: dateKey,
     timeKey: timeKey,
-    organisationKey: 12, // Note: This doesn't have the BaseId offset applied to it, as LAs are pre-seeded in OrganisationDim, so it will be 12 instead of 1000012
+    organisationKey: 2,
     connectionRequestsSentMetricsId: 1,
     requestTimestamp: dateTime,
     responseTimestamp: getHttpResponseTimeFromHttpRequestTime(dateTime),
