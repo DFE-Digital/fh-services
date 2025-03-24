@@ -57,9 +57,9 @@ Here’s an example path…
 &family-support=bullying,debt
 &cost=free,pay-to-use
 &show=family-hubs,services
-&search\_within=20
-&children\_and\_young-option-selected=true
-&children\_and\_young=14
+&search_within=20
+&children_and_young-option-selected=true
+&children_and_young=14
 ```
 
 Here’s a breakdown of each parameter:
