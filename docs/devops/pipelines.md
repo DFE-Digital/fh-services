@@ -21,7 +21,7 @@ We have a set of scripts to reseed the databases in a number of environments. Th
 * Pre-production
 
 The current deployment workflow, is enabled to reseed for test and
-pre-production only. This will be extended to cover  development too. Also the
+pre-production only. This will be extended to cover development too. Also the
 current process is integrated into the deploy.yml file. Although the appropriate
 if statements are in place, along with a checkbox to disable reseeding, this
 really needs to be abstracted into its own workflow. This will provide the
