@@ -1,6 +1,6 @@
 # ADR026 - Merge 'Find' into 'Connect'
 
-- **Status**: Accepted
+- **Status**: Adopted
 - **Date**: 2025-02-05
 - **Author**: Joshua Taylor
 

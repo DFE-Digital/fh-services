@@ -1,7 +1,7 @@
 
 # ADR029 - Implement technical documentation site
 
-- **Status**: Adopted
+- **Status**: Adopted but not yet implemented
 - **Date**: 2025-03-05
 - **Author**: Aaron Yarborough
 

@@ -5,7 +5,7 @@ Editor's note: This is a retroactive ADR made to reflect a decision that had
                already been made as of writing. 
 -->
 
-- **Status**: Accepted
+- **Status**: Adopted
 - **Date**: 2025-02-19
 - **Author**: Joshua Taylor MBCS
 

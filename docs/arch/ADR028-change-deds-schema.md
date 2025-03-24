@@ -1,6 +1,6 @@
 # ADR028 - Simplify DEDS schema to store JSON documents
 
-- **Status**: Draft
+- **Status**: Adopted but not yet implemented
 - **Date**: 2025-02-24
 - **Author**: Stuart Maskell
 
