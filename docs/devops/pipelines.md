@@ -71,65 +71,6 @@ Please see [Deployment guide](https://dfedigital.atlassian.net/wiki/spaces/FHGUW
 
 ## GitHub Workflows
 
-We use GitHub to build, deploy, provision and analyse our application. Each of the 'triggered' workflows uses a combination of callable workflows and actions to carry out the pipeline actions. The following diagram shows these workflows and their relationships:
+We use GitHub to build, deploy, provision and analyse our application. Each of the 'triggered' workflows uses a combination of callable workflows and actions to carry out the pipeline actions.
 
-```mermaid
-graph LR;
-    subgraph Triggered
-        build-and-test["build-and-test<br>[workflow]"];
-        deploy["deploy<br>[workflow]"];
-        provisioning["provisioning<br>[workflow]"];
-        sonarcloud["sonarcloud<br>[workflow]"];
-        reseeding-databases["reseeding-databases<br>[workflow]"];
-        stryker-mutator["stryker-full-report<br>[workflow]"]
-        run-e2e-tests["run-e2e-tests<br>[workflow]"]
-    end
-    subgraph Called
-        build-and-test-template["build-and-test-template<br>[workflow]"];
-        build-and-upload-artifact["build-and-upload-artifact<br>[workflow]"];
-        deploy-service["deploy-service<br>[workflow]"];
-        deploy-function["deploy-function<br>[workflow]"];
-        migrate-database["migrate-database<br>[workflow]"];
-        run-acceptance-tests["run-acceptance-tests<br>[workflow]"];
-        run-sql-script["run-sql-script<br>[workflow]"];
-        e2e-seed-database["e2e-seed-database<br>[workflow]"];
-    end
-    subgraph Actions
-        database-migration["database-migration<br>[action]"];
-        get-ip-runner["get-runner-ip-address<br>[action]"];
-        run-sql-script-action["run-sql-script<br>[action]"];
-        azure-firewall["azure-firewall-ip<br>[action]"];
-        run-dotnet-stryker["run-dotnet-stryker<br>[action]"]
-        configure-web-app-basic-auth["configure-web-app-basic-auth<br>[action]"]
-        upload-file-to-web-app["upload-file-to-web-app<br>[action]"]
-        remove-file-from-web-app["remove-file-from-web-app<br>[action]"]
-
-        database-migration-->get-ip-runner
-        database-migration-->azure-firewall
-        configure-web-app-basic-auth-->upload-file-to-web-app
-        configure-web-app-basic-auth-->remove-file-from-web-app
-    end
-
-    build-and-test-->build-and-test-template;
-    deploy-->build-and-upload-artifact;
-    deploy-->deploy-service;
-    deploy-->deploy-function;
-    deploy-->run-acceptance-tests
-    deploy-->run-e2e-tests
-    run-e2e-tests-->reseeding-databases
-    run-e2e-tests-->e2e-seed-database
-    stryker-mutator-->run-dotnet-stryker
-    reseeding-databases-->migrate-database;
-    reseeding-databases-->run-sql-script;
-    deploy-service-->database-migration;
-    deploy-service-->configure-web-app-basic-auth;
-    migrate-database-->database-migration;
-    run-acceptance-tests-->get-ip-runner;
-    run-acceptance-tests-->run-sql-script-action;
-    run-acceptance-tests-->get-ip-runner
-    run-sql-script-->run-sql-script-action;
-    run-sql-script-->azure-firewall;
-    run-sql-script-->get-ip-runner
-    e2e-seed-database-->get-ip-runner
-    e2e-seed-database-->azure-firewall
-```
+Use the [GitHub Actions UI](https://github.com/DFE-Digital/fh-services/actions) workflow list to inspect workflow structures and relationships.
