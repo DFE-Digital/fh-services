@@ -62,8 +62,7 @@ This is the main key vault used by the services for storage of application secre
 | CONNECT-UI-ReferralApiUrl | URL | Used to allow the Connect UI to perform CRUD operations on Referrals through the appropriate API endpoints | https://s181t01-as-fh-referral-api.azurewebsites.net/ |
 | CONNECT-UI-ServiceDirectoryUrl | URL | Used in the "Search for service" functionality to get the lists of services, locations etc | https://s181t01-as-fh-sd-api.azurewebsites.net/ |
 | CONNECT-UI-SqlServerCache--Connection | DB Connection | A cache database that persists encoded user session data | Server=tcp:s181t01-as-fh-sql-server.database.windows.net,1433;Initial Catalog=s181t01-fh-referral-db;Persist Security Info=False;User ID=\*\*\*;Password=\*\*\*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; |
-| FIND-UI-AZURE-WEBAPP-PUBLISH-PROFILE | Azure App Service Publish Profile String | Publish profile for the Find UI app service |  |
-| FIND-UI-BlobStorageFilename | Filename Template |  | {yyyy}/{MM}/{dd}/testlog.txt |
+| FIND-UI-AZURE-WEBAPP-PUBLISH-PROFILE | Azure App Service Publish Profile String | Publish profile for the Find UI app service |
 | FIND-UI-FamilyHubsUi--Analytics--ClarityId | Clarity ID |  | lvdgkygesf |
 | FIND-UI-FamilyHubsUi--Analytics--ContainerId |  |  | TD99KTZEE1 |
 | FIND-UI-FamilyHubsUi--Analytics--MeasurementId |  |  | G-TD99KTZEE1 |
