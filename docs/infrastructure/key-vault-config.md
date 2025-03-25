@@ -36,32 +36,32 @@ This is the main key vault used by the services for storage of application secre
 | Name | Format | Description | Example Value |
 |------|--------|-------------|---------------|
 | CONNECT-UI-AZURE-WEBAPP-PUBLISH-PROFILE | Azure App Service Publish Profile String | Publish profile for Connect UI app service | |
-| CONNECT-UI-ConnectionStrings--SharedKernelConnection | DB Connection String |  | Server=tcp:s181t01-as-fh-sql-server.database.windows.net,1433;Initial Catalog=s181t01-fh-referral-db;Persist Security Info=False;User ID=\*\*\*;Password=\*\*\*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; |
+| CONNECT-UI-ConnectionStrings--SharedKernelConnection | DB Connection String | A connection to the Referral database. Used by the IDataProtection provider to store encrypted keys | Server=tcp:s181t01-as-fh-sql-server.database.windows.net,1433;Initial Catalog=s181t01-fh-referral-db;Persist Security Info=False;User ID=\*\*\*;Password=\*\*\*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; |
 | CONNECT-UI-DataProtection--KeyIdentifier | URL | URL of encryption key that will be the ASP.NET data protection services within the Connect UI service | https://s181t01-kv-fh-referral.vault.azure.net/keys/s181t01-data-protection-key |
 | CONNECT-UI-FamilyHubsUi--Analytics--ClarityId | Clarity ID | Unique Microsoft Clarity ID for the Connect website | q9qh5w3dpj |
 | CONNECT-UI-FamilyHubsUi--Analytics--ContainerId | Google Container ID | Google Analytics tag for the Connect UI | HXVL3XGHE2 |
 | CONNECT-UI-FamilyHubsUi--Analytics--MeasurementId | Google Measurement Id | Google Analytics Measurement ID for the Connect website | G-TKVPYZRY6D |
-| CONNECT-UI-FamilyHubsUi--Urls--DashboardWeb | URL |  | https://test.connect-families-to-support.education.gov.uk/referrals |
-| CONNECT-UI-FamilyHubsUi--Urls--GovUkLoginAccountPage | URL |  | https://home.integration.account.gov.uk |
-| CONNECT-UI-FamilyHubsUi--Urls--ManageWeb | URL |  | https://test.manage-family-support-services-and-accounts.education.gov.uk |
-| CONNECT-UI-FeatureManagement--ConnectDashboard--EnabledFor--0--Parameters--Value | Boolean |  | true |
-| CONNECT-UI-FeatureManagement--VcfsServices--EnabledFor--0--Parameters--Value | Boolean |  | true |
-| CONNECT-UI-GovUkOidcConfiguration--AppHost | URL |  | https://test.connect-families-to-support.education.gov.uk |
+| CONNECT-UI-FamilyHubsUi--Urls--DashboardWeb | URL | URL to the "My referrals" section of the Single Directory | https://test.connect-families-to-support.education.gov.uk/referrals |
+| CONNECT-UI-FamilyHubsUi--Urls--GovUkLoginAccountPage | URL | URL to the GovUK One Login website | https://home.integration.account.gov.uk |
+| CONNECT-UI-FamilyHubsUi--Urls--ManageWeb | URL | URL to the Manage service | https://test.manage-family-support-services-and-accounts.education.gov.uk |
+| CONNECT-UI-FeatureManagement--ConnectDashboard--EnabledFor--0--Parameters--Value | Boolean | Feature Flag that controls whether or not the "My requests" sub-system is activated or disabled | true |
+| CONNECT-UI-FeatureManagement--VcfsServices--EnabledFor--0--Parameters--Value | Boolean | Feature Flag that controls whether or not VCFS services are returned in the Single Directory. If set to False, will also turn off the Connect Dashboard feature flag | true |
+| CONNECT-UI-GovUkOidcConfiguration--AppHost | URL | The URL GovUK One Login will return the user to once they have successfully logged in | https://test.connect-families-to-support.education.gov.uk |
 | CONNECT-UI-GovUkOidcConfiguration--BearerTokenSigningKey | Random 64-char Hex String | Signing key to authenticate OneLogin requests for the Connect website | 99B3E7E9784F950E5EFE299FBFC69071FDB3DC55F8D8DD5D8A5CD6FF23E6F9B8 |
-| CONNECT-UI-GovUkOidcConfiguration--IdamsApiBaseUrl | URL |  | https://s181t01-as-fh-idam-api.azurewebsites.net/ |
-| CONNECT-UI-GovUkOidcConfiguration--Oidc--BaseUrl | URL |  | https://oidc.integration.account.gov.uk |
+| CONNECT-UI-GovUkOidcConfiguration--IdamsApiBaseUrl | URL | The URL of the IdAM API, used to authenticate users and validate Claims internally.| https://s181t01-as-fh-idam-api.azurewebsites.net/ |
+| CONNECT-UI-GovUkOidcConfiguration--Oidc--BaseUrl | URL | The base URL of the GovUK One Login authentication service | https://oidc.integration.account.gov.uk |
 | CONNECT-UI-GovUkOidcConfiguration--Oidc--ClientId | OneLogin Client Id | Unique ID representing the OneLogin configuration to use for the Connect website | nAqOhaWmEZafaQzBE1DdVM8iOhN |
 | CONNECT-UI-GovUkOidcConfiguration--Oidc--KeyVaultIdentifier | URL | The private key used to sign OneLogin requests - OneLogin is configured with the corresponding public key | https://s181t01-kv-fh-idam.vault.azure.net/keys/s181t01-gov-uk-one-login-private-key/8c695031cb9a44118bc41bab07a9234c |
-| CONNECT-UI-GovUkOidcConfiguration--Oidc--TwoFactorEnabled | Boolean |  | false |
-| CONNECT-UI-GovUkOidcConfiguration--PathBasedRouting--DiscriminatorPath | Path |  | /referrals |
-| CONNECT-UI-GovUkOidcConfiguration--PathBasedRouting--SubSiteTriggerPaths | Path |  | /la,/vcs,/start |
-| CONNECT-UI-GovUkOidcConfiguration--StubAuthentication--UseStubAuthentication | Boolean |  | false |
-| CONNECT-UI-GovUkOidcConfiguration--StubAuthentication--UseStubClaims | Boolean |  | false |
-| CONNECT-UI-Idams--Endpoint | URL |  | https://s181t01-as-fh-idam-api.azurewebsites.net |
-| CONNECT-UI-Notification--Endpoint | URL |  | https://s181t01-as-fh-notification-api.azurewebsites.net/api/notify |
-| CONNECT-UI-ReferralApiUrl | URL |  | https://s181t01-as-fh-referral-api.azurewebsites.net/ |
-| CONNECT-UI-ServiceDirectoryUrl | URL |  | https://s181t01-as-fh-sd-api.azurewebsites.net/ |
-| CONNECT-UI-SqlServerCache--Connection | DB Connection |  | Server=tcp:s181t01-as-fh-sql-server.database.windows.net,1433;Initial Catalog=s181t01-fh-referral-db;Persist Security Info=False;User ID=\*\*\*;Password=\*\*\*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; |
+| CONNECT-UI-GovUkOidcConfiguration--Oidc--TwoFactorEnabled | Boolean | Whether 2FA is required to login | false |
+| CONNECT-UI-GovUkOidcConfiguration--PathBasedRouting--DiscriminatorPath | Path | Going to this relative path will trigger the GovUK One Login authentication mechanism to ensure a user is signed in and valid | /referrals |
+| CONNECT-UI-GovUkOidcConfiguration--PathBasedRouting--SubSiteTriggerPaths | Path | Going to these relative paths will trigger the GovUK One Login authentication mechanism to ensure a user is signed in and valid | /la,/vcs,/start |
+| CONNECT-UI-GovUkOidcConfiguration--StubAuthentication--UseStubAuthentication | Boolean | Used for mocking authentication for local development | false |
+| CONNECT-UI-GovUkOidcConfiguration--StubAuthentication--UseStubClaims | Boolean | Used for mocking Claims for local development | false |
+| CONNECT-UI-Idams--Endpoint | URL |  Used for the Connect UI to access the IdAM API | https://s181t01-as-fh-idam-api.azurewebsites.net |
+| CONNECT-UI-Notification--Endpoint | URL | Used for the Connect UI to access the Nottification API - when referrals are created, updated or deleted emails are sent to relevant parties through this API | https://s181t01-as-fh-notification-api.azurewebsites.net/api/notify |
+| CONNECT-UI-ReferralApiUrl | URL | Used to allow the Connect UI to perform CRUD operations on Referrals through the appropriate API endpoints | https://s181t01-as-fh-referral-api.azurewebsites.net/ |
+| CONNECT-UI-ServiceDirectoryUrl | URL | Used in the "Search for service" functionality to get the lists of services, locations etc | https://s181t01-as-fh-sd-api.azurewebsites.net/ |
+| CONNECT-UI-SqlServerCache--Connection | DB Connection | A cache database that persists encoded user session data | Server=tcp:s181t01-as-fh-sql-server.database.windows.net,1433;Initial Catalog=s181t01-fh-referral-db;Persist Security Info=False;User ID=\*\*\*;Password=\*\*\*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; |
 | FIND-UI-AZURE-WEBAPP-PUBLISH-PROFILE | Azure App Service Publish Profile String | Publish profile for the Find UI app service |  |
 | FIND-UI-BlobStorageFilename | Filename Template |  | {yyyy}/{MM}/{dd}/testlog.txt |
 | FIND-UI-FamilyHubsUi--Analytics--ClarityId | Clarity ID |  | lvdgkygesf |
