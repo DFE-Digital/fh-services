@@ -38,9 +38,9 @@ This is the main key vault used by the services for storage of application secre
 | CONNECT-UI-AZURE-WEBAPP-PUBLISH-PROFILE | Azure App Service Publish Profile String | Publish profile for Connect UI app service | |
 | CONNECT-UI-ConnectionStrings--SharedKernelConnection | DB Connection String | A connection to the Referral database. Used by the IDataProtection provider to store encrypted keys | Server=tcp:s181t01-as-fh-sql-server.database.windows.net,1433;Initial Catalog=s181t01-fh-referral-db;Persist Security Info=False;User ID=\*\*\*;Password=\*\*\*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; |
 | CONNECT-UI-DataProtection--KeyIdentifier | URL | URL of encryption key used by the ASP.NET data protection services within the Connect UI service | https://s181t01-kv-fh-referral.vault.azure.net/keys/s181t01-data-protection-key |
-| CONNECT-UI-FamilyHubsUi--Analytics--ClarityId | Clarity ID | Unique Microsoft Clarity ID for the Connect website | q9qh5w3dpj |
+| CONNECT-UI-FamilyHubsUi--Analytics--ClarityId | Clarity ID | Unique Microsoft Clarity ID for the Connect website | a1rv8q9ezk |
 | CONNECT-UI-FamilyHubsUi--Analytics--ContainerId | Google Container ID | Google Analytics tag for the Connect UI | HXVL3XGHE2 |
-| CONNECT-UI-FamilyHubsUi--Analytics--MeasurementId | Google Measurement Id | Google Analytics Measurement ID for the Connect website | G-TKVPYZRY6D |
+| CONNECT-UI-FamilyHubsUi--Analytics--MeasurementId | Google Measurement Id | Google Analytics Measurement ID for the Connect website | G-DHJLDOLSNE |
 | CONNECT-UI-FamilyHubsUi--Urls--DashboardWeb | URL | URL to the "My referrals" section of the Single Directory | https://test.connect-families-to-support.education.gov.uk/referrals |
 | CONNECT-UI-FamilyHubsUi--Urls--GovUkLoginAccountPage | URL | URL to the GovUK One Login website | https://home.integration.account.gov.uk |
 | CONNECT-UI-FamilyHubsUi--Urls--ManageWeb | URL | URL to the Manage service | https://test.manage-family-support-services-and-accounts.education.gov.uk |
@@ -50,7 +50,7 @@ This is the main key vault used by the services for storage of application secre
 | CONNECT-UI-GovUkOidcConfiguration--BearerTokenSigningKey | Random 64-char Hex String | Signing key to authenticate OneLogin requests for the Connect website | 99B3E7E9784F950E5EFE299FBFC69071FDB3DC55F8D8DD5D8A5CD6FF23E6F9B8 |
 | CONNECT-UI-GovUkOidcConfiguration--IdamsApiBaseUrl | URL | The URL of the IDAM API, used to authenticate users and validate Claims internally.| https://s181t01-as-fh-idam-api.azurewebsites.net/ |
 | CONNECT-UI-GovUkOidcConfiguration--Oidc--BaseUrl | URL | The base URL of the GovUK One Login authentication service | https://oidc.integration.account.gov.uk |
-| CONNECT-UI-GovUkOidcConfiguration--Oidc--ClientId | OneLogin Client Id | Unique ID representing the OneLogin configuration to use for the Connect website | nAqOhaWmEZafaQzBE1DdVM8iOhN |
+| CONNECT-UI-GovUkOidcConfiguration--Oidc--ClientId | OneLogin Client Id | Unique ID representing the OneLogin configuration to use for the Connect website | CBwPLKSDJFLSDKJFSLDFJkjkjkk |
 | CONNECT-UI-GovUkOidcConfiguration--Oidc--KeyVaultIdentifier | URL | The private key used to sign OneLogin requests - OneLogin is configured with the corresponding public key | https://s181t01-kv-fh-idam.vault.azure.net/keys/s181t01-gov-uk-one-login-private-key/8c695031cb9a44118bc41bab07a9234c |
 | CONNECT-UI-GovUkOidcConfiguration--Oidc--TwoFactorEnabled | Boolean | Whether 2FA is required to login | false |
 | CONNECT-UI-GovUkOidcConfiguration--PathBasedRouting--DiscriminatorPath | Path | Going to this relative path will trigger the GovUK One Login authentication mechanism to ensure a user is signed in and valid | /referrals |
@@ -63,9 +63,9 @@ This is the main key vault used by the services for storage of application secre
 | CONNECT-UI-ServiceDirectoryUrl | URL | Used in the "Search for service" functionality to get the lists of services, locations etc | https://s181t01-as-fh-sd-api.azurewebsites.net/ |
 | CONNECT-UI-SqlServerCache--Connection | DB Connection | A cache database that persists encoded user session data | Server=tcp:s181t01-as-fh-sql-server.database.windows.net,1433;Initial Catalog=s181t01-fh-referral-db;Persist Security Info=False;User ID=\*\*\*;Password=\*\*\*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; |
 | FIND-UI-AZURE-WEBAPP-PUBLISH-PROFILE | Azure App Service Publish Profile String | Publish profile for the Find UI app service |
-| FIND-UI-FamilyHubsUi--Analytics--ClarityId | Clarity ID | Microsoft Clarity analytics ID for Find | lvdgkygesf |
-| FIND-UI-FamilyHubsUi--Analytics--ContainerId | Container ID | Google Analytics container ID for Find | TD99KTZEE1 |
-| FIND-UI-FamilyHubsUi--Analytics--MeasurementId | Measurement ID | Google Analytics measurement ID for Find | G-TD99KTZEE1 |
+| FIND-UI-FamilyHubsUi--Analytics--ClarityId | Clarity ID | Microsoft Clarity analytics ID for Find | skjdkskkss |
+| FIND-UI-FamilyHubsUi--Analytics--ContainerId | Container ID | Google Analytics container ID for Find | DGHEFGDG6 |
+| FIND-UI-FamilyHubsUi--Analytics--MeasurementId | Measurement ID | Google Analytics measurement ID for Find | G-DGHEFGDG6 |
 | FIND-UI-ServiceDirectoryAPI--Endpoint | URL | Used to pull services, locations, etc for the search results and service details pages | https://s181t01-as-fh-sd-api.azurewebsites.net/ |
 | IDAM-API-AZURE-WEBAPP-PUBLISH-PROFILE | Azure App Service Publish Profile String | Publish profile for IDAM API app service |  |
 | IDAM-API-ConnectionStrings--IdamConnection | DB Connection String | Database connection for the IDAM API to perform CRUD operations | Server=tcp:s181t01-as-fh-sql-server.database.windows.net,1433;Initial Catalog=s181t01-fh-idam-db;Persist Security Info=False;User ID=\*\*\*;Password=;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; |
@@ -81,9 +81,9 @@ This is the main key vault used by the services for storage of application secre
 | IDAM-MAINTENANCE-UI-SqlServerCache--Connection | DB Connection String | Used for persisting user session information | Server=tcp:s181t01-as-fh-sql-server.database.windows.net,1433;Initial Catalog=s181t01-fh-idam-db;Persist Security Info=False;User ID=\*\*\*;Password=\*\*\*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; |
 | MANAGE-UI-AZURE-WEBAPP-PUBLISH-PROFILE | Azure App Service Publish Profile String | Publish profile for Manage UI app service |  |
 | MANAGE-UI-CacheConnection | DB Connection String |  Used for persisting user session information | Server=tcp:s181t01-as-fh-sql-server.database.windows.net,1433;Initial Catalog=s181t01-fh-idam-db;Persist Security Info=False;User ID=\*\*\*;Password=\*\*\*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; |
-| MANAGE-UI-FamilyHubsUi--Analytics--ClarityId | Clarity ID | Microsoft Clarity analytics ID for Manage | lwxri5if2d |
-| MANAGE-UI-FamilyHubsUi--Analytics--ContainerId | Container ID | Google Analytics container ID for Manage | 2VRSHGP9CY |
-| MANAGE-UI-FamilyHubsUi--Analytics--MeasurementId | Measurement ID | Google Analytics measurement ID for Manage | G-2VRSHGP9CY |
+| MANAGE-UI-FamilyHubsUi--Analytics--ClarityId | Clarity ID | Microsoft Clarity analytics ID for Manage | KJK2JKKJ2D |
+| MANAGE-UI-FamilyHubsUi--Analytics--ContainerId | Container ID | Google Analytics container ID for Manage | SDJKKSDJSK1 |
+| MANAGE-UI-FamilyHubsUi--Analytics--MeasurementId | Measurement ID | Google Analytics measurement ID for Manage | G-SDJKKSDJSK1 |
 | MANAGE-UI-FamilyHubsUi--Urls--ConnectWeb | URL |  Used on the home page of Manage to link to the Connect service | https://test.connect-families-to-support.education.gov.uk |
 | MANAGE-UI-FamilyHubsUi--Urls--FindWeb | URL |  Used on the home page of Manage to link to the Find service | https://test.find-support-for-your-family.education.gov.uk |
 | MANAGE-UI-FamilyHubsUi--Urls--ManageWeb | URL | Used to provide a link for users to the service when being emailed by the Notification API | https://test.manage-family-support-services-and-accounts.education.gov.uk/ |
@@ -92,7 +92,7 @@ This is the main key vault used by the services for storage of application secre
 | MANAGE-UI-GovUkOidcConfiguration--BearerTokenSigningKey | Random 64-char Hex String | Used to authenticate GovUK One Login and when using the APIs | 99B3E7E9784F950E5EFE299FBFC69071FDB3DC55F8D8DD5D8A5CD6FF23E6F9B8 |
 | MANAGE-UI-GovUkOidcConfiguration--IdamsApiBaseUrl | URL | Used to authenticate claims in Manage | https://s181t01-as-fh-idam-api.azurewebsites.net/ |
 | MANAGE-UI-GovUkOidcConfiguration--Oidc--BaseUrl | URL | The GovUK One Login authentication service | https://oidc.integration.account.gov.uk |
-| MANAGE-UI-GovUkOidcConfiguration--Oidc--ClientId | OneLogin Client Id | Unique ID representing the OneLogin configuration to use for the Manage website | NftfAXiINT8wpUsGO_vVnPEbsAG |
+| MANAGE-UI-GovUkOidcConfiguration--Oidc--ClientId | OneLogin Client Id | Unique ID representing the OneLogin configuration to use for the Manage website | S3LDKFJSDLKFpUsGOLKFLK_JSDH |
 | MANAGE-UI-GovUkOidcConfiguration--Oidc--KeyVaultIdentifier | URL | The private key used to sign OneLogin requests - OneLogin is configured with the corresponding public key | https://s181t01-kv-fh-idam.vault.azure.net/keys/s181t01-gov-uk-one-login-private-key/8c695031cb9a44118bc41bab07a9234c |
 | MANAGE-UI-GovUkOidcConfiguration--Oidc--TwoFactorEnabled | Boolean | Whether the user requires 2FA | false |
 | MANAGE-UI-GovUkOidcConfiguration--StubAuthentication--UseStubAuthentication | Boolean | Used for mocking authentication for local development | false |
@@ -111,8 +111,8 @@ This is the main key vault used by the services for storage of application secre
 | NOTIFICATIONS-API-ConnectionStrings--NotificationConnection | DB Connection String |  Database connection for the Notifications API | Server=tcp:s181t01-as-fh-sql-server.database.windows.net,1433;Initial Catalog=s181t01-fh-notification-db;Persist Security Info=False;User ID=\*\*\*;Password=\*\*\*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30; |
 | NOTIFICATIONS-API-Crypto--DbEncryptionIVKey | 16 Byte String | Used for column encryption on certain tables | 233,111,138,177,134,42,180,7,131,207,253,154,27,229,102,82 |
 | NOTIFICATIONS-API-Crypto--DbEncryptionKey | 32 Byte String | Used for column encryption on certain tables | 53,2,59,171,31,193,231,222,12,172,72,163,61,220,196,244,182,244,81,190,56,153,158,236,60,28,228,155,108,229,254,153 |
-| NOTIFICATIONS-API-GovNotifySetting--ConnectAPIKey | Modified GUID | Authentication details for the Connect service to access the government Notify service. This is in the format {name}-{guid1}{guid2} where the first GUID is the account id and the second is the specific key | 2025test-9f3a2c18-7b14-4d6e-b21f-0c98a1b5d7e2-6d4f3e21-98ab-4c07-91cd-273f8b2e5601 |
-| NOTIFICATIONS-API-GovNotifySetting--ManageAPIKey | Modified GUID | Authentication details for the Manage service to access the government Notify service. This is in the format {name}-{guid1}{guid2} where the first GUID is the account id and the second is the specific key | 2025test-9f3a2c18-7b14-4d6e-b21f-0c98a1b5d7e2-6d4f3e21-98ab-4c07-91cd-273f8b2e5601 |
+| NOTIFICATIONS-API-GovNotifySetting--ConnectAPIKey | Modified GUID | Authentication details for the Connect service to access the government Notify service. This is in the format {name}-{guid1}{guid2} where the first GUID is the account id and the second is the specific key | 2024ts11-ab860773-c38e-4fea-bdf6-528ea17761ab-fa509756-a5a3-416d-8f8f-983417d0b1ce
+| NOTIFICATIONS-API-GovNotifySetting--ManageAPIKey | Modified GUID | Authentication details for the Manage service to access the government Notify service. This is in the format {name}-{guid1}{guid2} where the first GUID is the account id and the second is the specific key | 2024ts11-9f3a2c18-7b14-4d6e-b21f-0c98a1b5d7e2-6d4f3e21-98ab-4c07-91cd-273f8b2e5601 |
 | NOTIFICATIONS-API-GovUkOidcConfiguration--BearerTokenSigningKey | Random 64-char Hex String | Used to authenticate endpoint requests from the UIs | 99B3E7E9784F950E5EFE299FBFC69071FDB3DC55F8D8DD5D8A5CD6FF23E6F9B8 |
 | OPEN-REFERRAL-FUNC-ApiConnection | URL | The Open Referral Azure Function connects to this as its mock API to get OR-compliant data | https://s181t01-as-fh-open-referral-mock-api.azurewebsites.net |
 | OPEN-REFERRAL-FUNC-AZURE-WEBAPP-PUBLISH-PROFILE | Azure App Service Publish Profile String | Publish profile for the Open Referral function app |  |
