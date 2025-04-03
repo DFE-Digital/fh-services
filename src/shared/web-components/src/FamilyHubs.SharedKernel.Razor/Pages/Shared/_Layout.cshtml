@@ -28,6 +28,21 @@
         @await RenderSectionAsync("Back", required: false)
 
         <main class="govuk-main-wrapper fh-custom-main" id="main-content" role="main">
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        Important
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-notification-banner__heading" style="max-width: unset !important;">
+                        The Family Hubs digital service (including Find, Connect and Manage) will be closed down and taken offline on Friday 11 April, 2025.
+                    </p>
+                    <p style="max-width: unset !important;">
+                        We’ll now keep any of your data for 3 months from this date, rather than 12 months as previously stated on our privacy statements after which it will be securely deleted.
+                    </p>
+                </div>
+            </div>
             @RenderBody()
         </main>
     </div>
