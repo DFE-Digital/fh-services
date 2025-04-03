@@ -4,7 +4,8 @@ public record LocalOfferFilter
 {
     public string ServiceType { get; set; } = default!;
     public string Status { get; set; } = default!;
-    public List<int[]>? AgeRangeList { get; set; }
+    public bool? AllChildrenYoungPeople { get; init; }
+    public int? GivenAge { get; init; }
     public string? DistrictCode { get; init; }
     public double? Latitude { get; init; }
     public double? Longitude { get; init; }

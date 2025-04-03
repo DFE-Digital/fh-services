@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using AutoMapper;
+﻿using AutoMapper;
 using FamilyHubs.ServiceDirectory.Core.Helper;
 using FamilyHubs.ServiceDirectory.Core.Queries.Dsl;
 using FamilyHubs.ServiceDirectory.Core.Queries.Dsl.Condition;
@@ -20,7 +19,8 @@ public class GetServicesCommand : IRequest<PaginatedList<ServiceDto>>
     public GetServicesCommand(
         ServiceType? serviceType, ServiceStatusType? status,
         string? districtCode,
-        string? ageRangeList,
+        bool? allChildrenYoungPeople,
+        int? givenAge,
         double? latitude, double? longitude, double? proximity,
         int? pageNumber, int? pageSize,
         string? text,
@@ -35,7 +35,8 @@ public class GetServicesCommand : IRequest<PaginatedList<ServiceDto>>
         ServiceType = serviceType ?? ServiceType.NotSet;
         Status = status ?? ServiceStatusType.NotSet;
         DistrictCode = districtCode;
-        if (ageRangeList is not null) AgeRangeList = JsonSerializer.Deserialize<List<int[]>>(ageRangeList);
+        AllChildrenYoungPeople = allChildrenYoungPeople;
+        GivenAge = givenAge;
         Latitude = latitude;
         Longitude = longitude;
         Meters = proximity;
@@ -54,7 +55,8 @@ public class GetServicesCommand : IRequest<PaginatedList<ServiceDto>>
     public ServiceType ServiceType { get; }
     public ServiceStatusType Status { get; set; }
     public string? DistrictCode { get; }
-    public List<int[]>? AgeRangeList { get; }
+    public bool? AllChildrenYoungPeople { get; }
+    public int? GivenAge { get; }
     public double? Latitude { get; }
     public double? Longitude { get; }
     public double? Meters { get; }
@@ -95,8 +97,6 @@ public class GetServicesCommandHandler : IRequestHandler<GetServicesCommand, Pag
 
         filteredServices = SortServicesDto(request, filteredServices);
 
-        filteredServices = ResolveOrganisations(filteredServices);
-        
         var result = new PaginatedList<ServiceDto>(filteredServices, total, request.PageNumber, request.PageSize);
 
         return result;
@@ -160,20 +160,22 @@ public class GetServicesCommandHandler : IRequestHandler<GetServicesCommand, Pag
                 sd => new InCondition("sd.Name", "ServiceServiceDeliveries", sd)
             );
 
-        if (request.AgeRangeList is not null)
+        // if 'all children and young people' (for children ticked & all ages),
+        // check has any eligibility record, ignoring the given age
+        // (can worry about other eligibilities later)
+        if (request.AllChildrenYoungPeople is true)
         {
             query.And(
-                new OrCondition(
-                    request.AgeRangeList.Select((ageRange, id) =>
-                            new StringCondition($"(@GivenAgeMin{id} >= e.MinimumAge AND @GivenAgeMax{id} <= e.MaximumAge) " +
-                                                "OR " +
-                                                $"(e.MinimumAge >= @GivenAgeMin{id} AND e.MinimumAge <= @GivenAgeMax{id}) " +
-                                                "OR " +
-                                                $"(e.MinimumAge <= @GivenAgeMin{id} AND e.MaximumAge <= @GivenAgeMax{id} AND e.MaximumAge >= @GivenAgeMin{id})", 
-                                new FhParameter($"@GivenAgeMin{id}", ageRange[0]), 
-                                new FhParameter($"@GivenAgeMax{id}", ageRange[1]))
-                        )
-                        .ToArray<FhQueryCondition>()));
+                new StringCondition("e.ServiceId IS NOT NULL")
+            );
+        }
+        else if (request.GivenAge is not null)
+        {
+            query.And(
+                new StringCondition("e.MinimumAge <= @GivenAge", new FhParameter("@GivenAge", request.GivenAge.Value))
+            ).And(
+                new StringCondition("e.MaximumAge >= @GivenAge", new FhParameter("@GivenAge", request.GivenAge.Value))
+            );
         }
 
         if (request.DaysAvailable is not null)
@@ -219,8 +221,10 @@ public class GetServicesCommandHandler : IRequestHandler<GetServicesCommand, Pag
                 .AddFields($"MIN({distanceSql}) dist")
                 .AddOrderBy("dist");
         }
-        
-        query.AddOrderBy("s.Id");
+        else
+        {
+            query.AddOrderBy("s.Id");
+        }
 
         var pArr = query.AllParameters(_useSqlite);
         var total = await _context.Database.SqlQueryRaw<long>(query.Format(_useSqlite, includeOrderBy: false, includeLimit: false), pArr).CountAsync(cancellationToken);
@@ -265,18 +269,6 @@ public class GetServicesCommandHandler : IRequestHandler<GetServicesCommand, Pag
                 .ToList();
         }
 
-        return services;
-    }
-
-    private List<ServiceDto> ResolveOrganisations(List<ServiceDto> services)
-    {
-        var organisationIds = services.Select(x => x.OrganisationId);
-        var organisations = _context.Organisations.Where(x => organisationIds.Contains(x.Id)).Select(o => new { o.Id, o.Name }).ToList();
-        services.ForEach(s =>
-        {
-            var organisation = organisations.Find(x => x.Id == s.OrganisationId);
-            s.OrganisationName = organisation?.Name ?? string.Empty;
-        });
         return services;
     }
 }

@@ -464,6 +464,62 @@ resource "azurerm_app_service_virtual_network_swift_connection" "fh_sd_api" {
   subnet_id      = azurerm_subnet.vnetint.id
 }
 
+# Create App Service for Service Directory UI
+resource "azurerm_windows_web_app" "fh_sd_ui" {
+  app_settings = {
+    ApplicationInsightsAgent_EXTENSION_VERSION  = "~3"
+    XDT_MicrosoftApplicationInsights_Mode       = "Recommended"
+    ASPNETCORE_ENVIRONMENT                      = var.asp_netcore_environment
+    WEBSITE_RUN_FROM_PACKAGE                    = "1"
+    APPLICATIONINSIGHTS_CONNECTION_STRING       = azurerm_application_insights.app_insights.connection_string
+    "AppConfiguration:KeyVaultIdentifier"       = "${var.prefix}-kv-fh-admin"
+    "AppConfiguration:KeyVaultPrefix"           = "FIND-UI"
+  }
+  name                                          = "${var.prefix}-as-fh-sd-ui"
+  resource_group_name                           = local.resource_group_name
+  location                                      = var.location
+  service_plan_id                               = azurerm_service_plan.apps_plan.id
+  client_affinity_enabled                       = false
+  https_only                                    = false # SSL termination at GW
+  identity {
+    type                                        = "SystemAssigned"
+  }
+  site_config {
+    always_on                                   = true
+    ftps_state                                  = "Disabled"
+    health_check_path                           = "/api/health"
+    health_check_eviction_time_in_min           = 5 # How long to be removed from LB if unhealthy
+    vnet_route_all_enabled                      = "true"
+    http2_enabled                               = true
+    application_stack {
+      current_stack                               = var.current_stack
+      dotnet_version                              = var.dotnet_version_general
+    }
+    ip_restriction {
+      name       = "AllowAppAccess"
+      priority   = 1
+      action     = "Allow"
+      ip_address = var.vnetint_address_space[0]
+    }
+    ip_restriction {
+      name       = "DenyPublicAccess"
+      priority   = 200
+      action     = "Deny"
+      ip_address = "0.0.0.0/0"
+    }
+  }
+  tags = local.tags
+  lifecycle {
+    ignore_changes = [virtual_network_subnet_id, logs]
+  }
+}
+
+# Swift Connection for Service Directory UI
+resource "azurerm_app_service_virtual_network_swift_connection" "fh_sd_ui" {
+  app_service_id = azurerm_windows_web_app.fh_sd_ui.id
+  subnet_id      = azurerm_subnet.vnetint.id
+}
+
 # Create App Service for Service Directory Admin UI
 resource "azurerm_windows_web_app" "fh_sd_admin_ui" {
   app_settings = {
@@ -1351,10 +1407,10 @@ resource "azurerm_application_gateway" "sd_ui_app_gateway" {
    }
 
   backend_address_pool {
-    name                = "${var.prefix}-${local.appgw_bep_sd_ui_name}"
-    ip_addresses = [var.private_endpoint_ip_address.service_directory_ui]
+      name                = "${var.prefix}-${local.appgw_bep_sd_ui_name}"
+      fqdns               = [ azurerm_windows_web_app.fh_sd_ui.default_hostname ]
   }
-  
+
   backend_http_settings {
     name                = "${var.prefix}-${local.appgw_backend_sd_ui_name}"
     cookie_based_affinity = "Disabled"
@@ -1417,23 +1473,15 @@ resource "azurerm_application_gateway" "sd_ui_app_gateway" {
     target_listener_name = "${var.prefix}-${local.appgw_listener_https_sd_ui_name}"
   }
 
-  redirect_configuration {
-    name                 = "${var.prefix}-fh-redirect-to-connect-config"
-    redirect_type        = "Permanent"
-    target_url           = "https://${var.connect_domain}"
-    include_path         = true
-    include_query_string = true
-  }
-  
   request_routing_rule {
     name                       = "${var.prefix}-fh-routing-https-sd-ui"
-    redirect_configuration_name = "${var.prefix}-fh-redirect-to-connect-config"
+    backend_address_pool_name  = "${var.prefix}-${local.appgw_bep_sd_ui_name}"
+    backend_http_settings_name = "${var.prefix}-${local.appgw_backend_sd_ui_name}"
     http_listener_name         = "${var.prefix}-${local.appgw_listener_https_sd_ui_name}"
     priority                   = 1
     rule_type                  = "Basic"
     rewrite_rule_set_name      = "${var.prefix}-${local.appgw_rewrites_sd_ui_name}"
   }
-
 
   request_routing_rule {
     name                       = "${var.prefix}-fh-routing-http-sd-ui"
@@ -1512,6 +1560,7 @@ resource "azurerm_key_vault" "kv2" {
     azurerm_windows_web_app.fh_report_api,
     azurerm_windows_web_app.fh_sd_api,
     azurerm_windows_web_app.fh_sd_admin_ui,
+    azurerm_windows_web_app.fh_sd_ui,
     azurerm_windows_function_app.open_referral_function_app
   ]
   name                        = "${var.prefix}-kv-fh-admin"
@@ -1593,6 +1642,11 @@ resource "azurerm_key_vault" "kv2" {
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = azurerm_windows_web_app.fh_sd_admin_ui.identity.0.principal_id
+    secret_permissions = local.app_secret_permissions
+  }
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = azurerm_windows_web_app.fh_sd_ui.identity.0.principal_id
     secret_permissions = local.app_secret_permissions
   }
   access_policy {
@@ -2105,6 +2159,30 @@ resource "azurerm_private_dns_a_record" "sql_sd_api_scm" {
   }
 }
 
+resource "azurerm_private_dns_a_record" "sql_sd_ui" {
+  name                = "${var.prefix}-as-fh-sd-ui"
+  zone_name           = azurerm_private_dns_zone.sqlserver.name
+  resource_group_name = local.resource_group_name
+  ttl                 = "10"
+  records             = [var.private_endpoint_ip_address.service_directory_ui]
+  tags = local.tags
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+resource "azurerm_private_dns_a_record" "sql_sd_ui_scm" {
+  name                = "${var.prefix}-as-fh-sd-ui.scm"
+  zone_name           = azurerm_private_dns_zone.sqlserver.name
+  resource_group_name = local.resource_group_name
+  ttl                 = "10"
+  records             = [var.private_endpoint_ip_address.service_directory_ui]
+  tags = local.tags
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
 resource "azurerm_private_dns_a_record" "sql_sd_admin_ui" {
   name                = "${var.prefix}-as-fh-sd-admin-ui"
   zone_name           = azurerm_private_dns_zone.sqlserver.name
@@ -2275,6 +2353,34 @@ resource "azurerm_private_endpoint" "sdapi" {
   private_service_connection {
     name                           = "${var.prefix}-pvtendpt-sd-api"
     private_connection_resource_id = azurerm_windows_web_app.fh_sd_api.id
+    is_manual_connection           = false
+    subresource_names              = [ "sites" ]
+  }
+
+  private_dns_zone_group {
+    name                 = azurerm_private_dns_zone.appservices.name
+    private_dns_zone_ids = [ azurerm_private_dns_zone.appservices.id ]
+  }
+  tags = local.tags
+}
+
+# Private Endpoint 4: ServiceDirectoryUI
+resource "azurerm_private_endpoint" "sdui" {
+  name                = "${var.prefix}-as-fh-sd-ui"
+  location            = var.location
+  resource_group_name = local.resource_group_name
+  subnet_id           = azurerm_subnet.pvtendpoint.id
+  custom_network_interface_name = "${var.prefix}-as-fh-sd-ui-nic"
+
+   ip_configuration {
+    name                       = "${var.prefix}-as-fh-sd-ui"
+    private_ip_address         = "${var.private_endpoint_ip_address.service_directory_ui}"
+    subresource_name           = "sites" 
+  }
+
+  private_service_connection {
+    name                           = "${var.prefix}-pvtendpt-sd-ui"
+    private_connection_resource_id = azurerm_windows_web_app.fh_sd_ui.id
     is_manual_connection           = false
     subresource_names              = [ "sites" ]
   }

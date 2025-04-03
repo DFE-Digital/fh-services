@@ -14,7 +14,8 @@ let gulp = require("gulp"),
     rollup = require('gulp-better-rollup');
     //concat = require('gulp-concat'),
 
-const familyHubsFrontendSassPaths = [
+// Use node_modules from familyhubs-frontend
+let sassPaths = [
     './node_modules/familyhubs-frontend',
     './node_modules/familyhubs-frontend/node_modules/govuk-frontend/dist'
 ];
@@ -23,7 +24,7 @@ gulp.task('sass-to-min-css', async function () {
     return gulp.src('./styles/application.scss')
         .pipe(sourcemaps.init())
         .pipe(sass({
-            includePaths: familyHubsFrontendSassPaths
+            includePaths: sassPaths
         }).on('error', sass.logError))
         .pipe(csso())
         .pipe(sourcemaps.write('.'))

@@ -19,7 +19,6 @@
     <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
-    <PackageReference Include="Microsoft.FeatureManagement" />
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" />
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders.TagHelpers" />
     <PackageReference Include="SonarAnalyzer.CSharp">

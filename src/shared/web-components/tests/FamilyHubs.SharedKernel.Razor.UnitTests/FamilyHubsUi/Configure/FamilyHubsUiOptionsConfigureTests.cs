@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 using FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options.Configure;
-using FamilyHubs.SharedKernel.Razor.FeatureFlags;
 using FamilyHubs.SharedKernel.Razor.UnitTests.FamilyHubsUi.Configure.Helpers;
 using FluentAssertions;
-using Microsoft.FeatureManagement;
 using NSubstitute;
 
 namespace FamilyHubs.SharedKernel.Razor.UnitTests.FamilyHubsUi.Configure;
@@ -12,25 +10,12 @@ namespace FamilyHubs.SharedKernel.Razor.UnitTests.FamilyHubsUi.Configure;
 public class FamilyHubsUiOptionsConfigureTests : FamilyHubsUiOptionsTestBase
 {
     private readonly IConfiguration _configuration;
-    private readonly IFeatureManager _featureManager;
     private readonly FamilyHubsUiOptionsConfigure _familyHubsUiOptionsConfigure;
 
     public FamilyHubsUiOptionsConfigureTests()
     {
         _configuration = Substitute.For<IConfiguration>();
-        _featureManager = Substitute.For<IFeatureManager>();
-        
-        _featureManager.IsEnabledAsync(FeatureFlag.ConnectDashboard).Returns(true);
-        _featureManager.GetFeatureNamesAsync().Returns(GetFeatureFlags());
-        
-        _familyHubsUiOptionsConfigure = new FamilyHubsUiOptionsConfigure(_configuration, _featureManager);
-    }
-
-    private static async IAsyncEnumerable<string> GetFeatureFlags()
-    {
-        yield return FeatureFlag.ConnectDashboard;
-
-        await Task.CompletedTask;
+        _familyHubsUiOptionsConfigure = new FamilyHubsUiOptionsConfigure(_configuration);
     }
 
     [Fact]
@@ -42,27 +27,6 @@ public class FamilyHubsUiOptionsConfigureTests : FamilyHubsUiOptionsTestBase
         _familyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
 
         FamilyHubsUiOptions.Should().BeEquivalentTo(expectedFamilyHubsUiOptions);
-    }
-
-    [Fact]
-    public void Configure_FeatureFlag_ConnectDashboard_Enabled()
-    {
-        _familyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
-        
-        FamilyHubsUiOptions.Header.NavigationLinks.Should().HaveCount(2);
-        FamilyHubsUiOptions.Header.NavigationLinks[0].Text.Should().Be("Search for service");
-        FamilyHubsUiOptions.Header.NavigationLinks[1].Text.Should().Be("My Requests");
-    }
-    
-    [Fact]
-    public void Configure_FeatureFlag_ConnectDashboard_Disabled()
-    {
-        _featureManager.IsEnabledAsync(FeatureFlag.ConnectDashboard).Returns(false);
-        
-        _familyHubsUiOptionsConfigure.Configure(FamilyHubsUiOptions);
-        
-        FamilyHubsUiOptions.Header.NavigationLinks.Should().ContainSingle();
-        FamilyHubsUiOptions.Header.NavigationLinks[0].Text.Should().Be("Search for service");
     }
 
     [Theory]

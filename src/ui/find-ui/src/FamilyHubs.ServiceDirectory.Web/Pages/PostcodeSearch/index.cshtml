@@ -1,0 +1,52 @@
+﻿@page
+@using FamilyHubs.SharedKernel.Razor.ErrorNext
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model PostcodeSearchModel
+@{
+    ViewData["Title"] = "Search your local area for support and services";
+    Model.Errors.ErrorIdToHtmlElementId = _ => "postcode";
+}
+
+@section Back {
+    <a asp-page="/Index" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <partial name="_ErrorSummaryNext" model="Model.Errors" />
+
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-4">Search your local area for support and services</h1>
+
+        <p>Use your postcode to find support, activities and services for:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>babies</li>
+            <li>children</li>
+            <li>young people up to age 19 (or up to age 25 with special education needs or disabilities)</li>
+            <li>parents and carers</li>
+        </ul>
+
+        <p>As this service is new, not all local area services will be listed.
+            If there are no listings in your area yet, you will be signposted to your council website.</p>
+
+        <p>Some services are only available to local residents.</p>
+
+        <form method="post" asp-page="/ServiceFilter/Index">
+
+            @{Error? error = Model.Errors.GetErrorIfTriggered(); }
+
+            <div class="govuk-form-group @(error?.FormGroupClass)">
+                <label class="govuk-label govuk-label--s" for="postcode">
+                    Enter a postcode
+                </label>
+                <div id="postcode-services-hint" class="govuk-hint">For example SW1A 2AA</div>
+                <partial name="_ErrorMessageNext" model="error"/>
+                <input class="govuk-input govuk-input--width-10 @(error?.InputClass)" id="postcode" name="postcode" type="text" aria-describedby="postcode-services-hint @(error?.InputErrorMessageParaId)" autocomplete="postal-code">
+            </div>
+
+            <button class="govuk-button" data-testid="search-button" data-module="govuk-button">Search</button>
+
+        </form>
+    </div>
+</div>

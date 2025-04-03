@@ -3,14 +3,11 @@ using FamilyHubs.Referral.Core.DistributedCache;
 using FamilyHubs.Referral.Core.Helper;
 using FamilyHubs.Referral.Core.Models;
 using FamilyHubs.Referral.Web.Pages.Shared;
-using FamilyHubs.SharedKernel.Razor.FeatureFlags;
 using FamilyHubs.SharedKernel.Razor.FullPages.SingleTextbox;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
 
 namespace FamilyHubs.Referral.Web.Pages.ProfessionalReferral;
 
-[FeatureGate(FeatureFlag.ConnectDashboard)]
 public class SupportDetailsModel : ProfessionalReferralCacheModel, ISingleTextboxPageModel
 {
     public string HeadingText { get; set; } = "Who should this service contact?";

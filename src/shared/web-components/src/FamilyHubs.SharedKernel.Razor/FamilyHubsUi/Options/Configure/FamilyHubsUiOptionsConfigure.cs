@@ -1,18 +1,14 @@
-﻿using FamilyHubs.SharedKernel.Razor.FeatureFlags;
-using Microsoft.Extensions.Configuration;
-using Microsoft.FeatureManagement;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace FamilyHubs.SharedKernel.Razor.FamilyHubsUi.Options.Configure;
 
 public class FamilyHubsUiOptionsConfigure : IConfigureOptions<FamilyHubsUiOptions>
 {
     private readonly IConfiguration _configuration;
-    private readonly IFeatureManager _featureManager;
 
-    public FamilyHubsUiOptionsConfigure(IConfiguration configuration, IFeatureManager featureManager)
+    public FamilyHubsUiOptionsConfigure(IConfiguration configuration)
     {
         _configuration = configuration;
-        _featureManager = featureManager;
     }
 
     public void Configure(FamilyHubsUiOptions options)
@@ -25,7 +21,7 @@ public class FamilyHubsUiOptionsConfigure : IConfigureOptions<FamilyHubsUiOption
         options.SetAlternative(altName, parent);
 
         ConfigureLink(options.Header.ServiceNameLink, options);
-        ConfigureNavigationLinks(options.Header.NavigationLinks, options);
+        ConfigureLinks(options.Header.NavigationLinks, options);
         ConfigureLinks(options.Header.ActionLinks, options);
         ConfigureLinks(options.Footer.Links, options);
 
@@ -33,34 +29,11 @@ public class FamilyHubsUiOptionsConfigure : IConfigureOptions<FamilyHubsUiOption
             .Where(kvp => kvp.Value.Enabled)
             .Select(kvp => kvp);
 
-        // Recursively generates header permutations for each section defined in "AlternativeFamilyHubsUi" ..
-        // .. in appsettings.json
+        // turtles all the way down
         foreach (var alt in enabledAlts)
         {
             Configure(alt.Value, alt.Key, options);
         }
-    }
-
-    private void ConfigureNavigationLinks(FhLinkOptions[] linkOptions, FamilyHubsUiOptions options)
-    {
-        ConfigureLinks(linkOptions, options);
-
-        IEnumerable<string> featureFlags = _featureManager.GetFeatureNamesAsync().ToBlockingEnumerable();
-
-        if (!featureFlags.Contains(FeatureFlag.ConnectDashboard))
-        {
-            return;
-        }
-
-        if (_featureManager.IsEnabledAsync(FeatureFlag.ConnectDashboard).Result)
-        {
-            return;
-        }
-        
-        FhLinkOptions serviceSearchHeaderLink = 
-            options.Header.NavigationLinks.First(headerLink => headerLink.Text.Equals("Search for service"));
-            
-        options.Header.NavigationLinks = [ serviceSearchHeaderLink ];
     }
 
     private void ConfigureLinks(FhLinkOptions[] linkOptions, FamilyHubsUiOptions options)

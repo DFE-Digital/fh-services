@@ -7,7 +7,8 @@ public class GetServicesCommandBuilder
     private ServiceType _serviceType = ServiceType.NotSet;
     private ServiceStatusType _status = ServiceStatusType.NotSet;
     private string? _districtCode;
-    private string? _ageRangeList;
+    private bool? _allChildrenYoungPeople;
+    private int? _givenAge;
     private double? _latitude;
     private double? _longitude;
     private double? _meters;
@@ -40,9 +41,10 @@ public class GetServicesCommandBuilder
         return this;
     }
 
-    public GetServicesCommandBuilder WithAgeRangeList(string? ageRangeList)
+    public GetServicesCommandBuilder WithAge(bool allChildrenYoungPeople, int givenAge)
     {
-        _ageRangeList = ageRangeList;
+        _allChildrenYoungPeople = allChildrenYoungPeople;
+        _givenAge = givenAge;
         return this;
     }
 
@@ -113,7 +115,8 @@ public class GetServicesCommandBuilder
         _serviceType,
         _status,
         _districtCode,
-        _ageRangeList,
+        _allChildrenYoungPeople,
+        _givenAge,
         _latitude, _longitude, _meters,
         _pageNumber, _pageSize,
         _text,

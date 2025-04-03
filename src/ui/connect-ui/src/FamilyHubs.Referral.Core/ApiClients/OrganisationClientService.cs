@@ -7,8 +7,6 @@ using FamilyHubs.ServiceDirectory.Shared.Dto;
 using FamilyHubs.ServiceDirectory.Shared.Dto.Metrics;
 using FamilyHubs.ServiceDirectory.Shared.Enums;
 using FamilyHubs.ServiceDirectory.Shared.Models;
-using FamilyHubs.SharedKernel.Razor.FeatureFlags;
-using Microsoft.FeatureManagement;
 
 namespace FamilyHubs.Referral.Core.ApiClients;
 
@@ -28,7 +26,7 @@ public interface IOrganisationClientService
     Task RecordServiceSearch(
         ServiceDirectorySearchEventType eventType,
         string postcode,
-        long? userId,
+        long userId,
         IEnumerable<ServiceDto> services,
         DateTime requestTimestamp,
         DateTime? responseTimestamp,
@@ -39,11 +37,8 @@ public interface IOrganisationClientService
 
 public class OrganisationClientService : ApiService, IOrganisationClientService
 {
-    private readonly IFeatureManager _featureManager;
-    
-    public OrganisationClientService(HttpClient client, IFeatureManager featureManager) : base(client)
+    public OrganisationClientService(HttpClient client) : base(client)
     {
-        _featureManager = featureManager;
     }
 
     public async Task<List<KeyValuePair<TaxonomyDto, List<TaxonomyDto>>>> GetCategories()
@@ -88,18 +83,18 @@ public class OrganisationClientService : ApiService, IOrganisationClientService
         if (string.IsNullOrEmpty(filter.Status))
             filter.Status = "Active";
 
-        var isVcfsServicesEnabled = await _featureManager.IsEnabledAsync(FeatureFlag.VcfsServices);
-        filter.ServiceType = !isVcfsServicesEnabled ? ServiceType.FamilyExperience.ToString() : null!;
         var urlBuilder = new StringBuilder(
             GetPositionUrl(filter.ServiceType, filter.Latitude, filter.Longitude, filter.Proximity,
                 filter.Status, filter.PageNumber, filter.PageSize));
 
         AddTextToUrl(urlBuilder, filter.Text);
 
-        if (filter.AgeRangeList is not null)
+        if (filter.AllChildrenYoungPeople == true)
         {
-            urlBuilder.Append($"&ageRangeList={JsonSerializer.Serialize(filter.AgeRangeList)}");
+            urlBuilder.Append("&allChildrenYoungPeople=true");
         }
+
+        AddAgeToUrl(urlBuilder, filter.GivenAge);
 
         if (filter.ServiceDeliveries is not null)
         {
@@ -171,6 +166,14 @@ public class OrganisationClientService : ApiService, IOrganisationClientService
             .Build();
     }
 
+    public static void AddAgeToUrl(StringBuilder url, int? givenAge)
+    {
+        if (givenAge is not null)
+        {
+            url.AppendLine($"&givenAge={givenAge}");
+        }
+    }
+
     public static void AddTextToUrl(StringBuilder url, string? text)
     {
         if (!string.IsNullOrWhiteSpace(text))
@@ -212,7 +215,7 @@ public class OrganisationClientService : ApiService, IOrganisationClientService
         return await JsonSerializer.DeserializeAsync<OrganisationDto>(await response.Content.ReadAsStreamAsync(), options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 
-    public async Task RecordServiceSearch(ServiceDirectorySearchEventType eventType, string postcode, long? userId,
+    public async Task RecordServiceSearch(ServiceDirectorySearchEventType eventType, string postcode, long userId,
         IEnumerable<ServiceDto> services, DateTime requestTimestamp, DateTime? responseTimestamp, HttpStatusCode? responseStatusCode,
         Guid correlationId)
     {

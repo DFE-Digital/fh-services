@@ -7,13 +7,10 @@ using FamilyHubs.Referral.Core.DistributedCache;
 using FamilyHubs.Referral.Core.ValidationAttributes;
 using System.Web;
 using FamilyHubs.SharedKernel.Razor.ErrorNext;
-using FamilyHubs.SharedKernel.Razor.FeatureFlags;
 using FamilyHubs.SharedKernel.Razor.FullPages.SingleTextbox;
-using Microsoft.FeatureManagement.Mvc;
 
 namespace FamilyHubs.Referral.Web.Pages.ProfessionalReferral;
 
-[FeatureGate(FeatureFlag.ConnectDashboard)]
 public class TelephoneModel : ProfessionalReferralCacheModel, ISingleTelephoneTextboxPageModel
 {
     public string HeadingText { get; set; } = "";

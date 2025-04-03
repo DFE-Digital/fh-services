@@ -49,18 +49,7 @@ public class GetOrganisationByIdHandler : IRequestHandler<GetOrganisationByIdCom
         if (entity == null)
             throw new NotFoundException(nameof(Organisation), request.Id.ToString());
 
-        ResolveServiceOrganisationNames(entity);
-        
         return entity;
-    }
-    
-    private static void ResolveServiceOrganisationNames(OrganisationDetailsDto organisationDetailsDto)
-    {
-        // The organisation service name is a calculated property on the ServiceDto so we need to set it after mapping
-        foreach (var service in organisationDetailsDto.Services)
-        {
-            service.OrganisationName = organisationDetailsDto.Name;
-        }
     }
 }
 

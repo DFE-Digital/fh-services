@@ -29,16 +29,12 @@ if (process.env.EXAMPLE_SEED.toUpperCase() === "TRUE") {
 
 await checkConnections();
 
-let succeeded = true;
-
 try {
   await setup();
 } catch (error) {
   console.error("Unable to run setup:", error);
-  succeeded = false;
 } finally {
   await closeConnections();
-  if (!succeeded) process.exit(1);
 }
 
 /**

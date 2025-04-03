@@ -6,12 +6,15 @@ using FamilyHubs.SharedKernel.Razor.ErrorNext;
 using FamilyHubs.SharedKernel.Razor.Header;
 using FamilyHubs.SharedKernel.Services.Postcode.Interfaces;
 using FamilyHubs.SharedKernel.Services.Postcode.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 
 namespace FamilyHubs.Referral.Web.Pages.ProfessionalReferral;
 
 //todo: it would be better to look up and store the postcode once here, rather than each time on the results page
 
+[Authorize(Roles = RoleGroups.LaOrVcsProfessionalOrDualRole)]
 public class SearchModel : HeaderPageModel, IHasErrorStatePageModel
 {
     private readonly IPostcodeLookup _postcodeLookup;
@@ -19,19 +22,10 @@ public class SearchModel : HeaderPageModel, IHasErrorStatePageModel
 
     [BindProperty]
     public string? Postcode { get; set; }
-    
-    public bool IsNotLoggedIn { get; private set; }
 
     public SearchModel(IPostcodeLookup postcodeLookup)
     {
         _postcodeLookup = postcodeLookup;
-    }
-
-    public IActionResult OnGet()
-    {
-        IsNotLoggedIn = string.IsNullOrWhiteSpace(HttpContext.GetRole());
-        
-        return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -45,7 +39,7 @@ public class SearchModel : HeaderPageModel, IHasErrorStatePageModel
                 currentPage = 1
             });
         }
-        
+
         var errorId = postcodeError switch
         {
             PostcodeError.NoPostcode => ErrorId.NoPostcode,
@@ -54,7 +48,6 @@ public class SearchModel : HeaderPageModel, IHasErrorStatePageModel
             _ => ErrorId.PostcodeNotFound
         };
         Errors = ErrorState.Create(PossibleErrors.All, errorId);
-        
-        return OnGet();
+        return Page();
     }
 }

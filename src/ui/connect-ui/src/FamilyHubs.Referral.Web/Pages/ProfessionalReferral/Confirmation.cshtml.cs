@@ -1,16 +1,13 @@
 using FamilyHubs.Referral.Core.DistributedCache;
 using FamilyHubs.SharedKernel.Identity;
-using FamilyHubs.SharedKernel.Razor.FeatureFlags;
 using FamilyHubs.SharedKernel.Razor.Header;
 using FamilyHubs.SharedKernel.Razor.Links;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.FeatureManagement.Mvc;
 
 namespace FamilyHubs.Referral.Web.Pages.ProfessionalReferral;
 
 [Authorize(Roles = RoleGroups.LaProfessionalOrDualRole)]
-[FeatureGate(FeatureFlag.ConnectDashboard)]
 public class ConfirmationModel : PageModel, IFamilyHubsHeader
 {
     private readonly IConnectionRequestDistributedCache _connectionRequestCache;

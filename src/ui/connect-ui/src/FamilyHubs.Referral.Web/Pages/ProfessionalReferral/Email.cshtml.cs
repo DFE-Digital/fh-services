@@ -4,13 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using FamilyHubs.Referral.Web.Pages.Shared;
 using FamilyHubs.Referral.Core.DistributedCache;
 using System.Web;
-using FamilyHubs.SharedKernel.Razor.FeatureFlags;
 using FamilyHubs.SharedKernel.Razor.FullPages.SingleTextbox;
-using Microsoft.FeatureManagement.Mvc;
 
 namespace FamilyHubs.Referral.Web.Pages.ProfessionalReferral;
 
-[FeatureGate(FeatureFlag.ConnectDashboard)]
 public class EmailModel : ProfessionalReferralCacheModel, ISingleEmailTextboxPageModel
 {
     public string HeadingText { get; set; } = "";

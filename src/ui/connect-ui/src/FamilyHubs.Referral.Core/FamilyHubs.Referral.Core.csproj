@@ -13,7 +13,6 @@
     <ItemGroup>
         <PackageReference Include="libphonenumber-csharp" />
         <PackageReference Include="Microsoft.Extensions.Http.Polly" />
-        <PackageReference Include="Microsoft.FeatureManagement" />
         <PackageReference Include="Polly.Contrib.WaitAndRetry" />
         <PackageReference Include="SonarAnalyzer.CSharp">
             <PrivateAssets>all</PrivateAssets>
@@ -25,7 +24,6 @@
         <ProjectReference Include="..\..\..\..\shared\referral-shared\src\FamilyHubs.ReferralService.Shared\FamilyHubs.ReferralService.Shared.csproj" />
         <ProjectReference Include="..\..\..\..\shared\service-directory-shared\src\FamilyHubs.ServiceDirectory.Shared\FamilyHubs.ServiceDirectory.Shared.csproj" />
         <ProjectReference Include="..\..\..\..\shared\shared-kernel\src\fh-shared-kernel.shared-kernel\FamilyHubs.SharedKernel.csproj" />
-        <ProjectReference Include="..\..\..\..\shared\web-components\src\FamilyHubs.SharedKernel.Razor\FamilyHubs.SharedKernel.Razor.csproj" />
     </ItemGroup>
 
 </Project>

@@ -7,18 +7,15 @@ using FamilyHubs.ReferralService.Shared.Models;
 using FamilyHubs.SharedKernel.Identity;
 using FamilyHubs.SharedKernel.Identity.Models;
 using FamilyHubs.SharedKernel.Razor.Dashboard;
-using FamilyHubs.SharedKernel.Razor.FeatureFlags;
 using FamilyHubs.SharedKernel.Razor.Pagination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
 
 namespace FamilyHubs.Referral.Web.Pages.Referrals.La;
 
 //todo: make back button remember dashboard state?
 //todo: check AccountStatus on claim? is it done auto?
 [Authorize(Roles = $"{RoleGroups.LaProfessionalOrDualRole}")]
-[FeatureGate(FeatureFlag.ConnectDashboard)]
 public class DashboardModel : HeaderPageModel, IDashboard<ReferralDto>
 {
     private static ColumnImmutable[] _columnImmutables =

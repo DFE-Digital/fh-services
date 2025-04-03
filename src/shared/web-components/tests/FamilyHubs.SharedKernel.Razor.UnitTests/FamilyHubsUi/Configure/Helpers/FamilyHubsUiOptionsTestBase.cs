@@ -26,14 +26,8 @@ public class FamilyHubsUiOptionsTestBase
                 {
                     new FhLinkOptions
                     {
-                        Text = "Search for service",
-                        Url = "https://example.com/first",
-                        ConfigUrl = null
-                    },
-                    new FhLinkOptions
-                    {
-                        Text = "My Requests",
-                        Url = "https://example.com/second",
+                        Text = "header navigation link",
+                        Url = "https://example.com/navigation",
                         ConfigUrl = null
                     }
                 },

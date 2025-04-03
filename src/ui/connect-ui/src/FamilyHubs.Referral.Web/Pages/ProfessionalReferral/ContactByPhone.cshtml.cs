@@ -3,13 +3,10 @@ using FamilyHubs.Referral.Core.DistributedCache;
 using FamilyHubs.Referral.Core.Models;
 using FamilyHubs.Referral.Core.ValidationAttributes;
 using FamilyHubs.Referral.Web.Pages.Shared;
-using FamilyHubs.SharedKernel.Razor.FeatureFlags;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.FeatureManagement.Mvc;
 
 namespace FamilyHubs.Referral.Web.Pages.ProfessionalReferral;
 
-[FeatureGate(FeatureFlag.ConnectDashboard)]
 public class ContactByPhoneModel : ProfessionalReferralCacheModel
 {
     [BindProperty]

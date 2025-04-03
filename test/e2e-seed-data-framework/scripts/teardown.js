@@ -8,16 +8,12 @@ await checkConnections();
 
 const baseId = parseInt(process.env.IDS_START_FROM);
 
-let succeeded = true;
-
 try {
   await teardown();
 } catch (error) {
   console.error("Unable to run teardown:", error);
-  succeeded = false;
 } finally {
   await closeConnections();
-  if (!succeeded) process.exit(1);
 }
 
 async function teardown() {

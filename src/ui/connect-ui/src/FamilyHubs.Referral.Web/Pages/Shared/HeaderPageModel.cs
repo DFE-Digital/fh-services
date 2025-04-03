@@ -9,7 +9,7 @@ namespace FamilyHubs.Referral.Web.Pages.Shared;
 public class HeaderPageModel : PageModel, IFamilyHubsHeader
 {
     private readonly string? _selectedLinkText;
-    
+
     public HeaderPageModel(bool highlightSearchForService = true, bool highlightRequests = false)
     {
         _selectedLinkText = highlightSearchForService switch

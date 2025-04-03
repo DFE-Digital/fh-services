@@ -1,7 +1,6 @@
 using System.Dynamic;
 using EnumsNET;
 using FamilyHubs.Referral.Core.ApiClients;
-using FamilyHubs.Referral.Core.Helper;
 using FamilyHubs.Referral.Core.Models;
 using FamilyHubs.Referral.Web.Pages.Shared;
 using FamilyHubs.ServiceDirectory.Shared.Display;
@@ -15,12 +14,13 @@ using FamilyHubs.SharedKernel.Identity.Models;
 using FamilyHubs.SharedKernel.Razor.Pagination;
 using FamilyHubs.SharedKernel.Services.Postcode.Interfaces;
 using FamilyHubs.SharedKernel.Services.Postcode.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.IdentityModel.Tokens;
 
 namespace FamilyHubs.Referral.Web.Pages.ProfessionalReferral;
 
+[Authorize(Roles = RoleGroups.LaOrVcsProfessionalOrDualRole)]
 public class LocalOfferResultsModel : HeaderPageModel
 {
     private readonly IPostcodeLookup _postcodeLookup;
@@ -32,43 +32,40 @@ public class LocalOfferResultsModel : HeaderPageModel
     public double? CurrentLatitude { get; set; }
     public double? CurrentLongitude { get; set; }
     public PaginatedList<ServiceDto> SearchResults { get; set; } = new();
-    
-    [BindProperty]
-    public string? SelectedDistance { get; set; }
+    public string SelectedDistance { get; set; } = "212892";
 
     private bool _isInitialSearch = true;
 
-    public static List<SelectListItem> AgeRange { get; } = 
-    [
-        new() { Value = "0", Text = "0 to 2 years"},
-        new() { Value = "1", Text = "3 to 5 years"},
-        new() { Value = "2", Text = "6 to 11 years"},
-        new() { Value = "3", Text = "12 to 15 years"},
-        new() { Value = "4", Text = "16 to 18 years"},
-        new() { Value = "5", Text = "19 to 25 years with SEND"}
-    ];
-    
-    private static readonly Dictionary<string, int[]> AgeRangeMap = new()
+    public List<SelectListItem> AgeRange { get; set; } = new()
     {
-        { "0", [0, 2] },
-        { "1", [3, 5] },
-        { "2", [6, 11] },
-        { "3", [12, 15] },
-        { "4", [16, 18] },
-        { "5", [19, AgeDisplayExtensions.TwentyFivePlus] }
+        new() { Value="-1", Text="All ages" , Selected = true},
+        new() { Value="0", Text="0 to 12 months" },
+        new() { Value="1", Text="1 year old"},
+        new() { Value="2", Text="2 years old"},
+        new() { Value="3", Text="3 years old"},
+        new() { Value="4", Text="4 years old"},
+        new() { Value="5", Text="5 years old"},
+        new() { Value="6", Text="6 years old"},
+        new() { Value="7", Text="7 years old"},
+        new() { Value="8", Text="8 years old"},
+        new() { Value="9", Text="9 years old"},
+        new() { Value="10", Text="10 years old"},
+        new() { Value="11", Text="11 years old"},
+        new() { Value="12", Text="12 years old"},
+        new() { Value="13", Text="13 years old"},
+        new() { Value="14", Text="14 years old"},
+        new() { Value="15", Text="15 years old"},
+        new() { Value="16", Text="16 years old"},
+        new() { Value="17", Text="17 years old"},
+        new() { Value="18", Text="18 years old"},
+        new() { Value="19", Text="19 years old"},
+        new() { Value="20", Text="20 years old"},
+        new() { Value="21", Text="21 years old"},
+        new() { Value="22", Text="22 years old"},
+        new() { Value="23", Text="23 years old"},
+        new() { Value="24", Text="24 years old"},
+        new() { Value="25", Text="25 years old"},
     };
-    
-    public static List<SelectListItem> DistanceRange { get; } = 
-    [
-        new() { Value = "1", Text = "1 mile"},
-        new() { Value = "2", Text = "2 miles"},
-        new() { Value = "5", Text = "5 miles"},
-        new() { Value = "10", Text = "10 miles"},
-        new() { Value = "20", Text = "20 miles"}
-    ];
-
-    private static readonly int MinimumValidDistance = int.Parse(DistanceRange[0].Value);
-    private static readonly int MaximumValidDistance = int.Parse(DistanceRange[^1].Value);
 
     public const string AllLanguagesValue = "all";
 
@@ -85,9 +82,12 @@ public class LocalOfferResultsModel : HeaderPageModel
             .Prepend(new SelectListItem("All languages", AllLanguagesValue, true))
             .ToArray();
     }
-    
+
     [BindProperty]
-    public bool OnlyShowFreeServices { get; set; }
+    public List<string>? ServiceDeliverySelection { get; set; }
+
+    [BindProperty]
+    public List<string>? CostSelection { get; set; }
 
     [BindProperty]
     public List<string>? DaysAvailable { get; set; }
@@ -97,12 +97,21 @@ public class LocalOfferResultsModel : HeaderPageModel
 
     [BindProperty]
     public List<string>? SubcategorySelection { get; set; }
-    
+
     [BindProperty]
-    public List<string>? SelectedAges { get; set; }
+    public bool ForChildrenAndYoungPeople { get; set; }
+
+    [BindProperty]
+    public string? SearchAge { get; set; }
 
     [BindProperty]
     public string? SelectedLanguage { get; set; }
+
+    [BindProperty]
+    public bool CanFamilyChooseLocation { get; set; } = false;
+
+    [BindProperty]
+    public string? SearchText { get; set; }
 
     [BindProperty]
     public string Postcode { get; set; } = string.Empty;
@@ -128,20 +137,14 @@ public class LocalOfferResultsModel : HeaderPageModel
         _postcodeLookup = postcodeLookup;
         _organisationClientService = organisationClientService;
         _logger = logger;
-        
+
         Pagination = new DontShowPagination();
     }
 
     public async Task<IActionResult> OnGetAsync(
-        string postcode,
-        string? subcategorySelection,
-        bool onlyShowFreeServices,
-        string? daysAvailable,
-        string? selectedAges,
-        string? selectedLanguage,
-        string? selectedDistance,
-        int? pageNum,
-        Guid? correlationId
+        string postcode, string? searchText, string? searchAge, string? selectedLanguage,
+        string? subcategorySelection, string? costSelection, string? daysAvailable,
+        string? serviceDeliverySelection, int? pageNum, bool forChildrenAndYoungPeople, Guid? correlationId
         )
     {
         Postcode = postcode;
@@ -159,13 +162,15 @@ public class LocalOfferResultsModel : HeaderPageModel
             _isInitialSearch = false;
         }
 
-        OnlyShowFreeServices = onlyShowFreeServices;
-        SelectedAges = selectedAges?.Split(",").ToList();
+        SearchText = searchText;
+        SearchAge = searchAge;
         SelectedLanguage = selectedLanguage == AllLanguagesValue ? null : selectedLanguage;
-        SelectedDistance = selectedDistance;
         PageNum = pageNum ?? 1;
+        ForChildrenAndYoungPeople = forChildrenAndYoungPeople;
         SubcategorySelection = subcategorySelection?.Split(",").ToList();
+        CostSelection = costSelection?.Split(",").ToList();
         DaysAvailable = daysAvailable?.Split(",").Where(x => Enum.TryParse(x, out DayCode _)).ToList();
+        ServiceDeliverySelection = serviceDeliverySelection?.Split(",").Where(x => Enum.TryParse(x, out AttendingType _)).ToList();
 
         await GetLocationDetails(Postcode);
 
@@ -186,12 +191,12 @@ public class LocalOfferResultsModel : HeaderPageModel
                 var eventType = _isInitialSearch ? ServiceDirectorySearchEventType.ServiceDirectoryInitialSearch
                     : ServiceDirectorySearchEventType.ServiceDirectorySearchFilter;
 
-                FamilyHubsUser familyHubsUser = HttpContext.GetFamilyHubsUser();
+                FamilyHubsUser familyHusUser = HttpContext.GetFamilyHubsUser();
                 
                 await _organisationClientService.RecordServiceSearch(
                     eventType,
-                    Postcode,
-                    long.TryParse(familyHubsUser.AccountId, out var familyHubsUserId) ? familyHubsUserId : null,
+                    Postcode!,
+                    long.Parse(familyHusUser.AccountId),
                     SearchResults.Items,
                     requestTimestamp,
                     responseTimestamp,
@@ -209,63 +214,55 @@ public class LocalOfferResultsModel : HeaderPageModel
         return Page();
     }
 
-    private int ConvertSelectedDistanceToMeters()
-    {
-        bool isInteger = int.TryParse(SelectedDistance, out int distanceInMiles);
-        bool isWithinValidRange = distanceInMiles >= MinimumValidDistance && distanceInMiles <= MaximumValidDistance;
-        
-        if (isInteger && isWithinValidRange) return DistanceConverter.MilesToMeters(distanceInMiles);
-        
-        _logger.LogWarning("Selected distance has an unexpected value: {SelectedDistance}", SelectedDistance);
-        
-        SelectedDistance = null;
-        
-        const int maxPracticalDistanceInMeters = 212892;
-        return maxPracticalDistanceInMeters;
-    }
-    
-    private List<int[]>? GetAgeRangeList()
-    {
-        if (SelectedAges is null || SelectedAges.Count == 0) return null;
-
-        List<int[]> ageRangeList = [];
-
-        foreach (string selectedAge in SelectedAges)
-        {
-            bool isContained = AgeRangeMap.TryGetValue(selectedAge, out int[]? ageRange);
-            if (!isContained || ageRange is null)
-            {
-                _logger.LogWarning("Selected ages has an unexpected value: {SelectedAge}", SelectedAges);
-                SelectedAges = null;
-                return null;
-            }
-            ageRangeList.Add(ageRange);
-        }
-
-        return ageRangeList;
-    }
-
     private async Task<HttpResponseMessage?> SearchServices()
     {
+        bool? isPaidFor = null;
+
+        if (CostSelection is not null && CostSelection.Count == 1)
+        {
+            isPaidFor = CostSelection[0] switch
+            {
+                "paid" => true,
+                "free" => false,
+                _ => null
+            };
+        }
+
+        bool? allChildrenYoungPeople = null;
+        int? givenAge = null;
+        if (int.TryParse(SearchAge, out int searchAge))
+        {
+            if (searchAge == -1)
+            {
+                allChildrenYoungPeople = ForChildrenAndYoungPeople;
+            }
+            else
+            {
+                givenAge = searchAge;
+            }
+        }
+        
         var localOfferFilter = new LocalOfferFilter
         {
-            CanFamilyChooseLocation = false,
+            CanFamilyChooseLocation = CanFamilyChooseLocation,
             ServiceType = "InformationSharing",
             Status = "Active",
             PageSize = PageSize,
-            IsPaidFor = OnlyShowFreeServices ? false : null,
+            IsPaidFor = isPaidFor,
             PageNumber = PageNum,
-            Text = null,
+            Text = SearchText ?? null,
             DistrictCode = DistrictCode ?? null,
             Latitude = CurrentLatitude,
             Longitude = CurrentLongitude,
-            Proximity = ConvertSelectedDistanceToMeters(),
-            AgeRangeList = GetAgeRangeList(),
+            AllChildrenYoungPeople = allChildrenYoungPeople,
+            GivenAge = givenAge,
+            Proximity = double.TryParse(SelectedDistance, out var distanceParsed) && distanceParsed > 0.00d ? distanceParsed : null,
+            ServiceDeliveries = ServiceDeliverySelection?.Any() == true ? string.Join(',', ServiceDeliverySelection) : null,
             TaxonomyIds = SubcategorySelection is not null && SubcategorySelection.Any() ? string.Join(",", SubcategorySelection) : null,
             LanguageCode = SelectedLanguage != null && SelectedLanguage != AllLanguagesValue ? SelectedLanguage : null,
             DaysAvailable = DaysAvailable?.Any() == true ? string.Join(",", DaysAvailable) : null
         };
-        
+
         (SearchResults, HttpResponseMessage? response) = await _organisationClientService.GetLocalOffers(localOfferFilter);
         Pagination = new LargeSetPagination(SearchResults.TotalPages, PageNum);
         TotalResults = SearchResults.TotalCount;
@@ -275,16 +272,14 @@ public class LocalOfferResultsModel : HeaderPageModel
 
     public IActionResult OnPostAsync(
         bool removeFilter,
-        string? removeCategories, 
-        string? removeCost, 
-        string? removeDaysAvailable, 
-        string? removeAge,
-        string? removeLanguage,
-        string? removeSearchWithin)
+        string? removeCostSelection, string? removeDaysAvailable, string? removeServiceDeliverySelection, string? removeSelectedLanguage,
+        string? removeForChildrenAndYoungPeople, string? removeSearchAge, string? removecategorySelection, string? removesubcategorySelection)
     {
         var routeValues = ToRouteValuesWithRemovedFilters(
-            removeFilter, removeCategories,
-            removeCost, removeDaysAvailable, removeAge, removeLanguage, removeSearchWithin);
+            removeFilter,
+            removeCostSelection, removeDaysAvailable, removeServiceDeliverySelection,
+            removeSelectedLanguage, removeForChildrenAndYoungPeople,
+            removeSearchAge, removecategorySelection, removesubcategorySelection);
 
         InitialLoad = false;
         ModelState.Clear();
@@ -293,13 +288,9 @@ public class LocalOfferResultsModel : HeaderPageModel
     }
 
     private dynamic ToRouteValuesWithRemovedFilters(
-        bool removeFilter,
-        string? removeCategories, 
-        string? removeCost, 
-        string? removeDaysAvailable, 
-        string? removeAge,
-        string? removeLanguage,
-        string? removeSearchWithin)
+        bool removeFilter, string? removeCostSelection, string? removeDaysAvailable, string? removeServiceDeliverySelection,
+        string? removeSelectedLanguage, string? removeForChildrenAndYoungPeople, string? removeSearchAge, string? removecategorySelection,
+        string? removesubcategorySelection)
     {
         dynamic routeValues = new ExpandoObject();
         var routeValuesDictionary = (IDictionary<string, object>)routeValues;
@@ -308,39 +299,54 @@ public class LocalOfferResultsModel : HeaderPageModel
         {
             if (removeFilter)
             {
-                if (removeCategories is not null && keyValuePair.Key is nameof(SubcategorySelection))
+                if (removeSelectedLanguage != null && keyValuePair.Key is nameof(SelectedLanguage))
                 {
-                    routeValuesDictionary[keyValuePair.Key] = string.Join(",", keyValuePair.Value.ToString()
-                        .Split(",").Where(s => s != removeCategories));
                     continue;
                 }
 
-                if (removeCost is not null && keyValuePair.Key is nameof(OnlyShowFreeServices))
+                if (removeForChildrenAndYoungPeople != null && keyValuePair.Key is nameof(ForChildrenAndYoungPeople))
                 {
                     continue;
                 }
-                
-                if (removeDaysAvailable is not null && keyValuePair.Key is nameof(DaysAvailable))
+
+                if ((removeSearchAge != null || removeForChildrenAndYoungPeople != null)
+                    && keyValuePair.Key is nameof(SearchAge))
+                {
+                    continue;
+                }
+
+                if (removeCostSelection != null && keyValuePair.Key is nameof(CostSelection))
+                {
+                    routeValuesDictionary[keyValuePair.Key] = string.Join(",", keyValuePair.Value.ToString()
+                        .Split(",").Where(s => s != removeCostSelection));
+                    continue;
+                }
+
+                if (removeDaysAvailable != null && keyValuePair.Key is nameof(DaysAvailable))
                 {
                     routeValuesDictionary[keyValuePair.Key] = string.Join(",", keyValuePair.Value.ToString()
                         .Split(",").Where(s => s != removeDaysAvailable));
                     continue;
                 }
-                
-                if (removeAge is not null && keyValuePair.Key is nameof(SelectedAges))
+
+                if (removeServiceDeliverySelection != null && keyValuePair.Key is nameof(ServiceDeliverySelection))
                 {
                     routeValuesDictionary[keyValuePair.Key] = string.Join(",", keyValuePair.Value.ToString()
-                        .Split(",").Where(s => s != removeAge));
+                        .Split(",").Where(s => s != removeServiceDeliverySelection));
                     continue;
                 }
-                
-                if (removeLanguage is not null && keyValuePair.Key is nameof(SelectedLanguage))
+
+                if (removecategorySelection != null && keyValuePair.Key is nameof(CategorySelection))
                 {
+                    routeValuesDictionary[keyValuePair.Key] = string.Join(",", keyValuePair.Value.ToString()
+                        .Split(",").Where(s => s != removecategorySelection));
                     continue;
                 }
-                
-                if (removeSearchWithin is not null && keyValuePair.Key is nameof(SelectedDistance))
+
+                if (removesubcategorySelection != null && keyValuePair.Key is nameof(SubcategorySelection))
                 {
+                    routeValuesDictionary[keyValuePair.Key] = string.Join(",", keyValuePair.Value.ToString()
+                        .Split(",").Where(s => s != removesubcategorySelection));
                     continue;
                 }
             }

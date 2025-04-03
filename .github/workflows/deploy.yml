@@ -37,6 +37,7 @@ jobs:
                    src/service/mock-hsda-api/,
                    src/function/open-referral-function/,
                    src/ui/connect-ui/,
+                   src/ui/find-ui/,
                    src/ui/idam-maintenance-ui/,
                    src/ui/manage-ui/
         ]
@@ -67,6 +68,9 @@ jobs:
           - project: src/ui/connect-ui/
             publish_project: FamilyHubs.Referral.Web
             job_name: Connect UI
+          - project: src/ui/find-ui/
+            publish_project: FamilyHubs.ServiceDirectory.Web
+            job_name: Find UI
           - project: src/ui/idam-maintenance-ui/
             publish_project: FamilyHubs.Idams.Maintenance.UI
             job_name: IDAM Maintenance UI
@@ -160,6 +164,7 @@ jobs:
     strategy:
       matrix:
         artifact_name: [ connect-ui,
+                         find-ui,
                          idam-maintenance-ui,
                          manage-ui
         ]
@@ -169,6 +174,12 @@ jobs:
             keyvault_app_prefix: CONNECT-UI
             project_name: FamilyHubs.Referral.Web
             azure_app_name: as-fh-referral-ui
+
+          - artifact_name: find-ui
+            job_name: Deploy - Find UI
+            keyvault_app_prefix: FIND-UI
+            project_name: FamilyHubs.ServiceDirectory.Web
+            azure_app_name: as-fh-sd-ui
 
           - artifact_name: idam-maintenance-ui
             job_name: Deploy - IDAM Maintenance UI

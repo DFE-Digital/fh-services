@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "familyhubs-frontend": "file:../../../../shared/web-components/src/familyhubs-frontend"
+  }
+}

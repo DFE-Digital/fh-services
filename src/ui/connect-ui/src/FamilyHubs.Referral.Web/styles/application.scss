@@ -2,66 +2,6 @@
 @import "../node_modules/familyhubs-frontend/styles/all";
 @import "global";
 
-.govuk-fieldset.result-filters,
-.border-bottom {
-  border-bottom: 1px solid #b1b4b6
-}
-
-.govuk-details {
-  margin-bottom: 20px;
-}
-
-.govuk-details__summary-text {
-  text-decoration: none !important;
-}
-
-/* Remove the default GOV.UK arrow (blue) */
-.custom-filter .govuk-details__summary::before {
-  content: none !important; /* Remove the original GOV.UK arrow */
-}
-
-/* Styling the summary (the filter heading) */
-.custom-filter .govuk-details__summary {
-  display: flex !important; /* Ensure the content aligns properly */
-  align-items: center !important; /* Vertically center the arrow and text */
-  cursor: pointer !important; /* Pointer cursor for better UX */
-  position: relative !important; /* For proper positioning of the arrow */
-  padding-left: 30px !important; /* Leave space for the arrow on the left */
-}
-
-/* Custom arrow in the summary using ::after */
-.custom-filter .govuk-details__summary::after {
-  content: ''; /* Create an empty element for the arrow */
-  position: absolute !important; /* Absolute positioning for the arrow */
-  left: 0 !important; /* Align the arrow to the left */
-  top: 50% !important; /* Vertically center the arrow */
-  transform: translateY(-50%) rotate(45deg) !important; /* Default downward-pointing arrow */
-  border: solid #000 !important; /* Black color for the arrow */
-  border-width: 0 2px 2px 0 !important; /* Creates the diagonal line */
-  padding: 5px !important; /* Size of the arrow */
-  display: inline-block !important; /* Ensure proper rendering */
-}
-
-/* Rotate the arrow upwards when the filter is expanded */
-.custom-filter[open] .govuk-details__summary::after {
-  transform: translateY(-50%) rotate(-135deg) !important; /* Rotate to upwards when expanded */
-}
-
-.app-service-summary .govuk-summary-list__row {
-  border-bottom: none;
-}
-
-.custom-filter:last-child {
-  border-bottom: none;
-  padding: 0 !important;
-}
-
-.filters-component__groups__group {
-  border-bottom: 1px solid #b1b4b6;
-  margin-bottom: 25px;
-}
-
-.filters-component__groups__group:last-of-type {
-  border-bottom: 0;
-  margin-bottom: 0;
+.app-break-spaces {
+  white-space: break-spaces;
 }

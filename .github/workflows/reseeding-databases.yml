@@ -15,12 +15,6 @@ on:
         options:
           - 'Test'
           - 'Test2'
-          - 'Pre-production'
-  workflow_call:
-    inputs:
-      environment:
-        type: string
-        required: true
           
 permissions:
   id-token: write
@@ -37,7 +31,8 @@ jobs:
           open-referral-mock-database,
           referral-database,
           report-database,
-          service-directory-database
+          service-directory-database,
+          report-staging-database
         ]
         include:
           - databases: idam-database
@@ -64,6 +59,10 @@ jobs:
             display_name: Service Directory
             keyvault_db_prefix: SD-DB
             sql_file_path: ./test/reset-scripts/reset-database.sql
+          - databases: report-staging-database
+            display_name: Report Staging
+            keyvault_db_prefix: REPORT-STAGING-DB
+            sql_file_path: ./test/reset-scripts/reset-report-staging-database.sql
     uses: ./.github/workflows/run-sql-script.yml
     with:
       environment: ${{ inputs.environment }}
@@ -72,24 +71,9 @@ jobs:
       sql_file_path: ${{ matrix.sql_file_path }}
     secrets: inherit
     
-  # Separated out of the Matrix as Test2 will fail because it doesn't have Azure Data Factory resources configured.
-  reset-report-staging-database:
-    if: ${{ inputs.environment != 'Test2' }}
-    name: Reset the Report Staging database
-    uses: ./.github/workflows/run-sql-script.yml
-    with:
-      environment: ${{ inputs.environment }}
-      display_name: Report Staging
-      keyvault_db_prefix: REPORT-STAGING-DB
-      sql_file_path: ./test/reset-scripts/reset-report-staging-database.sql
-    secrets: inherit
-  
   migrate-databases:
     name: ${{ matrix.job_name }}
-    needs: [ reset-databases, reset-report-staging-database ]
-    if: ${{ always() && 
-            needs.reset-databases.result == 'success' && 
-            (needs.reset-report-staging-database.result == 'success' || needs.reset-report-staging-database.result == 'skipped')}}
+    needs: [ reset-databases ]
     strategy:
       matrix:
         artifact_name: [ 
@@ -147,28 +131,9 @@ jobs:
       project_type: service
     secrets: inherit
 
-  sql-path:
-    name: SQL Seed Script Path
-    runs-on: ubuntu-24.04
-    outputs: 
-      SQL_PATH: ${{ steps.get-sql-path.outputs.PATH }}
-    steps:
-      - id: get-sql-path
-        run: |
-          if [[ "${{ inputs.environment }}" == "Test" || "${{ inputs.environment }}" == "Test2" ]]; then
-            echo "PATH=test" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          if [[ "${{ inputs.environment }}" == "Pre-production" ]]; then
-            echo "PATH=pre-prod" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          exit 1
-
   seed-databases:
     name: Seed the ${{ matrix.display_name }} database
-    needs: [ migrate-databases, sql-path ]
-    if: ${{ always() && needs.migrate-databases.result == 'success' && needs.sql-path.result == 'success' }}
+    needs: [ migrate-databases ]
     strategy:
       matrix:
         databases: [ 
@@ -182,23 +147,23 @@ jobs:
           - databases: idam-database
             display_name: IDAM
             keyvault_db_prefix: IDAM-DB
-            sql_file_path: ./test/seed-scripts/${{ needs.sql-path.outputs.SQL_PATH }}/idam-data.sql
+            sql_file_path: ./test/seed-scripts/test/idam-data.sql
           - databases: notification-database
             display_name: Notification
             keyvault_db_prefix: NOTIFICATIONS-DB
-            sql_file_path: ./test/seed-scripts/${{ needs.sql-path.outputs.SQL_PATH }}/notification-data.sql
+            sql_file_path: ./test/seed-scripts/test/notification-data.sql
           - databases: open-referral-mock-database
             display_name: Open Referral Mock
             keyvault_db_prefix: MOCK-HSDA-DB
-            sql_file_path: ./test/seed-scripts/${{ needs.sql-path.outputs.SQL_PATH }}/open-referral-mock-data.sql
+            sql_file_path: ./test/seed-scripts/test/open-referral-mock-data.sql
           - databases: referral-database
             display_name: Referral
             keyvault_db_prefix: REFERRAL-DB
-            sql_file_path: ./test/seed-scripts/${{ needs.sql-path.outputs.SQL_PATH }}/referral-data.sql
+            sql_file_path: ./test/seed-scripts/test/referral-data.sql
           - databases: service-directory-database
             display_name: Service Directory
             keyvault_db_prefix: SD-DB
-            sql_file_path: ./test/seed-scripts/${{ needs.sql-path.outputs.SQL_PATH }}/service-directory-data.sql
+            sql_file_path: ./test/seed-scripts/test/service-directory-data.sql
     uses: ./.github/workflows/run-sql-script.yml
     with:
       environment: ${{ inputs.environment }}

@@ -31,7 +31,6 @@ public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
     protected OrganisationDetailsDto TestOrganisation { get; }
     protected OrganisationDetailsDto TestOrganisationFreeService { get; }
     protected OrganisationDto TestOrganisationWithoutAnyServices { get; }
-    protected OrganisationDto TestOrganisationWithAgeRangeServices { get; }
 
     private static readonly ILoggerFactory TestLoggerFactory
         = LoggerFactory.Create(builder => { builder.AddConsole(); });
@@ -43,12 +42,9 @@ public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
     protected DataIntegrationTestBase()
     {
         _fixtureObjectGenerator = new Fixture();
-        _fixtureObjectGenerator.Customizations.Add(new RandomNumericSequenceGenerator(short.MaxValue, int.MaxValue));
-
         TestOrganisation = TestDataProvider.GetTestCountyCouncilDto();
         TestOrganisationFreeService = TestDataProvider.GetTestCountyCouncilWithFreeServiceDto();
         TestOrganisationWithoutAnyServices = TestDataProvider.GetTestCountyCouncilWithoutAnyServices();
-        TestOrganisationWithAgeRangeServices = TestDataProvider.GetTestCountyCouncilWithAgeRangeServices();
 
         var serviceProvider = CreateNewServiceProvider();
 
@@ -73,26 +69,13 @@ public abstract class DataIntegrationTestBase : IDisposable, IAsyncDisposable
     {
         var organisationWithServices = Mapper.Map<Organisation>(organisationDto ?? TestOrganisation);
 
-        if (organisationWithServices.Services[0].Locations.Count > 0)
-        {
-            organisationWithServices.Locations.Add(organisationWithServices.Services[0].Locations[0]); 
-        }
-        
+        organisationWithServices.Locations.Add(organisationWithServices.Services.First().Locations.First());
+
         TestDbContext.Organisations.Add(organisationWithServices);
 
         await TestDbContext.SaveChangesAsync();
 
-        var orgName = organisationDto?.Name ?? TestOrganisation.Name;
-        var orgDetailsDto = Mapper.Map(organisationWithServices, organisationDto ?? TestOrganisation);
-
-        // The organisation service name is a calculated property on the ServiceDto so we need to set it after mapping
-        foreach (var serviceDto in orgDetailsDto.Services)
-        {
-            serviceDto.OrganisationName = orgName;
-        }
-        
-        return orgDetailsDto;
-
+        return Mapper.Map(organisationWithServices, organisationDto ?? TestOrganisation);
     }
 
     protected async Task<OrganisationDto> CreateOrganisation(OrganisationDto? organisationDto = null)

@@ -51,12 +51,14 @@ public class WhenUsingLocalOfferResultsPage
         var searchResults = await _pageModel.OnGetAsync(
             postCode!,
             "",
-            false,
+            "",
+            "",
             "",
             "",
             "",
             "",
             1,
+            false,
             Guid.NewGuid()
         ) as PageResult;
 
@@ -122,12 +124,14 @@ public class WhenUsingLocalOfferResultsPage
         var searchResults = await _pageModel.OnGetAsync(
             "BS2 0SP",
             "1",
-            false,
+            "127",
+            "",
             "",
             "",
             "",
             "",
             1,
+            false,
             Guid.NewGuid()
         ) as PageResult;
 
@@ -136,9 +140,9 @@ public class WhenUsingLocalOfferResultsPage
     }
 
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void ThenOnPostAsync_LocalOfferResults(bool onlyShowFreeServices)
+    [InlineData("paid")]
+    [InlineData("free")]
+    public void ThenOnPostAsync_LocalOfferResults(string costSelection)
     {
         //Arrange
         var json = @"{
@@ -187,7 +191,11 @@ public class WhenUsingLocalOfferResultsPage
     }
 }";
 
-        _pageModel.OnlyShowFreeServices = onlyShowFreeServices;
+        _pageModel.CostSelection = new List<string>
+        {
+            costSelection
+        };
+        _pageModel.ServiceDeliverySelection = new List<string>();
         _pageModel.CategorySelection = new List<string>();
         _pageModel.SubcategorySelection = new List<string>();
 
@@ -209,13 +217,15 @@ public class WhenUsingLocalOfferResultsPage
 
         // Act
         var searchResults = _pageModel.OnPostAsync(
+            removeCostSelection: "yes",
             removeFilter: true,
-            removeCategories: "yes",
-            removeCost: "yes",
-            removeDaysAvailable: "yes",
-            removeAge: "yes",
-            removeLanguage: "yes",
-            removeSearchWithin: "yes"
+            removeServiceDeliverySelection: "yes",
+            removeSelectedLanguage: "yes",
+            removeForChildrenAndYoungPeople: "yes",
+            removeSearchAge: "yes",
+            removecategorySelection: "yes",
+            removesubcategorySelection: "yes",
+            removeDaysAvailable: "yes"
         ) as RedirectToPageResult;
 
         // Assert
@@ -224,9 +234,9 @@ public class WhenUsingLocalOfferResultsPage
     }
 
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void ThenOnPostAsync_LocalOfferResults_WithModelStateError(bool onlyShowFreeServices)
+    [InlineData("paid")]
+    [InlineData("free")]
+    public void ThenOnPostAsync_LocalOfferResults_WithModelStateError(string costSelection)
     {
         //Arrange
         var json = @"{
@@ -275,7 +285,11 @@ public class WhenUsingLocalOfferResultsPage
     }
 }";
 
-        _pageModel.OnlyShowFreeServices = onlyShowFreeServices;
+        _pageModel.CostSelection = new List<string>
+        {
+            costSelection
+        };
+        _pageModel.ServiceDeliverySelection = new List<string>();
         _pageModel.CategorySelection = new List<string>();
         _pageModel.SubcategorySelection = new List<string>();
         _pageModel.Pagination = new DontShowPagination();
@@ -304,13 +318,15 @@ public class WhenUsingLocalOfferResultsPage
 
         // Act
         var searchResults = _pageModel.OnPostAsync(
+            removeCostSelection: "yes",
             removeFilter: true,
-            removeCategories: "yes",
-            removeCost: "yes",
-            removeDaysAvailable: "yes",
-            removeAge: "yes",
-            removeLanguage: "yes",
-            removeSearchWithin: "yes"
+            removeServiceDeliverySelection: "yes",
+            removeSelectedLanguage: "yes",
+            removeForChildrenAndYoungPeople: "yes",
+            removeSearchAge: "yes",
+            removecategorySelection: "yes",
+            removesubcategorySelection: "yes",
+            removeDaysAvailable: "yes"
         ) as RedirectToPageResult;
 
         // Assert
